@@ -49,7 +49,7 @@ jobs:
         run: pulumi stack select ${{ env.pulumi_stack_organization }}/${{ inputs.deployment_stage }} --create
       - name: Set artifact path in Pulumi config
         working-directory: ./infra/vf-features
-        run: pulumi config set artifactPath ../out
+        run: pulumi config set artifactPath ../../artifact
       - name: Deploy with Pulumi
         uses: pulumi/actions@v3
         with:
