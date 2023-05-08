@@ -1,0 +1,89 @@
+name: Build and test the app
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+    inputs:
+      deployment_stage:
+        required: false
+        type: string
+      wants_artifacts:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build-and-test:
+    name: Build the app
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.deployment_stage }}
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: App install, test
+        run: |
+          npm install
+          npm run test:ci
+      - name: auth-gw url from Pulumi
+        if: ${{ inputs.deployment_stage }}
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        id: auth-gw-url
+        with:
+          organization: virtualfinland
+          project: authentication-gw
+          stack: ${{ inputs.deployment_stage }}
+          resource: endpoint
+          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: prh-mock url from Pulumi
+        if: ${{ inputs.deployment_stage }}
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        id: prh-mock-url
+        with:
+          organization: virtualfinland
+          project: prh-mock
+          stack: ${{ inputs.deployment_stage }}
+          resource: ApplicationUrl
+          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: testbed-api url from Pulumi
+        if: ${{ inputs.deployment_stage }}
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        id: testbed-api-url
+        with:
+          organization: virtualfinland
+          project: testbed-api
+          stack: ${{ inputs.deployment_stage }}
+          resource: url
+          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: codesets url from Pulumi
+        if: ${{ inputs.deployment_stage }}
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        id: codesets-url
+        with:
+          organization: virtualfinland
+          project: codesets
+          stack: ${{ inputs.deployment_stage }}
+          resource: url
+          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: App build
+        if: ${{ inputs.deployment_stage }}
+        run: npm install && npm run build:features
+        env:
+          NEXT_PUBLIC_AUTH_GW_BASE_URL: ${{ steps.auth-gw-url.outputs.resource-output }}
+          NEXT_PUBLIC_PRH_MOCK_BASE_URL: ${{ steps.prh-mock-url.outputs.resource-output }}
+          NEXT_PUBLIC_TESTBED_API_BASE_URL: ${{ steps.testbed-api-url.outputs.resource-output }}
+          NEXT_PUBLIC_CODESETS_BASE_URL: ${{ steps.codesets-url.outputs.resource-output }}
+      - name: Archive the build artifacts
+        if: ${{ inputs.wants_artifacts }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact-${{ inputs.deployment_stage }}
+          path: apps/vf-features/out
+          retention-days: 1
+          if-no-files-found: error

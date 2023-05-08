@@ -28,6 +28,7 @@
     "test:watch": {
       "cache": false
     },
+    "test:ci": {},
     "lint": {},
     "check-types": {},
     "dev": {
