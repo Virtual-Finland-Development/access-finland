@@ -1,0 +1,15 @@
+{
+  "name": "virtual-finland",
+  "scripts": {
+    "build": "cd functions/fn-format-request && npm ci && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^16"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^5.23.0",
+    "@pulumi/pulumi": "^3.49.0",
+    "@pulumi/synced-folder": "^0.0.9",
+    "typescript": "^4.0.0"
+  }
+}

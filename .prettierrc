@@ -1,0 +1,27 @@
+{
+  "semi": true,
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "importOrder": [
+    "^next",
+    "^react",
+    "<THIRD_PARTY_MODULES>",
+    "^@/types(.*)$",
+    "^@/lib/(.*)$",
+    "^@/context/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/(.*)$",
+    "^@/styles/(.*)$",
+    "^@shared/types(.*)$",
+    "^@shared/lib/(.*)$",
+    "^@shared/context/(.*)$",
+    "^@shared/hooks/(.*)$",
+    "^@shared/components/(.*)$",
+    "^@shared/styles/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true
+}

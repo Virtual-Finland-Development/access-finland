@@ -1,0 +1,64 @@
+{
+  "beneficialOwners": {
+    "shareSeries": [
+      {
+        "shareSeriesClass": "A",
+        "numberOfShares": 7000,
+        "votesPerShare": 10
+      },
+      {
+        "shareSeriesClass": "B",
+        "numberOfShares": 4000,
+        "votesPerShare": 1
+      }
+    ],
+    "shareholders": [
+      {
+        "name": "James Jaatinen",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 4000 }]
+      },
+      {
+        "name": "Mike Olsen",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 2000 }]
+      },
+      {
+        "name": "Brenda Taylor",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 1000 }]
+      },
+      {
+        "name": "Future Ventures Ltd",
+        "shareOwnership": [{ "shareSeriesClass": "B", "quantity": 2000 }]
+      },
+      {
+        "name": "Olli Amber",
+        "shareOwnership": [{ "shareSeriesClass": "B", "quantity": 1000 }]
+      },
+      {
+        "name": "Alli Umber",
+        "shareOwnership": [{ "shareSeriesClass": "B", "quantity": 1000 }]
+      }
+    ]
+  },
+  "signatoryRights": [
+    {
+      "role": "Chairman",
+      "personalId": "2254365789",
+      "givenName": "James",
+      "middleNames": "Michael Jack",
+      "lastName": "Jaatinen",
+      "dateOfBirth": "1978-15-06",
+      "nationality": "USA",
+      "fullAddress": "106 Doyers Street, Apartment 20, New York NY 10014, USA"
+    },
+    {
+      "role": "Director",
+      "personalId": "2254365789",
+      "givenName": "Olf",
+      "middleNames": "Jonathan",
+      "lastName": "Andersen",
+      "dateOfBirth": "1969-03-23",
+      "nationality": "NOR",
+      "fullAddress": "Storgata 6, NO-72345 Trondheim, NOR"
+    }
+  ]
+}

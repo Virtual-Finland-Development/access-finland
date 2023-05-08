@@ -1,0 +1,4 @@
+config:
+  aws:region: eu-north-1
+  virtual-finland:errorDocument: index.html
+  virtual-finland:indexDocument: index.html

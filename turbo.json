@@ -1,10 +1,32 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalEnv": [
+    "ANALYZE",
+    "NEXT_PUBLIC_AUTH_GW_BASE_URL",
+    "NEXT_PUBLIC_PRH_MOCK_BASE_URL",
+    "NEXT_PUBLIC_PRH_MOCK_BASE_URL",
+    "NEXT_PUBLIC_TESTBED_API_BASE_URL",
+    "NEXT_PUBLIC_TESTBED_API_BASE_URL",
+    "NEXT_PUBLIC_CODESETS_BASE_URL",
+    "NEXT_PUBLIC_CODESETS_BASE_URL"
+  ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "build:features": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "build:mvp": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "test": {},
+    "test:watch": {
+      "cache": false
     },
     "lint": {},
     "check-types": {},
