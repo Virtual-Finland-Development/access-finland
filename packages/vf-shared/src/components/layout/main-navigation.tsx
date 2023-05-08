@@ -27,7 +27,7 @@ const navigation = [
 
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
-  className: 'p-0 px-2',
+  className: '!p-0 !px-2',
 })`
   &:hover {
     background: transparent !important;
