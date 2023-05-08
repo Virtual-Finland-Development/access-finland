@@ -19,12 +19,6 @@ import api from '../../lib/api';
 import CustomHeading from '../ui/custom-heading';
 import CustomLink from '../ui/custom-link';
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Profile', href: '/profile' },
-  { name: 'Company', href: '/company' },
-];
-
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
   className: '!p-0 !px-2',
