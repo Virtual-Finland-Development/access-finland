@@ -63,26 +63,26 @@ export default function OtherSkillsSelect(props: Props) {
       {!userOtherSkills?.length ? (
         <Text className="!text-base">
           <span>No skills selected, </span>
-          <span
-            role="button"
+          <button
+            type="button"
             className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
             onClick={openEdit}
           >
             click here to add.
-          </span>
+          </button>
         </Text>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userOtherSkillsWithLabels.map((s, index) => (
             <li key={`${s.escoIdentifier}-${index}`}>
               <Text className="!text-base">
-                <span
-                  role="button"
+                <button
+                  type="button"
                   className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                   onClick={openEdit}
                 >
                   {s.label} ({SKILL_LEVEL_LABELS[s.skillLevel]})
-                </span>
+                </button>
               </Text>
             </li>
           ))}

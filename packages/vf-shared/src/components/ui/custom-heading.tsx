@@ -10,12 +10,13 @@ const colorVariant = (color: SuomiFiBlue) =>
 interface StyledHeadingProps {
   suomiFiBlue?: SuomiFiBlue;
   $center?: boolean;
+  classNamee?: string;
 }
 
 const StyledHeading = styled(Heading).attrs<StyledHeadingProps>(
   ({ suomiFiBlue, $center }) => ({
-    className: `!text-inherit ${$center && '!text-center'} ${
-      suomiFiBlue && colorVariant(suomiFiBlue)
+    className: `!text-inherit ${$center ? '!text-center' : ''} ${
+      suomiFiBlue ? colorVariant(suomiFiBlue) : ''
     }`,
   })
 )<StyledHeadingProps>``;
@@ -27,13 +28,14 @@ interface Props extends HeadingProps {
 }
 
 export default function CustomHeading(props: Props) {
-  const { children, variant, suomiFiBlue, $center } = props;
+  const { children, variant, suomiFiBlue, $center, className } = props;
 
   return (
     <StyledHeading
       variant={variant}
       suomiFiBlue={suomiFiBlue}
       $center={$center}
+      {...(className && { className })}
     >
       {children}
     </StyledHeading>

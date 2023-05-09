@@ -45,7 +45,6 @@ export default function FormSingleSelect<T extends FieldValues>(
           labelText={labelText}
           hintText={hintText}
           optionalText={optionalText}
-          // noItemsText={undefined}
           visualPlaceholder="Type to search"
           ariaOptionsAvailableText="Options available"
           clearButtonLabel="clear"

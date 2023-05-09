@@ -192,13 +192,13 @@ export default function JmfRecommendationsSelect(
             >
               Select keywords
             </Button>
-            <span
-              role="button"
+            <button
+              type="button"
               className="flex flex-row items-center justify-center gap-1 text-base font-semibold text-blue-600 hover:text-blue-800 hover:underline visited:text-purple-600"
               onClick={handleUploadClick}
             >
               <FiUpload className="mt-1" /> Import your CV
-            </span>
+            </button>
             <input
               hidden
               type="file"

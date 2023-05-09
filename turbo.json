@@ -28,7 +28,10 @@
     "test:watch": {
       "cache": false
     },
-    "test:ci": {},
+    "test:ci": {
+      "outputs": ["coverage/**"],
+      "dependsOn": ["build"]
+    },
     "lint": {},
     "check-types": {},
     "dev": {

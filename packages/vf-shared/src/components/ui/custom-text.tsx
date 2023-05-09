@@ -9,8 +9,8 @@ interface StyledTextProps {
 
 const StyledText = styled(Text).attrs<StyledTextProps>(
   ({ $bold, $base, $center }) => ({
-    className: `${$bold && '!font-bold'} ${$base && '!text-base'} ${
-      $center && '!text-center'
+    className: `${$bold ? '!font-bold' : ''} ${$base ? '!text-base' : ''} ${
+      $center ? '!text-center' : ''
     }`,
   })
 )<StyledTextProps>`
