@@ -65,7 +65,7 @@ export default function FormMultiSelect<T extends FieldValues>(
           visualPlaceholder="Type to search"
           ariaOptionsAvailableText="options available"
           itemAdditionHelpText=""
-          ariaSelectedAmountText="option selected"
+          ariaSelectedAmountText="options selected"
           ariaChipActionLabel="Remove"
           ariaOptionChipRemovedText="removed"
           // removeAllButtonLabel="Remove all selected"

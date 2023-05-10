@@ -23,8 +23,8 @@ const CustomChipItem = ({
   onRemove: (item: SelectionItem) => void;
 }) => {
   return (
-    <div
-      role="button"
+    <button
+      type="button"
       onClick={() => onRemove(item)}
       className="flex flex-row items-center gap-2 bg-suomifi-light hover:bg-suomifi-light-hover text-white font-bold text-base rounded-xl px-2"
     >
@@ -35,7 +35,7 @@ const CustomChipItem = ({
         tabIndex={0}
         aria-label="Remove selected skill"
       />
-    </div>
+    </button>
   );
 };
 

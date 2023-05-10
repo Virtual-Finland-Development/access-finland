@@ -19,7 +19,9 @@ export default function ProfileNotAuthenticated() {
         Create your profile
       </CustomHeading>
       <div className="flex flex-col mt-8 gap-6 p-4 bg-suomifi-blue-bg-light">
-        <CustomHeading variant="h4">About your personal account</CustomHeading>
+        <CustomHeading variant="h3" className="!text-lg">
+          About your personal account
+        </CustomHeading>
         <Text>
           We will create your digital profile. Any data we will ask is not for
           us - it is for you. Granting permission for this account will help you

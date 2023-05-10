@@ -43,21 +43,21 @@ export default function LanguageSkillsSelect(props: Props) {
       {!userLanguages?.length ? (
         <Text className="!text-base">
           <span>No languages selected, </span>
-          <span
-            role="button"
+          <button
+            type="button"
             className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
             onClick={openLanguageEdit}
           >
             click here to add.
-          </span>
+          </button>
         </Text>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userLanguages.map((l, index) => (
             <li key={`${l.escoIdentifier}-${index}`}>
               <Text className="!text-base">
-                <span
-                  role="button"
+                <button
+                  type="button"
                   className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                   onClick={openLanguageEdit}
                 >
@@ -71,7 +71,7 @@ export default function LanguageSkillsSelect(props: Props) {
                     )?.prefLabel.en
                   }
                   )
-                </span>
+                </button>
               </Text>
             </li>
           ))}

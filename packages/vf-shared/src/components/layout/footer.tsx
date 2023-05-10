@@ -21,7 +21,9 @@ function Help() {
     <>
       <Block variant="section" className="bg-white px-4 py-6">
         <div className="container md:px-4">
-          <CustomHeading variant="h4">Helpful links</CustomHeading>
+          <CustomHeading variant="h3" className="!text-lg">
+            Helpful links
+          </CustomHeading>
           <ul className="mt-4">
             {HELP_LINKS.map(item => (
               <li key={item.label}>
@@ -41,7 +43,9 @@ function Help() {
       </Block>
       <Block variant="section" className="bg-suomifi-blue-bg-light px-4 py-6">
         <div className="container md:px-4">
-          <CustomHeading variant="h4">Do you need help?</CustomHeading>
+          <CustomHeading variant="h3" className="!text-lg">
+            Do you need help?
+          </CustomHeading>
           <div className="mt-4 flex flex-col gap-2">
             <div className="flex flex-col gap-1">
               <CustomText $base $bold>

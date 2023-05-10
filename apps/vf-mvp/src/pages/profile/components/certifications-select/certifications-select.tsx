@@ -37,26 +37,26 @@ export default function CertificationsSelect(props: Props) {
       {!userCertifications?.length ? (
         <Text className="!text-base">
           <span>No certifications selected, </span>
-          <span
-            role="button"
+          <button
+            type="button"
             className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
             onClick={openEdit}
           >
             click here to add.
-          </span>
+          </button>
         </Text>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userCertifications.map((c, index) => (
             <li key={`${c.escoIdentifier}-${index}`}>
               <Text className="!text-base">
-                <span
-                  role="button"
+                <button
+                  type="button"
                   className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
                   onClick={openEdit}
                 >
                   {c.certificationName}
-                </span>
+                </button>
               </Text>
             </li>
           ))}

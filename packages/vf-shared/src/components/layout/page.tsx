@@ -23,17 +23,17 @@ function Page(props: Props) {
 
       <Breadcrumbs />
 
-      {showHeading && (
-        <div className="px-4 md:px-0">
-          <CustomHeading variant="h1">
-            <span className="text-3xl lg:text-[40px]">{title}</span>
-          </CustomHeading>
-        </div>
-      )}
-
-      <BackButton />
-
       <Block variant="main">
+        {showHeading && (
+          <div className="px-4 md:px-0">
+            <CustomHeading variant="h1">
+              <span className="text-3xl lg:text-[40px]">{title}</span>
+            </CustomHeading>
+          </div>
+        )}
+
+        <BackButton />
+
         <div
           className={`md:mb-8 mt-4 ${
             withBorder ? 'md:border border-gray-300' : ''

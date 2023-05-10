@@ -149,9 +149,9 @@ export default function IndustryEdit(props: Props) {
 
         {selected && (
           <div className="flex items-start mt-2">
-            <div
+            <button
               className="flex flex-row items-center gap-2 bg-suomifi-light hover:bg-suomifi-light-hover text-white font-bold rounded-xl px-2"
-              role="button"
+              type="button"
               onClick={() => setSelected(undefined)}
             >
               <span>{selected.prefLabel.en}</span>
@@ -161,7 +161,7 @@ export default function IndustryEdit(props: Props) {
                 tabIndex={0}
                 aria-label="Remove selected industry"
               />
-            </div>
+            </button>
           </div>
         )}
       </div>

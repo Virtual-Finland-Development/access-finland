@@ -13,7 +13,7 @@ interface StyledLinkProps {
 
 const StyledLink = styled(SuomiFiLink).attrs<StyledLinkProps>(
   ({ $bold, $base }) => ({
-    className: `${$bold && '!font-bold'} ${$base && '!text-base'}`,
+    className: `${$bold ? '!font-bold' : ''} ${$base ? '!text-base' : ''}`,
   })
 )<StyledLinkProps>``;
 

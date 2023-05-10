@@ -21,7 +21,7 @@ export default function CompanyEstablishmentPage() {
     <AuthSentry redirectPath="/company">
       <Page title="Company establishment">
         <Page.Block className="bg-white">
-          <CustomHeading variant="h3">
+          <CustomHeading variant="h2" className="!text-2xl">
             Required information to provide for establishing a company in
             Finland
           </CustomHeading>

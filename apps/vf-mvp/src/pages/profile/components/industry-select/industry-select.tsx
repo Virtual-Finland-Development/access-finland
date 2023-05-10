@@ -46,8 +46,8 @@ export default function IndustrySelect(props: Props) {
       <Label>Preferred industry to work in</Label>
       <Text className="!text-base">
         {!userNaceCode && <span>No industry selected, </span>}
-        <span
-          role="button"
+        <button
+          type="button"
           className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
           onClick={openNaceSelect}
         >
@@ -55,7 +55,7 @@ export default function IndustrySelect(props: Props) {
             ? 'click here to add.'
             : findNace(naceCodes || [], userNaceCode)?.prefLabel.en ||
               'undefined industry'}
-        </span>
+        </button>
       </Text>
     </div>
   );

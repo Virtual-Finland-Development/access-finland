@@ -37,7 +37,7 @@ export default function CompanyEditPage() {
 
             {!contextIsLoading && (
               <div>
-                <CustomHeading variant="h3">
+                <CustomHeading variant="h2" className="!text-2xl">
                   Modify company{' '}
                   {company?.companyDetails?.name &&
                     `(${company.companyDetails.name})`}
