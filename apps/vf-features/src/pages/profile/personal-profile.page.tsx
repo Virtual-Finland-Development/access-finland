@@ -4,9 +4,9 @@ import { Text } from 'suomifi-ui-components';
 import { usePersonBasicInfo } from '@shared/lib/hooks/profile';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
+import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
-import PersonalProfileForm from './components/personal-profile-form';
 
 export default function PersonalProfilePage() {
   const { data: personBasicInformation, isLoading } = usePersonBasicInfo();
