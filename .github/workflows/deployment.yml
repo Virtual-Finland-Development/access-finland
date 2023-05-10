@@ -33,12 +33,21 @@ jobs:
       - name: Display structure of downloaded artifact files
         run: |
           ls -R out
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Get IAM role from Pulumi
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        id: infra-iam-role
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          organization: virtualfinland
+          project: infrastructure
+          stack: ${{ inputs.deployment_stage }}
+          resource: DeployerIAMRole
+          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
           aws-region: ${{ env.aws_region }}
+          role-to-assume: ${{ steps.infra-iam-role.outputs.resource-output }}
+          role-session-name: status-admin-deploy
       - name: Install Pulumi CLI
         uses: pulumi/setup-pulumi@v2
       - name: Install dependencies
