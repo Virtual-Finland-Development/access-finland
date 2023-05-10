@@ -46,8 +46,16 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
       </ExpanderTitleButton>
       <ExpanderContent className="!text-base">
         <div className="flex flex-col gap-4 mt-4">
-          {typeof hasValues === 'boolean' && !hasValues && (
+          {/* typeof hasValues === 'boolean' && !hasValues && (
             <CustomHeading variant="h4">No information provided.</CustomHeading>
+          ) */}
+          {/* typeof hasValues === 'boolean' && !hasValues && (
+            <p className="!text-lg !font-bold">No information provided.</p>
+          ) */}
+          {typeof hasValues === 'boolean' && !hasValues && (
+            <CustomHeading variant="h3" className="!text-lg">
+              No information provided.
+            </CustomHeading>
           )}
 
           {values !== undefined &&
@@ -62,7 +70,7 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
               return (
                 <div key={dataKey}>
                   {labels[dataKey] && (
-                    <CustomHeading variant="h4">
+                    <CustomHeading variant="h3" className="!text-lg">
                       {labels[dataKey]}
                     </CustomHeading>
                   )}
