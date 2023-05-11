@@ -66,7 +66,7 @@ export default function OccupationsSelect(props: Props) {
   ); */
 
   return (
-    <div>
+    <div data-testid="occupation-selections">
       <Label>Occupations</Label>
       {!userOccupations?.length ? (
         <Text className="!text-base">

@@ -17,6 +17,7 @@ const customJestConfig = {
     '^@shared/context/(.*)$': 'vf-shared/src/context/$1',
     '^@/components/(.*)$': 'vf-shared/src/components/$1',
     '^@/types/(.*)$': 'vf-shared/src/types/$1',
+    '^@/types': 'vf-shared/src/types',
     '^@/lib/(.*)$': 'vf-shared/src/lib/$1',
     '^@/context/(.*)$': 'vf-shared/src/context/$1',
   },

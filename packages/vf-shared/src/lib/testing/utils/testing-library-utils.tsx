@@ -12,9 +12,9 @@ const queryClient = new QueryClient();
 const WrapperWithProviders = ({ children }: { children: ReactElement }) => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <ModalProvider>
-        <ToastProvider>{children}</ToastProvider>
-      </ModalProvider>
+      <ToastProvider>
+        <ModalProvider>{children}</ModalProvider>
+      </ToastProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

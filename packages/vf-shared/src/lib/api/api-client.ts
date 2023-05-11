@@ -22,7 +22,7 @@ const PROTECTED_URLS = [
 apiClient.interceptors.request.use(config => {
   if (config.url !== undefined && config.headers !== undefined) {
     if (PROTECTED_URLS.includes(config.url)) {
-      const idToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY).idToken;
+      const idToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY)?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
       config.headers['x-consent-token'] = '';
     }
