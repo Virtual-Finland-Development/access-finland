@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:18-alpine
+    command: sh -c "npm install && npm run dev"
+    working_dir: /app
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    ports:
+      - 3005:3000
+    networks:
+      - vfd-network
+    labels:
+      - traefik.http.routers.app.rule=Host(`virtual-finland.localhost`)
+    environment:
+      - NEXT_PUBLIC_APP_BASE_URL=http://virtual-finland.localhost
+
+networks:
+  vfd-network:
+    external: true
+    driver: bridge
