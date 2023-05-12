@@ -19,12 +19,12 @@ services:
       - traefik.http.routers.virtual-finland-mvp.rule=Host(`virtual-finland.localhost`)
       - traefik.http.routers.virtual-finland-mvp.entrypoints=web
       - traefik.http.routers.virtual-finland-mvp.service=virtual-finland-mvp-service
-      - traefik.http.services.virtual-finland-mvp-service.loadbalancer.server.port=3000
+      - traefik.http.services.virtual-finland-mvp-service.loadbalancer.server.port=3001
 
       - traefik.http.routers.virtual-finland-features.rule=Host(`features.virtual-finland.localhost`)
       - traefik.http.routers.virtual-finland-features.entrypoints=web
       - traefik.http.routers.virtual-finland-features.service=virtual-finland-features-service
-      - traefik.http.services.virtual-finland-features-service.loadbalancer.server.port=3001
+      - traefik.http.services.virtual-finland-features-service.loadbalancer.server.port=3000
 
 networks:
   vfd-network:
