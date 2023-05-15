@@ -85,11 +85,11 @@ function DesktopMenuPopover({
                     className="flex-shrink-0 h-12 w-12"
                   />
                   <div className="flex flex-col">
-                    <div onClick={() => close()}>
+                    <button className="flex" onClick={() => close()}>
                       <CustomLink href={item.href} $bold>
                         {item.name}
                       </CustomLink>
-                    </div>
+                    </button>
                     <Text>Page info here.</Text>
                   </div>
                 </>
