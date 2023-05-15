@@ -12,10 +12,6 @@ env:
   aws_region: eu-north-1
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build:
     uses: Virtual-Finland-Development/virtual-finland/.github/workflows/build-and-test.yml@main
@@ -27,6 +23,9 @@ jobs:
     name: Deployment
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
       - name: Download the built artifact
@@ -37,23 +36,14 @@ jobs:
       - name: Display structure of downloaded artifact files
         run: |
           ls -R out
-      - name: Get IAM role from Pulumi
-        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
-        id: infra-iam-role
-        with:
-          organization: virtualfinland
-          project: infrastructure
-          stack: ${{ inputs.deployment_stage }}
-          resource: DeployerIAMRole
-          access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
         with:
-          aws-region: ${{ env.aws_region }}
-          role-to-assume: ${{ steps.infra-iam-role.outputs.resource-output }}
-          role-session-name: status-admin-deploy
+          environment: ${{ inputs.deployment_stage }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install Pulumi CLI
-        uses: pulumi/setup-pulumi@v2
+        uses: pulumi/actions@v4
       - name: Install dependencies
         working-directory: ./infra/vf-features
         run: npm ci && npm run build
@@ -64,7 +54,7 @@ jobs:
         working-directory: ./infra/vf-features
         run: pulumi config set artifactPath ../../out
       - name: Deploy with Pulumi
-        uses: pulumi/actions@v3
+        uses: pulumi/actions@v4
         with:
           work-dir: ./infra/vf-features
           command: up
