@@ -29,7 +29,7 @@ const nextConfig = {
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // plugin to check for duplicate packages
-    /* config.plugins.push(
+    config.plugins.push(
       new DuplicatePackageCheckerPlugin({
         exclude(instance) {
           return instance.name === 'react-is';
@@ -52,16 +52,16 @@ const nextConfig = {
       '../../node_modules',
       'date-fns'
     );
-    config.resolve.alias['react-dom'] = path.resolve(
+    /* config.resolve.alias['react-dom'] = path.resolve(
       __dirname,
       '../../node_modules',
       'react-dom'
-    );
+    ); */
     config.resolve.alias['scheduler'] = path.resolve(
       __dirname,
       '../../node_modules',
       'scheduler'
-    ); */
+    );
     config.externals = [...config.externals, 'canvas', 'jsdom'];
     return config;
   },
