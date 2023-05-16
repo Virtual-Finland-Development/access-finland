@@ -1,0 +1,57 @@
+{
+  "beneficialOwners": {
+    "shareSeries": [
+      {
+        "shareSeriesClass": "A",
+        "numberOfShares": 8000,
+        "votesPerShare": 1
+      }
+    ],
+    "shareholders": [
+      {
+        "name": "Mina Leef",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 5000 }]
+      },
+      {
+        "name": "Diamond investors Ltd",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 2000 }]
+      },
+      {
+        "name": "James Jaatinen",
+        "shareOwnership": [{ "shareSeriesClass": "A", "quantity": 1000 }]
+      }
+    ]
+  },
+  "signatoryRights": [
+    {
+      "role": "Chairman",
+      "personalId": "2254365789",
+      "givenName": "James",
+      "middleNames": "Michael Jack",
+      "lastName": "Jaatinen",
+      "dateOfBirth": "1978-15-06",
+      "nationality": "USA",
+      "fullAddress": "106 Doyers Street, Apartment 20, New York NY 10014, USA"
+    },
+    {
+      "role": "Member",
+      "personalId": "8954365766",
+      "givenName": "Mina",
+      "middleNames": "Julia Maria",
+      "lastName": "Leef",
+      "dateOfBirth": "1966-22-10",
+      "nationality": "SWE",
+      "fullAddress": "Skogsgatan 31, 582 20 Lingköping, SWE"
+    },
+    {
+      "role": "Member",
+      "personalId": "7654365766",
+      "givenName": "Yost",
+      "middleNames": "Rudolf",
+      "lastName": "Robinson",
+      "dateOfBirth": "1980-11-11",
+      "nationality": "BRA",
+      "fullAddress": "Haanvuorentie 4 A 3, 22345 Helsinki, FIN"
+    }
+  ]
+}
