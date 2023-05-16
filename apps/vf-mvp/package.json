@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "dev:static": "serve ./out",
-    "build": "next build && next-image-export-optimizer",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",

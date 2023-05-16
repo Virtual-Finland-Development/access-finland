@@ -1,4 +1,4 @@
-import ExportedImage from 'next-image-export-optimizer';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import womanLaptopImage from '@shared/images/woman-laptop.jpg';
 import { Button, StaticIcon, Text } from 'suomifi-ui-components';
@@ -59,7 +59,7 @@ export default function HomePage() {
 
       <Page.Block className="bg-white">
         <div className="max-w-sm mb-6">
-          <ExportedImage
+          <Image
             src={womanLaptopImage}
             alt="Woman with laptop"
             width={330}
