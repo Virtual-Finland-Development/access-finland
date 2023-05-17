@@ -35,6 +35,7 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - uses: actions/checkout@v3
       - name: Configure AWS credentials
         uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
         with:
