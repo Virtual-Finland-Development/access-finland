@@ -29,7 +29,7 @@ const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
 // ECR Docker image
 const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
   repositoryUrl: repository.url,
-  path: '../../', // path to a directory to use for the Docker build context (root of the repo)
+  path: '../../.', // path to a directory to use for the Docker build context (root of the repo)
   dockerfile: '../../apps/vf-mvp/DockerFile', // dockerfile may be used to override the default Dockerfile name and/or location
 });
 
