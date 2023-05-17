@@ -1,8 +1,5 @@
 {
   "name": "vf-mvp-infra",
-  "scripts": {
-    "build": "npm ci && npm run build"
-  },
   "devDependencies": {
     "@types/node": "^16"
   },
