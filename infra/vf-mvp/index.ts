@@ -41,9 +41,11 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
-  defaultTargetGroupPort: 3000,
+  defaultTargetGroup: {
+    deregistrationDelay: 0,
+    port: 3000,
+  },
 });
-// const lbTg = lb.create
 
 // Fargate service
 const service = new awsx.ecs.FargateService(
