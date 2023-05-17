@@ -53,7 +53,7 @@ const service = new awsx.ecs.FargateService(
     taskDefinitionArgs: {
       containers: {
         service: {
-          image: image.urn,
+          image: image.imageUri,
           environment: [
             {
               name: 'NEXT_PUBLIC_AUTH_GW_BASE_URL',
