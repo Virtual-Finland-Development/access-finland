@@ -45,14 +45,11 @@ jobs:
         run: npm ci && npm run build
       - name: Select Pulumi stack
         working-directory: ./infra/vf-mvp
-        run: pulumi stack select ${{ env.pulumi_stack_organization }}/dev --create
-      - name: Set artifact path in Pulumi config
-        working-directory: ./infra/vf-features
-        run: pulumi config set artifactPath ../../out
+        run: pulumi stack select ${{ env.pulumi_stack_organization }}/test --create
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:
-          work-dir: ./infra/vf-features
+          work-dir: ./infra/vf-mvp
           command: up
-          stack-name: ${{ env.pulumi_stack_organization }}/dev
+          stack-name: ${{ env.pulumi_stack_organization }}/test
           upsert: true # create stack if no exists

@@ -8,13 +8,13 @@ const projectName = pulumi.getProject();
 
 // external apis
 const authGwEndpoint = new pulumi.StackReference(
-  `${org}/authentication-gw/${env}`
+  `${org}/authentication-gw/dev`
 ).getOutput('endpoint');
 const testbedApiEndpoint = new pulumi.StackReference(
-  `${org}/testbed-api/${env}`
+  `${org}/testbed-api/dev`
 ).getOutput('url');
 const codesetsEndpoint = new pulumi.StackReference(
-  `${org}/codesets/${env}`
+  `${org}/codesets/dev`
 ).getOutput('url');
 
 // ECR repository
