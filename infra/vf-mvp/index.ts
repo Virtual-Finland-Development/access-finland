@@ -5,6 +5,10 @@ import * as pulumi from '@pulumi/pulumi';
 const org = pulumi.getOrganization();
 const env = pulumi.getStack();
 const projectName = pulumi.getProject();
+const tags = {
+  'vfd:project': projectName,
+  'vfd:stack': env,
+};
 
 // external apis
 const authGwEndpoint = new pulumi.StackReference(
@@ -18,7 +22,9 @@ const codesetsEndpoint = new pulumi.StackReference(
 ).getOutput('url');
 
 // ECR repository
-const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`);
+const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
+  tags,
+});
 
 // ECR Docker image
 const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
@@ -28,12 +34,15 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
 });
 
 // Application load balancer
-const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {});
+const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
+  tags,
+});
 
 // Fargate service
 const service = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
   {
+    tags,
     assignPublicIp: true,
     taskDefinitionArgs: {
       containers: {
