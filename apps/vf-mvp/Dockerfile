@@ -55,4 +55,8 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/vf-mvp/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/vf-mvp/.next/static ./apps/vf-mvp/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/vf-mvp/public ./apps/vf-mvp/public
 
+EXPOSE 3000
+
+ENV PORT 3000
+
 CMD node apps/vf-mvp/server.js
