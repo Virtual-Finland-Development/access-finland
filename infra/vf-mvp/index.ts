@@ -33,6 +33,11 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
   dockerfile: '../../apps/vf-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
 });
 
+// ECS cluster
+const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
+  tags,
+});
+
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
@@ -43,6 +48,7 @@ const service = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
   {
     tags,
+    cluster: cluster.arn,
     assignPublicIp: true,
     taskDefinitionArgs: {
       containers: {
