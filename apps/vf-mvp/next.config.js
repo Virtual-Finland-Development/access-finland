@@ -13,6 +13,14 @@ const nextConfig = {
     NEXT_PUBLIC_CODESETS_BASE_URL:
       process.env.NEXT_PUBLIC_CODESETS_BASE_URL || '',
   },
+  publicRuntimeConfig: {
+    NEXT_PUBLIC_AUTH_GW_BASE_URL:
+      process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL || '',
+    NEXT_PUBLIC_TESTBED_API_BASE_URL:
+      process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL || '',
+    NEXT_PUBLIC_CODESETS_BASE_URL:
+      process.env.NEXT_PUBLIC_CODESETS_BASE_URL || '',
+  },
   reactStrictMode: false,
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
   transpilePackages: ['vf-shared'],

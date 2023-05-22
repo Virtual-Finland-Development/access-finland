@@ -10,8 +10,9 @@ import CustomLink from '@shared/components/ui/custom-link';
 export default function HomePage() {
   const router = useRouter();
 
-  const { serverRuntimeConfig } = getConfig();
+  const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
   console.log(serverRuntimeConfig);
+  console.log(publicRuntimeConfig);
 
   console.log('AUTH GW URL', process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
   console.log('TESTBED API URL', process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
