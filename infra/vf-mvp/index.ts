@@ -83,5 +83,105 @@ const service = new awsx.ecs.FargateService(
   }
 );
 
+// CloudFront
+const cdn = new aws.cloudfront.Distribution(
+  `${projectName}-cdn-${env}`,
+  {
+    enabled: true,
+    // defaultRootObject: 'index.html',
+    httpVersion: 'http2',
+    isIpv6Enabled: true,
+    priceClass: 'PriceClass_All',
+    waitForDeployment: true,
+    retainOnDelete: false,
+    origins: [
+      /* {
+        originId: bucket.arn,
+        domainName: bucket.bucketRegionalDomainName,
+        s3OriginConfig: {
+          originAccessIdentity:
+            originAccessIdentity.cloudfrontAccessIdentityPath,
+        },
+      }, */
+      {
+        originId: lb.loadBalancer.arn,
+        domainName: lb.loadBalancer.dnsName,
+        customOriginConfig: {
+          originProtocolPolicy: 'https-only',
+          originSslProtocols: ['TLSv1.2'],
+          httpPort: 80,
+          httpsPort: 80,
+        },
+        customHeaders: [
+          {
+            name: 'X-Custom-Header',
+            value: 'random-value-1234567890',
+          },
+        ],
+      },
+    ],
+    defaultCacheBehavior: {
+      targetOriginId: lb.loadBalancer.arn,
+      viewerProtocolPolicy: 'allow-all',
+      allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      defaultTtl: 600,
+      maxTtl: 600,
+      minTtl: 600,
+      forwardedValues: {
+        queryString: true,
+        cookies: {
+          forward: 'all',
+        },
+      },
+    },
+    /* orderedCacheBehaviors: [
+      {
+        pathPattern: 'index.html',
+        allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+        cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+        targetOriginId: bucket.arn,
+        forwardedValues: {
+          queryString: true,
+          cookies: {
+            forward: 'all',
+          },
+        },
+        defaultTtl: 10,
+        minTtl: 0,
+        maxTtl: 20,
+        compress: true,
+        viewerProtocolPolicy: 'redirect-to-https',
+      },
+    ], */
+    /* customErrorResponses: [
+      {
+        errorCode: 404,
+        responseCode: 404,
+        responsePagePath: `/${errorDocument}`,
+      },
+      {
+        errorCode: 403,
+        responseCode: 403,
+        responsePagePath: `/${errorDocument}`,
+      },
+    ], */
+    restrictions: {
+      geoRestriction: {
+        restrictionType: 'none',
+      },
+    },
+    viewerCertificate: {
+      cloudfrontDefaultCertificate: true,
+    },
+    tags,
+  },
+  {
+    protect: false,
+  }
+);
+
 // Export the URL of load balancer.
 export const url = lb.loadBalancer.dnsName;
+// Export the CloudFront url.
+export const cdnURL = pulumi.interpolate`https://${cdn.domainName}`;
