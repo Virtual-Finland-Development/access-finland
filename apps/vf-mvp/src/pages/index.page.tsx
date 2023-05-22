@@ -14,9 +14,21 @@ export default function HomePage() {
   console.log(serverRuntimeConfig);
   console.log(publicRuntimeConfig);
 
-  console.log('AUTH GW URL', process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
-  console.log('TESTBED API URL', process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
-  console.log('CODESETS URL', process.env.NEXT_PUBLIC_CODESETS_BASE_URL);
+  console.log('AUTH GW URL', process.env['NEXT_PUBLIC_AUTH_GW_BASE_URL']);
+  console.log(
+    'TESTBED API URL',
+    process.env['NEXT_PUBLIC_TESTBED_API_BASE_URL']
+  );
+  console.log('CODESETS URL', process.env['NEXT_PUBLIC_CODESETS_BASE_URL']);
+
+  console.log('--------------------');
+
+  const agu = 'NEXT_PUBLIC_AUTH_GW_BASE_URL';
+  const tau = 'NEXT_PUBLIC_TESTBED_API_BASE_URL';
+  const cu = 'NEXT_PUBLIC_CODESETS_BASE_URL';
+  console.log('AUTH GW URL', process.env[agu]);
+  console.log('TESTBED API URL', process.env[tau]);
+  console.log('CODESETS URL', process.env[cu]);
 
   return (
     <Page title="Home" showHeading={false}>
