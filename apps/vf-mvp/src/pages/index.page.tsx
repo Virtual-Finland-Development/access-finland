@@ -1,3 +1,4 @@
+import getConfig from 'next/config';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import womanLaptopImage from '@shared/images/woman-laptop.jpg';
@@ -8,6 +9,9 @@ import CustomLink from '@shared/components/ui/custom-link';
 
 export default function HomePage() {
   const router = useRouter();
+
+  const { serverRuntimeConfig } = getConfig();
+  console.log(serverRuntimeConfig);
 
   console.log('AUTH GW URL', process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
   console.log('TESTBED API URL', process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
