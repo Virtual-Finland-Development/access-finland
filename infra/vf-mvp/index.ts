@@ -38,6 +38,13 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
   tags,
 });
 
+// ACM certificate
+/* const cert = new aws.acm.Certificate(`${projectName}-acm-cert-${env}`, {
+  domainName: 'example.com',
+  tags,
+  validationMethod: 'DNS',
+}); */
+
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
@@ -45,6 +52,12 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
     deregistrationDelay: 0,
     port: 3000,
   },
+  /* listeners: [
+    {
+      protocol: 'https',
+      port: 3000,
+    },
+  ], */
 });
 
 // Fargate service
@@ -97,12 +110,12 @@ const cdn = new aws.cloudfront.Distribution(
       {
         originId: lb.loadBalancer.arn,
         domainName: lb.loadBalancer.dnsName,
-        customOriginConfig: {
+        /*  customOriginConfig: {
           originProtocolPolicy: 'https-only',
           originSslProtocols: ['TLSv1.2'],
           httpPort: 80,
           httpsPort: 443,
-        },
+        }, */
         customHeaders: [
           {
             name: 'X-Custom-Header',
@@ -113,7 +126,7 @@ const cdn = new aws.cloudfront.Distribution(
     ],
     defaultCacheBehavior: {
       targetOriginId: lb.loadBalancer.arn,
-      viewerProtocolPolicy: 'allow-all',
+      viewerProtocolPolicy: 'redirect-to-https',
       allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
       cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
       defaultTtl: 600,
