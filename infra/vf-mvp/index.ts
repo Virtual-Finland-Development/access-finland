@@ -38,7 +38,7 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
   tags,
 });
 
-// ACM certificate
+// ACM certificate (may be needed later)
 /* const cert = new aws.acm.Certificate(`${projectName}-acm-cert-${env}`, {
   domainName: 'example.com',
   tags,
@@ -52,12 +52,6 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
     deregistrationDelay: 0,
     port: 3000,
   },
-  /* listeners: [
-    {
-      protocol: 'https',
-      port: 3000,
-    },
-  ], */
 });
 
 // Fargate service
