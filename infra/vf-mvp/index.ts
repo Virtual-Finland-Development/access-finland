@@ -45,12 +45,6 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
     deregistrationDelay: 0,
     port: 3000,
   },
-  listeners: [
-    {
-      protocol: 'https',
-      port: 3000,
-    },
-  ],
 });
 
 // Fargate service
@@ -107,7 +101,7 @@ const cdn = new aws.cloudfront.Distribution(
           originProtocolPolicy: 'https-only',
           originSslProtocols: ['TLSv1.2'],
           httpPort: 80,
-          httpsPort: 80,
+          httpsPort: 443,
         },
         customHeaders: [
           {
