@@ -9,9 +9,9 @@ import CustomLink from '@shared/components/ui/custom-link';
 export default function HomePage() {
   const router = useRouter();
 
-  console.log(process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
-  console.log(process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
-  console.log(process.env.NEXT_PUBLIC_CODESETS_BASE_URL);
+  console.log('AUTH GW URL', process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
+  console.log('TESTBED API URL', process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
+  console.log('CODESETS URL', process.env.NEXT_PUBLIC_CODESETS_BASE_URL);
 
   return (
     <Page title="Home" showHeading={false}>
