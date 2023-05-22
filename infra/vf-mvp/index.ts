@@ -70,20 +70,6 @@ const service = new awsx.ecs.FargateService(
       containers: {
         service: {
           image: image.imageUri,
-          environment: [
-            {
-              name: 'NEXT_PUBLIC_AUTH_GW_BASE_URL',
-              value: authGwEndpoint,
-            },
-            {
-              name: 'NEXT_PUBLIC_TESTBED_API_BASE_URL',
-              value: testbedApiEndpoint,
-            },
-            {
-              name: 'NEXT_PUBLIC_CODESETS_BASE_URL',
-              value: codesetsEndpoint,
-            },
-          ],
           portMappings: [
             {
               targetGroup: lb.defaultTargetGroup,
