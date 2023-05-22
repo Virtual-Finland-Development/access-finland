@@ -45,6 +45,12 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
     deregistrationDelay: 0,
     port: 3000,
   },
+  listeners: [
+    {
+      protocol: 'https',
+      port: 3000,
+    },
+  ],
 });
 
 // Fargate service
@@ -88,21 +94,12 @@ const cdn = new aws.cloudfront.Distribution(
   `${projectName}-cdn-${env}`,
   {
     enabled: true,
-    // defaultRootObject: 'index.html',
     httpVersion: 'http2',
     isIpv6Enabled: true,
     priceClass: 'PriceClass_All',
     waitForDeployment: true,
     retainOnDelete: false,
     origins: [
-      /* {
-        originId: bucket.arn,
-        domainName: bucket.bucketRegionalDomainName,
-        s3OriginConfig: {
-          originAccessIdentity:
-            originAccessIdentity.cloudfrontAccessIdentityPath,
-        },
-      }, */
       {
         originId: lb.loadBalancer.arn,
         domainName: lb.loadBalancer.dnsName,
@@ -135,37 +132,6 @@ const cdn = new aws.cloudfront.Distribution(
         },
       },
     },
-    /* orderedCacheBehaviors: [
-      {
-        pathPattern: 'index.html',
-        allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
-        cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
-        targetOriginId: bucket.arn,
-        forwardedValues: {
-          queryString: true,
-          cookies: {
-            forward: 'all',
-          },
-        },
-        defaultTtl: 10,
-        minTtl: 0,
-        maxTtl: 20,
-        compress: true,
-        viewerProtocolPolicy: 'redirect-to-https',
-      },
-    ], */
-    /* customErrorResponses: [
-      {
-        errorCode: 404,
-        responseCode: 404,
-        responsePagePath: `/${errorDocument}`,
-      },
-      {
-        errorCode: 403,
-        responseCode: 403,
-        responsePagePath: `/${errorDocument}`,
-      },
-    ], */
     restrictions: {
       geoRestriction: {
         restrictionType: 'none',
