@@ -110,12 +110,12 @@ const cdn = new aws.cloudfront.Distribution(
       {
         originId: lb.loadBalancer.arn,
         domainName: lb.loadBalancer.dnsName,
-        /* customOriginConfig: {
+        customOriginConfig: {
           originProtocolPolicy: 'https-only',
           originSslProtocols: ['TLSv1.2'],
           httpPort: 80,
           httpsPort: 443,
-        }, */
+        },
         /* customHeaders: [
           {
             name: 'X-Custom-Header',
