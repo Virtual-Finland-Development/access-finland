@@ -9,6 +9,10 @@ import CustomLink from '@shared/components/ui/custom-link';
 export default function HomePage() {
   const router = useRouter();
 
+  console.log(process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL);
+  console.log(process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL);
+  console.log(process.env.NEXT_PUBLIC_CODESETS_BASE_URL);
+
   return (
     <Page title="Home" showHeading={false}>
       <Page.Block className="bg-suomifi-blue-bg-light">
