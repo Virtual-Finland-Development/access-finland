@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import womanLaptopImage from '@shared/images/woman-laptop.jpg';
-import axios from 'axios';
 import { Button, StaticIcon, Text } from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -10,23 +9,12 @@ import CustomLink from '@shared/components/ui/custom-link';
 export default function HomePage() {
   const router = useRouter();
 
-  const handlePing = async () => {
-    const response = await axios.get('/api/pong');
-    console.log(response);
-    if (response?.data) {
-      alert(response.data.pong);
-    }
-  };
-
   return (
     <Page title="Home" showHeading={false}>
       <Page.Block className="bg-suomifi-blue-bg-light">
         <CustomHeading variant="h2" suomiFiBlue="dark">
           The only service you need for moving into Finland
         </CustomHeading>
-        <Button className="!mt-6" onClick={handlePing}>
-          Ping?
-        </Button>
         <div className="flex flex-col mt-8">
           <StaticIcon
             icon="book"
