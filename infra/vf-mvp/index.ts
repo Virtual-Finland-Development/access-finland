@@ -101,6 +101,12 @@ const cdn = new aws.cloudfront.Distribution(
           httpPort: 80,
           httpsPort: 443,
         },
+        customHeaders: [
+          {
+            name: 'X-Custom-Header',
+            value: 'random-value-1234567890',
+          },
+        ],
       },
     ],
     defaultCacheBehavior: {
