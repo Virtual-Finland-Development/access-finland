@@ -23,7 +23,7 @@ const codesetsEndpoint = new pulumi.StackReference(
 ).getOutput('url');
 
 // Random value for custom header (for restricted CloudFront -> ALB access)
-const customHeaderValue = `${
+const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(`${projectName}-uuid-${env}`).result
 }`;
 
