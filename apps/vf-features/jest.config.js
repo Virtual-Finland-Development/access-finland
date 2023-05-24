@@ -27,6 +27,11 @@ const customJestConfig = {
       {
         presets: [['next/babel']],
         plugins: [require.resolve('babel-plugin-macros')],
+        env: {
+          test: {
+            plugins: ['transform-dynamic-import'],
+          },
+        },
       },
     ],
   },
