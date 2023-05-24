@@ -21,9 +21,13 @@ const codesetsEndpoint = new pulumi.StackReference(
   `${org}/codesets/dev`
 ).getOutput('url');
 
+// Random value for custom header (for restricted CloudFront -> ALB access)
+const customHeaderValue = `vf-${Date.now()}`;
+
 // ECR repository
 const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
   tags,
+  forceDelete: true,
 });
 
 // ECR Docker image
@@ -43,13 +47,6 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
   tags,
 });
 
-// ACM certificate (may be needed later)
-/* const cert = new aws.acm.Certificate(`${projectName}-acm-cert-${env}`, {
-  domainName: 'example.com',
-  tags,
-  validationMethod: 'DNS',
-}); */
-
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
@@ -57,15 +54,93 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
     deregistrationDelay: 0,
     port: 3000,
   },
+  listener: {
+    port: 80,
+    protocol: 'HTTP',
+    tags,
+    defaultActions: [
+      {
+        type: 'fixed-response',
+        fixedResponse: {
+          contentType: 'text/plain',
+          messageBody: 'Access denied',
+          statusCode: '403',
+        },
+      },
+    ],
+  },
 });
 
+/* const defaultVpc = new awsx.ec2.DefaultVpc('default-vpc');
+
+const lb = new aws.lb.LoadBalancer(`${projectName}-alb-${env}`, {
+  loadBalancerType: 'application',
+  subnets: defaultVpc.publicSubnetIds.apply(ids => ids),
+  tags,
+});
+
+const lbTargetGroup = new aws.lb.TargetGroup(`vf-alb-tg-${env}`, {
+  port: 3000,
+  protocol: 'HTTP',
+  vpcId: defaultVpc.vpcId,
+  targetType: 'ip',
+});
+
+const lbListener = new aws.lb.Listener(`${projectName}-alb-listener-${env}`, {
+  loadBalancerArn: lb.arn,
+  port: 80,
+  protocol: 'HTTP',
+  // sslPolicy: '', (needed if https)
+  // certificateArn: '', (needed if https)
+  defaultActions: [
+    {
+      type: 'fixed-response',
+      fixedResponse: {
+        contentType: 'text/plain',
+        messageBody: 'Access denied',
+        statusCode: '403',
+      },
+    },
+  ],
+}); */
+
+const lbListenerRule = new aws.lb.ListenerRule(
+  `${projectName}-alb-listener-rule-${env}`,
+  {
+    listenerArn: lb.listeners.apply(
+      listeners =>
+        pulumi.interpolate`${
+          listeners?.find(l => l.port && l.port.apply(p => p === 80))?.arn || ''
+        }`
+    ),
+    // listenerArn: lbListener.arn,
+    // priority: 100,
+    actions: [
+      {
+        type: 'forward',
+        // targetGroupArn: lbTargetGroup.arn,
+        targetGroupArn: lb.defaultTargetGroup.arn,
+      },
+    ],
+    conditions: [
+      {
+        httpHeader: {
+          httpHeaderName: 'X-Custom-Header',
+          values: [customHeaderValue],
+        },
+      },
+    ],
+  }
+);
+
 // Fargate service
-const service = new awsx.ecs.FargateService(
+const fargateService = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
   {
     tags,
     cluster: cluster.arn,
     assignPublicIp: true,
+    continueBeforeSteadyState: false,
     taskDefinitionArgs: {
       containers: {
         service: {
@@ -73,6 +148,7 @@ const service = new awsx.ecs.FargateService(
           portMappings: [
             {
               targetGroup: lb.defaultTargetGroup,
+              // targetGroup: lbTargetGroup,
             },
           ],
         },
@@ -95,6 +171,8 @@ const cdn = new aws.cloudfront.Distribution(
       {
         originId: lb.loadBalancer.arn,
         domainName: lb.loadBalancer.dnsName,
+        /* originId: lb.arn,
+        domainName: lb.dnsName, */
         customOriginConfig: {
           originProtocolPolicy: 'http-only',
           originSslProtocols: ['TLSv1.2'],
@@ -104,13 +182,14 @@ const cdn = new aws.cloudfront.Distribution(
         customHeaders: [
           {
             name: 'X-Custom-Header',
-            value: 'random-value-1234567890',
+            value: customHeaderValue,
           },
         ],
       },
     ],
     defaultCacheBehavior: {
       targetOriginId: lb.loadBalancer.arn,
+      // targetOriginId: lb.arn,
       viewerProtocolPolicy: 'redirect-to-https',
       allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
       cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
@@ -141,5 +220,15 @@ const cdn = new aws.cloudfront.Distribution(
 
 // Export the URL of load balancer.
 export const url = lb.loadBalancer.dnsName;
+// export const url = lb.dnsName;
 // Export the CloudFront url.
 export const cdnURL = pulumi.interpolate`https://${cdn.domainName}`;
+
+export const listenerArn = lb.listeners.apply(
+  listeners =>
+    pulumi.interpolate`${
+      listeners?.find(l => l.port && l.port.apply(p => p === 80))?.arn || ''
+    }`
+);
+
+// export const vpcPublicSubnetIds = defaultVpc.publicSubnetIds.apply(ids => ids);
