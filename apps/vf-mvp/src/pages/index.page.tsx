@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import womanLaptopImage from '@shared/images/woman-laptop.jpg';
 import { Button, StaticIcon, Text } from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
+import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 
 export default function HomePage() {
@@ -59,7 +59,7 @@ export default function HomePage() {
 
       <Page.Block className="bg-white">
         <div className="max-w-sm mb-6">
-          <Image
+          <CustomImage
             src={womanLaptopImage}
             alt="Woman with laptop"
             width={330}

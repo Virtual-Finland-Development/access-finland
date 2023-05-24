@@ -20,7 +20,9 @@ const ToastProvider = dynamic(() =>
 const ModalProvider = dynamic(() =>
   import('@shared/context/modal-context').then(mod => mod.ModalProvider)
 );
-const MainLayout = dynamic(() => import('../components/layout/main-layout'));
+const MainLayout = dynamic(
+  () => import('@shared/components/layout/main-layout')
+);
 
 type ExtendedAppProps = AppProps & {
   Component: NextComponentType & { provider?: FC<PropsWithChildren> };

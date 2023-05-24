@@ -1,8 +1,8 @@
-import ExportedImage from 'next-image-export-optimizer';
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
 import { Block, Icon } from 'suomifi-ui-components';
 import europeImage from '../../images/your_europe_logo.svg';
 import CustomHeading from '../ui/custom-heading';
+import CustomImage from '../ui/custom-image';
 import CustomLink from '../ui/custom-link';
 import CustomText from '../ui/custom-text';
 
@@ -83,7 +83,7 @@ function Social() {
             <CustomText>@virtualfinland</CustomText>
           </div>
         </div>
-        <ExportedImage
+        <CustomImage
           src={europeImage}
           alt="Your Europe image"
           width={250}
