@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
+import * as random from '@pulumi/random';
 
 const org = pulumi.getOrganization();
 const env = pulumi.getStack();
@@ -22,7 +23,9 @@ const codesetsEndpoint = new pulumi.StackReference(
 ).getOutput('url');
 
 // Random value for custom header (for restricted CloudFront -> ALB access)
-const customHeaderValue = `vf-${Date.now()}`;
+const customHeaderValue = `${
+  new random.RandomUuid(`${projectName}-uuid-${env}`).result
+}`;
 
 // ECR repository
 const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
