@@ -45,7 +45,7 @@ ENV NEXT_PUBLIC_TESTBED_API_BASE_URL=${NEXT_PUBLIC_TESTBED_API_BASE_URL}
 ENV NEXT_PUBLIC_CODESETS_BASE_URL=${NEXT_PUBLIC_CODESETS_BASE_URL}
 
 # Build
-RUN npx turbo run build --filter=vf-mvp...
+RUN npx turbo@latest run build --filter=vf-mvp...
 
 FROM base AS runner
 WORKDIR /app
