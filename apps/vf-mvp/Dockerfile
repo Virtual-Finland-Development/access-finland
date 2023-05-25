@@ -11,7 +11,6 @@ RUN apk update
 WORKDIR /app
 RUN npm install -g turbo
 COPY . .
-RUN turbo --version --verbosity=2
 # RUN npx turbo prune --scope=vf-mvp --docker
 RUN turbo prune --scope=vf-mvp --docker
 
@@ -48,6 +47,7 @@ ENV NEXT_PUBLIC_CODESETS_BASE_URL=${NEXT_PUBLIC_CODESETS_BASE_URL}
 
 # Build
 # RUN npx turbo run build --filter=vf-mvp...
+RUN turbo --version --verbosity=2
 RUN turbo run build --filter=web...
 
 FROM base AS runner
