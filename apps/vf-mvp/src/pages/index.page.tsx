@@ -120,7 +120,7 @@ export default function HomePage() {
           </div>
           <div className="bg-suomifi-blue-bg-light flex flex-row items-center gap-6 py-2">
             <StaticIcon icon="shop" className="h-16 w-16 flex-shrink-0" />
-            <CustomLink href="/company" $bold>
+            <CustomLink href="#" $bold>
               create business
             </CustomLink>
           </div>
