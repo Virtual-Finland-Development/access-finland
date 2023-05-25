@@ -9,7 +9,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-# RUN npm install -g turbo
+RUN npm install -g turbo
 COPY . .
 # RUN npx turbo prune --scope=vf-mvp --docker
 RUN turbo prune --scope=web --docker
@@ -46,7 +46,8 @@ ENV NEXT_PUBLIC_TESTBED_API_BASE_URL=${NEXT_PUBLIC_TESTBED_API_BASE_URL}
 ENV NEXT_PUBLIC_CODESETS_BASE_URL=${NEXT_PUBLIC_CODESETS_BASE_URL}
 
 # Build
-RUN npx turbo run build --filter=vf-mvp...
+# RUN npx turbo run build --filter=vf-mvp...
+RUN turbo run build --filter=web...
 
 FROM base AS runner
 WORKDIR /app
