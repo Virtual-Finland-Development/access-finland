@@ -12,7 +12,7 @@ WORKDIR /app
 RUN npm install -g turbo
 COPY . .
 # RUN npx turbo prune --scope=vf-mvp --docker
-RUN turbo prune --scope=web --docker
+RUN turbo prune --scope=vf-mvp --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
