@@ -8,7 +8,7 @@ import { ImageProps } from 'next/image';
  */
 const ImageComponent = dynamic(() => {
   const withServer = process.env.NEXT_PUBLIC_WITH_SERVER || false;
-  console.log('is with server:', withServer);
+
   if (withServer) {
     return import('next/image').then(mod => mod);
   }
