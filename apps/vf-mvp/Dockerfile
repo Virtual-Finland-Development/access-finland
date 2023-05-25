@@ -11,7 +11,8 @@ RUN apk update
 WORKDIR /app
 # RUN npm install -g turbo
 COPY . .
-RUN npx turbo prune --scope=vf-mvp --docker
+# RUN npx turbo prune --scope=vf-mvp --docker
+RUN turbo prune --scope=web --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -45,7 +46,7 @@ ENV NEXT_PUBLIC_TESTBED_API_BASE_URL=${NEXT_PUBLIC_TESTBED_API_BASE_URL}
 ENV NEXT_PUBLIC_CODESETS_BASE_URL=${NEXT_PUBLIC_CODESETS_BASE_URL}
 
 # Build
-RUN npx turbo@latest run build --filter=vf-mvp...
+RUN npx turbo run build --filter=vf-mvp...
 
 FROM base AS runner
 WORKDIR /app
