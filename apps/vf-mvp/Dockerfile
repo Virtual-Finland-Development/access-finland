@@ -9,7 +9,6 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-# RUN npm install -g turbo
 COPY . .
 RUN npx turbo prune --scope=vf-mvp --docker
 
@@ -21,6 +20,7 @@ WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
+COPY patches ./patches
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 RUN npm ci
