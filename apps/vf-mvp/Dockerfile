@@ -11,6 +11,7 @@ RUN apk update
 WORKDIR /app
 RUN npm install -g turbo
 COPY . .
+RUN turbo --version --verbosity=2
 # RUN npx turbo prune --scope=vf-mvp --docker
 RUN turbo prune --scope=vf-mvp --docker
 
