@@ -47,6 +47,7 @@ ENV NEXT_PUBLIC_CODESETS_BASE_URL=${NEXT_PUBLIC_CODESETS_BASE_URL}
 
 # Build
 # RUN npx turbo run build --filter=vf-mvp...
+RUN npm install -g turbo
 RUN turbo --version --verbosity=2
 RUN turbo run build --filter=web...
 
