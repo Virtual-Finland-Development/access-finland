@@ -7,7 +7,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = {
   reactStrictMode: false,
   pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js', 'route.ts'],
-  transpilePackages: ['vf-shared'],
+  transpilePackages: ['next-image-export-optimizer', 'vf-shared'],
   output: 'standalone',
   compiler: {
     styledComponents: true,
