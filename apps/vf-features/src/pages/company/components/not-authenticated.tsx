@@ -1,4 +1,3 @@
-import ExportedImage from 'next-image-export-optimizer';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import manLaptopImage from '@shared/images/man-laptop.jpg';
@@ -7,6 +6,7 @@ import { StaticIcon } from 'suomifi-ui-components';
 import api from '@shared/lib/api';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
+import CustomImage from '@shared/components/ui/custom-image';
 import CustomText from '@shared/components/ui/custom-text';
 
 export default function CompanyNotAuthenticated() {
@@ -46,7 +46,7 @@ export default function CompanyNotAuthenticated() {
             </Button>
           </div>
           <div className="hidden md:block relative">
-            <ExportedImage
+            <CustomImage
               src={manLaptopImage}
               alt="Man with laptop"
               className="object-cover h-full w-full"

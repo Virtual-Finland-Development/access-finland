@@ -1,0 +1,56 @@
+name: Test the and deploy MVP
+
+on: workflow_dispatch
+
+env:
+  pulumi_stack_organization: virtualfinland
+  aws_region: eu-north-1
+  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+jobs:
+  test:
+    name: Test the app
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: App install, test
+        run: |
+          npm ci
+          npm run test:ci
+  deploy:
+    name: Deployment
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
+        with:
+          environment: dev
+          aws-region: ${{ secrets.AWS_REGION }}
+          pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: Install Pulumi CLI
+        uses: pulumi/actions@v4
+      - name: Install dependencies
+        working-directory: ./infra/vf-mvp
+        run: npm ci
+      - name: Select Pulumi stack
+        working-directory: ./infra/vf-mvp
+        run: pulumi stack select ${{ env.pulumi_stack_organization }}/test --create
+      - name: Deploy with Pulumi
+        uses: pulumi/actions@v4
+        with:
+          work-dir: ./infra/vf-mvp
+          command: up
+          stack-name: ${{ env.pulumi_stack_organization }}/test
+          upsert: true # create stack if no exists

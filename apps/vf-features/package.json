@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev:static": "serve ./out",
-    "build": "next build && next-image-export-optimizer",
-    "start": "next start",
+    "dev": "NEXT_PUBLIC_IS_EXPORT=true next dev",
+    "dev:static": "NEXT_PUBLIC_IS_EXPORT=true serve ./out",
+    "build": "NEXT_PUBLIC_IS_EXPORT=true next build && next-image-export-optimizer",
+    "start": "NEXT_PUBLIC_IS_EXPORT=true next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci"
+    "test:watch": "NEXT_PUBLIC_IS_EXPORT=true jest --watch",
+    "test:ci": "NEXT_PUBLIC_IS_EXPORT=true jest --ci"
   },
   "dependencies": {
     "next": "latest",
