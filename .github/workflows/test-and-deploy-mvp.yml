@@ -1,9 +1,6 @@
 name: Test the and deploy MVP
 
-# on: workflow_dispatch
-on:
-  push:
-    branches: ['VFD-258-muutetaan-frontend-app-full-stack-sovellukseksi']
+on: workflow_dispatch
 
 env:
   pulumi_stack_organization: virtualfinland
