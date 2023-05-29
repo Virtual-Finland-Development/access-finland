@@ -1,21 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { IncomingHttpHeaders } from 'http';
-
-export function runMiddleware(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  fn: Function
-) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-
-      return resolve(result);
-    });
-  });
-}
 
 /**
  * Remove connection/forbidden headers from the incoming request so it can be forwarded to the external endpoints.
