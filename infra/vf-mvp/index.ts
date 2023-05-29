@@ -155,7 +155,7 @@ const cdn = new aws.cloudfront.Distribution(
     defaultCacheBehavior: {
       targetOriginId: lb.loadBalancer.arn,
       viewerProtocolPolicy: 'redirect-to-https',
-      allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      allowedMethods: ['GET', 'POST', 'DELETE', 'HEAD', 'OPTIONS'],
       cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
       defaultTtl: 600,
       maxTtl: 600,
