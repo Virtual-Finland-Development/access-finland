@@ -15,3 +15,7 @@ export const TESTBED_API_BASE_URL = process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL
 export const CODESETS_BASE_URL = process.env.NEXT_PUBLIC_CODESETS_BASE_URL
   ? removeTrailingSlash(process.env.NEXT_PUBLIC_CODESETS_BASE_URL)
   : 'http://localhost:3166';
+
+export const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_BASE_URL
+  ? removeTrailingSlash(process.env.NEXT_PUBLIC_USERS_API_BASE_URL)
+  : 'http://localhost:5001';
