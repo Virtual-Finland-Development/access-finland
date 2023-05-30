@@ -1,4 +1,4 @@
-import { DataProduct } from '@/lib/backend/services/testbeb-gw/data-product-router';
+import type { DataProduct } from '@/types';
 import apiClient from '../api-client';
 
 export function utilizeDataProduct(

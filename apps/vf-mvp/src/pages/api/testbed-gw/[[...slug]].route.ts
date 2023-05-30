@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import DataProductRouter, {
-  DataProduct,
-} from '@shared/lib/backend/services/testbeb-gw/data-product-router';
+import DataProductRouter from '@mvp/lib/backend/services/testbeb-gw/data-product-router';
+import type { DataProduct } from '@shared/types';
 
 export default async function handler(
   req: NextApiRequest,

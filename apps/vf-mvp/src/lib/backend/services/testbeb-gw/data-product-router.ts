@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
-import { USERS_API_BASE_URL } from '@/lib/api/endpoints';
+import type { DataProduct } from '@shared/types';
+import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { getForwardableHeaders } from '../../framework-helpers';
 
 const ENV = process.env.NODE_ENV;
@@ -10,7 +11,12 @@ const profileProductsEndpoint =
     ? `${USERS_API_BASE_URL}/productizer`
     : 'https://gateway.testbed.fi';
 
-const testbedGWConfiguration = {
+const testbedGWConfiguration: {
+  dataProducts: Record<
+    DataProduct,
+    { gatewayEndpoint: string; defaultDataSource: string }
+  >;
+} = {
   dataProducts: {
     'draft/Person/BasicInformation': {
       gatewayEndpoint: profileProductsEndpoint,
@@ -30,8 +36,6 @@ const testbedGWConfiguration = {
     },
   },
 };
-
-export type DataProduct = keyof typeof testbedGWConfiguration.dataProducts;
 
 const DataProductRouter = {
   async execute(
