@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
+import { getForwardableHeaders } from '@shared/lib/backend/framework-helpers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,7 +13,7 @@ export default async function handler(
 
   try {
     await axios.delete(`${USERS_API_BASE_URL}/user`, {
-      headers: req.headers,
+      headers: getForwardableHeaders(req.headers),
     });
     res.status(200).json({ message: 'Deletion successful' });
   } catch (error: any) {
