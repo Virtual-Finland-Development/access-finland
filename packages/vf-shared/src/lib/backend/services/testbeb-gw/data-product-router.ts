@@ -64,17 +64,16 @@ const DataProductRouter = {
               serializedError?.title ||
               `Data source returned: ${serializedError.status}`,
             data: error.response.data,
-            stack: error.stack,
           });
         } else {
           res
             .status(error?.response?.status || 500)
-            .json({ message: error.message, stack: error.stack });
+            .json({ message: error.message });
         }
       } catch (err) {
         res
           .status(error?.response?.status || 500)
-          .json({ message: error.message, stack: error.stack });
+          .json({ message: error.message });
       }
     }
   },
