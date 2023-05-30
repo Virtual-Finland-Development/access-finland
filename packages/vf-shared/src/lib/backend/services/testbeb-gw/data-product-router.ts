@@ -55,9 +55,27 @@ const DataProductRouter = {
       });
       res.status(response.status).json(response.data);
     } catch (error: any) {
-      res
-        .status(error?.response?.status || 500)
-        .json({ message: error.message, stack: error.stack });
+      try {
+        const serializedError = this.trySerialize(error?.response?.data?.error);
+
+        if (serializedError.status) {
+          res.status(serializedError.status).json({
+            message:
+              serializedError?.title ||
+              `Data source returned: ${serializedError.status}`,
+            data: error.response.data,
+            stack: error.stack,
+          });
+        } else {
+          res
+            .status(error?.response?.status || 500)
+            .json({ message: error.message, stack: error.stack });
+        }
+      } catch (err) {
+        res
+          .status(error?.response?.status || 500)
+          .json({ message: error.message, stack: error.stack });
+      }
     }
   },
 
@@ -72,6 +90,10 @@ const DataProductRouter = {
     }
 
     return null;
+  },
+
+  trySerialize(error: any) {
+    return JSON.parse(JSON.stringify(error));
   },
 };
 
