@@ -8,7 +8,7 @@
     "build": "NEXT_PUBLIC_IS_EXPORT=true next build && next-image-export-optimizer",
     "start": "NEXT_PUBLIC_IS_EXPORT=true next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "NEXT_PUBLIC_IS_EXPORT=true jest",
     "test:watch": "NEXT_PUBLIC_IS_EXPORT=true jest --watch",
     "test:ci": "NEXT_PUBLIC_IS_EXPORT=true jest --ci"
   },
