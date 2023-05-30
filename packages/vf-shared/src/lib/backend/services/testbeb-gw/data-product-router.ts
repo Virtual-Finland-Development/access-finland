@@ -56,7 +56,7 @@ const DataProductRouter = {
       res.status(response.status).json(response.data);
     } catch (error: any) {
       try {
-        const serializedError = this.trySerialize(error?.response?.data?.error);
+        const serializedError = this.serialize(error?.response?.data?.error);
 
         if (serializedError.status) {
           res.status(serializedError.status).json({
@@ -91,8 +91,8 @@ const DataProductRouter = {
     return null;
   },
 
-  trySerialize(error: any) {
-    return JSON.parse(JSON.stringify(error));
+  serialize(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
   },
 };
 
