@@ -14,6 +14,10 @@ services:
       - 3006:3001
     networks:
       - vfd-network
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - NEXT_PUBLIC_USERS_API_BASE_URL=${NEXT_PUBLIC_USERS_API_BASE_URL:-http://host.docker.internal:5001}
     labels:
       - traefik.enable=true
       - traefik.http.routers.virtual-finland-mvp.rule=Host(`virtual-finland.localhost`)
