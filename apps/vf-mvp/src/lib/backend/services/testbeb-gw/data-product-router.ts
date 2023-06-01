@@ -44,6 +44,11 @@ const DataProductRouter = {
     req: NextApiRequest,
     res: NextApiResponse
   ) {
+    if (!req.cookies.token) {
+      res.status(401).json({ error: 'Unauthorized.' });
+      return;
+    }
+
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
 
     if (!endpointUrl) {
@@ -55,6 +60,7 @@ const DataProductRouter = {
       const response = await axios.post(endpointUrl, req.body, {
         headers: getForwardableHeaders(req.headers, {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${req.cookies.token}`,
         }),
       });
       res.status(response.status).json(response.data);

@@ -25,6 +25,9 @@ export default function AuthPage() {
         appContext: generateAppContextHash(),
       });
 
+      // setup cookie for protected api routes
+      api.client.post('/api/auth/login', { token: loggedInState.idToken });
+
       logIn(loggedInState);
       const redirectPath = JSONLocalStorage.get(LOCAL_STORAGE_REDIRECT_KEY);
       router.push(redirectPath || '/');
@@ -59,6 +62,9 @@ export default function AuthPage() {
         router.push('/');
       }
     } else {
+      // clean up cookie for protected routes
+      api.client('/api/auth/logout');
+
       logOut();
       router.push('/');
     }

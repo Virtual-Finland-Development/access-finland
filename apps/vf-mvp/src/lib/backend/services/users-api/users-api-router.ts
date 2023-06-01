@@ -5,13 +5,20 @@ import { getForwardableHeaders } from '../../framework-helpers';
 
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse) {
+    if (!req.cookies.token) {
+      res.status(401).json({ error: 'Unauthorized.' });
+      return;
+    }
+
     if (req.method !== 'DELETE') {
       res.status(405).json({ message: 'Method not allowed' });
     }
 
     try {
       await axios.delete(`${USERS_API_BASE_URL}/user`, {
-        headers: getForwardableHeaders(req.headers),
+        headers: getForwardableHeaders(req.headers, {
+          Authorization: `Bearer ${req.cookies.token}`,
+        }),
       });
       res.status(200).json({ message: 'Deletion successful' });
     } catch (error: any) {
