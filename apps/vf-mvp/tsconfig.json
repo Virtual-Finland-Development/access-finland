@@ -5,7 +5,7 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@pages/*": ["pages/*"],
+      "@mvp/*": ["./*"],
       "@shared/*": ["../../../packages/vf-shared/src/*"],
       "@/*": ["../../../packages/vf-shared/src/*"]
     }

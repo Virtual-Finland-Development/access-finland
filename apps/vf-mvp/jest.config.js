@@ -10,7 +10,7 @@ const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
-    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
+    '^@mvp/(.*)$': '<rootDir>/src/$1',
     '^@shared/components/(.*)$': 'vf-shared/src/components/$1',
     '^@shared/types/(.*)$': 'vf-shared/src/types/$1',
     '^@shared/lib/(.*)$': 'vf-shared/src/lib/$1',

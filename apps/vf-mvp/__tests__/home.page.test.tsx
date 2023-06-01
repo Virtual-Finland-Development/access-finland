@@ -1,4 +1,4 @@
-import HomePage from '@pages/index.page';
+import HomePage from '@mvp/pages/index.page';
 import {
   renderWithProviders,
   screen,

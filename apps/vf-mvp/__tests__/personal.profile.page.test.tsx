@@ -1,4 +1,4 @@
-import PersonalProfilePage from '@pages/profile/personal-profile.page';
+import PersonalProfilePage from '@mvp/pages/profile/personal-profile.page';
 import * as UtilsExports from '@/lib/utils';
 import {
   MOCK_AUTH_STATE,

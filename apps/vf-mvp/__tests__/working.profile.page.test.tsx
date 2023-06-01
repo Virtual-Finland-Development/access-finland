@@ -1,4 +1,4 @@
-import WorkingProfilePage from '@pages/profile/working-profile.page';
+import WorkingProfilePage from '@mvp/pages/profile/working-profile.page';
 import userEvent from '@testing-library/user-event';
 import * as UtilsExports from '@/lib/utils';
 import { EMPLOYMENT_TYPE_LABELS } from '@shared/lib/constants';

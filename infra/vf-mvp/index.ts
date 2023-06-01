@@ -15,12 +15,12 @@ const tags = {
 const authGwEndpoint = new pulumi.StackReference(
   `${org}/authentication-gw/dev`
 ).getOutput('endpoint');
-const testbedApiEndpoint = new pulumi.StackReference(
-  `${org}/testbed-api/dev`
-).getOutput('url');
 const codesetsEndpoint = new pulumi.StackReference(
   `${org}/codesets/dev`
 ).getOutput('url');
+const usersApiEndpoint = new pulumi.StackReference(
+  `${org}/users-api/dev`
+).getOutput('ApplicationUrl');
 
 // Random value for custom header (for restricted CloudFront -> ALB access)
 const customHeaderValue = pulumi.interpolate`${
@@ -41,8 +41,8 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
   extraOptions: ['--platform', 'linux/amd64'],
   args: {
     NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
-    NEXT_PUBLIC_TESTBED_API_BASE_URL: testbedApiEndpoint,
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
+    NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
   },
 });
 
@@ -155,7 +155,15 @@ const cdn = new aws.cloudfront.Distribution(
     defaultCacheBehavior: {
       targetOriginId: lb.loadBalancer.arn,
       viewerProtocolPolicy: 'redirect-to-https',
-      allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      allowedMethods: [
+        'HEAD',
+        'DELETE',
+        'POST',
+        'GET',
+        'OPTIONS',
+        'PUT',
+        'PATCH',
+      ],
       cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
       defaultTtl: 600,
       maxTtl: 600,

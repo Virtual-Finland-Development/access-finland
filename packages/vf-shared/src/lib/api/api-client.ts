@@ -17,6 +17,11 @@ const PROTECTED_URLS = [
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
   `${TESTBED_API_BASE_URL}/users-api/user`,
+  '/api/testbed-gw/draft/Person/BasicInformation',
+  '/api/testbed-gw/draft/Person/BasicInformation/Write',
+  '/api/testbed-gw/draft/Person/JobApplicantProfile',
+  '/api/testbed-gw/draft/Person/JobApplicantProfile/Write',
+  '/api/users-api',
 ];
 
 apiClient.interceptors.request.use(config => {
