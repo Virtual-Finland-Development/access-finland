@@ -13,7 +13,8 @@ export type AppContextObj = {
 };
 
 export type LoggedInState = {
-  idToken: string;
+  csrfToken?: string; // For !isExport
+  idToken?: string; // For isExport
   expiresAt: string;
   profileData: {
     userId: string;

@@ -25,9 +25,6 @@ export default function AuthPage() {
         appContext: generateAppContextHash(),
       });
 
-      // setup cookie for protected api routes
-      api.client.post('/api/auth/login', { token: loggedInState.idToken });
-
       logIn(loggedInState);
       const redirectPath = JSONLocalStorage.get(LOCAL_STORAGE_REDIRECT_KEY);
       router.push(redirectPath || '/');
@@ -38,7 +35,7 @@ export default function AuthPage() {
     }
   }, [logIn, loginCode, router]);
 
-  const routerActions = useCallback(() => {
+  const routerActions = useCallback(async () => {
     // False positives
     if (!provider || !(event === 'login' || event === 'logout')) {
       router.push('/');
@@ -62,10 +59,8 @@ export default function AuthPage() {
         router.push('/');
       }
     } else {
-      // clean up cookie for protected routes
-      api.client('/api/auth/logout');
-
-      logOut();
+      await api.auth.logOut(); // Logout from the backend
+      logOut(); // Logout from the frontend
       router.push('/');
     }
   }, [provider, event, success, message, handleAuth, router, logOut]);

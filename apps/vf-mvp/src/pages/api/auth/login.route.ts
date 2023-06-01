@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import cookie from 'cookie';
 
 type RequestBody = {
-  token: string;
+  idToken: string;
 };
 
 function isValidBody<T extends Record<string, unknown>>(
@@ -16,19 +17,25 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isValidBody<RequestBody>(req.body, ['token'])) {
+  if (!isValidBody<RequestBody>(req.body, ['idToken'])) {
     return res.status(402);
   }
+
+  const apiAuthPackage = createApiAuthPackage(req.body.idToken);
 
   res
     .status(200)
     .setHeader(
       'Set-Cookie',
-      cookie.serialize('token', req.body.token, {
+      cookie.serialize('apiAuthPackage', apiAuthPackage.encrypted, {
         path: '/api',
         httpOnly: true,
-        sameSite: true,
+        sameSite: 'strict',
+        //expires: new Date(parsedTokenExp), // TODO: set expiration from apiAuthPackage.exp
       })
     )
-    .json({ message: 'Login successful.' });
+    .json({
+      message: 'Login successful.',
+      csrfToken: apiAuthPackage.csrfToken,
+    });
 }

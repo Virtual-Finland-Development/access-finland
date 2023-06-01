@@ -43,5 +43,24 @@ export async function logIn(authPayload: {
     throw new Error('Error in login request');
   }
 
-  return response.data;
+  // Setup cookie for protected api routes
+  const vfApiAuthResponse = await apiClient.post('/api/auth/login', {
+    idToken: response.data.idToken,
+  });
+
+  if (vfApiAuthResponse?.status !== 200) {
+    throw new Error('Error in backend login request');
+  }
+  const csrfToken = vfApiAuthResponse.data.csrfToken;
+
+  return {
+    csrfToken,
+    expiresAt: response.data.expiresAt,
+    profileData: response.data.profileData,
+  };
+}
+
+export async function logOut() {
+  // clean up cookie for protected routes
+  await apiClient.post('/api/auth/logout');
 }

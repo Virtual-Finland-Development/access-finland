@@ -9,7 +9,8 @@
     "NEXT_PUBLIC_CODESETS_BASE_URL",
     "NEXT_PUBLIC_USERS_API_BASE_URL",
     "NEXT_PUBLIC_IS_EXPORT",
-    "NODE_ENV"
+    "NODE_ENV",
+    "NEXT_PUBLIC_API_SECRET_SIGN_KEY"
   ],
   "pipeline": {
     "build": {

@@ -17,12 +17,24 @@ const PROTECTED_URLS = [
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
   `${TESTBED_API_BASE_URL}/users-api/user`,
-  // '/api/testbed-gw/draft/Person/BasicInformation',
-  // '/api/testbed-gw/draft/Person/BasicInformation/Write',
-  // '/api/testbed-gw/draft/Person/JobApplicantProfile',
-  // '/api/testbed-gw/draft/Person/JobApplicantProfile/Write',
-  // '/api/users-api',
 ];
+
+const NEXTJS_API_PROTECTED_URLS = [
+  '/api/testbed-gw/draft/Person/BasicInformation',
+  '/api/testbed-gw/draft/Person/BasicInformation/Write',
+  '/api/testbed-gw/draft/Person/JobApplicantProfile',
+  '/api/testbed-gw/draft/Person/JobApplicantProfile/Write',
+  '/api/users-api',
+];
+
+function isProtectedNextJsEndpoint(url: string): boolean {
+  for (const nextJsEndpoint of NEXTJS_API_PROTECTED_URLS) {
+    if (url.includes(nextJsEndpoint)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 apiClient.interceptors.request.use(config => {
   if (config.url !== undefined && config.headers !== undefined) {
@@ -30,6 +42,9 @@ apiClient.interceptors.request.use(config => {
       const idToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY)?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
       config.headers['x-consent-token'] = '';
+    } else if (isProtectedNextJsEndpoint(config.url)) {
+      const csrfToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY)?.csrfToken;
+      config.headers['x-csrf-token'] = csrfToken ? csrfToken : '';
     }
   }
 
@@ -46,7 +61,8 @@ apiClient.interceptors.response.use(
 
     if (
       error.config?.url &&
-      PROTECTED_URLS.includes(error.config.url) &&
+      (PROTECTED_URLS.includes(error.config.url) ||
+        isProtectedNextJsEndpoint(error.config.url)) &&
       hasExpired
     ) {
       window.postMessage(REQUEST_NOT_AUTHORIZED);
