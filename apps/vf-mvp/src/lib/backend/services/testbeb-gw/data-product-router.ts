@@ -59,25 +59,21 @@ const DataProductRouter = {
       });
       res.status(response.status).json(response.data);
     } catch (error: any) {
-      try {
-        const serializedError = this.serialize(error?.response?.data?.error);
+      const serializedError =
+        error?.response?.data?.error || error?.response?.data;
 
-        if (serializedError.status) {
-          res.status(serializedError.status).json({
-            message:
-              serializedError?.title ||
-              `Data source returned: ${serializedError.status}`,
-            data: error.response.data,
-          });
-        } else {
-          res
-            .status(error?.response?.status || 500)
-            .json({ message: error.message });
-        }
-      } catch (err) {
+      if (serializedError.status) {
+        res.status(serializedError.status).json({
+          message:
+            serializedError?.title ||
+            `Data source returned: ${serializedError.status}`,
+          data: error.response.data,
+          context: 'DataProductSource',
+        });
+      } else {
         res
           .status(error?.response?.status || 500)
-          .json({ message: error.message });
+          .json({ message: error.message, context: 'ApiRouter' });
       }
     }
   },
@@ -93,10 +89,6 @@ const DataProductRouter = {
     }
 
     return null;
-  },
-
-  serialize(obj: any) {
-    return JSON.parse(JSON.stringify(obj));
   },
 };
 

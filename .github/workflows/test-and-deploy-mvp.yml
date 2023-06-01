@@ -44,9 +44,6 @@ jobs:
       - name: Install dependencies
         working-directory: ./infra/vf-mvp
         run: npm ci
-      - name: Select Pulumi stack
-        working-directory: ./infra/vf-mvp
-        run: pulumi stack select ${{ env.pulumi_stack_organization }}/test --create
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:
