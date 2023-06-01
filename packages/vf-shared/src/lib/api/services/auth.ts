@@ -1,7 +1,7 @@
 import { LoggedInState } from '@/types';
 import {
   LOCAL_STORAGE_AUTH_KEY,
-  LOCAL_STORAGE_REDIRECT_KEY,
+  SESSION_STORAGE_REDIRECT_KEY,
 } from '@/lib/constants';
 import { generateAppContextHash } from '@/lib/utils';
 import { JSONLocalStorage } from '@/lib/utils/JSONStorage';
@@ -10,7 +10,7 @@ import { AUTH_GW_BASE_URL } from '../endpoints';
 
 export function directToAuthGwLogin(redirectPath?: string) {
   if (redirectPath) {
-    JSONLocalStorage.set(LOCAL_STORAGE_REDIRECT_KEY, redirectPath);
+    JSONLocalStorage.set(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
   }
 
   window.location.assign(
