@@ -25,7 +25,9 @@ export default function AuthPage() {
       });
 
       logIn(loggedInState);
-      const redirectPath = sessionStorage.get(SESSION_STORAGE_REDIRECT_KEY);
+      const redirectPath = window.sessionStorage.getItem(
+        SESSION_STORAGE_REDIRECT_KEY
+      );
       router.push(redirectPath || '/');
     } catch (error: any) {
       console.log(error);

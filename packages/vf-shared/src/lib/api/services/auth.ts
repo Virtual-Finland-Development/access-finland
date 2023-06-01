@@ -10,7 +10,7 @@ import { AUTH_GW_BASE_URL } from '../endpoints';
 
 export function directToAuthGwLogin(redirectPath?: string) {
   if (redirectPath) {
-    JSONLocalStorage.set(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
+    window.sessionStorage.setItem(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
   }
 
   window.location.assign(
