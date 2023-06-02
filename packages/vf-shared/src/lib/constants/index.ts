@@ -6,6 +6,7 @@ export const baseAppContextObj: AppContextObj = {
 };
 
 export const LOCAL_STORAGE_AUTH_KEY = 'virtual-finland-auth';
+export const LOCAL_STORAGE_CSRF_KEY = 'virtual-finland-csrf';
 export const SESSION_STORAGE_REDIRECT_KEY = 'redirect-path';
 
 export const REQUEST_NOT_AUTHORIZED = 'rna';

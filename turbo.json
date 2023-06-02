@@ -1,6 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "globalEnv": [
     "ANALYZE",
     "NEXT_PUBLIC_AUTH_GW_BASE_URL",
@@ -10,28 +12,50 @@
     "NEXT_PUBLIC_USERS_API_BASE_URL",
     "NEXT_PUBLIC_IS_EXPORT",
     "NODE_ENV",
-    "NEXT_PUBLIC_API_SECRET_SIGN_KEY"
+    "BACKEND_SECRET_SIGN_KEY"
   ],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "build:features": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "build:mvp": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "test": {},
     "test:watch": {
       "cache": false
     },
     "test:ci": {
-      "outputs": ["coverage/**"],
-      "dependsOn": ["build"]
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "build"
+      ]
     },
     "lint": {},
     "check-types": {},

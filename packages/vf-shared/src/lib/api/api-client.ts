@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { isPast, parseISO } from 'date-fns';
-import { LOCAL_STORAGE_AUTH_KEY, REQUEST_NOT_AUTHORIZED } from '../constants';
-import { JSONLocalStorage } from '../utils/JSONStorage';
+import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from './endpoints';
+import { LoginState } from './services/auth';
 
 const apiClient = axios.create({});
 
@@ -36,14 +36,14 @@ function isProtectedNextJsEndpoint(url: string): boolean {
   return false;
 }
 
-apiClient.interceptors.request.use(config => {
+apiClient.interceptors.request.use(async config => {
   if (config.url !== undefined && config.headers !== undefined) {
     if (PROTECTED_URLS.includes(config.url)) {
-      const idToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY)?.idToken;
+      const idToken = (await LoginState.getLoggedInState())?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
       config.headers['x-consent-token'] = '';
     } else if (isProtectedNextJsEndpoint(config.url)) {
-      const csrfToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY)?.csrfToken;
+      const csrfToken = (await LoginState.getLoggedInState())?.csrfToken;
       config.headers['x-csrf-token'] = csrfToken ? csrfToken : '';
     }
   }
@@ -53,8 +53,8 @@ apiClient.interceptors.request.use(config => {
 
 apiClient.interceptors.response.use(
   response => response,
-  error => {
-    const storedAuthState = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY);
+  async error => {
+    const storedAuthState = await LoginState.getLoggedInState();
     const hasExpired = storedAuthState?.expiresAt
       ? isPast(parseISO(storedAuthState.expiresAt))
       : false;

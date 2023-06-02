@@ -7,12 +7,8 @@ import {
   useState,
 } from 'react';
 import { LoggedInState } from '@/types';
-import {
-  LOCAL_STORAGE_AUTH_KEY,
-  REQUEST_NOT_AUTHORIZED,
-} from '@/lib/constants';
+import { REQUEST_NOT_AUTHORIZED } from '@/lib/constants';
 import { getValidAuthState } from '@/lib/utils';
-import { JSONLocalStorage } from '@/lib/utils/JSONStorage';
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -37,8 +33,8 @@ function AuthProvider(props: AuthProviderProps) {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadAuthStateFromStorage = () => {
-      const { isValid, storedAuthState } = getValidAuthState();
+    const loadAuthStateFromStorage = async () => {
+      const { isValid, storedAuthState } = await getValidAuthState();
 
       if (isValid) {
         setUserEmail(storedAuthState.profileData?.email || null);
@@ -53,14 +49,12 @@ function AuthProvider(props: AuthProviderProps) {
 
   const logIn = useCallback(async (loggedInState: LoggedInState) => {
     if (loggedInState) {
-      JSONLocalStorage.set(LOCAL_STORAGE_AUTH_KEY, loggedInState);
       setUserEmail(loggedInState.profileData?.email || null);
       setIsAuthenticated(true);
     }
   }, []);
 
   const logOut = useCallback(() => {
-    JSONLocalStorage.clear();
     setUserEmail(null);
     setIsAuthenticated(false);
   }, []);

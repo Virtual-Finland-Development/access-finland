@@ -1,12 +1,11 @@
 import { LoggedInState } from '@/types';
-import {
-  LOCAL_STORAGE_AUTH_KEY,
-  SESSION_STORAGE_REDIRECT_KEY,
-} from '@/lib/constants';
-import { generateAppContextHash } from '@/lib/utils';
-import { JSONLocalStorage } from '@/lib/utils/JSONStorage';
+import { SESSION_STORAGE_REDIRECT_KEY } from '@/lib/constants';
+import { generateAppContextHash, isExportedApplication } from '@/lib/utils';
+import { LoggedInStateMachine } from '@/lib/utils/LoggedInStateMachine';
 import apiClient from '../api-client';
 import { AUTH_GW_BASE_URL } from '../endpoints';
+
+export const LoginState = new LoggedInStateMachine();
 
 export function directToAuthGwLogin(redirectPath?: string) {
   if (redirectPath) {
@@ -18,9 +17,11 @@ export function directToAuthGwLogin(redirectPath?: string) {
   );
 }
 
-export function directToAuthGwLogout() {
-  const idToken = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY).idToken;
-  JSONLocalStorage.clear();
+export async function directToAuthGwLogout() {
+  const idToken = (await LoginState.getLoggedInState())?.idToken;
+
+  // Cleanup internal state before redirecting to auth-gw
+  await LoginState.clear();
 
   window.location.assign(
     `${AUTH_GW_BASE_URL}/auth/openid/testbed/logout-request?appContext=${generateAppContextHash()}&idToken=${idToken}`
@@ -43,24 +44,31 @@ export async function logIn(authPayload: {
     throw new Error('Error in login request');
   }
 
-  // Setup cookie for protected api routes
-  const vfApiAuthResponse = await apiClient.post('/api/auth/login', {
-    idToken: response.data.idToken,
-  });
+  let loggedInState = response.data;
 
-  if (vfApiAuthResponse?.status !== 200) {
-    throw new Error('Error in backend login request');
+  if (!isExportedApplication()) {
+    // Setup cookie for protected api routes
+    const vfApiAuthResponse = await apiClient.post(
+      '/api/auth/login',
+      loggedInState
+    );
+
+    if (vfApiAuthResponse?.status !== 200) {
+      throw new Error('Error in backend login request');
+    }
+
+    loggedInState = vfApiAuthResponse.data.state;
   }
-  const csrfToken = vfApiAuthResponse.data.csrfToken;
 
-  return {
-    csrfToken,
-    expiresAt: response.data.expiresAt,
-    profileData: response.data.profileData,
-  };
+  // Initialize internal state
+  await LoginState.setLoggedInState(loggedInState);
+
+  return loggedInState;
 }
 
 export async function logOut() {
+  // cleanup internal state, just in case called directly
+  await LoginState.clear();
   // clean up cookie for protected routes
   await apiClient.post('/api/auth/logout');
 }

@@ -1,27 +1,21 @@
+import { LoggedInState } from '@mvp/../../../packages/vf-shared/src/types';
 import { randomBytes } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-export function createApiAuthPackage(idToken: string) {
+export function createApiAuthPackage(loggedInState: LoggedInState) {
   // Generate CSRF token
   const csrfToken = randomBytes(100).toString('base64');
-  let parsedTokenExp: number;
 
   try {
-    // Resolve idToken expiration
-    const parsedToken = jwt.decode(idToken) as JwtPayload;
-    if (typeof parsedToken?.exp !== 'number') {
-      throw new Error('Invalid exp in idToken.');
-    }
-
-    parsedTokenExp = parsedToken.exp;
+    // Dummy check the token decodes
+    jwt.decode(loggedInState.idToken);
   } catch (error) {
     console.error(error);
     throw new Error('Invalid idToken');
   }
 
   const apiAuthPackage = {
-    idToken: idToken,
-    exp: parsedTokenExp,
+    ...loggedInState,
     csrfToken: csrfToken,
   };
 
@@ -31,9 +25,8 @@ export function createApiAuthPackage(idToken: string) {
   const encryptedApiAuthPackage = jwt.sign(apiAuthPackage, secretSignKey); // HMAC SHA256
 
   return {
+    state: apiAuthPackage,
     encrypted: encryptedApiAuthPackage,
-    csrfToken: csrfToken,
-    exp: parsedTokenExp,
   };
 }
 
@@ -46,11 +39,7 @@ export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
     secretSignKey
   ) as JwtPayload;
 
-  return {
-    idToken: decryptedApiAuthPackage.idToken,
-    csrfToken: decryptedApiAuthPackage.csrfToken,
-    exp: decryptedApiAuthPackage.exp,
-  };
+  return decryptedApiAuthPackage;
 }
 
 /**
@@ -58,5 +47,5 @@ export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
  */
 function resolveSecretSignKey() {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
-  return process.env.NEXT_PUBLIC_API_SECRET_SIGN_KEY || 'local-secret-key';
+  return process.env.BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
 }

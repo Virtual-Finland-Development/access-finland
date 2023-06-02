@@ -1,13 +1,11 @@
 import { format, isPast, parseISO } from 'date-fns';
-import jwt_decode from 'jwt-decode';
 import lodash_groupby from 'lodash.groupby';
-import { AppContextObj, Nace } from '@/types';
 import type { LoggedInState } from '@/types';
+import { AppContextObj, Nace } from '@/types';
+import { LoginState } from '../api/services/auth';
 import { baseAppContextObj } from '../constants';
-import { LOCAL_STORAGE_AUTH_KEY } from '../constants';
 import firstNames from '../fake-data/first-names.json';
 import lastNames from '../fake-data/last-names.json';
-import { JSONLocalStorage } from './JSONStorage';
 
 export function generateAppContextHash(
   applicationContextObj?: Partial<AppContextObj>
@@ -131,26 +129,27 @@ export const findNace = (
   }
 };
 
-export function getValidAuthState() {
-  const storedAuthState: LoggedInState | undefined = JSONLocalStorage.get(
-    LOCAL_STORAGE_AUTH_KEY
-  );
+export async function getValidAuthState() {
+  const storedAuthState = await LoginState.getLoggedInState();
   const tokenNotExpired = storedAuthState?.expiresAt
     ? !isPast(parseISO(storedAuthState.expiresAt))
     : false;
   return {
-    isValid: storedAuthState !== undefined && tokenNotExpired,
+    isValid: storedAuthState !== null && tokenNotExpired,
     storedAuthState: storedAuthState as LoggedInState,
   };
 }
 
-export function getUserIdentifier() {
-  const token = JSONLocalStorage.get(LOCAL_STORAGE_AUTH_KEY).idToken;
+export async function getUserIdentifier() {
+  const loggedInState = await LoginState.getLoggedInState();
 
-  if (!token) {
-    throw new Error('No token.');
+  if (!loggedInState) {
+    throw new Error('No logged in state.');
   }
 
-  const { sub }: { sub: string | undefined } = jwt_decode(token);
-  return sub;
+  return loggedInState.profileData.userId;
+}
+
+export function isExportedApplication() {
+  return process.env.NEXT_PUBLIC_IS_EXPORT || false;
 }

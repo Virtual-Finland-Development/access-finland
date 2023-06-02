@@ -1,10 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { LoggedInState } from '@mvp/../../../packages/vf-shared/src/types';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import cookie from 'cookie';
-
-type RequestBody = {
-  idToken: string;
-};
 
 function isValidBody<T extends Record<string, unknown>>(
   body: any,
@@ -17,11 +14,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isValidBody<RequestBody>(req.body, ['idToken'])) {
-    return res.status(402);
+  if (
+    !isValidBody<LoggedInState>(req.body, [
+      'idToken',
+      'expiresAt',
+      'profileData',
+    ])
+  ) {
+    res.status(402).json({
+      message: 'Bad request.',
+    });
+    return;
   }
 
-  const apiAuthPackage = createApiAuthPackage(req.body.idToken);
+  const apiAuthPackage = createApiAuthPackage(req.body);
 
   res
     .status(200)
@@ -31,11 +37,11 @@ export default async function handler(
         path: '/api',
         httpOnly: true,
         sameSite: 'strict',
-        //expires: new Date(parsedTokenExp), // TODO: set expiration from apiAuthPackage.exp
+        expires: new Date(apiAuthPackage.state.expiresAt),
       })
     )
     .json({
       message: 'Login successful.',
-      csrfToken: apiAuthPackage.csrfToken,
+      state: apiAuthPackage.state,
     });
 }

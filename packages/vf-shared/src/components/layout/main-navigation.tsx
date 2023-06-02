@@ -193,9 +193,9 @@ function MobileNavigationPanel({
 function UserControl({ className }: { className: string }) {
   const { userEmail, setLoading } = useAuth();
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
     setLoading();
-    api.auth.directToAuthGwLogout();
+    await api.auth.directToAuthGwLogout();
   };
 
   return (
