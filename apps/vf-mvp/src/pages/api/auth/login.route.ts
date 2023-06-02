@@ -21,7 +21,7 @@ export default async function handler(
     return res.status(402);
   }
 
-  const apiAuthPackage = createApiAuthPackage(req.body.idToken);
+  const apiAuthPackage = await createApiAuthPackage(req.body.idToken);
 
   res
     .status(200)

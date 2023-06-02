@@ -55,6 +55,7 @@ export async function logIn(authPayload: {
 
   return {
     csrfToken,
+    idToken: response.data.idToken,
     expiresAt: response.data.expiresAt,
     profileData: response.data.profileData,
   };

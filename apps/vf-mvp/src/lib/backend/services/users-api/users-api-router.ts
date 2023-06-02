@@ -6,17 +6,9 @@ import { getForwardableHeaders } from '../../framework-helpers';
 
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse) {
-    // TODO: should be refactore to a shared middleware -->
-    if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
-      res.status(401).json({ error: 'Unauthorized.' });
-      return;
-    }
-    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
-    if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
-      res.status(403).json({ error: 'Forbidden.' });
-      return;
-    }
-    // <--
+    const apiAuthPackage = await decryptApiAuthPackage(
+      req.cookies.apiAuthPackage
+    );
 
     if (req.method !== 'DELETE') {
       res.status(405).json({ message: 'Method not allowed' });

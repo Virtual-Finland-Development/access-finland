@@ -1,14 +1,15 @@
 import { randomBytes } from 'crypto';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import * as jose from 'jose';
 
-export function createApiAuthPackage(idToken: string) {
+export async function createApiAuthPackage(idToken: string) {
   // Generate CSRF token
   const csrfToken = randomBytes(100).toString('base64');
   let parsedTokenExp: number;
 
   try {
     // Resolve idToken expiration
-    const parsedToken = jwt.decode(idToken) as JwtPayload;
+    const parsedToken = jose.decodeJwt(idToken);
+
     if (typeof parsedToken?.exp !== 'number') {
       throw new Error('Invalid exp in idToken.');
     }
@@ -25,10 +26,13 @@ export function createApiAuthPackage(idToken: string) {
     csrfToken: csrfToken,
   };
 
-  const secretSignKey = resolveSecretSignKey();
+  const secretSignKey = new TextEncoder().encode(resolveSecretSignKey());
 
   // Encrypt using secret
-  const encryptedApiAuthPackage = jwt.sign(apiAuthPackage, secretSignKey); // HMAC SHA256
+  // const encryptedApiAuthPackage = jwt.sign(apiAuthPackage, secretSignKey); // HMAC SHA256
+  const encryptedApiAuthPackage = await new jose.SignJWT(apiAuthPackage)
+    .setProtectedHeader({ alg: 'HS256' })
+    .sign(secretSignKey);
 
   return {
     encrypted: encryptedApiAuthPackage,
@@ -37,19 +41,21 @@ export function createApiAuthPackage(idToken: string) {
   };
 }
 
-export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
-  const secretSignKey = resolveSecretSignKey();
+export async function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
+  const secretSignKey = new TextEncoder().encode(resolveSecretSignKey());
 
   // Decrypt using secret
-  const decryptedApiAuthPackage = jwt.verify(
+  const decryptedApiAuthPackage = await jose.jwtVerify(
     apiAuthPackageEncrypted,
     secretSignKey
-  ) as JwtPayload;
+  );
+
+  const { payload } = decryptedApiAuthPackage;
 
   return {
-    idToken: decryptedApiAuthPackage.idToken,
-    csrfToken: decryptedApiAuthPackage.csrfToken,
-    exp: decryptedApiAuthPackage.exp,
+    idToken: payload.idToken,
+    csrfToken: payload.csrfToken,
+    exp: payload.exp,
   };
 }
 
