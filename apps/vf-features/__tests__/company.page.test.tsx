@@ -1,5 +1,5 @@
 import CompanyPage from '@pages/company/index.page';
-import * as UtilsExports from '@/lib/utils';
+import * as UtilsExports from '@/lib/utils/auth';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import {
   renderWithProviders,
@@ -20,7 +20,7 @@ describe('Company index page', () => {
   it('renders a company establishment button, if user is authenticated', () => {
     jest
       .spyOn(UtilsExports, 'getValidAuthState')
-      .mockImplementation(() => MOCK_AUTH_STATE);
+      .mockImplementation(async () => MOCK_AUTH_STATE);
 
     renderWithProviders(<CompanyPage />);
 

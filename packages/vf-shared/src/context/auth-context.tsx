@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { LoggedInState } from '@/types';
 import { REQUEST_NOT_AUTHORIZED } from '@/lib/constants';
-import { getValidAuthState } from '@/lib/utils';
+import { getValidAuthState } from '@/lib/utils/auth';
 
 interface AuthContextProps {
   isAuthenticated: boolean;

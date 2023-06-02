@@ -4,17 +4,17 @@ import {
   renderWithProviders,
   screen,
 } from '@/lib/testing/utils/testing-library-utils';
-import * as UtilsExports from '@/lib/utils';
+import * as UtilsExports from '@/lib/utils/auth';
 
 describe('Company edit index page', () => {
   it('renders a list of user created companies, if user is authenticated', async () => {
     jest
       .spyOn(UtilsExports, 'getValidAuthState')
-      .mockImplementation(() => MOCK_AUTH_STATE);
+      .mockImplementation(async () => MOCK_AUTH_STATE);
     jest
       .spyOn(UtilsExports, 'getUserIdentifier')
       .mockImplementation(
-        () => MOCK_AUTH_STATE.storedAuthState.profileData.userId
+        async () => MOCK_AUTH_STATE.storedAuthState.profileData.userId
       );
 
     renderWithProviders(<CompanyEditIndexPage />);

@@ -5,7 +5,7 @@ import type {
   NonListedCompany,
   SignatoryRights,
 } from '@/types';
-import { getUserIdentifier } from '@/lib/utils';
+import { getUserIdentifier } from '@/lib/utils/auth';
 import apiClient from '../api-client';
 import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from '../endpoints';
 

@@ -1,8 +1,6 @@
-import { format, isPast, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import lodash_groupby from 'lodash.groupby';
-import type { LoggedInState } from '@/types';
 import { AppContextObj, Nace } from '@/types';
-import { LoginState } from '../api/services/auth';
 import { baseAppContextObj } from '../constants';
 import firstNames from '../fake-data/first-names.json';
 import lastNames from '../fake-data/last-names.json';
@@ -128,27 +126,6 @@ export const findNace = (
     if (result) return result;
   }
 };
-
-export async function getValidAuthState() {
-  const storedAuthState = await LoginState.getLoggedInState();
-  const tokenNotExpired = storedAuthState?.expiresAt
-    ? !isPast(parseISO(storedAuthState.expiresAt))
-    : false;
-  return {
-    isValid: storedAuthState !== null && tokenNotExpired,
-    storedAuthState: storedAuthState as LoggedInState,
-  };
-}
-
-export async function getUserIdentifier() {
-  const loggedInState = await LoginState.getLoggedInState();
-
-  if (!loggedInState) {
-    throw new Error('No logged in state.');
-  }
-
-  return loggedInState.profileData.userId;
-}
 
 export function isExportedApplication() {
   return process.env.NEXT_PUBLIC_IS_EXPORT || false;
