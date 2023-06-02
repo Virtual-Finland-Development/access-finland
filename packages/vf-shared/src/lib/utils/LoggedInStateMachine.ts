@@ -53,9 +53,11 @@ export class LoggedInStateMachine {
           }
         );
 
-        if (response?.status === 200) {
-          this.inMemoryLoggedInState = response.data.state;
+        if (response?.status !== 200) {
+          throw new Error('Unauthorized');
         }
+
+        this.inMemoryLoggedInState = response.data.state;
       } catch (e) {
         JSONLocalStorage.remove(LOCAL_STORAGE_CSRF_KEY);
       }
