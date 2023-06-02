@@ -1,6 +1,7 @@
 import { LoggedInState } from '@/types';
 import { SESSION_STORAGE_REDIRECT_KEY } from '@/lib/constants';
 import { generateAppContextHash, isExportedApplication } from '@/lib/utils';
+import { JSONSessionStorage } from '@/lib/utils/JSONStorage';
 import { LoggedInStateMachine } from '@/lib/utils/LoggedInStateMachine';
 import apiClient from '../api-client';
 import { AUTH_GW_BASE_URL } from '../endpoints';
@@ -9,7 +10,7 @@ export const LoginState = new LoggedInStateMachine();
 
 export function directToAuthGwLogin(redirectPath?: string) {
   if (redirectPath) {
-    window.sessionStorage.setItem(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
+    JSONSessionStorage.set(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
   }
 
   window.location.assign(

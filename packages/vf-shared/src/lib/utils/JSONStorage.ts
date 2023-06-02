@@ -21,6 +21,11 @@ class JSONStorage {
   remove(key: string) {
     this.driver.removeItem(key);
   }
+  pop(key: string) {
+    const value = this.get(key);
+    this.remove(key);
+    return value;
+  }
 }
 
 // class instance invokement inside self-executing function

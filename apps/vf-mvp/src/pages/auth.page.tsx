@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { JSONSessionStorage } from '@mvp/../../../packages/vf-shared/src/lib/utils/JSONStorage';
 import { Text } from 'suomifi-ui-components';
 import { AuthProvider } from '@shared/types';
 import api from '@shared/lib/api';
@@ -26,11 +27,7 @@ export default function AuthPage() {
 
       logIn(loggedInState);
 
-      const redirectPath = window.sessionStorage.getItem(
-        SESSION_STORAGE_REDIRECT_KEY
-      );
-      window.sessionStorage.removeItem(SESSION_STORAGE_REDIRECT_KEY);
-
+      const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY);
       router.push(redirectPath || '/');
     } catch (error: any) {
       console.log(error);
