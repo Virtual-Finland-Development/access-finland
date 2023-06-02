@@ -46,6 +46,5 @@ export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
  * Resolve (not super secret, safe to keep in runtime env) secret sign key
  */
 function resolveSecretSignKey() {
-  // eslint-disable-next-line turbo/no-undeclared-env-vars
   return process.env.BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
 }
