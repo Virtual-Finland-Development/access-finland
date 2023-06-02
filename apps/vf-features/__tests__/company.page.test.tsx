@@ -1,3 +1,4 @@
+import { act } from 'react-dom/test-utils';
 import CompanyPage from '@pages/company/index.page';
 import * as UtilsExports from '@/lib/utils/auth';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
@@ -7,8 +8,10 @@ import {
 } from '@shared/lib/testing/utils/testing-library-utils';
 
 describe('Company index page', () => {
-  it('renders a identification button, if user is not authenticated', () => {
-    renderWithProviders(<CompanyPage />);
+  it('renders a identification button, if user is not authenticated', async () => {
+    await act(async () => {
+      renderWithProviders(<CompanyPage />);
+    });
 
     const loginButton = screen.getByRole('button', {
       name: /identification/i,
@@ -17,12 +20,14 @@ describe('Company index page', () => {
     expect(loginButton).toBeInTheDocument();
   });
 
-  it('renders a company establishment button, if user is authenticated', () => {
+  it('renders a company establishment button, if user is authenticated', async () => {
     jest
       .spyOn(UtilsExports, 'getValidAuthState')
       .mockImplementation(async () => MOCK_AUTH_STATE);
 
-    renderWithProviders(<CompanyPage />);
+    await act(async () => {
+      renderWithProviders(<CompanyPage />);
+    });
 
     const establishCompanyButton = screen.getByRole('button', {
       name: /establish company/i,

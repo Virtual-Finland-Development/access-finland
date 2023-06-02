@@ -6,6 +6,7 @@ import {
   MOCK_PERSON_BASIC_INFO,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
 } from '@shared/lib/testing/utils/testing-library-utils';
@@ -16,7 +17,9 @@ describe('Personal profile page', () => {
       .spyOn(UtilsExports, 'getValidAuthState')
       .mockImplementation(async () => MOCK_AUTH_STATE);
 
-    renderWithProviders(<PersonalProfilePage />);
+    await act(async () => {
+      renderWithProviders(<PersonalProfilePage />);
+    });
 
     // headers
     const profileHeader = await screen.findByRole('heading', {

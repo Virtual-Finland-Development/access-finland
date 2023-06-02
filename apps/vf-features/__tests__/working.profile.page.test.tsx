@@ -7,6 +7,7 @@ import {
   MOCK_JOB_APPLICANT_INFO,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
   within,
@@ -20,7 +21,9 @@ describe('Personal profile page', () => {
 
     const user = userEvent.setup();
 
-    renderWithProviders(<WorkingProfilePage />);
+    await act(async () => {
+      renderWithProviders(<WorkingProfilePage />);
+    });
 
     // headers
     const profileHeader = await screen.findByRole('heading', {

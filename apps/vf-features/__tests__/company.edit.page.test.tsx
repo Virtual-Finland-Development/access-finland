@@ -1,6 +1,7 @@
 import CompanyEditIndexPage from '@pages/company/edit/index.page';
 import { MOCK_AUTH_STATE } from '@/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
 } from '@/lib/testing/utils/testing-library-utils';
@@ -17,7 +18,9 @@ describe('Company edit index page', () => {
         async () => MOCK_AUTH_STATE.storedAuthState.profileData.userId
       );
 
-    renderWithProviders(<CompanyEditIndexPage />);
+    await act(async () => {
+      renderWithProviders(<CompanyEditIndexPage />);
+    });
 
     const companyLink = await screen.findByRole('link', {
       name: /daniela-ayaan ltd./i,
