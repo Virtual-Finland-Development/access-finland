@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Text } from 'suomifi-ui-components';
 import { AuthProvider } from '@shared/types';
 import api from '@shared/lib/api';
-import { LOCAL_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
+import { SESSION_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
 import { generateAppContextHash } from '@shared/lib/utils';
-import { JSONLocalStorage } from '@shared/lib/utils/JSONStorage';
+import { JSONSessionStorage } from '@shared/lib/utils/JSONStorage';
 import { useAuth } from '@shared/context/auth-context';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
@@ -26,7 +26,7 @@ export default function AuthPage() {
       });
 
       logIn(loggedInState);
-      const redirectPath = JSONLocalStorage.get(LOCAL_STORAGE_REDIRECT_KEY);
+      const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY);
       router.push(redirectPath || '/');
     } catch (error: any) {
       console.log(error);

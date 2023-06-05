@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import type { DataProduct } from '@shared/types';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
-import { getForwardableHeaders } from '../../framework-helpers';
+import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 
 const ENV = process.env.NODE_ENV;
 const defaultDataSource = 'virtualfinland:development'; // <--- stage arg should be read from env possibly, for now development suffices
@@ -44,12 +44,20 @@ const DataProductRouter = {
     req: NextApiRequest,
     res: NextApiResponse
   ) {
-    if (!req.cookies.token) {
+    // TODO: should be refactore to a shared middleware -->
+    if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
       res.status(401).json({ error: 'Unauthorized.' });
       return;
     }
+    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+    if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
+      res.status(403).json({ error: 'Forbidden.' });
+      return;
+    }
+    // <--
 
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
+    const requestBody = req.body || '{}';
 
     if (!endpointUrl) {
       res.status(400).json({ message: 'Bad request: data product' });
@@ -57,11 +65,12 @@ const DataProductRouter = {
     }
 
     try {
-      const response = await axios.post(endpointUrl, req.body, {
-        headers: getForwardableHeaders(req.headers, {
+      const response = await axios.post(endpointUrl, requestBody, {
+        headers: {
+          Authorization: `Bearer ${apiAuthPackage.idToken}`,
+          'X-Consent-Token': '',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${req.cookies.token}`,
-        }),
+        },
       });
       res.status(response.status).json(response.data);
     } catch (error: any) {

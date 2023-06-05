@@ -6,7 +6,7 @@ export default function handler(_, res: NextApiResponse) {
     .status(200)
     .setHeader(
       'Set-Cookie',
-      cookie.serialize('token', '', {
+      cookie.serialize('apiAuthPackage', '', {
         path: '/api',
         expires: new Date(0),
       })

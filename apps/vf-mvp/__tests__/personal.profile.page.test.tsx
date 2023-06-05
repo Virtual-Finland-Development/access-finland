@@ -1,11 +1,12 @@
 import PersonalProfilePage from '@mvp/pages/profile/personal-profile.page';
-import * as UtilsExports from '@/lib/utils';
+import * as UtilsExports from '@/lib/utils/auth';
 import {
   MOCK_AUTH_STATE,
   MOCK_ISO_COUNTRIES,
   MOCK_PERSON_BASIC_INFO,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
 } from '@shared/lib/testing/utils/testing-library-utils';
@@ -14,9 +15,11 @@ describe('Personal profile page', () => {
   it('renders a personal profile page / form for authenticated user, with correct profile values', async () => {
     jest
       .spyOn(UtilsExports, 'getValidAuthState')
-      .mockImplementation(() => MOCK_AUTH_STATE);
+      .mockImplementation(async () => MOCK_AUTH_STATE);
 
-    renderWithProviders(<PersonalProfilePage />);
+    await act(async () => {
+      renderWithProviders(<PersonalProfilePage />);
+    });
 
     // headers
     const profileHeader = await screen.findByRole('heading', {

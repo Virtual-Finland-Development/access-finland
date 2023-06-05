@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import { JSONSessionStorage } from '@mvp/../../../packages/vf-shared/src/lib/utils/JSONStorage';
 import { Text } from 'suomifi-ui-components';
 import { AuthProvider } from '@shared/types';
 import api from '@shared/lib/api';
-import { LOCAL_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
+import { SESSION_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
 import { generateAppContextHash } from '@shared/lib/utils';
-import { JSONLocalStorage } from '@shared/lib/utils/JSONStorage';
 import { useAuth } from '@shared/context/auth-context';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
@@ -25,11 +25,9 @@ export default function AuthPage() {
         appContext: generateAppContextHash(),
       });
 
-      // setup cookie for protected api routes
-      api.client.post('/api/auth/login', { token: loggedInState.idToken });
-
       logIn(loggedInState);
-      const redirectPath = JSONLocalStorage.get(LOCAL_STORAGE_REDIRECT_KEY);
+
+      const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY);
       router.push(redirectPath || '/');
     } catch (error: any) {
       console.log(error);
@@ -38,7 +36,7 @@ export default function AuthPage() {
     }
   }, [logIn, loginCode, router]);
 
-  const routerActions = useCallback(() => {
+  const routerActions = useCallback(async () => {
     // False positives
     if (!provider || !(event === 'login' || event === 'logout')) {
       router.push('/');
@@ -62,10 +60,8 @@ export default function AuthPage() {
         router.push('/');
       }
     } else {
-      // clean up cookie for protected routes
-      api.client('/api/auth/logout');
-
-      logOut();
+      await api.auth.logOut(); // Logout from the backend
+      logOut(); // Logout from the frontend
       router.push('/');
     }
   }, [provider, event, success, message, handleAuth, router, logOut]);

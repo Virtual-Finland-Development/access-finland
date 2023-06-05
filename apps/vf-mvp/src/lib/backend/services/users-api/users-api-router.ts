@@ -1,14 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
-import { getForwardableHeaders } from '../../framework-helpers';
+import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse) {
-    if (!req.cookies.token) {
+    // TODO: should be refactore to a shared middleware -->
+    if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
       res.status(401).json({ error: 'Unauthorized.' });
       return;
     }
+    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+    if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
+      res.status(403).json({ error: 'Forbidden.' });
+      return;
+    }
+    // <--
 
     if (req.method !== 'DELETE') {
       res.status(405).json({ message: 'Method not allowed' });
@@ -16,9 +23,10 @@ const UsersApiRouter = {
 
     try {
       await axios.delete(`${USERS_API_BASE_URL}/user`, {
-        headers: getForwardableHeaders(req.headers, {
-          Authorization: `Bearer ${req.cookies.token}`,
-        }),
+        headers: {
+          Authorization: `Bearer ${apiAuthPackage.idToken}`,
+          'Content-Type': 'application/json',
+        },
       });
       res.status(200).json({ message: 'Deletion successful' });
     } catch (error: any) {

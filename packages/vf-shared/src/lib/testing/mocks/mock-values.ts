@@ -4,6 +4,7 @@ export const MOCK_AUTH_STATE = {
   storedAuthState: {
     expiresAt: '',
     idToken: '',
+    csfrToken: '',
     profileData: {
       email: '',
       userId: '123456',
