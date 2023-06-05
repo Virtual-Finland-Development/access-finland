@@ -28,8 +28,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: App install, test
-        env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
         run: |
           npm ci
           npm run test:ci
