@@ -44,18 +44,7 @@ const DataProductRouter = {
     req: NextApiRequest,
     res: NextApiResponse
   ) {
-    // TODO: should be refactore to a shared middleware -->
-    if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
-      res.status(401).json({ error: 'Unauthorized.' });
-      return;
-    }
     const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
-    if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
-      res.status(403).json({ error: 'Forbidden.' });
-      return;
-    }
-    // <--
-
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
     const requestBody = req.body || '{}';
 
