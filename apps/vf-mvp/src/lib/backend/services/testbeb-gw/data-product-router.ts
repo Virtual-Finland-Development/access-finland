@@ -57,6 +57,7 @@ const DataProductRouter = {
     // <--
 
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
+    const requestBody = req.body || '{}';
 
     if (!endpointUrl) {
       res.status(400).json({ message: 'Bad request: data product' });
@@ -64,9 +65,10 @@ const DataProductRouter = {
     }
 
     try {
-      const response = await axios.post(endpointUrl, req.body, {
+      const response = await axios.post(endpointUrl, requestBody, {
         headers: {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
+          'X-Consent-Token': '',
           'Content-Type': 'application/json',
         },
       });
