@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-import { getForwardableHeaders } from '../../framework-helpers';
 
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse) {
@@ -24,9 +23,10 @@ const UsersApiRouter = {
 
     try {
       await axios.delete(`${USERS_API_BASE_URL}/user`, {
-        headers: getForwardableHeaders(req.headers, {
+        headers: {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
-        }),
+          'Content-Type': 'application/json',
+        },
       });
       res.status(200).json({ message: 'Deletion successful' });
     } catch (error: any) {

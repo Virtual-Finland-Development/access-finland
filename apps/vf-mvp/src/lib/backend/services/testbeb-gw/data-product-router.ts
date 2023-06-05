@@ -3,7 +3,6 @@ import axios from 'axios';
 import type { DataProduct } from '@shared/types';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-import { getForwardableHeaders } from '../../framework-helpers';
 
 const ENV = process.env.NODE_ENV;
 const defaultDataSource = 'virtualfinland:development'; // <--- stage arg should be read from env possibly, for now development suffices
@@ -66,10 +65,10 @@ const DataProductRouter = {
 
     try {
       const response = await axios.post(endpointUrl, req.body, {
-        headers: getForwardableHeaders(req.headers, {
-          'Content-Type': 'application/json',
+        headers: {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
-        }),
+          'Content-Type': 'application/json',
+        },
       });
       res.status(response.status).json(response.data);
     } catch (error: any) {
@@ -85,6 +84,8 @@ const DataProductRouter = {
           context: 'DataProductSource',
         });
       } else {
+        console.log('BAST', error);
+
         res
           .status(error?.response?.status || 500)
           .json({ message: error.message, context: 'ApiRouter' });
