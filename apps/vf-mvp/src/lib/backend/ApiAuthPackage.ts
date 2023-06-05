@@ -23,8 +23,9 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
 
   // Encrypt using secret
   const encryptedApiAuthPackage = jwt.sign(apiAuthPackage, secretSignKey, {
-    expiresIn:
-      new Date(loggedInState.expiresAt).getTime() / 1000 - Date.now() / 1000, // seconds to the expiresAt date
+    expiresIn: Math.floor(
+      new Date(loggedInState.expiresAt).getTime() / 1000 - Date.now() / 1000
+    ), // seconds to the expiresAt date
   }); // HMAC SHA256
 
   return {
