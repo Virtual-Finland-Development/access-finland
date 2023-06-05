@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import authMiddleware from '@mvp/lib/backend/middleware/auth';
 import DataProductRouter from '@mvp/lib/backend/services/testbeb-gw/data-product-router';
 import type { DataProduct } from '@shared/types';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { slug, source } = req.query;
 
   if (slug instanceof Array && slug.length > 0) {
@@ -22,3 +20,5 @@ export default async function handler(
 
   res.status(400).json({ message: 'Bad request' });
 }
+
+export default authMiddleware(handler);
