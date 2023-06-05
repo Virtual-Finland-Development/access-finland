@@ -84,8 +84,6 @@ const DataProductRouter = {
           context: 'DataProductSource',
         });
       } else {
-        console.log('BAST', error);
-
         res
           .status(error?.response?.status || 500)
           .json({ message: error.message, context: 'ApiRouter' });
