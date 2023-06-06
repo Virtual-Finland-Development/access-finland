@@ -1,8 +1,42 @@
 const path = require('path');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+const nextSafe = require('next-safe');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
+
+const isDev = process.env.NODE_ENV !== 'production';
+
+// https://trezy.gitbook.io/next-safe/usage/configuration
+const nextSafeConfig = {
+  isDev,
+  contentTypeOptions: 'nosniff',
+  contentSecurityPolicy: {
+    'base-uri': "'none'",
+    'child-src': "'none'",
+    'connect-src': "'self'",
+    'default-src': "'self'",
+    'font-src': "'self' https://fonts.gstatic.com/",
+    'form-action': "'self'",
+    'frame-ancestors': "'none'",
+    'frame-src': "'none'",
+    'img-src': "'self'",
+    'manifest-src': "'self'",
+    'media-src': "'self'",
+    'object-src': "'none'",
+    'prefetch-src': "'self'",
+    'script-src': "'self'",
+    'style-src': "'self' https://fonts.googleapis.com/",
+    'worker-src': "'self'",
+    mergeDefaultDirectives: false,
+    reportOnly: false,
+  },
+  frameOptions: 'DENY',
+  permissionsPolicy: {},
+  permissionsPolicyDirectiveSupport: ['proposed', 'standard'],
+  referrerPolicy: 'no-referrer',
+  xssProtection: '1; mode=block',
+};
 
 const nextConfig = {
   reactStrictMode: false,
@@ -11,6 +45,14 @@ const nextConfig = {
   output: 'standalone',
   compiler: {
     styledComponents: true,
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: nextSafe(nextSafeConfig),
+      },
+    ];
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // plugin to check for duplicate packages
