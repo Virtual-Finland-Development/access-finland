@@ -6,6 +6,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const isDev = process.env.NODE_ENV !== 'production';
+const AUTH_GW_URL = isDev
+  ? 'https://virtualfinland-authgw.localhost'
+  : process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL || '';
 
 // https://trezy.gitbook.io/next-safe/usage/configuration
 const nextSafeConfig = {
@@ -14,7 +17,7 @@ const nextSafeConfig = {
   contentSecurityPolicy: {
     'base-uri': "'none'",
     'child-src': "'none'",
-    'connect-src': "'self'",
+    'connect-src': ["'self'", AUTH_GW_URL],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
     'form-action': "'self'",
