@@ -65,7 +65,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.11",
     "serve": "^14.2.0",
-    "turbo": "^1.9.9"
+    "turbo": "^1.10.2"
   },
   "packageManager": "npm@8.19.3",
   "workspaces": [
