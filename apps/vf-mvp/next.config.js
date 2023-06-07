@@ -30,7 +30,7 @@ const nextSafeConfig = {
     'manifest-src': "'self'",
     'media-src': "'self'",
     'object-src': "'none'",
-    'prefetch-src': "'self'",
+    'prefetch-src': false,
     'script-src': "'self'",
     'style-src': ["'self'", 'https://fonts.googleapis.com/', "'unsafe-inline'"],
     'worker-src': "'self'",
