@@ -1,12 +1,13 @@
 import WorkingProfilePage from '@mvp/pages/profile/working-profile.page';
 import userEvent from '@testing-library/user-event';
-import * as UtilsExports from '@/lib/utils';
+import * as UtilsExports from '@/lib/utils/auth';
 import { EMPLOYMENT_TYPE_LABELS } from '@shared/lib/constants';
 import {
   MOCK_AUTH_STATE,
   MOCK_JOB_APPLICANT_INFO,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
   within,
@@ -16,11 +17,13 @@ describe('Personal profile page', () => {
   it.only('renders a working profile page / form for authenticated user, with correct profile values', async () => {
     jest
       .spyOn(UtilsExports, 'getValidAuthState')
-      .mockImplementation(() => MOCK_AUTH_STATE);
+      .mockImplementation(async () => MOCK_AUTH_STATE);
 
     const user = userEvent.setup();
 
-    renderWithProviders(<WorkingProfilePage />);
+    await act(async () => {
+      renderWithProviders(<WorkingProfilePage />);
+    });
 
     // headers
     const profileHeader = await screen.findByRole('heading', {

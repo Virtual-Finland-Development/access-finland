@@ -1,8 +1,48 @@
 const path = require('path');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+const nextSafe = require('next-safe');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
+
+const isDev = process.env.NODE_ENV !== 'production';
+const AUTH_GW_BASE_URL = isDev
+  ? 'https://virtualfinland-authgw.localhost'
+  : process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL || '';
+const CODESETS_BASE_URL = isDev
+  ? 'http://localhost:3166'
+  : process.env.NEXT_PUBLIC_CODESETS_BASE_URL || '';
+
+// https://trezy.gitbook.io/next-safe/usage/configuration
+const nextSafeConfig = {
+  isDev,
+  contentTypeOptions: 'nosniff',
+  contentSecurityPolicy: {
+    'base-uri': "'none'",
+    'child-src': "'none'",
+    'connect-src': ["'self'", AUTH_GW_BASE_URL, CODESETS_BASE_URL],
+    'default-src': "'self'",
+    'font-src': ["'self'", 'https://fonts.gstatic.com/'],
+    'form-action': "'self'",
+    'frame-ancestors': "'none'",
+    'frame-src': "'none'",
+    'img-src': "'self'",
+    'manifest-src': "'self'",
+    'media-src': "'self'",
+    'object-src': "'none'",
+    'prefetch-src': false,
+    'script-src': "'self'",
+    'style-src': ["'self'", 'https://fonts.googleapis.com/', "'unsafe-inline'"],
+    'worker-src': "'self'",
+    mergeDefaultDirectives: false,
+    reportOnly: false,
+  },
+  frameOptions: 'DENY',
+  permissionsPolicy: false,
+  permissionsPolicyDirectiveSupport: ['proposed', 'standard'],
+  referrerPolicy: 'no-referrer',
+  xssProtection: '1; mode=block',
+};
 
 const nextConfig = {
   reactStrictMode: false,
@@ -11,6 +51,14 @@ const nextConfig = {
   output: 'standalone',
   compiler: {
     styledComponents: true,
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: nextSafe(nextSafeConfig),
+      },
+    ];
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // plugin to check for duplicate packages

@@ -5,12 +5,12 @@ import type {
   NonListedCompany,
   SignatoryRights,
 } from '@/types';
-import { getUserIdentifier } from '@/lib/utils';
+import { getUserIdentifier } from '@/lib/utils/auth';
 import apiClient from '../api-client';
 import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from '../endpoints';
 
 export async function getCompanies(): Promise<CompanyResponse[]> {
-  const userId = getUserIdentifier();
+  const userId = await getUserIdentifier();
   const { data } = await apiClient.get(
     `${PRH_MOCK_BASE_URL}/users/${userId}/companies`
   );
@@ -18,7 +18,7 @@ export async function getCompanies(): Promise<CompanyResponse[]> {
 }
 
 export async function getLatestModifiedCompany(): Promise<CompanyResponse> {
-  const userId = getUserIdentifier();
+  const userId = await getUserIdentifier();
   const { data } = await apiClient.get(
     `${PRH_MOCK_BASE_URL}/users/${userId}/companies:last-modified`
   );
@@ -39,7 +39,7 @@ export async function getCompany(
 export async function createCompanyDirectlyToPRH(
   company: NonListedCompany
 ): Promise<string> {
-  const userId = getUserIdentifier();
+  const userId = await getUserIdentifier();
   const { data } = await apiClient.post(
     `${PRH_MOCK_BASE_URL}/users/${userId}/companies`,
     company
@@ -51,7 +51,7 @@ export async function saveCompanyDirectlyToPRH(
   nationalIdentifier: string,
   payload: Partial<NonListedCompany>
 ) {
-  const userId = getUserIdentifier();
+  const userId = await getUserIdentifier();
   const { data } = await apiClient.patch(
     `${PRH_MOCK_BASE_URL}/users/${userId}/companies/${nationalIdentifier}`,
     payload

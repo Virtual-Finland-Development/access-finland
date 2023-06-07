@@ -27,6 +27,13 @@ const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(`${projectName}-uuid-${env}`).result
 }`;
 
+// Random value for secret sign key
+const backendSignKey = pulumi.interpolate`${
+  new random.RandomPassword(`${projectName}-backendSignKey-${env}`, {
+    length: 32,
+  }).result
+}`;
+
 // ECR repository
 const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
   tags,
@@ -43,6 +50,7 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
     NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
+    BACKEND_SECRET_SIGN_KEY: backendSignKey,
   },
 });
 

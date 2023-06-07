@@ -21,13 +21,18 @@ class JSONStorage {
   remove(key: string) {
     this.driver.removeItem(key);
   }
+  pop(key: string) {
+    const value = this.get(key);
+    this.remove(key);
+    return value;
+  }
 }
 
 // class instance invokement inside self-executing function
 // this way window object should be defined, once client side code is loaded
 export const JSONLocalStorage = (() => {
   if (typeof window !== 'undefined') {
-    return new JSONStorage(localStorage);
+    return new JSONStorage(window.localStorage);
   } else {
     return {} as JSONStorage; // Fails if used in server-side runtime
   }
@@ -35,7 +40,7 @@ export const JSONLocalStorage = (() => {
 
 export const JSONSessionStorage = (() => {
   if (typeof window !== 'undefined') {
-    return new JSONStorage(sessionStorage);
+    return new JSONStorage(window.sessionStorage);
   } else {
     return {} as JSONStorage; // Fails if used in server-side runtime
   }

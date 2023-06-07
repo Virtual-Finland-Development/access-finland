@@ -1,4 +1,5 @@
 import { JobApplicantProfile, PersonBasicInformation } from '@/types';
+import { isExportedApplication } from '@/lib/utils';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
 import { utilizeDataProduct } from './testbed-gw';
@@ -7,7 +8,7 @@ import { utilizeDataProduct } from './testbed-gw';
  * Use internal api routes for MVP app (!isExport).
  * API routes defined for MVP app in apps/vf-mvp/src/pages/api.
  */
-const isExport = process.env.NEXT_PUBLIC_IS_EXPORT || false;
+const isExport = isExportedApplication();
 
 export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
   const method = isExport
