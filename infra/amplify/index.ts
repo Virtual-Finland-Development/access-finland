@@ -35,7 +35,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   tags,
   repository:
     'https://github.com/Virtual-Finland-Development/virtual-finland.git',
-  oauthToken: githubAccessToken,
+  accessToken: githubAccessToken,
   enableAutoBranchCreation: false,
   enableBranchAutoBuild: false,
   enableBranchAutoDeletion: false,
