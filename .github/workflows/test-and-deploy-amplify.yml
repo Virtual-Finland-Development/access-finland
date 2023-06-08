@@ -52,7 +52,7 @@ jobs:
         run: pulumi stack select ${{ env.pulumi_stack_organization }}/amplify --create
       - name: Set github access token in Pulumi config
         working-directory: ./infra/amplify
-        run: pulumi config set githubAccessToken ${{ secrets.GITHUB_TOKEN }}
+        run: pulumi config set --secret githubAccessToken ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:
