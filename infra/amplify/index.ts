@@ -37,7 +37,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
     'https://github.com/Virtual-Finland-Development/virtual-finland.git',
   accessToken: githubAccessToken,
   enableAutoBranchCreation: false,
-  enableBranchAutoBuild: false,
+  enableBranchAutoBuild: true,
   enableBranchAutoDeletion: false,
   environmentVariables: {
     NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
@@ -47,7 +47,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   },
   buildSpec: `
     version: 1.0
-    app:
+    frontend:
       phases:
         preBuild:
           commands:
@@ -55,13 +55,13 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
         build:
           commands:
             - npm run build:mvp
-            - npm run start:mvp
       artifacts:
         baseDirectory: apps/vf-mvp/.next
         files:
           - '**/*'
       cache:
-        paths: []
+        paths:
+          - node_modules/**/*
   `,
 });
 
@@ -70,11 +70,17 @@ new aws.amplify.Branch(`${projectName}-amplify-branch-${env}`, {
   appId: amplifyApp.id,
   branchName: 'aws-amplify',
   framework: 'React',
+
   /* stage: 'PRODUCTION',
   environmentVariables: {
     REACT_APP_API_SERVER: 'https://api.example.com',
   }, */
 });
 
+/* new aws.amplify.Webhook(`${projectName}-amplify-webhook-${env}`, {
+  appId: amplifyApp.id,
+  branchName: amplifyBranch.branchName,
+});
+ */
 // Export the App URL
 export const appUrl = amplifyApp.defaultDomain;
