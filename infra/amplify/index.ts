@@ -62,6 +62,9 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
             build:
               commands:
                 - npx turbo run build --filter=vf-mvp
+                - cp -r apps/vf-mvp/.next/standalone/apps/vf-mvp/. apps/vf-mvp/.next/standalone/
+                - cp -r apps/vf-mvp/.next/standalone/apps/vf-mvp/* apps/vf-mvp/.next/standalone/
+                - cp -r apps/vf-mvp/.next/static/. apps/vf-mvp/.next/standalone/.next/static
           artifacts:
             baseDirectory: apps/vf-mvp/.next
             files:
