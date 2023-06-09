@@ -50,6 +50,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
   },
+  platform: 'WEB_COMPUTE',
   buildSpec: `
     version: 1.0
     frontend:
