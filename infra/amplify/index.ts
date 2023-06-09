@@ -30,12 +30,19 @@ const backendSignKey = pulumi.interpolate`${
   }).result
 }`;
 
+// Fetch the AWS pre-configured service role for Amplify
+const amplifyServiceRole = pulumi.output(
+  aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
+);
+
 // Next.js Amplify App
 const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   tags,
   repository:
     'https://github.com/Virtual-Finland-Development/virtual-finland.git',
   accessToken: githubAccessToken,
+  oauthToken: githubAccessToken,
+  iamServiceRoleArn: amplifyServiceRole.arn,
   enableAutoBranchCreation: false,
   enableBranchAutoBuild: true,
   enableBranchAutoDeletion: false,
@@ -70,17 +77,7 @@ new aws.amplify.Branch(`${projectName}-amplify-branch-${env}`, {
   appId: amplifyApp.id,
   branchName: 'aws-amplify',
   framework: 'React',
-
-  /* stage: 'PRODUCTION',
-  environmentVariables: {
-    REACT_APP_API_SERVER: 'https://api.example.com',
-  }, */
 });
 
-/* new aws.amplify.Webhook(`${projectName}-amplify-webhook-${env}`, {
-  appId: amplifyApp.id,
-  branchName: amplifyBranch.branchName,
-});
- */
 // Export the App URL
 export const appUrl = amplifyApp.defaultDomain;
