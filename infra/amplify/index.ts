@@ -45,11 +45,12 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   enableBranchAutoBuild: true,
   enableBranchAutoDeletion: false,
   environmentVariables: {
+    AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
+    AMPLIFY_DIFF_DEPLOY: 'false',
     NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
-    AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
   },
   platform: 'WEB_COMPUTE',
   buildSpec: `
@@ -75,13 +76,17 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   `,
 });
 
-new aws.amplify.Branch(`${projectName}-amplify-branch-${env}`, {
-  tags,
-  appId: amplifyApp.id,
-  branchName: 'aws-amplify',
-  enableAutoBuild: true,
-  description: 'Tracks the aws-amplify branch in Github.',
-});
+// Amplify branch, maps to track repo branch named 'aws-amplify'.
+const trackedBranch = new aws.amplify.Branch(
+  `${projectName}-amplify-branch-${env}`,
+  {
+    tags,
+    appId: amplifyApp.id,
+    branchName: 'aws-amplify',
+    enableAutoBuild: true,
+    description: 'Tracks the aws-amplify branch in Github.',
+  }
+);
 
-// Export the App URL
-export const appUrl = amplifyApp.defaultDomain;
+// Export the App URL (maps to created branch)
+export const appUrl = pulumi.interpolate`${trackedBranch.branchName}.${amplifyApp.defaultDomain}`;
