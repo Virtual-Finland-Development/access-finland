@@ -38,10 +38,8 @@ const amplifyServiceRole = pulumi.output(
 // Next.js Amplify App
 const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   tags,
-  repository:
-    'https://github.com/Virtual-Finland-Development/virtual-finland.git',
+  repository: 'https://github.com/Virtual-Finland-Development/virtual-finland',
   accessToken: githubAccessToken,
-  oauthToken: githubAccessToken,
   iamServiceRoleArn: amplifyServiceRole.arn,
   enableAutoBranchCreation: false,
   enableBranchAutoBuild: true,
@@ -58,10 +56,10 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
       phases:
         preBuild:
           commands:
-            - npm ci
+            - npx npm install
         build:
           commands:
-            - npm run build:mvp
+            - npx turbo run build --filter=vf-mvp
       artifacts:
         baseDirectory: apps/vf-mvp/.next
         files:
@@ -69,6 +67,8 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
       cache:
         paths:
           - node_modules/**/*
+      buildPath: /
+    appRoot: apps/vf-mvp
   `,
 });
 
@@ -76,7 +76,8 @@ new aws.amplify.Branch(`${projectName}-amplify-branch-${env}`, {
   tags,
   appId: amplifyApp.id,
   branchName: 'aws-amplify',
-  framework: 'React',
+  enableAutoBuild: true,
+  description: 'Tracks the aws-amplify branch in Github.',
 });
 
 // Export the App URL
