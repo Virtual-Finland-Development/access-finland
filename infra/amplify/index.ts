@@ -49,6 +49,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
+    AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
   },
   platform: 'WEB_COMPUTE',
   buildSpec: `
@@ -62,9 +63,6 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
             build:
               commands:
                 - npx turbo run build --filter=vf-mvp
-                - cp -r apps/vf-mvp/.next/standalone/apps/vf-mvp/. apps/vf-mvp/.next/standalone/
-                - cp -r apps/vf-mvp/.next/standalone/apps/vf-mvp/* apps/vf-mvp/.next/standalone/
-                - cp -r apps/vf-mvp/.next/static/. apps/vf-mvp/.next/standalone/.next/static
           artifacts:
             baseDirectory: apps/vf-mvp/.next
             files:
