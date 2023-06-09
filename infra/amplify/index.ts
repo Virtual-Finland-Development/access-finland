@@ -53,23 +53,24 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   platform: 'WEB_COMPUTE',
   buildSpec: `
     version: 1.0
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - npx npm install
-        build:
-          commands:
-            - npx turbo run build --filter=vf-mvp
-      artifacts:
-        baseDirectory: apps/vf-mvp/.next
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-      buildPath: /
-    appRoot: apps/vf-mvp
+    applications:
+      - frontend:
+          phases:
+            preBuild:
+              commands:
+                - npx npm install
+            build:
+              commands:
+                - npx turbo run build --filter=vf-mvp
+          artifacts:
+            baseDirectory: apps/vf-mvp/.next
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
+          buildPath: /
+        appRoot: apps/vf-mvp
   `,
 });
 
