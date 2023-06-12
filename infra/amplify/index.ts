@@ -90,6 +90,8 @@ const trackedBranch = new aws.amplify.Branch(
 );
 
 // Manually run build/deployment for specified branch
+// Caveat: deployment will fail, if existing operation is running with error:
+// An error occurred (LimitExceededException) when calling the StartJob operation (reached max retries: 2): The requested branch <branch> already have pending or running jobs)
 new local.Command(
   'deployment',
   {
