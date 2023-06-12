@@ -94,6 +94,7 @@ new local.Command(
   'deployment',
   {
     create: pulumi.interpolate`aws amplify start-job --app-id ${amplifyApp.id} --branch-name ${trackedBranch.branchName} --job-type RELEASE --job-reason test`,
+    triggers: [new Date().getTime().toString()],
   },
   { deleteBeforeReplace: true }
 );
