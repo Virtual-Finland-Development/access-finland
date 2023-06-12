@@ -1,6 +1,9 @@
 name: Test the and deploy MVP (AWS Amplify)
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: ['aws-amplify']
 
 env:
   pulumi_stack_organization: virtualfinland
