@@ -4,14 +4,19 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, ReactNode } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import styled from 'styled-components';
+import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import 'vf-shared/src/styles.css';
 import '../styles/globals.css';
 import 'suomifi-ui-components/dist/main.css';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
+
+// axe-core a11y reporting
+reportAccessibility(React);
 
 const Loading = dynamic(() => import('@shared/components/ui/loading'));
 const ToastProvider = dynamic(() =>
