@@ -1,5 +1,5 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-import { AmplifyClient, GetJobCommand } from "@aws-sdk/client-amplify";
+import { AmplifyClient, GetJobCommand } from '@aws-sdk/client-amplify';
 import * as aws from '@pulumi/aws';
 import { local } from '@pulumi/command';
 import * as pulumi from '@pulumi/pulumi';
@@ -13,7 +13,8 @@ const tags = {
   'vfd:stack': env,
 };
 const config = new pulumi.Config();
-const githubAccessToken = config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
+const githubAccessToken =
+  config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
 
 // external apis
 const authGwEndpoint = new pulumi.StackReference(
@@ -106,53 +107,56 @@ const startJobCommand = new local.Command(
 //
 // Wait for deployment to finish, fail or timeout
 //
-pulumi.all([startJobCommand.stdout, amplifyApp.id, trackedBranch.branchName]).apply(async ([stdout, appId, branchName]) => {
-  if (pulumi.runtime.isDryRun()) {
-    return;
-  }
-  const jobId = JSON.parse(stdout).jobSummary.jobId;  
-  const amplifyClient = new AmplifyClient({});
-
-  try {
-    const jobStatus = await new Promise((resolve, reject) => {
-      const timeoutIntervalMs = 5000; // 5 second interval
-      let timeoutCountdownSecs = 300; // 5 minutes timeout
-  
-      const interval = setInterval(async () => {
-        timeoutCountdownSecs = timeoutCountdownSecs - (timeoutIntervalMs / 1000); // Lower the timeout countdown by the interval
-  
-        const { job } = await amplifyClient.send(
-          new GetJobCommand({
-            appId: appId,
-            branchName: branchName,
-            jobId,
-          })
-        );
-  
-        if (job?.summary?.status === 'SUCCEED') {
-          clearInterval(interval);
-          resolve(job.summary.status);
-        } else if (job?.summary?.status === 'FAILED') {
-          clearInterval(interval);
-          reject(job.summary.status);
-        }
-        
-        if (timeoutCountdownSecs <= 0) {
-          clearInterval(interval);
-          reject('TIMEOUT');
-        }
-      }, timeoutIntervalMs);
-    });
-
-    console.log(`Deployment finished with status: ${jobStatus}`);
-
-  } catch (jobStatus) {
-    if (typeof jobStatus === "string") {
-      console.error(`Deployment failed with status: ${jobStatus}`);
+pulumi
+  .all([startJobCommand.stdout, amplifyApp.id, trackedBranch.branchName])
+  .apply(async ([stdout, appId, branchName]) => {
+    if (pulumi.runtime.isDryRun()) {
+      return;
     }
-    throw jobStatus; // Ensure pulumi fails
-  }
-});
+    const jobId = JSON.parse(stdout).jobSummary.jobId;
+    const amplifyClient = new AmplifyClient({});
+
+    try {
+      const jobStatus = await new Promise((resolve, reject) => {
+        const timeoutIntervalMs = 5000; // 5 second interval
+        let timeoutCountdownSecs = 300; // 5 minutes timeout
+
+        const interval = setInterval(async () => {
+          timeoutCountdownSecs =
+            timeoutCountdownSecs - timeoutIntervalMs / 1000; // Lower the timeout countdown by the interval
+
+          const { job } = await amplifyClient.send(
+            new GetJobCommand({
+              appId,
+              branchName,
+              jobId,
+            })
+          );
+
+          const jobStatus = job?.summary?.status;
+          if (jobStatus === 'SUCCEED') {
+            clearInterval(interval);
+            resolve(jobStatus);
+          } else {
+            if (jobStatus === 'FAILED') {
+              clearInterval(interval);
+              reject(jobStatus);
+            } else if (timeoutCountdownSecs <= 0) {
+              clearInterval(interval);
+              reject('TIMEOUT');
+            }
+          }
+        }, timeoutIntervalMs);
+      });
+
+      console.log(`Deployment finished with status: ${jobStatus}`);
+    } catch (jobStatus) {
+      if (typeof jobStatus === 'string') {
+        console.error(`Deployment failed with status: ${jobStatus}`);
+      }
+      throw jobStatus; // Ensure pulumi fails
+    }
+  });
 
 // Export the App URL (maps to created branch)
 export const appUrl = pulumi.interpolate`${trackedBranch.branchName}.${amplifyApp.defaultDomain}`;
