@@ -1,3 +1,5 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
+import { AmplifyClient, GetJobCommand } from "@aws-sdk/client-amplify";
 import * as aws from '@pulumi/aws';
 import { local } from '@pulumi/command';
 import * as pulumi from '@pulumi/pulumi';
@@ -11,7 +13,7 @@ const tags = {
   'vfd:stack': env,
 };
 const config = new pulumi.Config();
-const githubAccessToken = config.get('githubAccessToken') || '';
+const githubAccessToken = config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
 
 // external apis
 const authGwEndpoint = new pulumi.StackReference(
@@ -92,14 +94,56 @@ const trackedBranch = new aws.amplify.Branch(
 // Manually run build/deployment for specified branch
 // Caveat: deployment will fail, if existing operation is running with error:
 // An error occurred (LimitExceededException) when calling the StartJob operation (reached max retries: 2): The requested branch <branch> already have pending or running jobs)
-new local.Command(
+const startJobCommand = new local.Command(
   'deployment',
   {
-    create: pulumi.interpolate`aws amplify start-job --app-id ${amplifyApp.id} --branch-name ${trackedBranch.branchName} --job-type RELEASE --job-reason test`,
+    create: pulumi.interpolate`aws amplify start-job --app-id ${amplifyApp.id} --branch-name ${trackedBranch.branchName} --job-type RELEASE --job-reason test --output json`,
     triggers: [new Date().getTime().toString()],
   },
   { deleteBeforeReplace: true }
 );
+
+//
+// Wait for deployment to finish, fail or timeout
+//
+pulumi.all([startJobCommand.stdout, amplifyApp.id, trackedBranch.branchName]).apply(async ([stdout, appId, branchName]) => {
+  if (pulumi.runtime.isDryRun()) {
+    return;
+  }
+  const jobId = JSON.parse(stdout).jobSummary.jobId;  
+  const amplifyClient = new AmplifyClient({});
+
+  const jobStatus = await new Promise((resolve, reject) => {
+    const timeoutIntervalMs = 5000; // 5 second interval
+    let timeoutCountdownSecs = 300; // 5 minutes timeout
+
+    const interval = setInterval(async () => {
+      timeoutCountdownSecs = timeoutCountdownSecs - (timeoutIntervalMs / 1000); // Lower the timeout countdown by the interval
+
+      const { job } = await amplifyClient.send(
+        new GetJobCommand({
+          appId: appId,
+          branchName: branchName,
+          jobId,
+        })
+      );
+
+      if (job?.summary?.status === 'SUCCEED') {
+        clearInterval(interval);
+        resolve(job.summary.status);
+      } else if (job?.summary?.status === 'FAILED') {
+        clearInterval(interval);
+        reject(job.summary.status);
+      }
+      
+      if (timeoutCountdownSecs <= 0) {
+        clearInterval(interval);
+        reject('TIMEOUT');
+      }
+    }, timeoutIntervalMs);
+  });
+  console.log(`Deployment finished with status: ${jobStatus}`);
+});
 
 // Export the App URL (maps to created branch)
 export const appUrl = pulumi.interpolate`${trackedBranch.branchName}.${amplifyApp.defaultDomain}`;

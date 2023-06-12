@@ -4,6 +4,7 @@
     "@types/node": "^16"
   },
   "dependencies": {
+    "@aws-sdk/client-amplify": "^3.350.0",
     "@pulumi/aws": "^5.23.0",
     "@pulumi/command": "^0.7.2",
     "@pulumi/pulumi": "^3.49.0",
