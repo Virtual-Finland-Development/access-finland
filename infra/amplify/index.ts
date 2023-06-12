@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import { local } from '@pulumi/command';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 
@@ -42,7 +43,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   accessToken: githubAccessToken,
   iamServiceRoleArn: amplifyServiceRole.arn,
   enableAutoBranchCreation: false,
-  enableBranchAutoBuild: true,
+  enableBranchAutoBuild: false,
   enableBranchAutoDeletion: false,
   environmentVariables: {
     AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
@@ -83,9 +84,18 @@ const trackedBranch = new aws.amplify.Branch(
     tags,
     appId: amplifyApp.id,
     branchName: 'aws-amplify',
-    enableAutoBuild: true,
+    enableAutoBuild: false,
     description: 'Tracks the aws-amplify branch in Github.',
   }
+);
+
+// Manually run build/deployment for specified branch
+new local.Command(
+  'deployment',
+  {
+    create: pulumi.interpolate`aws amplify start-job --app-id ${amplifyApp.id} --branch-name ${trackedBranch.branchName} --job-type RELEASE --job-reason test`,
+  },
+  { deleteBeforeReplace: true }
 );
 
 // Export the App URL (maps to created branch)
