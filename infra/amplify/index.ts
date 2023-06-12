@@ -113,36 +113,45 @@ pulumi.all([startJobCommand.stdout, amplifyApp.id, trackedBranch.branchName]).ap
   const jobId = JSON.parse(stdout).jobSummary.jobId;  
   const amplifyClient = new AmplifyClient({});
 
-  const jobStatus = await new Promise((resolve, reject) => {
-    const timeoutIntervalMs = 5000; // 5 second interval
-    let timeoutCountdownSecs = 300; // 5 minutes timeout
+  try {
+    const jobStatus = await new Promise((resolve, reject) => {
+      const timeoutIntervalMs = 5000; // 5 second interval
+      let timeoutCountdownSecs = 300; // 5 minutes timeout
+  
+      const interval = setInterval(async () => {
+        timeoutCountdownSecs = timeoutCountdownSecs - (timeoutIntervalMs / 1000); // Lower the timeout countdown by the interval
+  
+        const { job } = await amplifyClient.send(
+          new GetJobCommand({
+            appId: appId,
+            branchName: branchName,
+            jobId,
+          })
+        );
+  
+        if (job?.summary?.status === 'SUCCEED') {
+          clearInterval(interval);
+          resolve(job.summary.status);
+        } else if (job?.summary?.status === 'FAILED') {
+          clearInterval(interval);
+          reject(job.summary.status);
+        }
+        
+        if (timeoutCountdownSecs <= 0) {
+          clearInterval(interval);
+          reject('TIMEOUT');
+        }
+      }, timeoutIntervalMs);
+    });
 
-    const interval = setInterval(async () => {
-      timeoutCountdownSecs = timeoutCountdownSecs - (timeoutIntervalMs / 1000); // Lower the timeout countdown by the interval
+    console.log(`Deployment finished with status: ${jobStatus}`);
 
-      const { job } = await amplifyClient.send(
-        new GetJobCommand({
-          appId: appId,
-          branchName: branchName,
-          jobId,
-        })
-      );
-
-      if (job?.summary?.status === 'SUCCEED') {
-        clearInterval(interval);
-        resolve(job.summary.status);
-      } else if (job?.summary?.status === 'FAILED') {
-        clearInterval(interval);
-        reject(job.summary.status);
-      }
-      
-      if (timeoutCountdownSecs <= 0) {
-        clearInterval(interval);
-        reject('TIMEOUT');
-      }
-    }, timeoutIntervalMs);
-  });
-  console.log(`Deployment finished with status: ${jobStatus}`);
+  } catch (jobStatus) {
+    if (typeof jobStatus === "string") {
+      console.error(`Deployment failed with status: ${jobStatus}`);
+    }
+    throw jobStatus; // Ensure pulumi fails
+  }
 });
 
 // Export the App URL (maps to created branch)
