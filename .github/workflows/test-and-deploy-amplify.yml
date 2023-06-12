@@ -1,4 +1,4 @@
-name: Test the and deploy MVP (AWS Amplify)
+name: Test and deploy MVP (AWS Amplify)
 
 on:
   workflow_dispatch:
