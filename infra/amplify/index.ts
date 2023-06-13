@@ -1,7 +1,10 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-import { AmplifyClient, GetJobCommand } from '@aws-sdk/client-amplify';
+import {
+  AmplifyClient,
+  GetJobCommand,
+  StartJobCommand,
+} from '@aws-sdk/client-amplify';
 import * as aws from '@pulumi/aws';
-import { local } from '@pulumi/command';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 
@@ -92,31 +95,34 @@ const trackedBranch = new aws.amplify.Branch(
   }
 );
 
-// Manually run build/deployment for specified branch
-// Caveat: deployment will fail, if existing operation is running with error:
-// An error occurred (LimitExceededException) when calling the StartJob operation (reached max retries: 2): The requested branch <branch> already have pending or running jobs)
-const startJobCommand = new local.Command(
-  'deployment',
-  {
-    create: pulumi.interpolate`aws amplify start-job --app-id ${amplifyApp.id} --branch-name ${trackedBranch.branchName} --job-type RELEASE --job-reason test --output json`,
-    triggers: [new Date().getTime().toString()],
-  },
-  { deleteBeforeReplace: true }
-);
-
 //
+// Manually run build/deployment for specified branch
 // Wait for deployment to finish, fail or timeout
 //
 pulumi
-  .all([startJobCommand.stdout, amplifyApp.id, trackedBranch.branchName])
-  .apply(async ([stdout, appId, branchName]) => {
+  .all([amplifyApp.id, trackedBranch.branchName])
+  .apply(async ([appId, branchName]) => {
     if (pulumi.runtime.isDryRun()) {
       return;
     }
-    const jobId = JSON.parse(stdout).jobSummary.jobId;
+
     const amplifyClient = new AmplifyClient({});
 
     try {
+      const { jobSummary } = await amplifyClient.send(
+        new StartJobCommand({
+          appId,
+          branchName,
+          jobType: 'RELEASE',
+          jobReason: 'Testing testing',
+        })
+      );
+
+      if (jobSummary?.status === 'FAILED') {
+        console.error(`Deployment failed on StartJobCommand`);
+        throw 'StartJobCommand failure';
+      }
+
       const jobStatus = await new Promise((resolve, reject) => {
         const timeoutIntervalMs = 5000; // 5 second interval
         let timeoutCountdownSecs = 300; // 5 minutes timeout
@@ -129,11 +135,12 @@ pulumi
             new GetJobCommand({
               appId,
               branchName,
-              jobId,
+              jobId: jobSummary?.jobId,
             })
           );
 
           const jobStatus = job?.summary?.status;
+
           if (jobStatus === 'SUCCEED') {
             clearInterval(interval);
             resolve(jobStatus);
