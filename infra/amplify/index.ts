@@ -108,16 +108,21 @@ pulumi
 
     const amplifyClient = new AmplifyClient({});
 
-    const { jobSummary } = await amplifyClient.send(
-      new StartJobCommand({
-        appId,
-        branchName,
-        jobType: 'RELEASE',
-        jobReason: 'Testing testing',
-      })
-    );
-
     try {
+      const { jobSummary } = await amplifyClient.send(
+        new StartJobCommand({
+          appId,
+          branchName,
+          jobType: 'RELEASE',
+          jobReason: 'Testing testing',
+        })
+      );
+
+      if (jobSummary?.status === 'FAILED') {
+        console.error(`Deployment failed on StartJobCommand`);
+        throw 'StartJobCommand failure';
+      }
+
       const jobStatus = await new Promise((resolve, reject) => {
         const timeoutIntervalMs = 5000; // 5 second interval
         let timeoutCountdownSecs = 300; // 5 minutes timeout
