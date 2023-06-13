@@ -1,0 +1,5 @@
+name: virtual-finland
+runtime: nodejs
+description: Virtual Finland demo app
+config:
+  aws:region: eu-north-1
