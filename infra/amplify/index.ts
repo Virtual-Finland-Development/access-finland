@@ -108,7 +108,7 @@ pulumi
 
     const amplifyClient = new AmplifyClient({});
 
-    const startJobCommandResponse = await amplifyClient.send(
+    const { jobSummary } = await amplifyClient.send(
       new StartJobCommand({
         appId,
         branchName,
@@ -116,8 +116,6 @@ pulumi
         jobReason: 'Testing testing',
       })
     );
-
-    const { jobSummary } = startJobCommandResponse;
 
     try {
       const jobStatus = await new Promise((resolve, reject) => {
