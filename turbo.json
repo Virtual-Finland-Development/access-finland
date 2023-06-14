@@ -10,7 +10,9 @@
     "NEXT_PUBLIC_USERS_API_BASE_URL",
     "NEXT_PUBLIC_IS_EXPORT",
     "NODE_ENV",
-    "BACKEND_SECRET_SIGN_KEY"
+    "STAGE",
+    "BACKEND_SECRET_SIGN_KEY",
+    "AWS_PROFILE"
   ],
   "pipeline": {
     "build": {

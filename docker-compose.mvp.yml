@@ -7,5 +7,9 @@ services:
       context: .
       dockerfile: ./apps/vf-mvp/Dockerfile
     restart: always
+    environment:
+      - AWS_PROFILE=${AWS_PROFILE:-default}
+    volumes:
+      - $HOME/.aws/credentials:/home/node/.aws/credentials:ro
     ports:
       - 3000:3000

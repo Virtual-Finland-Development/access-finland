@@ -7,6 +7,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - $HOME/.aws/credentials:/home/node/.aws/credentials:ro
     stdin_open: true
     tty: true
     ports:
@@ -19,6 +20,7 @@ services:
     environment:
       - NEXT_PUBLIC_USERS_API_BASE_URL=${NEXT_PUBLIC_USERS_API_BASE_URL:-http://host.docker.internal:5001}
       - BACKEND_SECRET_SIGN_KEY=${BACKEND_SECRET_SIGN_KEY:-secret}
+      - AWS_PROFILE=${AWS_PROFILE:-default}
     labels:
       - traefik.enable=true
       - traefik.http.routers.virtual-finland-mvp.rule=Host(`virtual-finland.localhost`)

@@ -34,7 +34,7 @@ export default function ProfileNotAuthenticated() {
       <div className="flex flex-col items-start gap-4 mt-6">
         <Text>Let’s sign in to Virtual Finland</Text>
         <Button onClick={loginHandler} disabled={isLoading} className="!w-auto">
-          {isLoading ? 'Redirecting...' : 'Sign in with testbed'}
+          {isLoading ? 'Redirecting...' : 'Sign in with Sinuna'}
         </Button>
       </div>
     </Page.Block>
