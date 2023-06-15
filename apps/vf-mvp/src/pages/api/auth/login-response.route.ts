@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
-import { isLoggedIn } from '@mvp/lib/backend/api-utils';
 import { authErrorHandlerMiddleware } from '@mvp/lib/backend/middleware/auth';
 import {
   retrieveSinunaTokensWithLoginCode,
@@ -23,9 +22,9 @@ export default authErrorHandlerMiddleware(async function handler(
     );
   }
 
-  if (isLoggedIn(req)) {
+  /* if (isLoggedIn(req)) {  // TODO: Implement isLoggedIn check so we can survive from a malfunctional situation
     throw new Error('Already logged in.');
-  }
+  } */
 
   if (
     typeof queryParams.code !== 'string' ||
