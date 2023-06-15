@@ -6,9 +6,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const isDev = process.env.NODE_ENV !== 'production';
-if (!isDev && !process.env.NEXT_PUBLIC_CODESETS_BASE_URL) {
-  throw new Error('NEXT_PUBLIC_CODESETS_BASE_URL env var must be set');
-}
 const CODESETS_BASE_URL =
   process.env.NEXT_PUBLIC_CODESETS_BASE_URL || 'http://localhost:3166';
 
@@ -19,7 +16,7 @@ const nextSafeConfig = {
   contentSecurityPolicy: {
     'base-uri': "'none'",
     'child-src': "'none'",
-    'connect-src': ["'self'", AUTH_GW_BASE_URL, CODESETS_BASE_URL],
+    'connect-src': ["'self'", CODESETS_BASE_URL],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
     'form-action': "'self'",
