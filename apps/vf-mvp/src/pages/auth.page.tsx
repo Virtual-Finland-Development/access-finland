@@ -1,4 +1,3 @@
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { Text } from 'suomifi-ui-components';
@@ -9,28 +8,15 @@ import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 
-// Transfer the SSR auth token to the client as server side props (instead of HTTP query param transfer)
-export const getServerSideProps: GetServerSideProps<{
-  authFlowToken: string;
-}> = async ({ req, res }) => {
-  let authFlowToken = null;
-
-  if (req.cookies.authFlowToken) {
-    // Pop the auth token from the cookie
-    authFlowToken = req.cookies.authFlowToken;
-    res.setHeader('Set-Cookie', `authFlowToken=; Path=/; HttpOnly`);
-  }
-
-  return { props: { authFlowToken: authFlowToken } };
-};
-
-export default function AuthPage({ authFlowToken }) {
+export default function AuthPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
   const routerActions = useCallback(async () => {
     setLoading(true);
+
+    const authFlowToken = await LoginState.pullAuthFlowToken();
 
     // Login with the SSR auth token
     if (authFlowToken) {
@@ -44,7 +30,7 @@ export default function AuthPage({ authFlowToken }) {
     // Failures
     setLoading(false);
     setAuthError('Authentication failed.');
-  }, [authFlowToken]);
+  }, []);
 
   useEffect(() => {
     if (router.isReady) {

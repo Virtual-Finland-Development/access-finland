@@ -47,6 +47,15 @@ export class LoggedInStateMachine {
     JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, csrfToken);
   }
 
+  async pullAuthFlowToken(): Promise<string | null> {
+    if (isExportedApplication()) {
+      throw new Error(
+        'pullAuthFlowToken should not be called in exported applications'
+      );
+    }
+    return this.pullCurrentLoginFlowResultingToken();
+  }
+
   /**
    * Login state of nextjs app with backend server capabilities
    */
@@ -84,6 +93,21 @@ export class LoggedInStateMachine {
     }
 
     return response.data.state;
+  }
+
+  /**
+   * Pop the auth flow token from the backend server
+   *
+   * @returns {string | null} csrfToken
+   */
+  private async pullCurrentLoginFlowResultingToken(): Promise<string | null> {
+    const response = await apiClient.post('/api/auth/finalize-auth-flow');
+
+    if (response?.status !== 200) {
+      return null;
+    }
+
+    return response.data.csrfToken;
   }
 
   /**

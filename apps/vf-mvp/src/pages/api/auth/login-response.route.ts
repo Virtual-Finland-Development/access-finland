@@ -51,7 +51,6 @@ export default authErrorHandlerMiddleware(async function handler(
   });
 
   const returnBackUrl = '/auth'; //@TODO get this from the state
-
   res
     .setHeader('Set-Cookie', [
       cookie.serialize('apiAuthPackage', apiAuthPackage.encrypted, {
@@ -60,7 +59,7 @@ export default authErrorHandlerMiddleware(async function handler(
         sameSite: 'strict',
         expires: new Date(apiAuthPackage.state.expiresAt),
       }),
-      cookie.serialize('authFlowToken', apiAuthPackage.state.csrfToken, {
+      cookie.serialize('csrfToken', String(apiAuthPackage.state.csrfToken), {
         path: '/',
         httpOnly: true,
         sameSite: 'strict',
