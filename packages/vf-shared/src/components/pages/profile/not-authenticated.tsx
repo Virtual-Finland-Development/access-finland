@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Checkbox, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
+import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomLink from '@/components/ui/custom-link';
@@ -12,6 +13,9 @@ export default function ProfileNotAuthenticated() {
     setLoading(true);
     api.auth.directToAuthGwLogin('/profile');
   };
+
+  // Shobby way to get the auth method, TODO: do better
+  const authMethod = isExportedApplication() ? 'Testbed' : 'Sinuna';
 
   return (
     <Page.Block className="bg-white">
@@ -34,7 +38,7 @@ export default function ProfileNotAuthenticated() {
       <div className="flex flex-col items-start gap-4 mt-6">
         <Text>Let’s sign in to Virtual Finland</Text>
         <Button onClick={loginHandler} disabled={isLoading} className="!w-auto">
-          {isLoading ? 'Redirecting...' : 'Sign in with Sinuna'}
+          {isLoading ? 'Redirecting...' : `Sign in with ${authMethod}`}
         </Button>
       </div>
     </Page.Block>
