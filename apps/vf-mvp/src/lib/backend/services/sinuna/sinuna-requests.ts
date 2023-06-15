@@ -40,8 +40,15 @@ export async function retrieveSinunaLoginUrl(req: NextApiRequest) {
  * @param loginCode
  * @returns
  */
-export async function retrieveSinunaTokensWithLoginCode(loginCode: string) {
+export async function retrieveSinunaTokensWithLoginCode(
+  req: NextApiRequest,
+  loginCode: string
+) {
   const sinunaSecrets = await SinunaSettings.getSinunaSecrets();
+  const redirectBackUrl = resolveRequestOriginUrl(
+    req,
+    '/api/auth/login-response'
+  );
 
   const response = await axios.post(
     SinunaSettings.requests.endpoints.token,
@@ -49,6 +56,7 @@ export async function retrieveSinunaTokensWithLoginCode(loginCode: string) {
       grant_type: 'authorization_code',
       code: loginCode,
       scope: SinunaSettings.scope,
+      redirect_uri: redirectBackUrl.toString(),
     }).toString(),
     {
       headers: {

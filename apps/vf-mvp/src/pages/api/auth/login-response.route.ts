@@ -41,7 +41,7 @@ export default authErrorHandlerMiddleware(async function handler(
   const loginState = queryParams.state; //@TODO validate this state
 
   // Get the token
-  const tokens = await retrieveSinunaTokensWithLoginCode(loginCode);
+  const tokens = await retrieveSinunaTokensWithLoginCode(req, loginCode);
   // Get user info
   const userInfo = await retrieveUserInfoWithAccessToken(tokens.accessToken);
   // Create the api auth package
