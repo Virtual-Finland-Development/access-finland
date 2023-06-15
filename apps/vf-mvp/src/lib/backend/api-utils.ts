@@ -56,3 +56,12 @@ export function resolveRequestOriginUrl(req: NextApiRequest, path?: string) {
 
   return redirectBackUrl;
 }
+
+/**
+ *
+ * @param req
+ * @returns
+ */
+export function isLoggedIn(req: NextApiRequest) {
+  return !!req.cookies.apiAuthPackage;
+}

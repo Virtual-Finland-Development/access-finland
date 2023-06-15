@@ -16,3 +16,14 @@ export default function authMiddleware(handler: NextApiHandler) {
     return handler(req, res);
   };
 }
+
+export function authErrorHandlerMiddleware(handler: NextApiHandler) {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
+    try {
+      return await handler(req, res);
+    } catch (error) {
+      console.error(error); // @TODO conditionalize or remove debug
+      return res.status(401).json({ error: 'Unauthorized.' });
+    }
+  };
+}

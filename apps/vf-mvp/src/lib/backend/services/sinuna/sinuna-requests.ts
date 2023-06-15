@@ -4,13 +4,19 @@ import {
   generateBase64Hash,
   resolveRequestOriginUrl,
   transformExpiresInToExpiresAt_ISOString,
-} from '../../utils';
+} from '../../api-utils';
 import SinunaSettings from './sinuna-settings';
 
+/**
+ * Retrieves the Sinuna login URL
+ *
+ * @param req
+ * @returns
+ */
 export async function retrieveSinunaLoginUrl(req: NextApiRequest) {
   const { sinunaClientId } = await SinunaSettings.getSinunaSecrets();
   const scope = SinunaSettings.scope;
-  const state = 'bazz'; // @TODO: Create
+  const state = 'bazz'; // @TODO: Create unique state for the login request
   const redirectBackUrl = resolveRequestOriginUrl(
     req,
     '/api/auth/login-response'
@@ -28,7 +34,13 @@ export async function retrieveSinunaLoginUrl(req: NextApiRequest) {
   return url;
 }
 
-export async function getSinunaTokensWithLoginCode(loginCode: string) {
+/**
+ * After coming back from Sinuna, retrieve the tokens
+ *
+ * @param loginCode
+ * @returns
+ */
+export async function retrieveSinunaTokensWithLoginCode(loginCode: string) {
   const sinunaSecrets = await SinunaSettings.getSinunaSecrets();
 
   const response = await axios.post(
@@ -51,7 +63,7 @@ export async function getSinunaTokensWithLoginCode(loginCode: string) {
     }
   );
 
-  console.log('getSinunaTokensWithLoginCode', response.data); // @TODO: conditionalize to debug
+  console.log('getSinunaTokensWithLoginCode', response.data); // @TODO: conditionalize or remove debug
 
   return {
     accessToken: response.data.access_token,
@@ -62,7 +74,13 @@ export async function getSinunaTokensWithLoginCode(loginCode: string) {
   };
 }
 
-export async function getUserInfoWithAccessToken(
+/**
+ * Exchange the access token for user info
+ *
+ * @param accessToken
+ * @returns
+ */
+export async function retrieveUserInfoWithAccessToken(
   accessToken: string
 ): Promise<{ email: string; userId: string }> {
   const response = await axios.get(SinunaSettings.requests.endpoints.userInfo, {
@@ -72,7 +90,7 @@ export async function getUserInfoWithAccessToken(
     timeout: SinunaSettings.requests.timeoutMs,
   });
 
-  console.log('getUserInfoWithAccessToken', response.data); // @TODO: conditionalize to debug
+  console.log('getUserInfoWithAccessToken', response.data); // @TODO: conditionalize or remove debug
 
   return {
     email: response.data.email,
