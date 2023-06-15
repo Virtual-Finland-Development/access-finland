@@ -34,7 +34,7 @@ export async function directToAuthGwLogout() {
     );
   } else {
     await logOut();
-    window.location.reload(); // Update views with force
+    window.location.assign('/logged-out'); // Update views with force, show a sinuna related message on a separate logout page
   }
 }
 
