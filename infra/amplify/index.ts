@@ -20,9 +20,6 @@ const githubAccessToken =
   config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
 
 // external apis
-const authGwEndpoint = new pulumi.StackReference(
-  `${org}/authentication-gw/dev`
-).getOutput('endpoint');
 const codesetsEndpoint = new pulumi.StackReference(
   `${org}/codesets/dev`
 ).getOutput('url');
@@ -54,7 +51,6 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   environmentVariables: {
     AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
     AMPLIFY_DIFF_DEPLOY: 'false',
-    NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,

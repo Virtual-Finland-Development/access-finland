@@ -6,12 +6,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const isDev = process.env.NODE_ENV !== 'production';
-const AUTH_GW_BASE_URL = isDev
-  ? 'https://virtualfinland-authgw.localhost'
-  : process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL || '';
-const CODESETS_BASE_URL = isDev
-  ? 'http://localhost:3166'
-  : process.env.NEXT_PUBLIC_CODESETS_BASE_URL || '';
+if (!isDev && !process.env.NEXT_PUBLIC_CODESETS_BASE_URL) {
+  throw new Error('NEXT_PUBLIC_CODESETS_BASE_URL env var must be set');
+}
+const CODESETS_BASE_URL =
+  process.env.NEXT_PUBLIC_CODESETS_BASE_URL || 'http://localhost:3166';
 
 // https://trezy.gitbook.io/next-safe/usage/configuration
 const nextSafeConfig = {
