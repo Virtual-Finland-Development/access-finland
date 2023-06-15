@@ -20,7 +20,7 @@ export default authErrorHandlerMiddleware(async function handler(
   if (queryParams.error) {
     throw new Error(
       `Sinuna: ${queryParams.error}: ${queryParams.error_description}`
-    ); //@TODO handle this error
+    );
   }
 
   if (isLoggedIn(req)) {
