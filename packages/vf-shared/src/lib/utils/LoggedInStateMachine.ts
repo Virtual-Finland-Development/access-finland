@@ -18,17 +18,33 @@ export class LoggedInStateMachine {
     if (isExportedApplication()) {
       JSONLocalStorage.remove(LOCAL_STORAGE_AUTH_KEY);
     } else {
+      console.log('CLEARING INTERNAL STATE');
       this.inMemoryLoggedInState = undefined;
     }
   }
 
   async setLoggedInState(loggedInState: LoggedInState) {
-    if (isExportedApplication()) {
-      JSONLocalStorage.set(LOCAL_STORAGE_AUTH_KEY, loggedInState);
+    if (!isExportedApplication()) {
+      throw new Error(
+        'setLoggedInState should not be called in non-exported applications'
+      );
     } else {
-      this.inMemoryLoggedInState = loggedInState;
-      JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, loggedInState.csrfToken);
+      JSONLocalStorage.set(LOCAL_STORAGE_AUTH_KEY, loggedInState);
     }
+  }
+
+  /**
+   * "Logs in" the local web app with the backend server
+   *
+   * @param csrfToken
+   */
+  setAuthFlowToken(csrfToken: string) {
+    if (isExportedApplication()) {
+      throw new Error(
+        'setAuthFlowToken should not be called in exported applications'
+      );
+    }
+    JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, csrfToken);
   }
 
   /**
@@ -40,30 +56,34 @@ export class LoggedInStateMachine {
     }
     this.inMemoryLoggedInState = null; // null means not logged in, keeps react from doing infinite things
 
-    const csfrToken = JSONLocalStorage.get(LOCAL_STORAGE_CSRF_KEY);
-    if (csfrToken) {
+    const csrfToken = JSONLocalStorage.get(LOCAL_STORAGE_CSRF_KEY);
+    if (csrfToken) {
       try {
-        const response = await apiClient.post(
-          '/api/auth/retrieve-state',
-          null,
-          {
-            headers: {
-              'x-csrf-token': csfrToken,
-            },
-          }
+        this.inMemoryLoggedInState = await this.retrieveCurrentLoggedInState(
+          csrfToken
         );
-
-        if (response?.status !== 200) {
-          throw new Error('Unauthorized');
-        }
-
-        this.inMemoryLoggedInState = response.data.state;
       } catch (e) {
         JSONLocalStorage.remove(LOCAL_STORAGE_CSRF_KEY);
       }
     }
 
     return this.inMemoryLoggedInState;
+  }
+
+  private async retrieveCurrentLoggedInState(
+    csrfToken: string
+  ): Promise<LoggedInState | null> {
+    const response = await apiClient.post('/api/auth/retrieve-state', null, {
+      headers: {
+        'x-csrf-token': csrfToken,
+      },
+    });
+
+    if (response?.status !== 200) {
+      throw new Error('Unauthorized');
+    }
+
+    return response.data.state;
   }
 
   /**

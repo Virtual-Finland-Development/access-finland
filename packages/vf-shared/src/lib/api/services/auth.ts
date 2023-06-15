@@ -34,6 +34,7 @@ export async function directToAuthGwLogout() {
     );
   } else {
     await logOut();
+    window.location.reload(); // Update views with force
   }
 }
 
@@ -66,8 +67,8 @@ export async function logIn(authPayload: {
 }
 
 export async function logOut() {
-  // cleanup internal state, just in case called directly
-  await LoginState.clear();
   // clean up cookie for protected routes
   await apiClient.post('/api/auth/logout');
+  // cleanup internal state, just in case called directly
+  await LoginState.clear();
 }
