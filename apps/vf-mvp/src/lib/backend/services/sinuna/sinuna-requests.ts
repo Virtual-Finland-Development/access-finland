@@ -2,6 +2,7 @@ import { NextApiRequest } from 'next';
 import axios from 'axios';
 import {
   generateBase64Hash,
+  resolveRequestOriginUrl,
   transformExpiresInToExpiresAt_ISOString,
 } from '../../utils';
 import SinunaSettings from './sinuna-settings';
@@ -10,13 +11,10 @@ export async function retrieveSinunaLoginUrl(req: NextApiRequest) {
   const { sinunaClientId } = await SinunaSettings.getSinunaSecrets();
   const scope = SinunaSettings.scope;
   const state = 'bazz'; // @TODO: Create
-
-  // Next.js doesn't apparenly provide the request origin in a way that's easy to use, have to parse it from the headers:
-  const protocol = String(req.headers['x-forwarded-proto'] || 'https').split(
-    ','
-  )[0];
-  const origin = `${protocol}://${req.headers.host}`;
-  const redirectBackUrl = new URL(`${origin}/api/auth/login-response`);
+  const redirectBackUrl = resolveRequestOriginUrl(
+    req,
+    '/api/auth/login-response'
+  );
 
   const url = new URL(SinunaSettings.requests.endpoints.login);
   url.search = new URLSearchParams({
