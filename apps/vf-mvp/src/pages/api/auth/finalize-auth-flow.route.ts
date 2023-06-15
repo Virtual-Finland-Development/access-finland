@@ -10,6 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const csrfToken = req.cookies.csrfToken;
   return res
     .setHeader(
+      // Clear the token from cookies on retrieval
       'Set-Cookie',
       cookie.serialize('csrfToken', '', {
         path: '/',

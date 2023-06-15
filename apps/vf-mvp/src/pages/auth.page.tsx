@@ -16,18 +16,14 @@ export default function AuthPage() {
   const routerActions = useCallback(async () => {
     setLoading(true);
 
-    const authFlowToken = await LoginState.pullAuthFlowToken();
-
-    // Login with the SSR auth token
-    if (authFlowToken) {
-      setLoading(false);
-      LoginState.setAuthFlowToken(authFlowToken); // "Logs in" by storing the authToken as the CSRF key
+    const justLoggedIn = await LoginState.finalizeLoginWithBackend();
+    if (justLoggedIn) {
       const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY); // Redirect to the original path
       window.location.assign(redirectPath || '/'); // Redirect to the original path, with forced reload
       return;
     }
 
-    // Failures
+    // Login was a no-show
     setLoading(false);
     setAuthError('Authentication failed.');
   }, []);

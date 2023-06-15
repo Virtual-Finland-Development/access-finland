@@ -25,15 +25,17 @@ export default function LoggedOutPage() {
 
   return (
     <div className="min-w-xl max-w-xl">
-      <Alert status="neutral" labelText="Logout success">
+      <Alert
+        status="neutral"
+        labelText="Logged out from Virtual Finland successfully!"
+      >
         <div className="flex flex-col gap-3">
-          <Text>Logged out from Virtual Finland successfully!</Text>
-          <CustomLink href="/">Go to home page</CustomLink>
-
           <Text>
-            The Sinuna login session might still be active. Manage Sinuna login
-            at the:
+            Logging out from Virtual Finland succeeded. Note that the Sinuna
+            login session might still be active.
           </Text>
+          <CustomLink href="/">Go to home page</CustomLink>
+          <Text>Manage Sinuna login at:</Text>
           <Link
             target="_blank"
             rel="noreferrer noopener"
