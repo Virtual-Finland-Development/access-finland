@@ -11,8 +11,7 @@
     "NEXT_PUBLIC_IS_EXPORT",
     "NODE_ENV",
     "STAGE",
-    "BACKEND_SECRET_SIGN_KEY",
-    "AWS_PROFILE"
+    "BACKEND_SECRET_SIGN_KEY"
   ],
   "pipeline": {
     "build": {
