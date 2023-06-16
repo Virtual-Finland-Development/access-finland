@@ -73,8 +73,6 @@ export async function retrieveSinunaTokensWithLoginCode(
     }
   );
 
-  console.log('getSinunaTokensWithLoginCode', response.data); // @TODO: conditionalize or remove debug
-
   return {
     accessToken: response.data.access_token,
     idToken: response.data.id_token,
@@ -99,8 +97,6 @@ export async function retrieveUserInfoWithAccessToken(
     },
     timeout: SinunaSettings.requests.timeoutMs,
   });
-
-  console.log('getUserInfoWithAccessToken', response.data); // @TODO: conditionalize or remove debug
 
   return {
     email: response.data.email,

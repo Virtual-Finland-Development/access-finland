@@ -1,5 +1,6 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
+import { AxiosError } from 'axios';
 
 export default function authMiddleware(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
@@ -22,7 +23,13 @@ export function authErrorHandlerMiddleware(handler: NextApiHandler) {
     try {
       return await handler(req, res);
     } catch (error) {
-      console.error(error); // @TODO conditionalize or remove debug
+      if (error instanceof AxiosError) {
+        console.error(
+          `Axios: ${error.message}, status code: ${error.response?.status}`
+        );
+      } else {
+        console.error(error);
+      }
       return res.status(401).json({ error: 'Unauthorized.' });
     }
   };
