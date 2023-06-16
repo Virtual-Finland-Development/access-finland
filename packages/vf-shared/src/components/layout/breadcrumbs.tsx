@@ -64,7 +64,7 @@ export default function Breadcrumbs() {
     return [];
   }, [router]);
 
-  if (['/', '/404'].includes(router.pathname)) {
+  if (['/', '/404', '/logged-out'].includes(router.pathname)) {
     return null;
   }
 
