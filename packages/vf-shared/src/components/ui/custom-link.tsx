@@ -9,6 +9,7 @@ import {
 interface StyledLinkProps {
   $bold?: boolean;
   $base?: boolean;
+  newTab?: boolean;
 }
 
 const StyledLink = styled(SuomiFiLink).attrs<StyledLinkProps>(
@@ -22,7 +23,20 @@ type CustomLinkProps = Omit<SuomiFiLinkProps, 'href'> &
   StyledLinkProps;
 
 const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
-  ({ href, replace, scroll, shallow, locale, $bold, $base, children }, ref) => {
+  (
+    {
+      href,
+      replace,
+      scroll,
+      shallow,
+      locale,
+      $bold,
+      $base,
+      children,
+      newTab = false,
+    },
+    ref
+  ) => {
     return (
       <NextLink
         href={href}
@@ -33,7 +47,13 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
         passHref
         legacyBehavior
       >
-        <StyledLink href="" ref={ref} $bold={$bold} $base={$base}>
+        <StyledLink
+          href=""
+          ref={ref}
+          $bold={$bold}
+          $base={$base}
+          {...(newTab && { rel: 'noopener noreferrer', target: '_blank' })}
+        >
           {children}
         </StyledLink>
       </NextLink>

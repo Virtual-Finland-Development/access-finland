@@ -18,7 +18,7 @@ export default function ProfileNotAuthenticated() {
       <CustomHeading variant="h2" suomiFiBlue="dark">
         Create your profile
       </CustomHeading>
-      <div className="flex flex-col mt-8 gap-6 p-4 bg-suomifi-blue-bg-light">
+      <div className="flex flex-col mt-8 gap-6 p-4 bg-suomifi-blue-bg-light items-start">
         <CustomHeading variant="h3" className="!text-lg">
           About your personal account
         </CustomHeading>
@@ -28,8 +28,20 @@ export default function ProfileNotAuthenticated() {
           to provide information only once and use it afterwords whenever
           needed.
         </Text>
-        <CustomLink href="/profile">How is my data used?</CustomLink>
-        <Checkbox variant="large">Grant permissions</Checkbox>
+
+        <Text>
+          By clicking Sign in, you agree to the Virtual Finland{' '}
+          <a
+            href="/profile/terms-of-usage"
+            rel="noopener noreferrer"
+            target="blank"
+            className="underline text-blue-600 hover:text-blue-800 font-semibold"
+          >
+            Terms of usage.
+          </a>{' '}
+          Learn how we collect, use and share your data with other providers to
+          help you to get the best experience.
+        </Text>
       </div>
       <div className="flex flex-col items-start gap-4 mt-6">
         <Text>Let’s sign in to Virtual Finland</Text>

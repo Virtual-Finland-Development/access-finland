@@ -1,11 +1,8 @@
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { Button } from 'suomifi-ui-components';
-import type {
-  JobApplicantProfile,
-  PersonBasicInformation,
-} from '@shared/types';
-import { PROFILE_DATA_LABELS } from '@shared/lib/constants';
+import type { JobApplicantProfile, PersonBasicInformation } from '@/types';
+import { PROFILE_DATA_LABELS } from '@/lib/constants';
 import {
   useCountries,
   useEducationFields,
@@ -19,11 +16,11 @@ import {
   useOccupations,
   useRegions,
   useWorkPermits,
-} from '@shared/lib/hooks/codesets';
-import { useModal } from '@shared/context/modal-context';
-import DangerButton from '@shared/components/ui/danger-button';
-import DetailsExpander from '@shared/components/ui/details-expander/details-expander';
-import Loading from '@shared/components/ui/loading';
+} from '@/lib/hooks/codesets';
+import { useModal } from '@/context/modal-context';
+import DangerButton from '@/components/ui/danger-button';
+import DetailsExpander from '@/components/ui/details-expander/details-expander';
+import Loading from '@/components/ui/loading';
 import ProfileDeleteConfirmation from './profile-delete-confirmation';
 import {
   mapReadableJobApplicationProfile,
