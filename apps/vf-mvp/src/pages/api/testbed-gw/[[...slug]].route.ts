@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import authMiddleware from '@mvp/lib/backend/middleware/auth';
+import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import DataProductRouter from '@mvp/lib/backend/services/testbeb-gw/data-product-router';
 import type { DataProduct } from '@shared/types';
 
@@ -21,4 +21,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(400).json({ message: 'Bad request' });
 }
 
-export default authMiddleware(handler);
+export default loggedInAuthMiddleware(handler);

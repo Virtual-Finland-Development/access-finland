@@ -1,14 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
-import { isLoggedIn } from '@mvp/lib/backend/api-utils';
-import { authErrorHandlerMiddleware } from '@mvp/lib/backend/middleware/auth';
+import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import {
   retrieveSinunaTokensWithLoginCode,
   retrieveUserInfoWithAccessToken,
 } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
 
-export default authErrorHandlerMiddleware(async function handler(
+export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -21,10 +20,6 @@ export default authErrorHandlerMiddleware(async function handler(
     throw new Error(
       `Sinuna: ${queryParams.error}: ${queryParams.error_description}`
     );
-  }
-
-  if (isLoggedIn(req)) {
-    throw new Error('Already logged in.');
   }
 
   if (
