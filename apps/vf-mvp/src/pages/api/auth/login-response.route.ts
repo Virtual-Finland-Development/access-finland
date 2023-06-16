@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
+import { isLoggedIn } from '@mvp/lib/backend/api-utils';
 import { authErrorHandlerMiddleware } from '@mvp/lib/backend/middleware/auth';
 import {
   retrieveSinunaTokensWithLoginCode,
@@ -22,9 +23,9 @@ export default authErrorHandlerMiddleware(async function handler(
     );
   }
 
-  /* if (isLoggedIn(req)) {  // TODO: Implement isLoggedIn check so we can survive from a malfunctional situation
+  if (isLoggedIn(req)) {
     throw new Error('Already logged in.');
-  } */
+  }
 
   if (
     typeof queryParams.code !== 'string' ||
@@ -34,7 +35,7 @@ export default authErrorHandlerMiddleware(async function handler(
   }
 
   // Ensure the request flow integrity
-  if (req.cookies.sinunaState !== queryParams.state) {
+  if (req.cookies.sinunaCsrf !== queryParams.state) {
     throw new Error('Request flow integrity compromised.');
   }
 
@@ -67,11 +68,11 @@ export default authErrorHandlerMiddleware(async function handler(
         sameSite: 'strict',
         expires: new Date(apiAuthPackage.state.expiresAt),
       }),
-      cookie.serialize('sinunaState', '', {
-        // Clear the sinunaState cookie
+      cookie.serialize('sinunaCsrf', '', {
+        // Clear the sinunaCsrf cookie
         path: '/api',
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         expires: new Date(),
       }),
     ])
