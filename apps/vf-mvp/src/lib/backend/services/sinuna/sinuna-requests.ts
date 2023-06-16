@@ -13,10 +13,12 @@ import SinunaSettings from './sinuna-settings';
  * @param req
  * @returns
  */
-export async function retrieveSinunaLoginUrl(req: NextApiRequest) {
+export async function retrieveSinunaLoginUrl(
+  req: NextApiRequest,
+  state: string
+) {
   const { sinunaClientId } = await SinunaSettings.getSinunaSecrets();
   const scope = SinunaSettings.scope;
-  const state = 'bazz'; // @TODO: Create unique state for the login request
   const redirectBackUrl = resolveRequestOriginUrl(
     req,
     '/api/auth/login-response'

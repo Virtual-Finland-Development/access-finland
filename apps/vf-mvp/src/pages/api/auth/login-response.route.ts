@@ -33,14 +33,16 @@ export default authErrorHandlerMiddleware(async function handler(
     throw new Error('Received invalid login response from Sinuna.');
   }
 
+  // Ensure the request flow integrity
+  if (req.cookies.sinunaState !== queryParams.state) {
+    throw new Error('Request flow integrity compromised.');
+  }
+
   //
   // Handle login response
   //
-  const loginCode = queryParams.code;
-  const loginState = queryParams.state; //@TODO validate this state
-
   // Get the token
-  const tokens = await retrieveSinunaTokensWithLoginCode(req, loginCode);
+  const tokens = await retrieveSinunaTokensWithLoginCode(req, queryParams.code);
   // Get user info
   const userInfo = await retrieveUserInfoWithAccessToken(tokens.accessToken);
   // Create the api auth package
@@ -50,7 +52,7 @@ export default authErrorHandlerMiddleware(async function handler(
     profileData: userInfo,
   });
 
-  const returnBackUrl = '/auth'; //@TODO get this from the state
+  const returnBackUrl = '/auth'; // Static frontends auth handler url
   res
     .setHeader('Set-Cookie', [
       cookie.serialize('apiAuthPackage', apiAuthPackage.encrypted, {
@@ -64,6 +66,13 @@ export default authErrorHandlerMiddleware(async function handler(
         httpOnly: true,
         sameSite: 'strict',
         expires: new Date(apiAuthPackage.state.expiresAt),
+      }),
+      cookie.serialize('sinunaState', '', {
+        // Clear the sinunaState cookie
+        path: '/api',
+        httpOnly: true,
+        sameSite: 'strict',
+        expires: new Date(),
       }),
     ])
     .redirect(303, returnBackUrl);

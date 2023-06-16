@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { generateCSRFToken } from '@mvp/lib/backend/ApiAuthPackage';
 import { authErrorHandlerMiddleware } from '@mvp/lib/backend/middleware/auth';
 import { retrieveSinunaLoginUrl } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
+import cookie from 'cookie';
 
 export default authErrorHandlerMiddleware(async function handler(
   req: NextApiRequest,
@@ -9,6 +11,18 @@ export default authErrorHandlerMiddleware(async function handler(
   /* if (isLoggedIn(req)) {  // TODO: Implement isLoggedIn check so we can survive from a malfunctional situation
     throw new Error('Already logged in.');
   } */
-  const sinunaLoginUrl = await retrieveSinunaLoginUrl(req);
-  res.redirect(303, sinunaLoginUrl.toString());
+
+  const sinunaState = generateCSRFToken();
+  const sinunaLoginUrl = await retrieveSinunaLoginUrl(req, sinunaState);
+  res
+    .setHeader(
+      'Set-Cookie',
+      cookie.serialize('sinunaState', sinunaState, {
+        path: '/api',
+        httpOnly: true,
+        sameSite: 'strict',
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
+      })
+    )
+    .redirect(303, sinunaLoginUrl.toString());
 });
