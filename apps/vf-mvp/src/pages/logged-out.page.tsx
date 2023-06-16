@@ -39,9 +39,9 @@ export default function LoggedOutPage() {
         <Alert status="neutral" labelText="Logged out from Virtual Finland!">
           <div className="flex flex-col gap-3">
             <Text>
-              Note that the Sinuna login session might still be active.
+              Note that the Sinuna login session might still be active. Manage
+              Sinuna login session here:
             </Text>
-            <Text>Manage Sinuna login session here:</Text>
             <Link
               target="_blank"
               rel="noreferrer noopener"
