@@ -34,24 +34,17 @@ export class LoggedInStateMachine {
   }
 
   /**
-   *  Pop/pull the login-flow related csrf token from the backend server and store locally
+   * "Login" to the backend
    *
-   * @returns {bool} isLoggedIn
+   * @param csrfToken
    */
-  async finalizeLoginWithBackend(): Promise<Boolean> {
+  setCsrfToken(csrfToken: string) {
     if (isExportedApplication()) {
       throw new Error(
-        'finalizeLoginWithBackend should not be called in exported applications'
+        'setCsrfToken should not be called in exported applications'
       );
     }
-
-    const csrfToken = await this.pullCurrentLoginFlowResultingToken();
-    if (csrfToken) {
-      JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, csrfToken); // "Login" to the backend
-      return true;
-    }
-
-    return false;
+    JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, csrfToken);
   }
 
   /**
@@ -91,21 +84,6 @@ export class LoggedInStateMachine {
     }
 
     return response.data.state;
-  }
-
-  /**
-   * Pop the auth flow token from the backend server
-   *
-   * @returns {string | null} csrfToken
-   */
-  private async pullCurrentLoginFlowResultingToken(): Promise<string | null> {
-    const response = await apiClient.post('/api/auth/finalize-auth-flow');
-
-    if (response?.status !== 200) {
-      return null;
-    }
-
-    return response.data.csrfToken;
   }
 
   /**

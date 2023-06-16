@@ -1,5 +1,7 @@
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
+import cookie from 'cookie';
 import { Text } from 'suomifi-ui-components';
 import { LoginState } from 'vf-shared/src/lib/api/services/auth';
 import { SESSION_STORAGE_REDIRECT_KEY } from 'vf-shared/src/lib/constants';
@@ -8,7 +10,28 @@ import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 
-export default function AuthPage() {
+// Transfer the SSR auth token to the client as server side props (instead of HTTP transfer)
+export const getServerSideProps: GetServerSideProps<{
+  csrfToken: string;
+}> = async ({ req, res }) => {
+  let csrfToken = null;
+
+  if (req.cookies.csrfToken) {
+    // Pop the auth token from the cookie
+    csrfToken = req.cookies.csrfToken;
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('csrfToken', '', {
+        path: '/',
+        expires: new Date(),
+      })
+    );
+  }
+
+  return { props: { csrfToken: csrfToken } };
+};
+
+export default function AuthPage({ csrfToken }) {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
@@ -16,8 +39,8 @@ export default function AuthPage() {
   const routerActions = useCallback(async () => {
     setLoading(true);
 
-    const justLoggedIn = await LoginState.finalizeLoginWithBackend();
-    if (justLoggedIn) {
+    if (csrfToken) {
+      LoginState.setCsrfToken(csrfToken); // "Logs in" by storing the CSRF key
       const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY); // Redirect to the original path
       window.location.assign(redirectPath || '/'); // Redirect to the original path, with forced reload
       return;
@@ -26,7 +49,7 @@ export default function AuthPage() {
     // Login was a no-show
     setLoading(false);
     setAuthError('Authentication failed.');
-  }, []);
+  }, [csrfToken]);
 
   useEffect(() => {
     if (router.isReady) {

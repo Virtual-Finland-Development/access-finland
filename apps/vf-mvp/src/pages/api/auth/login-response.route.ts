@@ -65,7 +65,7 @@ export default authErrorHandlerMiddleware(async function handler(
       cookie.serialize('csrfToken', String(apiAuthPackage.state.csrfToken), {
         path: '/',
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         expires: new Date(apiAuthPackage.state.expiresAt),
       }),
       cookie.serialize('sinunaCsrf', '', {
