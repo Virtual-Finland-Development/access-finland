@@ -24,7 +24,7 @@ export default function LoggedOutPage() {
       if (initiator === 'auth-service') {
         window.history.replaceState(null, '', '/logged-out'); // Clear query params without redrawing
       } else {
-        router.push('/'); // Redirect to home page not flagged as coming from auth service
+        router.push('/'); // Redirect to home page if not flagged as coming from auth service
         return;
       }
       setLoading(false);
