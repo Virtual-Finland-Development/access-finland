@@ -4,7 +4,6 @@ import { Link, Text } from 'suomifi-ui-components';
 import Page from 'vf-shared/src/components/layout/page';
 import Loading from 'vf-shared/src/components/ui/loading';
 import Alert from '@shared/components/ui/alert';
-import CustomLink from '@shared/components/ui/custom-link';
 
 function getSinunaServiceUrl() {
   if (process.env.NODE_ENV !== 'production') {
@@ -42,7 +41,7 @@ export default function LoggedOutPage() {
             <Text>
               Note that the Sinuna login session might still be active.
             </Text>
-            <Text>Manage Sinuna login at:</Text>
+            <Text>Manage Sinuna login session here:</Text>
             <Link
               target="_blank"
               rel="noreferrer noopener"
@@ -50,8 +49,6 @@ export default function LoggedOutPage() {
             >
               Sinuna Service
             </Link>
-
-            <CustomLink href="/">Go to home page</CustomLink>
           </div>
         </Alert>
       </div>
