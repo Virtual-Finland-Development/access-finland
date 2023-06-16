@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import cookie from 'cookie';
@@ -31,7 +31,9 @@ export const getServerSideProps: GetServerSideProps<{
   return { props: { csrfToken: csrfToken } };
 };
 
-export default function AuthPage({ csrfToken }): JSX.Element | null {
+export default function AuthPage({
+  csrfToken,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element | null {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
