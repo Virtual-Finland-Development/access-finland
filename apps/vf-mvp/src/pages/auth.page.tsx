@@ -12,7 +12,7 @@ import Loading from '@shared/components/ui/loading';
 
 // Transfer the SSR auth token to the client as server side props (instead of HTTP transfer)
 export const getServerSideProps: GetServerSideProps<{
-  csrfToken: string;
+  csrfToken: string | null;
 }> = async ({ req, res }) => {
   let csrfToken = null;
 
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<{
   return { props: { csrfToken: csrfToken } };
 };
 
-export default function AuthPage({ csrfToken }) {
+export default function AuthPage({ csrfToken }): JSX.Element | null {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
