@@ -55,13 +55,14 @@ export default loggedOutAuthMiddleware(async function handler(
         path: '/api',
         httpOnly: true,
         sameSite: 'strict',
-        expires: new Date(apiAuthPackage.state.expiresAt),
+        expires: new Date(apiAuthPackage.data.expiresAt),
       }),
-      cookie.serialize('csrfToken', String(apiAuthPackage.state.csrfToken), {
+      cookie.serialize('csrfToken', String(apiAuthPackage.data.csrfToken), {
+        // Transfer the csrf token to the frontend with a temporal cookie
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
-        expires: new Date(apiAuthPackage.state.expiresAt),
+        expires: new Date(Date.now() + 10 * 60 * 1000), // in 10 minutes
       }),
       cookie.serialize('sinunaCsrf', '', {
         // Clear the sinunaCsrf cookie

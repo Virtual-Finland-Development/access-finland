@@ -28,7 +28,7 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
   }); // HMAC SHA256
 
   return {
-    state: apiAuthPackage,
+    data: apiAuthPackage,
     encrypted: encryptedApiAuthPackage,
   };
 }
