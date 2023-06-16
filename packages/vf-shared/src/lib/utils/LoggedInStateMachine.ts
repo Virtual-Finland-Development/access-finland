@@ -18,7 +18,6 @@ export class LoggedInStateMachine {
     if (isExportedApplication()) {
       JSONLocalStorage.remove(LOCAL_STORAGE_AUTH_KEY);
     } else {
-      console.log('CLEARING INTERNAL STATE');
       this.inMemoryLoggedInState = undefined;
     }
   }
@@ -45,6 +44,20 @@ export class LoggedInStateMachine {
       );
     }
     JSONLocalStorage.set(LOCAL_STORAGE_CSRF_KEY, csrfToken);
+  }
+
+  /**
+   * Retrieve the backend csrf token
+   *
+   * @param csrfToken
+   */
+  getCsrfToken() {
+    if (isExportedApplication()) {
+      throw new Error(
+        'getCsrfToken should not be called in exported applications'
+      );
+    }
+    return JSONLocalStorage.get(LOCAL_STORAGE_CSRF_KEY);
   }
 
   /**

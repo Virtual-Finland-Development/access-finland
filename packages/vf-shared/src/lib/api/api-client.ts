@@ -43,8 +43,7 @@ apiClient.interceptors.request.use(async config => {
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
       config.headers['x-consent-token'] = '';
     } else if (isProtectedNextJsEndpoint(config.url)) {
-      const csrfToken = (await LoginState.getLoggedInState())?.csrfToken;
-      config.headers['x-csrf-token'] = csrfToken ? csrfToken : '';
+      config.headers['x-csrf-token'] = LoginState.getCsrfToken();
     }
   }
 
