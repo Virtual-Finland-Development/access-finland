@@ -3,7 +3,7 @@ import { getSecretParameter } from '../aws/ParameterStore';
 const SinunaSettings = {
   scope: 'openid frontend persistent_id', // The auth scope for Sinuna
   getSinunaSecrets: async () => {
-    const stage = process.env.STAGE || 'local'; // @TODO: maybe use NODE_ENV instead, but translate to the vfd environment values
+    const stage = process.env.STAGE || 'local';
     return {
       sinunaClientId: await getSecretParameter(`${stage}_SINUNA_CLIENT_ID`),
       sinunaClientSecret: await getSecretParameter(

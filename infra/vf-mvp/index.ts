@@ -47,6 +47,7 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
+    STAGE: env,
   },
 });
 

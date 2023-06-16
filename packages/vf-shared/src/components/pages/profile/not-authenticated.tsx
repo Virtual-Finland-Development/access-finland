@@ -14,7 +14,7 @@ export default function ProfileNotAuthenticated() {
     api.auth.directToAuthGwLogin('/profile');
   };
 
-  // Shobby way to get the auth method, TODO: do better
+  // Resolve the auth method text
   const authMethod = isExportedApplication() ? 'Testbed' : 'Sinuna';
 
   return (
