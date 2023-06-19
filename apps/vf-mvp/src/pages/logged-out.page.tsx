@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Link, Text } from 'suomifi-ui-components';
-import Page from 'vf-shared/src/components/layout/page';
-import Loading from 'vf-shared/src/components/ui/loading';
+import Page from '@shared/components/layout/page';
 import Alert from '@shared/components/ui/alert';
+import CustomLink from '@shared/components/ui/custom-link';
+import Loading from '@shared/components/ui/loading';
 
 function getSinunaServiceUrl() {
   if (process.env.NODE_ENV !== 'production') {
@@ -38,7 +39,7 @@ export default function LoggedOutPage() {
     <Page title="Logged out">
       <Page.Block className="bg-white">
         <Alert status="neutral" labelText="Logged out from Virtual Finland!">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 items-start">
             <Text>
               Note that the Sinuna login session might still be active. Manage
               Sinuna login session here:
@@ -50,6 +51,7 @@ export default function LoggedOutPage() {
             >
               Sinuna Service
             </Link>
+            <CustomLink href="/">Go to home page</CustomLink>
           </div>
         </Alert>
       </Page.Block>
