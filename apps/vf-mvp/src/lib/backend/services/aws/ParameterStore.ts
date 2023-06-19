@@ -1,8 +1,9 @@
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
+const parameterStoreClient = new SSMClient({});
+
 // @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-ssm/classes/getparametercommand.html
 export async function getSecretParameter(name: string) {
-  const parameterStoreClient = new SSMClient({});
   try {
     const data = await parameterStoreClient.send(
       new GetParameterCommand({ Name: name, WithDecryption: true })

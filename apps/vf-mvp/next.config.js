@@ -1,4 +1,5 @@
 const path = require('path');
+const dotenv = require('dotenv').config();
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const nextSafe = require('next-safe');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -65,6 +66,8 @@ const nextConfig = {
         },
       })
     );
+    config.plugins.push(new webpack.EnvironmentPlugin(dotenv.parsed || {}));
+
     // resolve duplicate packages when building (MAKE SURE EVERYTHING WORKS, test the build!)
     config.resolve.alias['@babel/runtime'] = path.resolve(
       __dirname,

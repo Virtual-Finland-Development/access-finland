@@ -19,12 +19,17 @@ const config = new pulumi.Config();
 const githubAccessToken =
   config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
 
+// @temporary overrides for testing --->
+const envOverride = 'dev';
+const amplifyBranchOverride = 'aws-amplify';
+// <---
+
 // external apis
 const codesetsEndpoint = new pulumi.StackReference(
-  `${org}/codesets/dev`
+  `${org}/codesets/${envOverride}`
 ).getOutput('url');
 const usersApiEndpoint = new pulumi.StackReference(
-  `${org}/users-api/dev`
+  `${org}/users-api/${envOverride}`
 ).getOutput('ApplicationUrl');
 
 // Random value for secret sign key
@@ -37,6 +42,54 @@ const backendSignKey = pulumi.interpolate`${
 // Fetch the AWS pre-configured service role for Amplify
 const amplifyServiceRole = pulumi.output(
   aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
+);
+
+// AWS IAM User for accessing parameters from SSM Parameter Store
+const amplifyExecUser = new aws.iam.User(
+  `${projectName}-amplifyExecUser-${env}`,
+  {
+    tags,
+  }
+);
+// Access key and secret for the Amplify User
+const amplifyExecUserAccessKey = new aws.iam.AccessKey(
+  `${projectName}-amplifyExecUserAccessKey-${env}`,
+  {
+    user: amplifyExecUser.name,
+  }
+);
+
+// Current aws account id
+const awsIdentity = pulumi.output(aws.getCallerIdentity());
+
+// AWS IAM Policy for Amplify User to access parameters from SSM Parameter Store
+const amplifyExecUserSinunaAccessPolicy = new aws.iam.Policy(
+  `${projectName}-amplifyExecUserSinunaAccessPolicy-${env}`,
+  {
+    tags,
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['ssm:GetParameter'],
+          Resource: [
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
+          ],
+        },
+      ],
+    },
+  }
+);
+
+// Attach policy to user
+new aws.iam.UserPolicyAttachment(
+  `${projectName}-amplifyExecUserSinunaAccessPolicyAttachment-${env}`,
+  {
+    user: amplifyExecUser.name,
+    policyArn: amplifyExecUserSinunaAccessPolicy.arn,
+  }
 );
 
 // Next.js Amplify App
@@ -54,7 +107,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
-    STAGE: env,
+    STAGE: envOverride,
   },
   platform: 'WEB_COMPUTE',
   buildSpec: `
@@ -65,8 +118,11 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
             preBuild:
               commands:
                 - npx npm install
+                - yum install -y jq
             build:
               commands:
+                - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
+                - echo "STAGE=$STAGE" >> apps/vf-mvp/.env
                 - npx turbo run build --filter=vf-mvp
           artifacts:
             baseDirectory: apps/vf-mvp/.next
@@ -80,15 +136,33 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
   `,
 });
 
-// Amplify branch, maps to track repo branch named 'aws-amplify'.
+// AWS Parameter Store for Amplify Build step to access key and secret
+new aws.ssm.Parameter(`${projectName}-amplifyUserAccessKeyParameter-${env}`, {
+  tags,
+  name: pulumi.interpolate`/amplify/${amplifyApp.id}/${amplifyBranchOverride}/AWS_ACCESS_KEY_ID`,
+  type: 'SecureString',
+  value: amplifyExecUserAccessKey.id,
+});
+// And secret
+new aws.ssm.Parameter(
+  `${projectName}-amplifyUserAccessSecretParameter-${env}`,
+  {
+    tags,
+    name: pulumi.interpolate`/amplify/${amplifyApp.id}/${amplifyBranchOverride}/AWS_SECRET_ACCESS_KEY`,
+    type: 'SecureString',
+    value: amplifyExecUserAccessKey.secret,
+  }
+);
+
+// Amplify branch, maps to track repo branch.
 const trackedBranch = new aws.amplify.Branch(
   `${projectName}-amplify-branch-${env}`,
   {
     tags,
     appId: amplifyApp.id,
-    branchName: 'aws-amplify',
+    branchName: amplifyBranchOverride,
     enableAutoBuild: false,
-    description: 'Tracks the aws-amplify branch in Github.',
+    description: `Tracks the ${amplifyBranchOverride} branch in Github.`,
   }
 );
 
