@@ -11,7 +11,7 @@ export default function ProfileNotAuthenticated() {
 
   const loginHandler = () => {
     setLoading(true);
-    api.auth.directToAuthGwLogin('/profile');
+    api.auth.directToAuthLogin('/profile');
   };
 
   // Resolve the auth method text

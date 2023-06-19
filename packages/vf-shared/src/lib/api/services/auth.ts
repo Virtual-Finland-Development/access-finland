@@ -8,7 +8,7 @@ import { AUTH_GW_BASE_URL } from '../endpoints';
 
 export const LoginState = new LoggedInStateMachine();
 
-export function directToAuthGwLogin(redirectPath?: string) {
+export function directToAuthLogin(redirectPath?: string) {
   if (redirectPath) {
     JSONSessionStorage.set(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
   }
@@ -22,7 +22,7 @@ export function directToAuthGwLogin(redirectPath?: string) {
   }
 }
 
-export async function directToAuthGwLogout() {
+export async function directToAuthLogout() {
   if (isExportedApplication()) {
     const idToken = (await LoginState.getLoggedInState())?.idToken;
 
