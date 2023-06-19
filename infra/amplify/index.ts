@@ -163,6 +163,9 @@ const trackedBranch = new aws.amplify.Branch(
     branchName: amplifyBranchOverride,
     enableAutoBuild: false,
     description: `Tracks the ${amplifyBranchOverride} branch in Github.`,
+    environmentVariables: {
+      FRONTEND_ORIGIN_URI: pulumi.interpolate`${amplifyBranchOverride}.${amplifyApp.id}.amplifyapp.com`,
+    },
   }
 );
 
