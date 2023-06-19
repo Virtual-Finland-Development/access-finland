@@ -123,6 +123,7 @@ const amplifyApp = new aws.amplify.App(`${projectName}-amplifyApp-${env}`, {
               commands:
                 - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
                 - echo "STAGE=$STAGE" >> apps/vf-mvp/.env
+                - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/vf-mvp/.env
                 - npx turbo run build --filter=vf-mvp
           artifacts:
             baseDirectory: apps/vf-mvp/.next
@@ -164,7 +165,7 @@ const trackedBranch = new aws.amplify.Branch(
     enableAutoBuild: false,
     description: `Tracks the ${amplifyBranchOverride} branch in Github.`,
     environmentVariables: {
-      FRONTEND_ORIGIN_URI: pulumi.interpolate`${amplifyBranchOverride}.${amplifyApp.id}.amplifyapp.com`,
+      FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${amplifyBranchOverride}.${amplifyApp.id}.amplifyapp.com`,
     },
   }
 );
