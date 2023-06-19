@@ -11,7 +11,8 @@
     "NEXT_PUBLIC_IS_EXPORT",
     "NODE_ENV",
     "STAGE",
-    "BACKEND_SECRET_SIGN_KEY"
+    "BACKEND_SECRET_SIGN_KEY",
+    "FRONTEND_ORIGIN_URI"
   ],
   "pipeline": {
     "build": {

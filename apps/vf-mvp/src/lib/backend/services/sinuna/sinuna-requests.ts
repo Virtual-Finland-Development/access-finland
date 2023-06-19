@@ -2,7 +2,7 @@ import { NextApiRequest } from 'next';
 import axios from 'axios';
 import {
   generateBase64Hash,
-  resolveRequestOriginUrl,
+  resolveFrontendOriginUrl,
   transformExpiresInToExpiresAt_ISOString,
 } from '../../api-utils';
 import SinunaSettings from './sinuna-settings';
@@ -19,7 +19,7 @@ export async function retrieveSinunaLoginUrl(
 ) {
   const { sinunaClientId } = await SinunaSettings.getSinunaSecrets();
   const scope = SinunaSettings.scope;
-  const redirectBackUrl = resolveRequestOriginUrl(
+  const redirectBackUrl = resolveFrontendOriginUrl(
     req,
     '/api/auth/login-response'
   );
@@ -47,7 +47,7 @@ export async function retrieveSinunaTokensWithLoginCode(
   loginCode: string
 ) {
   const sinunaSecrets = await SinunaSettings.getSinunaSecrets();
-  const redirectBackUrl = resolveRequestOriginUrl(
+  const redirectBackUrl = resolveFrontendOriginUrl(
     req,
     '/api/auth/login-response'
   );

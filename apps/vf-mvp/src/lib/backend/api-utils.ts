@@ -42,12 +42,19 @@ export function transformExpiresInToExpiresAt_ISOString(
  * @param path
  * @returns
  */
-export function resolveRequestOriginUrl(req: NextApiRequest, path?: string) {
-  // Next.js doesn't apparenly provide the request origin in a way that's easy to use, have to parse it from the headers:
-  const protocol = String(req.headers['x-forwarded-proto'] || 'https').split(
-    ','
-  )[0];
-  const origin = `${protocol}://${req.headers.host}`;
+export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
+  let origin;
+
+  if (typeof process.env.FRONTEND_ORIGIN_URI === 'string') {
+    origin = process.env.FRONTEND_ORIGIN_URI;
+  } else {
+    // Next.js doesn't apparenly provide the request origin in a way that's easy to use, have to parse it from the headers:
+    const protocol = String(req.headers['x-forwarded-proto'] || 'https').split(
+      ','
+    )[0];
+    origin = `${protocol}://${req.headers.host}`;
+  }
+
   const redirectBackUrl = new URL(`${origin}`);
 
   if (path) {
