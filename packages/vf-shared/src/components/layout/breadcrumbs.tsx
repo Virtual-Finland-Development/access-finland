@@ -65,7 +65,7 @@ export default function Breadcrumbs() {
   }, [router]);
 
   if (['/', '/404', '/logged-out'].includes(router.pathname)) {
-    return null;
+    return <div className="mt-4" />;
   }
 
   return (

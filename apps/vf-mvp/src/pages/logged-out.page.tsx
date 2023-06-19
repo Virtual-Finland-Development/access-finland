@@ -17,6 +17,7 @@ export default function LoggedOutPage() {
   const router = useRouter();
   const sinunaLoginServiceLink = getSinunaServiceUrl();
   const { initiator } = router.query;
+
   useEffect(() => {
     if (router.isReady) {
       if (initiator === 'auth-service') {
@@ -35,7 +36,7 @@ export default function LoggedOutPage() {
 
   return (
     <Page title="Logged out">
-      <div className="min-w-xl max-w-xl">
+      <Page.Block className="bg-white">
         <Alert status="neutral" labelText="Logged out from Virtual Finland!">
           <div className="flex flex-col gap-3">
             <Text>
@@ -51,7 +52,7 @@ export default function LoggedOutPage() {
             </Link>
           </div>
         </Alert>
-      </div>
+      </Page.Block>
     </Page>
   );
 }
