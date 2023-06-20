@@ -106,6 +106,25 @@ const lbListenerRule = new aws.lb.ListenerRule(
   }
 );
 
+// ECS Task role
+const awsIdentity = pulumi.output(aws.getCallerIdentity());
+const taskRole = new aws.iam.Role(`${projectName}-fargate-task-role-${env}`, {
+  tags,
+  assumeRolePolicy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['ssm:GetParameter'],
+        Resource: [
+          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
+          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_SECRET`,
+        ],
+      },
+    ],
+  },
+});
+
 // Fargate service
 const fargateService = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
@@ -124,6 +143,9 @@ const fargateService = new awsx.ecs.FargateService(
             },
           ],
         },
+      },
+      taskRole: {
+        roleArn: taskRole.arn,
       },
     },
   }
