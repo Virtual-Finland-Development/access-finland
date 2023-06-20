@@ -1,4 +1,5 @@
 import { NextApiRequest } from 'next';
+import jwt from 'jsonwebtoken';
 
 /**
  * Generates a base64-hash string
@@ -62,4 +63,14 @@ export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
   }
 
   return redirectBackUrl;
+}
+
+/**
+ *
+ * @param idToken
+ * @returns
+ */
+export function resolveIdTokenExpiresAt(idToken: string): string {
+  const decoded = jwt.decode(idToken) as jwt.JwtPayload;
+  return transformExpiresInToExpiresAt_ISOString(decoded.exp);
 }

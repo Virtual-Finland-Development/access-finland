@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
+import { resolveIdTokenExpiresAt } from '@mvp/lib/backend/api-utils';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import {
   retrieveSinunaTokensWithLoginCode,
@@ -44,7 +45,7 @@ export default loggedOutAuthMiddleware(async function handler(
   // Create the api auth package
   const apiAuthPackage = createApiAuthPackage({
     idToken: tokens.idToken,
-    expiresAt: tokens.expiresAt,
+    expiresAt: resolveIdTokenExpiresAt(tokens.idToken),
     profileData: userInfo,
   });
 
