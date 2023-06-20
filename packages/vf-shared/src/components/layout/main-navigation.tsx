@@ -195,7 +195,7 @@ function UserControl({ className }: { className: string }) {
 
   const logoutHandler = async () => {
     setLoading();
-    await api.auth.directToAuthGwLogout();
+    await api.auth.directToAuthLogout();
   };
 
   return (

@@ -1,76 +1,63 @@
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { JSONSessionStorage } from '@mvp/../../../packages/vf-shared/src/lib/utils/JSONStorage';
+import cookie from 'cookie';
 import { Text } from 'suomifi-ui-components';
-import { AuthProvider } from '@shared/types';
-import api from '@shared/lib/api';
-import { SESSION_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
-import { generateAppContextHash } from '@shared/lib/utils';
-import { useAuth } from '@shared/context/auth-context';
+import { LoginState } from 'vf-shared/src/lib/api/services/auth';
+import { SESSION_STORAGE_REDIRECT_KEY } from 'vf-shared/src/lib/constants';
+import { JSONSessionStorage } from 'vf-shared/src/lib/utils/JSONStorage';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 
-export default function AuthPage() {
-  const { logIn, logOut } = useAuth();
-  const [isLoading, setLoading] = useState(false);
+// Transfer the SSR auth token to the client as server side props (instead of HTTP transfer)
+export const getServerSideProps: GetServerSideProps<{
+  csrfToken: string | null;
+}> = async ({ req, res }) => {
+  let csrfToken = null;
+
+  if (req.cookies.csrfToken) {
+    // Pop the auth token from the cookie
+    csrfToken = req.cookies.csrfToken;
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('csrfToken', '', {
+        path: '/',
+        expires: new Date(),
+      })
+    );
+  }
+
+  return { props: { csrfToken: csrfToken } };
+};
+
+export default function AuthPage({
+  csrfToken,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element | null {
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-  const { provider, loginCode, event, success, message } = router.query;
-
-  const handleAuth = useCallback(async () => {
-    try {
-      const loggedInState = await api.auth.logIn({
-        loginCode: loginCode as string,
-        appContext: generateAppContextHash(),
-      });
-
-      logIn(loggedInState);
-
-      const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY);
-      router.push(redirectPath || '/');
-    } catch (error: any) {
-      console.log(error);
-      setLoading(false);
-      setAuthError(error ? (error as string) : 'Logging out failed.');
-    }
-  }, [logIn, loginCode, router]);
 
   const routerActions = useCallback(async () => {
-    // False positives
-    if (!provider || !(event === 'login' || event === 'logout')) {
-      router.push('/');
-      return;
-    }
-
     setLoading(true);
 
-    // Failures
-    if (success !== 'true') {
-      setLoading(false);
-      setAuthError(message ? (message as string) : `${event} failed.`);
+    if (csrfToken) {
+      LoginState.setCsrfToken(csrfToken); // "Logs in" by storing the CSRF key
+      const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY); // Redirect to the original path
+      window.location.assign(redirectPath || '/'); // Redirect to the original path, with forced reload
       return;
     }
 
-    // Successes
-    if (event === 'login') {
-      if (provider === AuthProvider.TESTBED) {
-        handleAuth();
-      } else {
-        router.push('/');
-      }
-    } else {
-      await api.auth.logOut(); // Logout from the backend
-      logOut(); // Logout from the frontend
-      router.push('/');
-    }
-  }, [provider, event, success, message, handleAuth, router, logOut]);
+    // Login was a no-show
+    setLoading(false);
+    setAuthError('Authentication failed.');
+  }, [csrfToken]);
 
   useEffect(() => {
     if (router.isReady) {
       routerActions();
     }
-  }, [router.isReady, router.query, routerActions]);
+  }, [router.isReady, routerActions]);
 
   if (isLoading) {
     return <Loading />;

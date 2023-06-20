@@ -1,4 +1,5 @@
 const path = require('path');
+const dotenv = require('dotenv').config();
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const nextSafe = require('next-safe');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -6,12 +7,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const isDev = process.env.NODE_ENV !== 'production';
-const AUTH_GW_BASE_URL = isDev
-  ? 'https://virtualfinland-authgw.localhost'
-  : process.env.NEXT_PUBLIC_AUTH_GW_BASE_URL || '';
-const CODESETS_BASE_URL = isDev
-  ? 'http://localhost:3166'
-  : process.env.NEXT_PUBLIC_CODESETS_BASE_URL || '';
+const CODESETS_BASE_URL =
+  process.env.NEXT_PUBLIC_CODESETS_BASE_URL || 'http://localhost:3166';
 
 // https://trezy.gitbook.io/next-safe/usage/configuration
 const nextSafeConfig = {
@@ -20,7 +17,7 @@ const nextSafeConfig = {
   contentSecurityPolicy: {
     'base-uri': "'none'",
     'child-src': "'none'",
-    'connect-src': ["'self'", AUTH_GW_BASE_URL, CODESETS_BASE_URL],
+    'connect-src': ["'self'", CODESETS_BASE_URL],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
     'form-action': "'self'",
@@ -69,6 +66,8 @@ const nextConfig = {
         },
       })
     );
+    config.plugins.push(new webpack.EnvironmentPlugin(dotenv.parsed || {}));
+
     // resolve duplicate packages when building (MAKE SURE EVERYTHING WORKS, test the build!)
     config.resolve.alias['@babel/runtime'] = path.resolve(
       __dirname,

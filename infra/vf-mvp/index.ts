@@ -12,9 +12,6 @@ const tags = {
 };
 
 // external apis
-const authGwEndpoint = new pulumi.StackReference(
-  `${org}/authentication-gw/dev`
-).getOutput('endpoint');
 const codesetsEndpoint = new pulumi.StackReference(
   `${org}/codesets/dev`
 ).getOutput('url');
@@ -47,10 +44,10 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
   dockerfile: '../../apps/vf-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
   extraOptions: ['--platform', 'linux/amd64'],
   args: {
-    NEXT_PUBLIC_AUTH_GW_BASE_URL: authGwEndpoint,
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
+    STAGE: env,
   },
 });
 
@@ -109,6 +106,25 @@ const lbListenerRule = new aws.lb.ListenerRule(
   }
 );
 
+// ECS Task role
+const awsIdentity = pulumi.output(aws.getCallerIdentity());
+const taskRole = new aws.iam.Role(`${projectName}-fargate-task-role-${env}`, {
+  tags,
+  assumeRolePolicy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['ssm:GetParameter'],
+        Resource: [
+          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
+          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_SECRET`,
+        ],
+      },
+    ],
+  },
+});
+
 // Fargate service
 const fargateService = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
@@ -127,6 +143,9 @@ const fargateService = new awsx.ecs.FargateService(
             },
           ],
         },
+      },
+      taskRole: {
+        roleArn: taskRole.arn,
       },
     },
   }

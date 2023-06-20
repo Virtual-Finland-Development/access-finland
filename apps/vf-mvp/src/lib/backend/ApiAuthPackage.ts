@@ -3,8 +3,7 @@ import { randomBytes } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export function createApiAuthPackage(loggedInState: LoggedInState) {
-  // Generate CSRF token
-  const csrfToken = randomBytes(100).toString('base64');
+  const csrfToken = generateCSRFToken();
 
   try {
     // Dummy check the token decodes
@@ -29,7 +28,7 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
   }); // HMAC SHA256
 
   return {
-    state: apiAuthPackage,
+    data: apiAuthPackage,
     encrypted: encryptedApiAuthPackage,
   };
 }
@@ -51,4 +50,12 @@ export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
  */
 function resolveSecretSignKey() {
   return process.env.BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
+}
+
+/**
+ *
+ * @returns A random string of 100 bytes
+ */
+export function generateCSRFToken() {
+  return randomBytes(100).toString('base64');
 }

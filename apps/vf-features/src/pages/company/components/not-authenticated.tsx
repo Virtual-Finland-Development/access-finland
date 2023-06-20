@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import manLaptopImage from '@shared/images/man-laptop.jpg';
-import { Button, Text } from 'suomifi-ui-components';
-import { StaticIcon } from 'suomifi-ui-components';
+import { Button, StaticIcon, Text } from 'suomifi-ui-components';
 import api from '@shared/lib/api';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -15,7 +14,7 @@ export default function CompanyNotAuthenticated() {
 
   const loginHandler = () => {
     setLoading(true);
-    api.auth.directToAuthGwLogin('/company');
+    api.auth.directToAuthLogin('/company');
   };
 
   return (

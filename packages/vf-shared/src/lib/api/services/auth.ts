@@ -8,31 +8,44 @@ import { AUTH_GW_BASE_URL } from '../endpoints';
 
 export const LoginState = new LoggedInStateMachine();
 
-export function directToAuthGwLogin(redirectPath?: string) {
+export function directToAuthLogin(redirectPath?: string) {
   if (redirectPath) {
     JSONSessionStorage.set(SESSION_STORAGE_REDIRECT_KEY, redirectPath);
   }
 
-  window.location.assign(
-    `${AUTH_GW_BASE_URL}/auth/openid/testbed/authentication-request?appContext=${generateAppContextHash()}`
-  );
+  if (isExportedApplication()) {
+    window.location.assign(
+      `${AUTH_GW_BASE_URL}/auth/openid/testbed/authentication-request?appContext=${generateAppContextHash()}`
+    );
+  } else {
+    window.location.assign('/api/auth/login');
+  }
 }
 
-export async function directToAuthGwLogout() {
-  const idToken = (await LoginState.getLoggedInState())?.idToken;
+export async function directToAuthLogout() {
+  if (isExportedApplication()) {
+    const idToken = (await LoginState.getLoggedInState())?.idToken;
 
-  // Cleanup internal state before redirecting to auth-gw
-  await LoginState.clear();
+    // Cleanup internal state before redirecting to auth-gw
+    await LoginState.clear();
 
-  window.location.assign(
-    `${AUTH_GW_BASE_URL}/auth/openid/testbed/logout-request?appContext=${generateAppContextHash()}&idToken=${idToken}`
-  );
+    window.location.assign(
+      `${AUTH_GW_BASE_URL}/auth/openid/testbed/logout-request?appContext=${generateAppContextHash()}&idToken=${idToken}`
+    );
+  } else {
+    await logOut();
+    window.location.assign('/logged-out?initiator=auth-service'); // Update views with force, show a sinuna related message on a separate logout page
+  }
 }
 
 export async function logIn(authPayload: {
   loginCode: string;
   appContext: string;
 }): Promise<LoggedInState> {
+  if (!isExportedApplication()) {
+    throw new Error('logIn should not be called in non-exported applications');
+  }
+
   const response = await apiClient.post(
     `${AUTH_GW_BASE_URL}/auth/openid/testbed/login-request`,
     authPayload,
@@ -45,21 +58,7 @@ export async function logIn(authPayload: {
     throw new Error('Error in login request');
   }
 
-  let loggedInState = response.data;
-
-  if (!isExportedApplication()) {
-    // Setup cookie for protected api routes
-    const vfApiAuthResponse = await apiClient.post(
-      '/api/auth/login',
-      loggedInState
-    );
-
-    if (vfApiAuthResponse?.status !== 200) {
-      throw new Error('Error in backend login request');
-    }
-
-    loggedInState = vfApiAuthResponse.data.state;
-  }
+  const loggedInState = response.data;
 
   // Initialize internal state
   await LoginState.setLoggedInState(loggedInState);
@@ -68,8 +67,8 @@ export async function logIn(authPayload: {
 }
 
 export async function logOut() {
-  // cleanup internal state, just in case called directly
-  await LoginState.clear();
   // clean up cookie for protected routes
   await apiClient.post('/api/auth/logout');
+  // cleanup internal state, just in case called directly
+  await LoginState.clear();
 }

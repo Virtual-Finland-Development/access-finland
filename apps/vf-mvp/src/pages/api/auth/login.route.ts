@@ -1,47 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { LoggedInState } from '@mvp/../../../packages/vf-shared/src/types';
-import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
+import { generateCSRFToken } from '@mvp/lib/backend/ApiAuthPackage';
+import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
+import { retrieveSinunaLoginUrl } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
 
-function isValidBody<T extends Record<string, unknown>>(
-  body: any,
-  fields: (keyof T)[]
-): body is T {
-  return Object.keys(body).every(key => fields.includes(key));
-}
-
-export default async function handler(
+export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (
-    !isValidBody<LoggedInState>(req.body, [
-      'idToken',
-      'expiresAt',
-      'profileData',
-    ])
-  ) {
-    res.status(402).json({
-      message: 'Bad request.',
-    });
-    return;
-  }
-
-  const apiAuthPackage = createApiAuthPackage(req.body);
-
+  const sinunaState = generateCSRFToken();
+  const sinunaLoginUrl = await retrieveSinunaLoginUrl(req, sinunaState);
   res
-    .status(200)
     .setHeader(
       'Set-Cookie',
-      cookie.serialize('apiAuthPackage', apiAuthPackage.encrypted, {
+      cookie.serialize('sinunaCsrf', sinunaState, {
         path: '/api',
         httpOnly: true,
-        sameSite: 'strict',
-        expires: new Date(apiAuthPackage.state.expiresAt),
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
       })
     )
-    .json({
-      message: 'Login successful.',
-      state: apiAuthPackage.state,
-    });
-}
+    .redirect(303, sinunaLoginUrl.toString());
+});

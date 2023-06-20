@@ -15,7 +15,9 @@ const StyledButton = styled(Button).attrs({
 export default function BackButton() {
   const router = useRouter();
 
-  if (['/', '/profile', '/company'].includes(router.route)) {
+  if (
+    ['/', '/profile', '/company', '/logged-out', '/404'].includes(router.route)
+  ) {
     return null;
   }
 

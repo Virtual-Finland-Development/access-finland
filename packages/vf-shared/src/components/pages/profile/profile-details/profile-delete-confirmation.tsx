@@ -19,7 +19,7 @@ export default function ProfileDeleteConfirmation(props: Props) {
 
     try {
       await api.profile.deleteProfile();
-      await api.auth.directToAuthGwLogout();
+      await api.auth.directToAuthLogout();
     } catch (error: any) {
       setIsLoading(false);
       toast({
