@@ -130,3 +130,12 @@ export const findNace = (
 export function isExportedApplication() {
   return process.env.NEXT_PUBLIC_IS_EXPORT || false;
 }
+
+/**
+ * The stage name of the app deployment
+ *
+ * @returns
+ */
+export function getRuntimeStage() {
+  return process.env.NEXT_PUBLIC_STAGE || 'local';
+}
