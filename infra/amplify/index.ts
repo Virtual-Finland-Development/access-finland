@@ -1,5 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
-import { configureAmplify } from './resources/amplify';
+import { configureAmplify, deployTrackedBranch } from './resources/amplify';
 import { configureIamUser } from './resources/iam';
 import { configureParameterStore } from './resources/parameter-store';
 
@@ -7,13 +7,13 @@ import { configureParameterStore } from './resources/parameter-store';
 const { amplifyExecUserAccessKey } = configureIamUser();
 
 // Amplify configs
-const { amplifyApp, trackedBranch, deployTrackedBranch } = configureAmplify();
+const { amplifyApp, trackedBranch } = configureAmplify();
 
 // Parameter store configs
 configureParameterStore(amplifyApp.id, amplifyExecUserAccessKey);
 
 // Run amplify branch deployment
-deployTrackedBranch();
+deployTrackedBranch(amplifyApp.id, trackedBranch.branchName);
 
 // Export the App URL (maps to created branch)
 export const appUrl = pulumi.interpolate`${trackedBranch.branchName}.${amplifyApp.defaultDomain}`;

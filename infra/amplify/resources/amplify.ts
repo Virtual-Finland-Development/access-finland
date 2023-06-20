@@ -80,81 +80,83 @@ export function configureAmplify() {
     },
   });
 
-  const deployTrackedBranch = () => {
-    //
-    // Manually run build/deployment for specified branch
-    // Wait for deployment to finish, fail or timeout
-    //
-    pulumi
-      .all([amplifyApp.id, trackedBranch.branchName])
-      .apply(async ([appId, branchName]) => {
-        if (pulumi.runtime.isDryRun()) {
-          return;
-        }
-
-        const amplifyClient = new AmplifyClient({});
-
-        try {
-          const { jobSummary } = await amplifyClient.send(
-            new StartJobCommand({
-              appId,
-              branchName,
-              jobType: 'RELEASE',
-              jobReason: 'Testing testing',
-            })
-          );
-
-          if (jobSummary?.status === 'FAILED') {
-            console.error(`Deployment failed on StartJobCommand`);
-            throw 'StartJobCommand failure';
-          }
-
-          const jobStatus = await new Promise((resolve, reject) => {
-            const timeoutIntervalMs = 5000; // 5 second interval
-            let timeoutCountdownSecs = 300; // 5 minutes timeout
-
-            const interval = setInterval(async () => {
-              timeoutCountdownSecs =
-                timeoutCountdownSecs - timeoutIntervalMs / 1000; // Lower the timeout countdown by the interval
-
-              const { job } = await amplifyClient.send(
-                new GetJobCommand({
-                  appId,
-                  branchName,
-                  jobId: jobSummary?.jobId,
-                })
-              );
-
-              const jobStatus = job?.summary?.status;
-
-              if (jobStatus === 'SUCCEED') {
-                clearInterval(interval);
-                resolve(jobStatus);
-              } else {
-                if (jobStatus === 'FAILED') {
-                  clearInterval(interval);
-                  reject(jobStatus);
-                } else if (timeoutCountdownSecs <= 0) {
-                  clearInterval(interval);
-                  reject('TIMEOUT');
-                }
-              }
-            }, timeoutIntervalMs);
-          });
-
-          console.log(`Deployment finished with status: ${jobStatus}`);
-        } catch (jobStatus) {
-          if (typeof jobStatus === 'string') {
-            console.error(`Deployment failed with status: ${jobStatus}`);
-          }
-          throw jobStatus; // Ensure pulumi fails
-        }
-      });
-  };
-
   return {
     amplifyApp,
     trackedBranch,
-    deployTrackedBranch,
   };
+}
+
+export function deployTrackedBranch(
+  amplifyAppId: pulumi.Output<string>,
+  trackedBranchName: pulumi.Output<string>
+) {
+  //
+  // Manually run build/deployment for specified branch
+  // Wait for deployment to finish, fail or timeout
+  //
+  pulumi
+    .all([amplifyAppId, trackedBranchName])
+    .apply(async ([appId, branchName]) => {
+      if (pulumi.runtime.isDryRun()) {
+        return;
+      }
+
+      const amplifyClient = new AmplifyClient({});
+
+      try {
+        const { jobSummary } = await amplifyClient.send(
+          new StartJobCommand({
+            appId,
+            branchName,
+            jobType: 'RELEASE',
+            jobReason: 'Testing testing',
+          })
+        );
+
+        if (jobSummary?.status === 'FAILED') {
+          console.error(`Deployment failed on StartJobCommand`);
+          throw 'StartJobCommand failure';
+        }
+
+        const jobStatus = await new Promise((resolve, reject) => {
+          const timeoutIntervalMs = 5000; // 5 second interval
+          let timeoutCountdownSecs = 300; // 5 minutes timeout
+
+          const interval = setInterval(async () => {
+            timeoutCountdownSecs =
+              timeoutCountdownSecs - timeoutIntervalMs / 1000; // Lower the timeout countdown by the interval
+
+            const { job } = await amplifyClient.send(
+              new GetJobCommand({
+                appId,
+                branchName,
+                jobId: jobSummary?.jobId,
+              })
+            );
+
+            const jobStatus = job?.summary?.status;
+
+            if (jobStatus === 'SUCCEED') {
+              clearInterval(interval);
+              resolve(jobStatus);
+            } else {
+              if (jobStatus === 'FAILED') {
+                clearInterval(interval);
+                reject(jobStatus);
+              } else if (timeoutCountdownSecs <= 0) {
+                clearInterval(interval);
+                reject('TIMEOUT');
+              }
+            }
+          }, timeoutIntervalMs);
+        });
+
+        console.log(`Deployment finished with status: ${jobStatus}`);
+      } catch (jobStatus) {
+        if (typeof jobStatus === 'string') {
+          console.error(`Deployment failed with status: ${jobStatus}`);
+        }
+        throw jobStatus; // Ensure pulumi fails
+      }
+    });
 }
