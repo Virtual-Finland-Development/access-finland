@@ -38,7 +38,7 @@ export function configureAmplify() {
       NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
-      STAGE: envOverride,
+      NEXT_PUBLIC_STAGE: envOverride,
     },
     platform: 'WEB_COMPUTE',
     buildSpec: `
@@ -53,7 +53,7 @@ export function configureAmplify() {
               build:
                 commands:
                   - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
-                  - echo "STAGE=$STAGE" >> apps/vf-mvp/.env
+                  - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/vf-mvp/.env
                   - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/vf-mvp/.env
                   - npx turbo run build --filter=vf-mvp
             artifacts:
