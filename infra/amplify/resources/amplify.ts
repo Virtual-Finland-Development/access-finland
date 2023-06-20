@@ -120,7 +120,7 @@ export function deployTrackedBranch(
 
         const jobStatus = await new Promise((resolve, reject) => {
           const timeoutIntervalMs = 5000; // 5 second interval
-          let timeoutCountdownSecs = 300; // 5 minutes timeout
+          let timeoutCountdownSecs = 600; // 10 minutes timeout
 
           const interval = setInterval(async () => {
             timeoutCountdownSecs =
