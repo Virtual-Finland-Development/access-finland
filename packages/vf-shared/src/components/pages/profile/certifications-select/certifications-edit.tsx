@@ -5,8 +5,8 @@ import {
   useForm,
 } from 'react-hook-form';
 import { Button, Text } from 'suomifi-ui-components';
-import type { Certification, EscoSkill } from '@shared/types';
-import FormInput from '@shared/components/form/form-input';
+import type { Certification, EscoSkill } from '@/types';
+import FormInput from '@/components/form/form-input';
 import MoreRecommendations from '../jmf-recommendations/more-recommendations';
 
 interface Props {

@@ -13,12 +13,12 @@ import type {
   PersonBasicInformation,
   Region,
   WorkPermit,
-} from '@shared/types';
+} from '@/types';
 import {
   EMPLOYMENT_TYPE_LABELS,
   SKILL_LEVEL_LABELS,
   WORKING_TIME_LABELS,
-} from '@shared/lib/constants';
+} from '@/lib/constants';
 
 export function mapReadablePersonBasicInfo(
   personBasicInformation: PersonBasicInformation,
