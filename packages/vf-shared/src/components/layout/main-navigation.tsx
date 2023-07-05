@@ -83,11 +83,9 @@ function DesktopMenuPopover({
                 <>
                   <IconFileCabinet className="flex-shrink-0 h-12 w-12" />
                   <div className="flex flex-col">
-                    <button className="flex" onClick={() => close()}>
-                      <CustomLink href={item.href} $bold>
-                        {item.name}
-                      </CustomLink>
-                    </button>
+                    <CustomLink href={item.href} $bold onClick={() => close()}>
+                      {item.name}
+                    </CustomLink>
                     <Text>Page info here.</Text>
                   </div>
                 </>
