@@ -47,9 +47,9 @@ function MobileLink({ onClick, children, href }: MobileLink) {
 }
 
 const DesktopNavItem = styled(Link).attrs<{ isActive: boolean }>(
-  ({ isActive, href }) => ({
+  ({ $isActive, href }) => ({
     className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
-      isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
+      $isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
     }`,
     href,
   })
@@ -109,7 +109,7 @@ function DesktopNavigation({ navigationItems }: { navigationItems: NavItems }) {
           {navigationItems.map(item => (
             <DesktopNavItem
               key={item.name}
-              isActive={
+              $isActive={
                 (item.href === '/' && router.pathname === item.href) ||
                 (item.href !== '/' && router.pathname.includes(item.href))
               }
