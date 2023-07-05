@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconArrowLeft } from 'suomifi-ui-components';
 import { EmploymentType, JobApplicantProfile, WorkingTime } from '@/types';
 import api from '@/lib/api';
 import { EMPLOYMENT_TYPE_LABELS, WORKING_TIME_LABELS } from '@/lib/constants';
@@ -293,7 +293,7 @@ export default function WorkingProfileForm(props: Props) {
       <div className="flex flex-row gap-3 mt-6">
         <Button
           variant="secondary"
-          icon="arrowLeft"
+          icon={<IconArrowLeft />}
           onClick={() => router.push('/profile')}
         >
           Back

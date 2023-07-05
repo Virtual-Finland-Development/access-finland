@@ -1,5 +1,5 @@
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
-import { Block, Icon } from 'suomifi-ui-components';
+import { Block, IconChevronRight } from 'suomifi-ui-components';
 import europeImage from '../../images/your_europe_logo.svg';
 import CustomHeading from '../ui/custom-heading';
 import CustomImage from '../ui/custom-image';
@@ -28,10 +28,7 @@ function Help() {
             {HELP_LINKS.map(item => (
               <li key={item.label}>
                 <div className="flex flex-row gap-1 items-center">
-                  <Icon
-                    icon="chevronRight"
-                    className="-ml-1 text-base flex-shrink-0 text-suomifi-orange"
-                  />
+                  <IconChevronRight className="-ml-1 text-base flex-shrink-0 text-suomifi-orange" />
                   <CustomLink href={item.href} $base>
                     {item.label}
                   </CustomLink>

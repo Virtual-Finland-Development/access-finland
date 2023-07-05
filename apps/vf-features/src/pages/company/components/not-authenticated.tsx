@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import manLaptopImage from '@shared/images/man-laptop.jpg';
-import { Button, StaticIcon, Text } from 'suomifi-ui-components';
+import { Button, IconBuildings, IconLogin, Text } from 'suomifi-ui-components';
 import api from '@shared/lib/api';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -23,10 +23,7 @@ export default function CompanyNotAuthenticated() {
         <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-1 lg:-mx-12">
           <div className="bg-suomifi-light text-white flex flex-col gap-8 items-center justify-center px-4 py-8">
             <div className="hidden md:block">
-              <StaticIcon
-                icon="buildings"
-                className="h-16 w-16 flex-shrink-0 bg-white rounded-full"
-              />
+              <IconBuildings className="h-16 w-16 flex-shrink-0 bg-white rounded-full" />
             </div>
             <CustomHeading variant="h2" $center>
               Establish a company or modify company information
@@ -36,7 +33,7 @@ export default function CompanyNotAuthenticated() {
               or modify existing company information.
             </CustomText>
             <Button
-              icon="login"
+              icon={<IconLogin />}
               variant="inverted"
               onClick={loginHandler}
               disabled={isLoading}

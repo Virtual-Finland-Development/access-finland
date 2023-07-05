@@ -1,4 +1,4 @@
-import { StaticIcon } from 'suomifi-ui-components';
+import { IconUserBadge } from 'suomifi-ui-components';
 import { Text } from 'suomifi-ui-components';
 import { useJobApplicantProfile } from '@shared/lib/hooks/profile';
 import AuthSentry from '@shared/components/auth-sentry';
@@ -22,7 +22,7 @@ export default function WorkingProfilePage() {
             <Page.Block className="bg-suomifi-blue-bg-light">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-row items-center">
-                  <StaticIcon icon="userBadge" className="h-16 w-16" />
+                  <IconUserBadge className="h-16 w-16" />
                   <CustomHeading variant="h2" suomiFiBlue="dark">
                     Your working profile
                   </CustomHeading>

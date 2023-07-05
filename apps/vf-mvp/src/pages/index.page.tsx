@@ -1,6 +1,19 @@
 import { useRouter } from 'next/router';
 import womanLaptopImage from '@shared/images/woman-laptop.jpg';
-import { Button, StaticIcon, Text } from 'suomifi-ui-components';
+import {
+  Button,
+  IconBook,
+  IconCatalog,
+  IconDoctor,
+  IconFamily,
+  IconManButtons,
+  IconManLaptop,
+  IconOrganisation,
+  IconShop,
+  IconTeam,
+  IconUserProfile,
+  Text,
+} from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomImage from '@shared/components/ui/custom-image';
@@ -16,8 +29,7 @@ export default function HomePage() {
           The only service you need for moving into Finland
         </CustomHeading>
         <div className="flex flex-col mt-8">
-          <StaticIcon
-            icon="book"
+          <IconBook
             baseColor="grey"
             highlightColor="purple"
             className="h-16 w-16"
@@ -32,8 +44,7 @@ export default function HomePage() {
           </Text>
         </div>
         <div className="flex flex-col mt-8">
-          <StaticIcon
-            icon="userProfile"
+          <IconUserProfile
             baseColor="grey"
             highlightColor="purple"
             className="h-16 w-16"
@@ -78,21 +89,15 @@ export default function HomePage() {
           </Text>
           <div className="flex flex-col gap-6 mt-6">
             <div className="flex flex-row items-center gap-6 py-2">
-              <StaticIcon
-                icon="manButtons"
-                className="h-16 w-16 flex-shrink-0"
-              />
+              <IconManButtons className="h-16 w-16 flex-shrink-0" />
               <CustomLink href="#">Apply for yourself</CustomLink>
             </div>
             <div className="flex flex-row items-center gap-6 py-2">
-              <StaticIcon icon="team" className="h-16 w-16 flex-shrink-0" />
+              <IconTeam className="h-16 w-16 flex-shrink-0" />
               <CustomLink href="#">Apply on behalf of someone</CustomLink>
             </div>
             <div className="flex flex-row items-center gap-6 py-2">
-              <StaticIcon
-                icon="organisation"
-                className="h-16 w-16 flex-shrink-0"
-              />
+              <IconOrganisation className="h-16 w-16 flex-shrink-0" />
               <CustomLink href="#">
                 Apply on behalf of company or organization
               </CustomLink>
@@ -107,31 +112,31 @@ export default function HomePage() {
         </CustomHeading>
         <div className="flex flex-col mt-4">
           <div className="bg-suomifi-blue-bg-light flex flex-row items-center gap-6 py-2">
-            <StaticIcon icon="doctor" className="h-16 w-16 flex-shrink-0" />
+            <IconDoctor className="h-16 w-16 flex-shrink-0" />
             <CustomLink href="#" $bold>
               work
             </CustomLink>
           </div>
           <div className="flex flex-row items-center gap-6 py-2">
-            <StaticIcon icon="manLaptop" className="h-16 w-16 flex-shrink-0" />
+            <IconManLaptop className="h-16 w-16 flex-shrink-0" />
             <CustomLink href="#" $bold>
               study
             </CustomLink>
           </div>
           <div className="bg-suomifi-blue-bg-light flex flex-row items-center gap-6 py-2">
-            <StaticIcon icon="shop" className="h-16 w-16 flex-shrink-0" />
+            <IconShop className="h-16 w-16 flex-shrink-0" />
             <CustomLink href="#" $bold>
               create business
             </CustomLink>
           </div>
           <div className="flex flex-row items-center gap-6 py-2">
-            <StaticIcon icon="family" className="h-16 w-16 flex-shrink-0" />
+            <IconFamily className="h-16 w-16 flex-shrink-0" />
             <CustomLink href="#" $bold>
               along with family
             </CustomLink>
           </div>
           <div className="bg-suomifi-blue-bg-light flex flex-row items-center gap-6 py-2">
-            <StaticIcon icon="catalog" className="h-16 w-16 flex-shrink-0" />
+            <IconCatalog className="h-16 w-16 flex-shrink-0" />
             <CustomLink href="#" $bold>
               other
             </CustomLink>

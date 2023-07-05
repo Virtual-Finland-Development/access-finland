@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import lodash_get from 'lodash.get';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconPlus, IconRemove } from 'suomifi-ui-components';
 import type { Shareholder } from '@shared/types';
 import { SHARE_SERIES_CLASS_OPTIONS } from '@shared/lib/constants';
 import { pickRandomName } from '@shared/lib/utils';
@@ -92,7 +92,7 @@ export default function BeneficialOwnersShareholders() {
           {index > 0 && (
             <Button
               variant="link"
-              iconRight="remove"
+              iconRight={<IconRemove />}
               onClick={() => removeShareSeries(index)}
             >
               Remove shareholder
@@ -103,7 +103,7 @@ export default function BeneficialOwnersShareholders() {
 
       <Button
         variant="secondaryNoBorder"
-        iconRight="plus"
+        iconRight={<IconPlus />}
         onClick={appendShareSeries}
       >
         Add sharelholder
@@ -161,7 +161,7 @@ function Ownerships({ index }: { index: number }) {
           <div>
             <Button
               variant="link"
-              iconRight="remove"
+              iconRight={<IconRemove />}
               onClick={() => removeOwnership(i)}
             >
               Remove
@@ -172,7 +172,7 @@ function Ownerships({ index }: { index: number }) {
       <div className="flex justify-start">
         <Button
           variant="secondaryNoBorder"
-          iconRight="plus"
+          iconRight={<IconPlus />}
           tw="min-h-0 p-0"
           onClick={appendOwnership}
         >

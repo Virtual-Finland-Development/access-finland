@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useFormContext } from 'react-hook-form';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconArrowLeft, IconArrowRight } from 'suomifi-ui-components';
 import { useCompanyContext } from '@shared/context/company-context';
 
 interface Props {
@@ -35,14 +35,14 @@ export default function CompanyWizardActionButtons(props: Props) {
       {step && step > 0 && step < 10 ? (
         <Button
           variant="secondary"
-          icon="arrowLeft"
+          icon={<IconArrowLeft />}
           onClick={() => onFormActionClick()}
         >
           Previous
         </Button>
       ) : null}
       <Button
-        iconRight="arrowRight"
+        iconRight={<IconArrowRight />}
         onClick={onNextClick}
         disabled={buttonsDisabled}
       >
