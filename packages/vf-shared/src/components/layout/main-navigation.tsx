@@ -23,7 +23,7 @@ import CustomLink from '../ui/custom-link';
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
   className: '!p-0 !px-2',
-  'aria-label': 'menu toggle button',
+  'aria-label': 'Toggle menu button',
 })`
   &:hover {
     background: transparent !important;
