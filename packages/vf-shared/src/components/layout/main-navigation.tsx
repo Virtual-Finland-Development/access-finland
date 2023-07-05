@@ -46,11 +46,12 @@ function MobileLink({ onClick, children, href }: MobileLink) {
   );
 }
 
-const DesktopNavItem = styled.li.attrs<{ isActive: boolean }>(
-  ({ isActive }) => ({
+const DesktopNavItem = styled(Link).attrs<{ isActive: boolean }>(
+  ({ isActive, href }) => ({
     className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
       isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
     }`,
+    href,
   })
 )<{ isActive: boolean }>`
   a {
@@ -104,7 +105,7 @@ function DesktopNavigation({ navigationItems }: { navigationItems: NavItems }) {
   return (
     <div className="hidden md:block border-t border-t-gray-300">
       <div className="container px-4">
-        <ul className="hidden md:flex flex-wrap gap-4 -mx-7">
+        <nav className="hidden md:flex flex-wrap gap-4 -mx-7">
           {navigationItems.map(item => (
             <DesktopNavItem
               key={item.name}
@@ -112,12 +113,12 @@ function DesktopNavigation({ navigationItems }: { navigationItems: NavItems }) {
                 (item.href === '/' && router.pathname === item.href) ||
                 (item.href !== '/' && router.pathname.includes(item.href))
               }
-              onClick={() => router.push(item.href)}
+              href={item.href}
             >
               <Text>{item.name}</Text>
             </DesktopNavItem>
           ))}
-        </ul>
+        </nav>
       </div>
     </div>
   );
