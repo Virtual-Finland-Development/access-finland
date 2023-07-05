@@ -1,5 +1,5 @@
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Button, Text } from 'suomifi-ui-components';
+import { Button, IconPlus, IconRemove, Text } from 'suomifi-ui-components';
 import type { Education, EducationField, EducationLevel } from '@/types';
 import FormInput from '@/components/form/form-input';
 import FormSingleSelect from '@/components/form/form-single-select';
@@ -99,7 +99,7 @@ export default function EducationsEdit(props: Props) {
               <div>
                 <Button
                   variant="link"
-                  iconRight="remove"
+                  iconRight={<IconRemove />}
                   onClick={() => remove(index)}
                 >
                   Remove
@@ -112,7 +112,7 @@ export default function EducationsEdit(props: Props) {
       <div className="mt-4">
         <Button
           variant="secondaryNoBorder"
-          iconRight="plus"
+          iconRight={<IconPlus />}
           onClick={() => append(DEFAULT_VALUE)}
         >
           Add new

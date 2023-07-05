@@ -1,5 +1,5 @@
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Button, Text } from 'suomifi-ui-components';
+import { Button, IconArrowLeft, IconRemove, Text } from 'suomifi-ui-components';
 import { OtherSkill, SkillLevel } from '@/types';
 import { SKILL_LEVEL_LABELS } from '@/lib/constants';
 import FormSingleSelect from '@/components/form/form-single-select';
@@ -66,7 +66,7 @@ export default function OtherSkillsAdditionalInfo(props: Props) {
               <div className="mt-3">
                 <Button
                   variant="secondary"
-                  iconRight="remove"
+                  iconRight={<IconRemove />}
                   onClick={() => remove(index)}
                 >
                   Remove
@@ -78,7 +78,7 @@ export default function OtherSkillsAdditionalInfo(props: Props) {
       </div>
 
       <div className="flex flecx-row items-start gap-3 mt-4">
-        <Button variant="secondary" icon="arrowLeft" onClick={onBack}>
+        <Button variant="secondary" icon={<IconArrowLeft />} onClick={onBack}>
           Back
         </Button>
         <Button disabled={!selected.length} type="submit">
