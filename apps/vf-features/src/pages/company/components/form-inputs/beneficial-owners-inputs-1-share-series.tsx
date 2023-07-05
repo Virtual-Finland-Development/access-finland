@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import lodash_get from 'lodash.get';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconPlus, IconRemove } from 'suomifi-ui-components';
 import type { ShareSeries2 } from '@shared/types';
 import { SHARE_SERIES_CLASS_OPTIONS } from '@shared/lib/constants';
 import { useCompanyContext } from '@shared/context/company-context';
@@ -114,7 +114,7 @@ export default function BeneficialOwnersShareSeries() {
           {index > 0 && (
             <Button
               variant="link"
-              iconRight="remove"
+              iconRight={<IconRemove />}
               onClick={() => removeShareSeries(index)}
             >
               Remove
@@ -125,7 +125,7 @@ export default function BeneficialOwnersShareSeries() {
 
       <Button
         variant="secondaryNoBorder"
-        iconRight="plus"
+        iconRight={<IconPlus />}
         onClick={appendShareSeries}
       >
         Add new

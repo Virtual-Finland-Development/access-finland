@@ -5,13 +5,14 @@ import { Dialog, Popover, Transition } from '@headlessui/react';
 import styled from 'styled-components';
 import {
   Button,
-  Icon,
+  IconClose,
+  IconFileCabinet,
+  IconMenu,
   LanguageMenu,
   LanguageMenuItem,
   RouterLink,
   ServiceNavigation,
   ServiceNavigationItem,
-  StaticIcon,
   Text,
 } from 'suomifi-ui-components';
 import { useAuth } from '../../context/auth-context';
@@ -68,9 +69,9 @@ function DesktopMenuPopover({
         <>
           <Popover.Button as={MobileMenuToggleButton}>
             {open ? (
-              <Icon icon="close" className="block h-6 w-6" aria-hidden="true" />
+              <IconClose className="block h-6 w-6" aria-hidden="true" />
             ) : (
-              <Icon icon="menu" className="block h-6 w-6" aria-hidden="true" />
+              <IconMenu className="block h-6 w-6" aria-hidden="true" />
             )}
           </Popover.Button>
           <Popover.Panel className="absolute right-0 z-10 mt-3 origin-top-right bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none flex flex-col px-4">
@@ -80,10 +81,7 @@ function DesktopMenuPopover({
                 className="flex flex-row items-center justify-start gap-4 w-80 border-b last:border-none border-b-gray-300 p-4"
               >
                 <>
-                  <StaticIcon
-                    icon="archive"
-                    className="flex-shrink-0 h-12 w-12"
-                  />
+                  <IconFileCabinet className="flex-shrink-0 h-12 w-12" />
                   <div className="flex flex-col">
                     <button className="flex" onClick={() => close()}>
                       <CustomLink href={item.href} $bold>
@@ -258,17 +256,9 @@ export default function MainNavigation({
                   onClick={() => setMobileNavPanelOpen(isOpen => !isOpen)}
                 >
                   {mobileNavPanelOpen ? (
-                    <Icon
-                      icon="close"
-                      className="block h-6 w-6"
-                      aria-hidden="true"
-                    />
+                    <IconClose className="block h-6 w-6" aria-hidden="true" />
                   ) : (
-                    <Icon
-                      icon="menu"
-                      className="block h-6 w-6"
-                      aria-hidden="true"
-                    />
+                    <IconMenu className="block h-6 w-6" aria-hidden="true" />
                   )}
                 </Button>
               </div>

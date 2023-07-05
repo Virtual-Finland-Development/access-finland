@@ -1,5 +1,5 @@
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Button, Text } from 'suomifi-ui-components';
+import { Button, IconPlus, IconRemove, Text } from 'suomifi-ui-components';
 import type { EscoLanguage, LanguageSkill, LanguageSkillLevel } from '@/types';
 import FormSingleSelect from '@/components/form/form-single-select';
 
@@ -85,7 +85,7 @@ export default function LanguagesEdit(props: Props) {
             <div>
               <Button
                 variant="link"
-                iconRight="remove"
+                iconRight={<IconRemove />}
                 onClick={() => remove(index)}
               >
                 Remove
@@ -97,7 +97,7 @@ export default function LanguagesEdit(props: Props) {
       <div className="mt-4">
         <Button
           variant="secondaryNoBorder"
-          iconRight="plus"
+          iconRight={<IconPlus />}
           onClick={() => append(DEFAULT_VALUE)}
         >
           Add new

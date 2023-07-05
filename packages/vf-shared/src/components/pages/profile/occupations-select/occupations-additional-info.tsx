@@ -1,6 +1,6 @@
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { yearsToMonths } from 'date-fns';
-import { Button, Text } from 'suomifi-ui-components';
+import { Button, IconArrowLeft, IconRemove, Text } from 'suomifi-ui-components';
 import type { UserOccupation } from '@/types';
 import { useOccupations } from '@/lib/hooks/codesets';
 import FormInput from '@/components/form/form-input';
@@ -89,7 +89,7 @@ export default function OccupationsAdditionalInfo(props: Props) {
             <div className="mt-3">
               <Button
                 variant="secondary"
-                iconRight="remove"
+                iconRight={<IconRemove />}
                 onClick={() => remove(index)}
               >
                 Remove
@@ -100,7 +100,7 @@ export default function OccupationsAdditionalInfo(props: Props) {
       </div>
 
       <div className="flex flecx-row items-start gap-3 mt-4">
-        <Button variant="secondary" icon="arrowLeft" onClick={goBack}>
+        <Button variant="secondary" icon={<IconArrowLeft />} onClick={goBack}>
           Back
         </Button>
         <Button disabled={!selected.length} type="submit">
