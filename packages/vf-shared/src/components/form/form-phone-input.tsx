@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { ReactNode, forwardRef } from 'react';
 import {
   Control,
   FieldError,
@@ -17,7 +17,7 @@ interface PhoneInputControllerProps<T extends FieldValues> {
 }
 
 interface Props<T extends FieldValues> extends PhoneInputControllerProps<T> {
-  labelText: string;
+  labelText: ReactNode;
   hintText?: string;
   optionalText?: string;
   error?: FieldError | undefined;

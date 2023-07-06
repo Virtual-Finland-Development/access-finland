@@ -25,13 +25,15 @@ export default function LanguagesEdit(props: Props) {
   const { userLanguages, escoLanguages, languageSkillLevels, onSave, onClose } =
     props;
 
-  const { handleSubmit, control } = useForm<FormProps>({
+  const { handleSubmit, control, watch } = useForm<FormProps>({
     defaultValues: userLanguages
       ? { languages: userLanguages }
       : {
           languages: [DEFAULT_VALUE],
         },
   });
+
+  const languages = watch('languages');
 
   const { fields, append, remove } = useFieldArray<FormProps>({
     control,
@@ -55,44 +57,63 @@ export default function LanguagesEdit(props: Props) {
       <div className="flex flex-col gap-3">
         {!fields.length && <Text>No language skills selected.</Text>}
 
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end border-b border-gray-300 pb-4"
-          >
-            <FormSingleSelect
-              name={`languages.${index}.languageCode`}
-              control={control}
-              rules={{ required: true }}
-              labelText="Select language"
-              items={escoLanguages.map(l => ({
-                labelText: l.name,
-                uniqueItemId: l.twoLetterISOLanguageName,
-              }))}
-            />
-            <FormSingleSelect
-              name={`languages.${index}.skillLevel`}
-              control={control}
-              rules={{ required: true }}
-              labelText="Skill level"
-              items={languageSkillLevels
-                .filter(l => l.codeValue.length === 2)
-                .map(l => ({
-                  labelText: l.prefLabel.en,
-                  uniqueItemId: l.codeValue,
+        {fields.map((field, index) => {
+          const languageCode = languages[index].languageCode;
+          const languageLabel = languageCode
+            ? escoLanguages.find(
+                l => l.twoLetterISOLanguageName === languageCode
+              )?.name
+            : undefined;
+
+          return (
+            <div
+              key={field.id}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end border-b border-gray-300 pb-4"
+            >
+              <FormSingleSelect
+                name={`languages.${index}.languageCode`}
+                control={control}
+                rules={{ required: true }}
+                labelText="Select language"
+                items={escoLanguages.map(l => ({
+                  labelText: l.name,
+                  uniqueItemId: l.twoLetterISOLanguageName,
                 }))}
-            />
-            <div>
-              <Button
-                variant="link"
-                iconRight={<IconRemove />}
-                onClick={() => remove(index)}
-              >
-                Remove
-              </Button>
+              />
+              <FormSingleSelect
+                name={`languages.${index}.skillLevel`}
+                control={control}
+                rules={{ required: true }}
+                labelText={
+                  <>
+                    Skill level{' '}
+                    {languageLabel && (
+                      <span className="sr-only">for {languageLabel}.</span>
+                    )}
+                  </>
+                }
+                items={languageSkillLevels
+                  .filter(l => l.codeValue.length === 2)
+                  .map(l => ({
+                    labelText: l.prefLabel.en,
+                    uniqueItemId: l.codeValue,
+                  }))}
+              />
+              <div>
+                <Button
+                  variant="link"
+                  iconRight={<IconRemove />}
+                  onClick={() => remove(index)}
+                >
+                  Remove{' '}
+                  <span className="sr-only">
+                    {languageLabel || 'language skill'}
+                  </span>
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="mt-4">
         <Button
@@ -100,7 +121,7 @@ export default function LanguagesEdit(props: Props) {
           iconRight={<IconPlus />}
           onClick={() => append(DEFAULT_VALUE)}
         >
-          Add new
+          Add new <span className="sr-only">language skill</span>
         </Button>
       </div>
       <div className="flex flex-row gap-3 mt-8">

@@ -71,7 +71,14 @@ export default function OccupationsAdditionalInfo(props: Props) {
                 name={`occupations.${index}.employer`}
                 control={control}
                 rules={{ required: 'Employer is required. ' }}
-                labelText="Employer"
+                labelText={
+                  <>
+                    Employer{' '}
+                    <span className="sr-only">
+                      for {field.label} occupation
+                    </span>
+                  </>
+                }
               />
               <FormInput
                 type="number"
@@ -81,7 +88,14 @@ export default function OccupationsAdditionalInfo(props: Props) {
                   required: 'Work experience is required.',
                   valueAsNumber: true,
                 }}
-                labelText="Work experience (years)"
+                labelText={
+                  <>
+                    Work experience (years){' '}
+                    <span className="sr-only">
+                      for {field.label} occupation
+                    </span>
+                  </>
+                }
                 min={0}
                 step={0.5}
               />
@@ -92,7 +106,7 @@ export default function OccupationsAdditionalInfo(props: Props) {
                 iconRight={<IconRemove />}
                 onClick={() => remove(index)}
               >
-                Remove
+                Remove <span className="sr-only">{field.label}</span>
               </Button>
             </div>
           </div>
@@ -101,7 +115,7 @@ export default function OccupationsAdditionalInfo(props: Props) {
 
       <div className="flex flecx-row items-start gap-3 mt-4">
         <Button variant="secondary" icon={<IconArrowLeft />} onClick={goBack}>
-          Back
+          Back <span className="sr-only">to occupations search and select</span>
         </Button>
         <Button disabled={!selected.length} type="submit">
           Save

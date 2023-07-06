@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import {
   Control,
   Controller,
@@ -16,12 +17,13 @@ interface FormInputControllerProps<T extends FieldValues> {
 }
 
 interface Props<T extends FieldValues> extends FormInputControllerProps<T> {
-  labelText: string;
+  labelText: ReactNode;
   hintText?: string;
   optionalText?: string;
-  placeholder?: string;
+  placeholder?: ReactNode;
   showStatusText?: boolean;
   readOnly?: boolean;
+  autoFocus?: boolean;
   type?:
     | 'number'
     | 'text'
@@ -50,6 +52,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
     formatDefaultValue,
     min = 1,
     step = 1,
+    autoFocus,
   } = props;
 
   const { width } = useDimensions();
@@ -115,6 +118,8 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
               min={min}
               step={step}
               readOnly={readOnly}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={autoFocus}
             />
           )}
         </>
