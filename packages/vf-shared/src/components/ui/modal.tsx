@@ -46,7 +46,7 @@ export default function Modal(props: Props) {
       variant={width > 640 ? 'default' : 'smallScreen'}
       onEscKeyDown={() => closeOnEsc && closeModal()}
     >
-      <FocusLockUI sideCar={FocusLockSidecar}>
+      <FocusLockUI sideCar={FocusLockSidecar} className="overflow-auto">
         <ModalContent>
           <ModalTitle>{title}</ModalTitle>
           {content}
