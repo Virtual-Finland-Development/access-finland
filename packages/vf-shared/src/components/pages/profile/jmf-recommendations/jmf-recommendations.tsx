@@ -177,7 +177,7 @@ export default function JmfRecommendationsSelect(
           </CustomHeading>
           <Textarea
             className="!w-full"
-            labelText="You will get keyword suggestions based on your text. Please choose the most suitable ones. You can also upload a text file or your CV (PDF)."
+            labelText="Add keywords for search. You will get keyword suggestions based on your text. Please choose the most suitable ones. You can also upload a text file or your CV (PDF)."
             hintText=""
             visualPlaceholder={
               selectedFileName ? `Using upload: ${selectedFileName}` : ''
