@@ -1,5 +1,5 @@
-import { NextApiRequest } from 'next';
 import jwt from 'jsonwebtoken';
+import { NextApiRequest } from 'next';
 
 /**
  * Generates a base64-hash string
@@ -23,18 +23,6 @@ export function generateBase64Hash(objJsonStr: string | any): string {
 export function resolveBase64Hash(hash: string): string {
   const buffer = Buffer.from(hash, 'base64');
   return buffer.toString('utf8');
-}
-
-/**
- *
- * @param expiresIn
- * @returns Date.toIsoString
- */
-export function transformExpiresInToExpiresAt_ISOString(
-  expiresIn: number
-): string {
-  const expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
-  return new Date(expiresAt * 1000).toISOString();
 }
 
 /**
@@ -68,9 +56,9 @@ export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
 /**
  *
  * @param idToken
- * @returns
+ * @returns iso string
  */
 export function resolveIdTokenExpiresAt(idToken: string): string {
   const decoded = jwt.decode(idToken) as jwt.JwtPayload;
-  return transformExpiresInToExpiresAt_ISOString(decoded.exp);
+  return new Date(decoded.exp * 1000).toISOString(); // convert seconds to milliseconds and then to ISO string
 }
