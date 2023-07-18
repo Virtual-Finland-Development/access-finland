@@ -12,7 +12,8 @@
     "NODE_ENV",
     "NEXT_PUBLIC_STAGE",
     "BACKEND_SECRET_SIGN_KEY",
-    "FRONTEND_ORIGIN_URI"
+    "FRONTEND_ORIGIN_URI",
+    "JMF_SKILL_RECOMMENDATIONS_ENDPOINT"
   ],
   "pipeline": {
     "build": {
