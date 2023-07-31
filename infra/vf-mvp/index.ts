@@ -56,6 +56,32 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
   tags,
 });
 
+// ECS Auto-scaling 
+const ecsTarget = new aws.appautoscaling.Target(`${projectName}-ecs-autoscaling-target-${env}`, {
+  maxCapacity: 4,
+  minCapacity: 1,
+  resourceId: cluster.arn,
+  scalableDimension: 'ecs:service:DesiredCount',
+  serviceNamespace: 'ecs',
+});
+new aws.appautoscaling.Policy(`${projectName}-ecs-autoscaling-policy-${env}`, {
+  policyType: 'StepScaling',
+  resourceId: ecsTarget.resourceId,
+  scalableDimension: ecsTarget.scalableDimension,
+  serviceNamespace: ecsTarget.serviceNamespace,
+  stepScalingPolicyConfiguration: {
+    adjustmentType: 'ChangeInCapacity',
+    cooldown: 60,
+    metricAggregationType: 'Maximum',
+    stepAdjustments: [
+      {
+        metricIntervalUpperBound: "0",
+        scalingAdjustment: -1,
+      },
+    ],
+  },
+});
+
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
@@ -80,7 +106,7 @@ const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   },
 });
 
-const lbListenerRule = new aws.lb.ListenerRule(
+new aws.lb.ListenerRule(
   `${projectName}-alb-listener-rule-${env}`,
   {
     listenerArn: lb.listeners.apply(
