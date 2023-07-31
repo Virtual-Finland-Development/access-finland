@@ -56,32 +56,6 @@ const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
   tags,
 });
 
-// ECS Auto-scaling 
-const ecsTarget = new aws.appautoscaling.Target(`${projectName}-ecs-autoscaling-target-${env}`, {
-  maxCapacity: 4,
-  minCapacity: 1,
-  resourceId: cluster.arn,
-  scalableDimension: 'ecs:service:DesiredCount',
-  serviceNamespace: 'ecs',
-});
-new aws.appautoscaling.Policy(`${projectName}-ecs-autoscaling-policy-${env}`, {
-  policyType: 'StepScaling',
-  resourceId: ecsTarget.resourceId,
-  scalableDimension: ecsTarget.scalableDimension,
-  serviceNamespace: ecsTarget.serviceNamespace,
-  stepScalingPolicyConfiguration: {
-    adjustmentType: 'ChangeInCapacity',
-    cooldown: 60,
-    metricAggregationType: 'Maximum',
-    stepAdjustments: [
-      {
-        metricIntervalUpperBound: "0",
-        scalingAdjustment: -1,
-      },
-    ],
-  },
-});
-
 // Application load balancer
 const lb = new awsx.lb.ApplicationLoadBalancer(`${projectName}-alb-${env}`, {
   tags,
@@ -168,7 +142,7 @@ new aws.iam.RolePolicyAttachment(`${projectName}-fargate-task-role-sinuna-policy
 });
 
 // Fargate service
-new awsx.ecs.FargateService(
+var fargateService = new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
   {
     tags,
@@ -192,6 +166,33 @@ new awsx.ecs.FargateService(
     },
   }
 );
+
+// ECS Auto-scaling 
+const ecsTarget = new aws.appautoscaling.Target(`${projectName}-ecs-autoscaling-target-${env}`, {
+  maxCapacity: 4,
+  minCapacity: 1,
+  resourceId: pulumi.interpolate`service/${cluster.name}/${fargateService.service.name}`,
+  scalableDimension: 'ecs:service:DesiredCount',
+  serviceNamespace: 'ecs',
+});
+new aws.appautoscaling.Policy(`${projectName}-ecs-autoscaling-policy-${env}`, {
+  policyType: 'StepScaling',
+  resourceId: ecsTarget.resourceId,
+  scalableDimension: ecsTarget.scalableDimension,
+  serviceNamespace: ecsTarget.serviceNamespace,
+  stepScalingPolicyConfiguration: {
+    adjustmentType: 'ChangeInCapacity',
+    cooldown: 60,
+    metricAggregationType: 'Maximum',
+    stepAdjustments: [
+      {
+        metricIntervalUpperBound: "0",
+        scalingAdjustment: -1,
+      },
+    ],
+  },
+});
+
 
 // CloudFront
 const cdn = new aws.cloudfront.Distribution(
