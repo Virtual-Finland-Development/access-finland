@@ -175,24 +175,20 @@ const ecsTarget = new aws.appautoscaling.Target(`${projectName}-ecs-autoscaling-
   scalableDimension: 'ecs:service:DesiredCount',
   serviceNamespace: 'ecs',
 });
-new aws.appautoscaling.Policy(`${projectName}-ecs-autoscaling-policy-${env}`, {
-  policyType: 'StepScaling',
+new aws.appautoscaling.Policy(`${projectName}-ecs-scaling-policy-${env}`, {
+  policyType: 'TargetTrackingScaling',
   resourceId: ecsTarget.resourceId,
   scalableDimension: ecsTarget.scalableDimension,
   serviceNamespace: ecsTarget.serviceNamespace,
-  stepScalingPolicyConfiguration: {
-    adjustmentType: 'ChangeInCapacity',
-    cooldown: 60,
-    metricAggregationType: 'Maximum',
-    stepAdjustments: [
-      {
-        metricIntervalUpperBound: "0",
-        scalingAdjustment: -1,
-      },
-    ],
+  targetTrackingScalingPolicyConfiguration: {
+    predefinedMetricSpecification: {
+      predefinedMetricType: 'ECSServiceAverageCPUUtilization',
+    },
+    scaleInCooldown: 60,
+    scaleOutCooldown: 60,
+    targetValue: 50,
   },
 });
-
 
 // CloudFront
 const cdn = new aws.cloudfront.Distribution(
