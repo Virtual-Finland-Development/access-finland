@@ -1,15 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
 import type { DataProduct } from '@shared/types';
-import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
+import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 
-const ENV = process.env.NODE_ENV;
-const defaultDataSource = 'virtualfinland:development'; // <--- stage arg should be read from env possibly, for now development suffices
-const profileProductsEndpoint =
-  ENV === 'development'
-    ? `${USERS_API_BASE_URL}/productizer`
-    : 'https://gateway.testbed.fi';
+const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
+const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
 
 const testbedGWConfiguration: {
   dataProducts: Record<
@@ -19,19 +14,19 @@ const testbedGWConfiguration: {
 } = {
   dataProducts: {
     'draft/Person/BasicInformation': {
-      gatewayEndpoint: profileProductsEndpoint,
+      gatewayEndpoint: gatewayEndpoint,
       defaultDataSource,
     },
     'draft/Person/BasicInformation/Write': {
-      gatewayEndpoint: profileProductsEndpoint,
+      gatewayEndpoint: gatewayEndpoint,
       defaultDataSource,
     },
     'draft/Person/JobApplicantProfile': {
-      gatewayEndpoint: profileProductsEndpoint,
+      gatewayEndpoint: gatewayEndpoint,
       defaultDataSource,
     },
     'draft/Person/JobApplicantProfile/Write': {
-      gatewayEndpoint: profileProductsEndpoint,
+      gatewayEndpoint: gatewayEndpoint,
       defaultDataSource,
     },
   },
