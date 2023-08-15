@@ -45,7 +45,7 @@ jobs:
         working-directory: ./infra/vf-mvp
         run: npm ci
       - name: Select Pulumi stack
-        working-directory: ./infra/amplify
+        working-directory: ./infra/vf-mvp
         run: pulumi stack select ${{ env.pulumi_stack_organization }}/${{ env.environment }} --create
       - name: Configure testbed data source
         if: env.environment == 'dev'
