@@ -5,4 +5,4 @@ config:
   aws:region: eu-north-1
   testbed:
     gatewayUrl: https://gateway.testbed.fi
-    defaultDataSource: virtualfinland:development
+    defaultDataSource: 'virtualfinland:development'
