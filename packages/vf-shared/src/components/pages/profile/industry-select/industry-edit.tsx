@@ -153,13 +153,14 @@ export default function IndustryEdit(props: Props) {
               className="flex flex-row items-center gap-2 bg-suomifi-light hover:bg-suomifi-light-hover text-white font-bold rounded-xl px-2"
               type="button"
               onClick={() => setSelected(undefined)}
+              aria-label="Remove selected industry"
             >
               <span>{selected.prefLabel.en}</span>
               <IoClose
                 className="flex-shrink-0"
                 role="button"
-                tabIndex={0}
-                aria-label="Remove selected industry"
+                focusable={false}
+                aria-hidden="true"
               />
             </button>
           </div>

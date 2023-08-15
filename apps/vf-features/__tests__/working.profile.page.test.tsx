@@ -59,7 +59,13 @@ describe('Personal profile page', () => {
     ).toBeInTheDocument();
     // n selected occupations button should appear in modal
     const nSelectedButton = screen.getByRole('button', {
-      name: `(${MOCK_JOB_APPLICANT_INFO.occupations.length}) Selected`,
+      name: content => {
+        const subStrings = [
+          `(${MOCK_JOB_APPLICANT_INFO.occupations.length})`,
+          'Selected',
+        ];
+        return subStrings.every(s => content.includes(s));
+      },
     });
     expect(nSelectedButton).toBeInTheDocument();
     // click the above button, takes user to edit phase of selected occupations

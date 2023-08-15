@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import {
   Control,
   Controller,
@@ -14,11 +15,12 @@ interface SelectInputControllerProps<T extends FieldValues> {
 }
 
 interface Props<T extends FieldValues> extends SelectInputControllerProps<T> {
-  labelText: string;
+  labelText: ReactNode;
   hintText?: string;
   optionalText?: string;
   showStatusText?: boolean;
   items: { labelText: string; uniqueItemId: string; disabled?: boolean }[];
+  autoFocus?: boolean;
 }
 
 export default function FormSingleSelect<T extends FieldValues>(

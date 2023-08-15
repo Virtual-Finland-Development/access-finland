@@ -56,7 +56,14 @@ export default function OtherSkillsAdditionalInfo(props: Props) {
                 name={`otherSkills.${index}.skillLevel`}
                 control={control}
                 rules={{ required: true }}
-                labelText="Skill level"
+                labelText={
+                  <>
+                    Skill level{' '}
+                    <span className="sr-only">
+                      for {field.label || field.escoIdentifier}
+                    </span>
+                  </>
+                }
                 items={Object.keys(SkillLevel).map(type => ({
                   labelText:
                     SKILL_LEVEL_LABELS[type as keyof typeof SKILL_LEVEL_LABELS],
@@ -69,7 +76,10 @@ export default function OtherSkillsAdditionalInfo(props: Props) {
                   iconRight={<IconRemove />}
                   onClick={() => remove(index)}
                 >
-                  Remove
+                  Remove{' '}
+                  <span className="sr-only">
+                    {field.label || field.escoIdentifier}
+                  </span>
                 </Button>
               </div>
             </div>
@@ -79,7 +89,7 @@ export default function OtherSkillsAdditionalInfo(props: Props) {
 
       <div className="flex flecx-row items-start gap-3 mt-4">
         <Button variant="secondary" icon={<IconArrowLeft />} onClick={onBack}>
-          Back
+          Back <span className="sr-only">to skills search and select</span>
         </Button>
         <Button disabled={!selected.length} type="submit">
           Save

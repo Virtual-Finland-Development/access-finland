@@ -76,7 +76,12 @@ export default function OtherSkillsEdit(props: Props) {
             iconRight={<IconArrowRight />}
             onClick={() => setPhase('additional-info')}
           >
-            ({selected?.length || 0}) Selected
+            ({selected?.length || 0}) <span className="sr-only">skills</span>{' '}
+            Selected
+            <span className="sr-only">
+              . Click to next phase to add additional information and to save
+              selected skills.
+            </span>
           </Button>
         </div>
       </div>

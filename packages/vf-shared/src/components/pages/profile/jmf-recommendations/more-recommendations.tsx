@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import lodash_debounce from 'lodash.debounce';
 import { MultiSelect, Text } from 'suomifi-ui-components';
@@ -13,6 +13,7 @@ interface Props {
   onSelect: (selected: any) => void;
   defaultValue: SelectionItem[];
   showCustomChipList?: boolean;
+  labelText?: ReactNode;
 }
 
 const CustomChipItem = ({
@@ -40,7 +41,13 @@ const CustomChipItem = ({
 };
 
 export default function MoreRecommendations(props: Props) {
-  const { type, onSelect, defaultValue, showCustomChipList = true } = props;
+  const {
+    type,
+    onSelect,
+    defaultValue,
+    showCustomChipList = true,
+    labelText,
+  } = props;
   const [inputValue, setInputValue] = useState<string | null>('');
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] =
@@ -98,7 +105,7 @@ export default function MoreRecommendations(props: Props) {
           // @ts-ignore */}
       <MultiSelect
         className="!w-full"
-        labelText="Select related skills"
+        labelText={labelText || 'Select related skills'}
         optionalText="Optional"
         visualPlaceholder="Type to search"
         itemAdditionHelpText=""

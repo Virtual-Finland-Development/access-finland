@@ -44,6 +44,10 @@ import { ServerStyleSheet } from 'styled-components';
         <body>
           <Main />
           <NextScript />
+          <noscript>
+            Sorry, this site doesn’t work properly because your device/browser
+            does not support JavaScript.
+          </noscript>
         </body>
       </Html>
     );
