@@ -25,6 +25,7 @@ const NEXTJS_API_PROTECTED_URLS = [
   '/api/testbed-gw/draft/Person/JobApplicantProfile',
   '/api/testbed-gw/draft/Person/JobApplicantProfile/Write',
   '/api/users-api',
+  '/api/jmf/recommendations',
 ];
 
 function isProtectedNextJsEndpoint(url: string): boolean {
