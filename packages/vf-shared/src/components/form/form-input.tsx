@@ -36,6 +36,14 @@ interface Props<T extends FieldValues> extends FormInputControllerProps<T> {
   step?: number;
 }
 
+function safeParseDateDefaultValue(value: string): string {
+  try {
+    return format(new Date(value), 'd.M.yyyy');
+  } catch {
+    return '';
+  }
+}
+
 export default function FormInput<T extends FieldValues>(props: Props<T>) {
   const {
     name,
@@ -88,7 +96,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
               status={error ? 'error' : 'default'}
               statusText={showStatusText && error ? error.message : ''}
               initialDate={!isDirty && value ? new Date(value) : new Date()}
-              defaultValue={value ? format(new Date(value), 'd.M.yyyy') : ''}
+              defaultValue={safeParseDateDefaultValue(value)}
               onChange={({ value, date }) => {
                 if (date instanceof Date && !isNaN(date.getTime())) {
                   onChange(format(date, 'yyyy-MM-dd'));
