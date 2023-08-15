@@ -1,7 +1,6 @@
 {
   "name": "vf-shared",
   "version": "0.0.0",
-  "main": "src/index.tsx",
   "sideEffects": false,
   "peerDependencies": {
     "react": "^18.2.0"

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { StaticIcon } from 'suomifi-ui-components';
+import { IconUserProfile } from 'suomifi-ui-components';
 import { Text } from 'suomifi-ui-components';
 import { usePersonBasicInfo } from '@shared/lib/hooks/profile';
 import AuthSentry from '@shared/components/auth-sentry';
@@ -24,7 +24,7 @@ export default function PersonalProfilePage() {
             <Page.Block className="bg-suomifi-blue-bg-light">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-row items-center">
-                  <StaticIcon icon="userProfile" className="h-16 w-16" />
+                  <IconUserProfile className="h-16 w-16" />
                   <CustomHeading variant="h2" suomiFiBlue="dark">
                     Your personal profile
                   </CustomHeading>

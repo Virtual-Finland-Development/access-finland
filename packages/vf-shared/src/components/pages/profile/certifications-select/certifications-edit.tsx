@@ -4,9 +4,9 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import { Button, Text } from 'suomifi-ui-components';
-import type { Certification, EscoSkill } from '@shared/types';
-import FormInput from '@shared/components/form/form-input';
+import { Button, IconPlus, IconRemove, Text } from 'suomifi-ui-components';
+import type { Certification, EscoSkill } from '@/types';
+import FormInput from '@/components/form/form-input';
 import MoreRecommendations from '../jmf-recommendations/more-recommendations';
 
 interface Props {
@@ -96,7 +96,7 @@ export default function CertificationsEdit(props: Props) {
 
             <Button
               variant="link"
-              iconRight="remove"
+              iconRight={<IconRemove />}
               className="!mt-3"
               onClick={() => remove(index)}
             >
@@ -109,7 +109,7 @@ export default function CertificationsEdit(props: Props) {
       <div className="mt-4">
         <Button
           variant="secondaryNoBorder"
-          iconRight="plus"
+          iconRight={<IconPlus />}
           onClick={() => append(DEFAULT_VALUE)}
         >
           Add new

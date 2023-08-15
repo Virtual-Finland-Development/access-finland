@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconArrowLeft } from 'suomifi-ui-components';
 
 const StyledButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
-  icon: 'arrowLeft',
+  icon: <IconArrowLeft />,
   className: '!px-0',
 })`
   &:hover {

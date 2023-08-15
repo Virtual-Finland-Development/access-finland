@@ -19,6 +19,8 @@ const usersApiEndpoint = new pulumi.StackReference(
   `${org}/users-api/dev`
 ).getOutput('ApplicationUrl');
 
+const testbedConfig = new pulumi.Config("testbed");
+
 // Random value for custom header (for restricted CloudFront -> ALB access)
 const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(`${projectName}-uuid-${env}`).result
@@ -47,7 +49,9 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
-    STAGE: env,
+    NEXT_PUBLIC_STAGE: env,
+    TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
+    TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
   },
 });
 
@@ -110,23 +114,39 @@ const lbListenerRule = new aws.lb.ListenerRule(
 const awsIdentity = pulumi.output(aws.getCallerIdentity());
 const taskRole = new aws.iam.Role(`${projectName}-fargate-task-role-${env}`, {
   tags,
-  assumeRolePolicy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['ssm:GetParameter'],
-        Resource: [
-          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
-          pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_SECRET`,
-        ],
-      },
-    ],
-  },
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'ecs-tasks.amazonaws.com',
+  }),
+});
+
+const sinunaAccessPolicy = new aws.iam.Policy(
+  `${projectName}-fargate-task-role-sinuna-policy-${env}`,
+  {
+    tags,
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['ssm:GetParameter'],
+          Resource: [
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${env}_SINUNA_CLIENT_SECRET`,
+          ],
+        },
+      ],
+    },
+  }
+);
+
+// Attach a policy to grant access to Parameter Store
+new aws.iam.RolePolicyAttachment(`${projectName}-fargate-task-role-sinuna-policy-attachment-${env}`, {
+  role: taskRole.name,
+  policyArn: sinunaAccessPolicy.arn,
 });
 
 // Fargate service
-const fargateService = new awsx.ecs.FargateService(
+new awsx.ecs.FargateService(
   `${projectName}-fargate-service-${env}`,
   {
     tags,

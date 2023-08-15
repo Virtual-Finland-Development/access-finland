@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconArrowLeft } from 'suomifi-ui-components';
 import type { PersonBasicInformation } from '@/types';
 import api from '@/lib/api';
 import { useCountries } from '@/lib/hooks/codesets';
@@ -135,7 +135,7 @@ export default function PersonalProfileForm(props: Props) {
       <div className="flex flex-row gap-3 mt-6">
         <Button
           variant="secondary"
-          icon="arrowLeft"
+          icon={<IconArrowLeft />}
           onClick={() => router.push('/profile')}
         >
           Back

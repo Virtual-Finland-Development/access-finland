@@ -1,4 +1,4 @@
-import { Button } from 'suomifi-ui-components';
+import { Button, IconCheck, IconPlus } from 'suomifi-ui-components';
 import { JmfRecommendation } from '@/types';
 
 interface RecommendationItemProps {
@@ -15,7 +15,7 @@ export default function RecommendationItem(props: RecommendationItemProps) {
     <Button
       key={item.label}
       variant={isSelected ? 'default' : 'secondary'}
-      iconRight={isSelected ? 'check' : 'plus'}
+      iconRight={isSelected ? <IconCheck /> : <IconPlus />}
       onClick={() => handleClick(item)}
     >
       {item.label}

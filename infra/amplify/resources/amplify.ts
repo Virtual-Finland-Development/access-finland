@@ -22,6 +22,8 @@ export function configureAmplify() {
     aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
   );
 
+  const testbedConfig = new pulumi.Config("testbed");
+
   // Next.js Amplify App
   const amplifyApp = new aws.amplify.App(nameResource('amplifyApp'), {
     tags,
@@ -38,7 +40,9 @@ export function configureAmplify() {
       NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
-      STAGE: envOverride,
+      NEXT_PUBLIC_STAGE: envOverride,
+      TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
+      TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
     },
     platform: 'WEB_COMPUTE',
     buildSpec: `
@@ -53,7 +57,7 @@ export function configureAmplify() {
               build:
                 commands:
                   - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
-                  - echo "STAGE=$STAGE" >> apps/vf-mvp/.env
+                  - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/vf-mvp/.env
                   - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/vf-mvp/.env
                   - npx turbo run build --filter=vf-mvp
             artifacts:
@@ -120,7 +124,7 @@ export function deployTrackedBranch(
 
         const jobStatus = await new Promise((resolve, reject) => {
           const timeoutIntervalMs = 5000; // 5 second interval
-          let timeoutCountdownSecs = 300; // 5 minutes timeout
+          let timeoutCountdownSecs = 600; // 10 minutes timeout
 
           const interval = setInterval(async () => {
             timeoutCountdownSecs =

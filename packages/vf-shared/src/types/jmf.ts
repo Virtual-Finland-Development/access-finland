@@ -1,16 +1,21 @@
-export interface JmfRecommendation {
-  uri: string;
-  label: string;
-}
+import { Output, array, number, object, string } from 'valibot';
+export const JmfRecommendationSchema = object({
+  uri: string(),
+  label: string(),
+});
+export type JmfRecommendation = Output<typeof JmfRecommendationSchema>; 
 
-export interface JmfRecommendationsRequestPayload {
-  text: string;
-  maxNumberOfSkills: number;
-  maxNumberOfOccupations: number;
-  language: string;
-}
+export const JmfRecommendationsRequestPayloadSchema = object({
+  text: string(),
+  maxNumberOfSkills: number(),
+  maxNumberOfOccupations: number(),
+  language: string(),
+});
+export type JmfRecommendationsRequestPayload = Output<typeof JmfRecommendationsRequestPayloadSchema>; 
 
-export interface JmfRecommendationsResponse {
-  skills: JmfRecommendation[];
-  occupations: JmfRecommendation[];
-}
+export const JmfRecommendationsResponseSchema = object({
+  skills: array(JmfRecommendationSchema),
+  occupations: array(JmfRecommendationSchema),
+});
+export type JmfRecommendationsResponse = Output<typeof JmfRecommendationsResponseSchema>; 
+

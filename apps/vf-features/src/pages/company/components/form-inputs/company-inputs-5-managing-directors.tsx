@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import lodash_get from 'lodash.get';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconPlus, IconRemove } from 'suomifi-ui-components';
 import type { ManagingDirector } from '@shared/types';
 import { MANAGING_DIRECTORS_ROLE_OPTIONS } from '@shared/lib/constants';
 import { pickRandomDateString, pickRandomName } from '@shared/lib/utils';
@@ -138,7 +138,7 @@ export default function CompanyManagingDirectors() {
           {index > 0 && (
             <Button
               variant="link"
-              iconRight="remove"
+              iconRight={<IconRemove />}
               onClick={() => removeShareSeries(index)}
             >
               Remove
@@ -149,7 +149,7 @@ export default function CompanyManagingDirectors() {
 
       <Button
         variant="secondaryNoBorder"
-        iconRight="plus"
+        iconRight={<IconPlus />}
         onClick={appendShareSeries}
       >
         Add new

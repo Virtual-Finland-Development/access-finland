@@ -6,12 +6,12 @@ env:
   pulumi_stack_organization: virtualfinland
   aws_region: eu-north-1
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+  environment: dev
 
 jobs:
   test:
     name: Test the app
     runs-on: ubuntu-latest
-    environment: dev
     strategy:
       matrix:
         node-version: [18.x]
@@ -36,7 +36,7 @@ jobs:
       - name: Configure AWS credentials
         uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
         with:
-          environment: dev
+          environment: ${{ env.environment }}
           aws-region: ${{ secrets.AWS_REGION }}
           pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install Pulumi CLI
@@ -50,6 +50,14 @@ jobs:
       - name: Set github access token in Pulumi config
         working-directory: ./infra/amplify
         run: pulumi config set --secret githubAccessToken ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure testbed data source
+        if: env.environment == 'dev'
+        working-directory: ./infra/amplify
+        run:  pulumi config set testbed.defaultDataSource virtualfinland:development
+      - name: Configure testbed data source
+        if: env.environment != 'dev'
+        working-directory: ./infra/amplify
+        run:  pulumi config set testbed.defaultDataSource virtualfinland:${{ env.environment }}
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:

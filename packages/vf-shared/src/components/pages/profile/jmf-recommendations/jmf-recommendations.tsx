@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { FiUpload } from 'react-icons/fi';
-import { Button, Text, Textarea } from 'suomifi-ui-components';
+import { Button, IconArrowRight, Text, Textarea } from 'suomifi-ui-components';
 import { JmfRecommendation } from '@/types';
 import useJmfRecommendations from '@/lib/hooks/use-jmf-recommendations';
 import { useToast } from '@/context/toast-context';
@@ -274,7 +274,7 @@ export default function JmfRecommendationsSelect(
             </Button>
             <Button
               disabled={!selected.length}
-              iconRight="arrowRight"
+              iconRight={<IconArrowRight />}
               onClick={handleSave}
             >
               Save

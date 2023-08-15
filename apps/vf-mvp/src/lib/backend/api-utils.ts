@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { NextApiRequest } from 'next';
 
 /**
@@ -26,18 +27,6 @@ export function resolveBase64Hash(hash: string): string {
 
 /**
  *
- * @param expiresIn
- * @returns Date.toIsoString
- */
-export function transformExpiresInToExpiresAt_ISOString(
-  expiresIn: number
-): string {
-  const expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
-  return new Date(expiresAt * 1000).toISOString();
-}
-
-/**
- *
  * @param req
  * @param path
  * @returns
@@ -62,4 +51,14 @@ export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
   }
 
   return redirectBackUrl;
+}
+
+/**
+ *
+ * @param idToken
+ * @returns iso string
+ */
+export function resolveIdTokenExpiresAt(idToken: string): string {
+  const decoded = jwt.decode(idToken) as jwt.JwtPayload;
+  return new Date(decoded.exp * 1000).toISOString(); // convert seconds to milliseconds and then to ISO string
 }

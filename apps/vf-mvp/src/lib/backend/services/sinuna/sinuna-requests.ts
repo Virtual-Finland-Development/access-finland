@@ -1,10 +1,6 @@
 import { NextApiRequest } from 'next';
 import axios from 'axios';
-import {
-  generateBase64Hash,
-  resolveFrontendOriginUrl,
-  transformExpiresInToExpiresAt_ISOString,
-} from '../../api-utils';
+import { generateBase64Hash, resolveFrontendOriginUrl } from '../../api-utils';
 import SinunaSettings from './sinuna-settings';
 
 /**
@@ -76,9 +72,6 @@ export async function retrieveSinunaTokensWithLoginCode(
   return {
     accessToken: response.data.access_token,
     idToken: response.data.id_token,
-    expiresAt: transformExpiresInToExpiresAt_ISOString(
-      response.data.expires_in
-    ),
   };
 }
 

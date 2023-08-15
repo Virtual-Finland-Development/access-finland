@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Link, Text } from 'suomifi-ui-components';
+import { getRuntimeStage } from 'vf-shared/src/lib/utils';
 import Page from '@shared/components/layout/page';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 
 function getSinunaServiceUrl() {
-  if (process.env.NODE_ENV !== 'production') {
+  if (getRuntimeStage() !== 'production') {
     return 'https://frontend.sunbackend.qa.sinuna.fi';
   }
   return 'https://itsepalvelu.tunnus.sinuna.fi';

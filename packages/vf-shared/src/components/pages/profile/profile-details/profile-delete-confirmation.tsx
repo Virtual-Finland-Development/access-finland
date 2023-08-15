@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Button, Text } from 'suomifi-ui-components';
-import api from '@shared/lib/api';
-import { useToast } from '@shared/context/toast-context';
-import DangerButton from '@shared/components/ui/danger-button';
-import Loading from '@shared/components/ui/loading';
+import api from '@/lib/api';
+import { useToast } from '@/context/toast-context';
+import DangerButton from '@/components/ui/danger-button';
+import Loading from '@/components/ui/loading';
 
 interface Props {
   onCancel: () => void;

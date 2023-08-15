@@ -1,38 +1,27 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
+import { resolveIdTokenExpiresAt } from '@mvp/lib/backend/api-utils';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import {
   retrieveSinunaTokensWithLoginCode,
   retrieveUserInfoWithAccessToken,
 } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { object, parse, string } from 'valibot';
+
+const LoginResponseSchema = object({
+  code: string(),
+  state: string(),
+});
 
 export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const queryParams = req.query;
-
   //
-  // Validate
+  // Parse input
   //
-  if (queryParams.error) {
-    throw new Error(
-      `Sinuna: ${queryParams.error}: ${queryParams.error_description}`
-    );
-  }
-
-  if (
-    typeof queryParams.code !== 'string' ||
-    typeof queryParams.state !== 'string'
-  ) {
-    throw new Error('Received invalid login response from Sinuna.');
-  }
-
-  // Ensure the request flow integrity
-  if (req.cookies.sinunaCsrf !== queryParams.state) {
-    throw new Error('Request flow integrity compromised.');
-  }
+  const queryParams = parse(LoginResponseSchema, req.query);
 
   //
   // Handle login response
@@ -44,7 +33,7 @@ export default loggedOutAuthMiddleware(async function handler(
   // Create the api auth package
   const apiAuthPackage = createApiAuthPackage({
     idToken: tokens.idToken,
-    expiresAt: tokens.expiresAt,
+    expiresAt: resolveIdTokenExpiresAt(tokens.idToken),
     profileData: userInfo,
   });
 

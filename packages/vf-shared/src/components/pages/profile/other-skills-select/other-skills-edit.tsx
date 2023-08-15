@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Button } from 'suomifi-ui-components';
+import { Button, IconArrowRight } from 'suomifi-ui-components';
 import { JmfRecommendation, OtherSkill, SkillLevel } from '@/types';
 import JmfRecommendationsSelect from '../jmf-recommendations/jmf-recommendations';
 import OtherSkillsAdditionalInfo from './other-skills-additional-info';
@@ -73,7 +73,7 @@ export default function OtherSkillsEdit(props: Props) {
           </Button>
           <Button
             disabled={!selected.length}
-            iconRight="arrowRight"
+            iconRight={<IconArrowRight />}
             onClick={() => setPhase('additional-info')}
           >
             ({selected?.length || 0}) Selected

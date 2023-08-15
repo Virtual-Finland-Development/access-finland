@@ -4,7 +4,7 @@
     "@types/node": "^16"
   },
   "dependencies": {
-    "@aws-sdk/client-amplify": "^3.350.0",
+    "@aws-sdk/client-amplify": "^3.363.0",
     "@pulumi/aws": "^5.23.0",
     "@pulumi/pulumi": "^3.49.0",
     "@pulumi/random": "^4.13.2",
