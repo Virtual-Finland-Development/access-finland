@@ -46,18 +46,15 @@ function MobileLink({ onClick, children, href }: MobileLink) {
   );
 }
 
-const DesktopNavItem = styled(Link).attrs<{ isActive: boolean }>(
-  ({ $isActive, href }) => ({
-    className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
-      $isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
-    }`,
-    href,
-  })
-)<{ isActive: boolean }>`
-  a {
-    font-weight: 700;
-  }
-`;
+const DesktopNavItem = styled(Link).attrs<{
+  $isActive: boolean;
+  href: boolean;
+}>(({ $isActive, href }) => ({
+  className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
+    $isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
+  }`,
+  href,
+}))<{ $isActive: boolean }>``;
 
 function DesktopMenuPopover({
   navigationItems,
