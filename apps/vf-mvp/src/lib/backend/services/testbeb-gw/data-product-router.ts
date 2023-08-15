@@ -1,11 +1,7 @@
-import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-
-const ENV = process.env.NODE_ENV;
-
 
 const DataProductRouter = {
   async execute(
@@ -54,12 +50,10 @@ const DataProductRouter = {
 
   getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
 
-    const defaultDataSource = 'virtualfinland:development'; // @TODO: fix this
-    const gatewayEndpoint =
-      ENV === 'development'
-        ? `${USERS_API_BASE_URL}/productizer`
-        : 'https://gateway.testbed.fi';
+    const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
+    const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
 
+    if (!gatewayEndpoint) throw new Error('Missing data product gateway endpoint');
     if (!dataSource) dataSource = defaultDataSource;
 
     return `${gatewayEndpoint}/${dataProduct}?source=${dataSource}`;

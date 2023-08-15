@@ -19,6 +19,8 @@ const usersApiEndpoint = new pulumi.StackReference(
   `${org}/users-api/dev`
 ).getOutput('ApplicationUrl');
 
+const testbedConfig = new pulumi.Config("testbed");
+
 // Random value for custom header (for restricted CloudFront -> ALB access)
 const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(`${projectName}-uuid-${env}`).result
@@ -48,6 +50,8 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
     NEXT_PUBLIC_STAGE: env,
+    TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
+    TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
   },
 });
 
