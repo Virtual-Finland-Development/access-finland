@@ -28,10 +28,6 @@ export function loggedInAuthMiddleware(handler: NextApiHandler) {
 export function loggedOutAuthMiddleware(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      // Logged out check
-      if (!!req.cookies.apiAuthPackage) {
-        throw new Error('Already logged in.');
-      }
       return await handler(req, res);
     } catch (error) {
       logError(error);
