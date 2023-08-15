@@ -1,18 +1,23 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import DataProductRouter from '@mvp/lib/backend/services/testbeb-gw/data-product-router';
 import type { DataProduct } from '@shared/types';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { array, minLength, object, optional, parse, string } from 'valibot';
+
+const DataProductRequestSchema = object({
+  slug: array(string(), [minLength(1)]),
+  source: optional(string()),
+});
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { slug, source } = req.query;
+  const { slug, source } = parse(DataProductRequestSchema, req.query);
 
-  if (slug instanceof Array && slug.length > 0) {
+  if (slug.length > 0) {
     const dataProduct = slug.join('/');
-    const dataSource = source instanceof Array ? source[0] : source;
 
     return await DataProductRouter.execute(
       dataProduct as DataProduct,
-      dataSource,
+      source,
       req,
       res
     );
