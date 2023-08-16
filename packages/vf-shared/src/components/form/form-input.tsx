@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import {
   Control,
   Controller,
@@ -16,12 +17,13 @@ interface FormInputControllerProps<T extends FieldValues> {
 }
 
 interface Props<T extends FieldValues> extends FormInputControllerProps<T> {
-  labelText: string;
+  labelText: ReactNode;
   hintText?: string;
   optionalText?: string;
-  placeholder?: string;
+  placeholder?: ReactNode;
   showStatusText?: boolean;
   readOnly?: boolean;
+  autoFocus?: boolean;
   type?:
     | 'number'
     | 'text'
@@ -34,6 +36,14 @@ interface Props<T extends FieldValues> extends FormInputControllerProps<T> {
   formatDefaultValue?: (value: any) => any;
   min?: number;
   step?: number;
+}
+
+function safeParseDateDefaultValue(value: string): string {
+  try {
+    return format(new Date(value), 'd.M.yyyy');
+  } catch {
+    return '';
+  }
 }
 
 export default function FormInput<T extends FieldValues>(props: Props<T>) {
@@ -50,6 +60,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
     formatDefaultValue,
     min = 1,
     step = 1,
+    autoFocus,
   } = props;
 
   const { width } = useDimensions();
@@ -88,7 +99,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
               status={error ? 'error' : 'default'}
               statusText={showStatusText && error ? error.message : ''}
               initialDate={!isDirty && value ? new Date(value) : new Date()}
-              defaultValue={value ? format(new Date(value), 'd.M.yyyy') : ''}
+              defaultValue={safeParseDateDefaultValue(value)}
               onChange={({ value, date }) => {
                 if (date instanceof Date && !isNaN(date.getTime())) {
                   onChange(format(date, 'yyyy-MM-dd'));
@@ -115,6 +126,8 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
               min={min}
               step={step}
               readOnly={readOnly}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={autoFocus}
             />
           )}
         </>

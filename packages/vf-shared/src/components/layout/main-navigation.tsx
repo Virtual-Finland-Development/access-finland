@@ -23,7 +23,7 @@ import CustomLink from '../ui/custom-link';
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
   className: '!p-0 !px-2',
-  'aria-label': 'menu toggle button',
+  'aria-label': 'Toggle menu button',
 })`
   &:hover {
     background: transparent !important;
@@ -46,17 +46,15 @@ function MobileLink({ onClick, children, href }: MobileLink) {
   );
 }
 
-const DesktopNavItem = styled.li.attrs<{ isActive: boolean }>(
-  ({ isActive }) => ({
-    className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
-      isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
-    }`,
-  })
-)<{ isActive: boolean }>`
-  a {
-    font-weight: 700;
-  }
-`;
+const DesktopNavItem = styled(Link).attrs<{
+  $isActive: boolean;
+  href: boolean;
+}>(({ $isActive, href }) => ({
+  className: `border-b-4 py-2 px-4 mx-7 hover:border-b-suomifi-light cursor-pointer ${
+    $isActive ? 'border-b-suomifi-light' : 'border-b-transparent'
+  }`,
+  href,
+}))<{ $isActive: boolean }>``;
 
 function DesktopMenuPopover({
   navigationItems,
@@ -83,11 +81,9 @@ function DesktopMenuPopover({
                 <>
                   <IconFileCabinet className="flex-shrink-0 h-12 w-12" />
                   <div className="flex flex-col">
-                    <button className="flex" onClick={() => close()}>
-                      <CustomLink href={item.href} $bold>
-                        {item.name}
-                      </CustomLink>
-                    </button>
+                    <CustomLink href={item.href} $bold onClick={() => close()}>
+                      {item.name}
+                    </CustomLink>
                     <Text>Page info here.</Text>
                   </div>
                 </>
@@ -106,20 +102,20 @@ function DesktopNavigation({ navigationItems }: { navigationItems: NavItems }) {
   return (
     <div className="hidden md:block border-t border-t-gray-300">
       <div className="container px-4">
-        <ul className="hidden md:flex flex-wrap gap-4 -mx-7">
+        <nav className="hidden md:flex flex-wrap gap-4 -mx-7">
           {navigationItems.map(item => (
             <DesktopNavItem
               key={item.name}
-              isActive={
+              $isActive={
                 (item.href === '/' && router.pathname === item.href) ||
                 (item.href !== '/' && router.pathname.includes(item.href))
               }
-              onClick={() => router.push(item.href)}
+              href={item.href}
             >
               <Text>{item.name}</Text>
             </DesktopNavItem>
           ))}
-        </ul>
+        </nav>
       </div>
     </div>
   );

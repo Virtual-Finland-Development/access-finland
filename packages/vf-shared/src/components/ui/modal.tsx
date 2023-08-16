@@ -1,14 +1,21 @@
 import dynamic from 'next/dynamic';
 import { ReactNode } from 'react';
+import FocusLockUI from 'react-focus-lock/UI';
 import {
   ModalContent,
   ModalTitle,
   Modal as SuomiFiModal,
 } from 'suomifi-ui-components';
+import { sidecar } from 'use-sidecar';
 import useDimensions from '@/lib/hooks/use-dimensions';
 
 const ModalFooter = dynamic(() =>
   import('suomifi-ui-components').then(mod => mod.ModalFooter)
+);
+
+// https://github.com/theKashey/react-focus-lock#separated-usage
+const FocusLockSidecar = sidecar(
+  () => import(/* webpackPrefetch: true */ 'react-focus-lock/sidecar')
 );
 
 interface Props {
@@ -39,11 +46,13 @@ export default function Modal(props: Props) {
       variant={width > 640 ? 'default' : 'smallScreen'}
       onEscKeyDown={() => closeOnEsc && closeModal()}
     >
-      <ModalContent>
-        <ModalTitle>{title}</ModalTitle>
-        {content}
-      </ModalContent>
-      {footerContent && <ModalFooter>{footerContent}</ModalFooter>}
+      <FocusLockUI sideCar={FocusLockSidecar} className="overflow-auto">
+        <ModalContent>
+          <ModalTitle>{title}</ModalTitle>
+          {content}
+        </ModalContent>
+        {footerContent && <ModalFooter>{footerContent}</ModalFooter>}
+      </FocusLockUI>
     </SuomiFiModal>
   );
 }

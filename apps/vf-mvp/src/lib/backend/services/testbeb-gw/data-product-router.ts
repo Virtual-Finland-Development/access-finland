@@ -1,41 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { DataProductShemas, type DataProduct } from '@shared/types';
 import axios from 'axios';
-import type { DataProduct } from '@shared/types';
-import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-
-const ENV = process.env.NODE_ENV;
-const defaultDataSource = 'virtualfinland:development'; // <--- stage arg should be read from env possibly, for now development suffices
-const profileProductsEndpoint =
-  ENV === 'development'
-    ? `${USERS_API_BASE_URL}/productizer`
-    : 'https://gateway.testbed.fi';
-
-const testbedGWConfiguration: {
-  dataProducts: Record<
-    DataProduct,
-    { gatewayEndpoint: string; defaultDataSource: string }
-  >;
-} = {
-  dataProducts: {
-    'draft/Person/BasicInformation': {
-      gatewayEndpoint: profileProductsEndpoint,
-      defaultDataSource,
-    },
-    'draft/Person/BasicInformation/Write': {
-      gatewayEndpoint: profileProductsEndpoint,
-      defaultDataSource,
-    },
-    'draft/Person/JobApplicantProfile': {
-      gatewayEndpoint: profileProductsEndpoint,
-      defaultDataSource,
-    },
-    'draft/Person/JobApplicantProfile/Write': {
-      gatewayEndpoint: profileProductsEndpoint,
-      defaultDataSource,
-    },
-  },
-};
 
 const DataProductRouter = {
   async execute(
@@ -46,7 +12,7 @@ const DataProductRouter = {
   ) {
     const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
-    const requestBody = req.body || '{}';
+    const requestBody = this.parseDataProductRequestBody(dataProduct, req);
 
     if (!endpointUrl) {
       res.status(400).json({ message: 'Bad request: data product' });
@@ -83,16 +49,21 @@ const DataProductRouter = {
   },
 
   getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
-    const dataProductConfig = testbedGWConfiguration.dataProducts[dataProduct];
 
-    if (dataProductConfig) {
-      const { gatewayEndpoint, defaultDataSource } = dataProductConfig;
-      if (!dataSource) dataSource = defaultDataSource;
+    const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
+    const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
 
-      return `${gatewayEndpoint}/${dataProduct}?source=${dataSource}`;
+    if (!gatewayEndpoint) throw new Error('Missing data product gateway endpoint');
+    if (!dataSource) dataSource = defaultDataSource;
+
+    return `${gatewayEndpoint}/${dataProduct}?source=${dataSource}`;
+  },
+
+  parseDataProductRequestBody(dataProduct: DataProduct, req: NextApiRequest) { 
+    if (req.body) {
+      return DataProductShemas[dataProduct].parse(req.body);
     }
-
-    return null;
+    return '{}'
   },
 };
 

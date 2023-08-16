@@ -22,6 +22,8 @@ export function configureAmplify() {
     aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
   );
 
+  const testbedConfig = new pulumi.Config("testbed");
+
   // Next.js Amplify App
   const amplifyApp = new aws.amplify.App(nameResource('amplifyApp'), {
     tags,
@@ -39,6 +41,8 @@ export function configureAmplify() {
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
+      TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
+      TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
     },
     platform: 'WEB_COMPUTE',
     buildSpec: `
@@ -55,6 +59,9 @@ export function configureAmplify() {
                   - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
                   - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/vf-mvp/.env
                   - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/vf-mvp/.env
+                  - echo "BACKEND_SECRET_SIGN_KEY=$BACKEND_SECRET_SIGN_KEY" >> apps/vf-mvp/.env
+                  - echo "TESTBED_PRODUCT_GATEWAY_BASE_URL=$TESTBED_PRODUCT_GATEWAY_BASE_URL" >> apps/vf-mvp/.env
+                  - echo "TESTBED_DEFAULT_DATA_SOURCE=$TESTBED_DEFAULT_DATA_SOURCE" >> apps/vf-mvp/.env
                   - npx turbo run build --filter=vf-mvp
             artifacts:
               baseDirectory: apps/vf-mvp/.next

@@ -1,44 +1,52 @@
+import { Output, array, nativeEnum, nullable, number, object, string } from 'valibot';
+
 /**
  * Person/BasicInformation
  */
-export interface PersonBasicInformation {
-  givenName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  residency: string;
-}
+export const PersonBasicInformationSchema = object({
+  givenName: string(),
+  lastName: string(),
+  email: string(),
+  phoneNumber: string(),
+  residency: string(),
+});
+export type PersonBasicInformation = Output<typeof PersonBasicInformationSchema>; 
 
-export interface Education {
-  educationName: string;
-  educationLevel: string;
-  educationField: string;
-  graduationDate: string;
-  institutionName: string;
-}
+export const EducationSchema = object({
+  educationName: string(),
+  educationLevel: string(),
+  educationField: string(),
+  graduationDate: string(),
+  institutionName: string(),
+});
+export type Education = Output<typeof EducationSchema>; 
 
 export enum SkillLevel {
   'beginner' = 'beginner',
   'intermediate' = 'intermediate',
   'master' = 'master',
 }
+export const SkillLevelSchema = nativeEnum(SkillLevel);
 
-export interface OtherSkill {
-  escoIdentifier: string;
-  skillLevel: SkillLevel;
-}
+export const OtherSkillSchema = object({
+  escoIdentifier: string(),
+  skillLevel: SkillLevelSchema,
+});
+export type OtherSkill = Output<typeof OtherSkillSchema>; 
 
-export interface LanguageSkill {
-  escoIdentifier: string;
-  languageCode: string;
-  skillLevel: string;
-}
+export const LanguageSkillSchema = object({
+  escoIdentifier: string(),
+  languageCode: string(),
+  skillLevel: string(),
+});
+export type LanguageSkill = Output<typeof LanguageSkillSchema>; 
 
-export interface Certification {
-  certificationName: string;
-  escoIdentifier: string[];
-  institutionName: string;
-}
+export const CertificationSchema = object({
+  certificationName: string(),
+  escoIdentifier: array(string()),
+  institutionName: string(),
+});
+export type Certification = Output<typeof CertificationSchema>; 
 
 export enum EmploymentType {
   'permanent',
@@ -46,6 +54,7 @@ export enum EmploymentType {
   'seasonal',
   'summerJob',
 }
+export const EmploymentTypeSchema = nativeEnum(EmploymentType);
 
 export enum WorkingTime {
   '01',
@@ -57,26 +66,31 @@ export enum WorkingTime {
   '07',
   '08',
 }
+export const WorkingTimeSchema = nativeEnum(WorkingTime);
 
-export interface UserOccupation {
-  escoIdentifier: string;
-  escoCode: string;
-  workExperience: number;
-  employer: string;
-}
-export interface JobApplicantProfile {
-  occupations: UserOccupation[];
-  educations: Education[];
-  languageSkills: LanguageSkill[];
-  otherSkills: OtherSkill[];
-  certifications: Certification[];
-  permits: string[];
-  workPreferences: {
-    preferredRegion: string[];
-    preferredMunicipality: string[];
-    typeOfEmployment: EmploymentType | null;
-    workingTime: WorkingTime | null;
-    workingLanguage: string[];
-    naceCode: string | null;
-  };
-}
+export const UserOccupationSchema = object({
+  escoIdentifier: string(),
+  escoCode: string(),
+  workExperience: number(),
+  employer: string(),
+});
+export type UserOccupation = Output<typeof UserOccupationSchema>; 
+
+export const JobApplicantProfileSchema = object({
+  occupations: array(UserOccupationSchema),
+  educations: array(EducationSchema),
+  languageSkills: array(LanguageSkillSchema),
+  otherSkills: array(OtherSkillSchema),
+  certifications: array(CertificationSchema),
+  permits: array(string()),
+  workPreferences: object({
+    preferredRegion: array(string()),
+    preferredMunicipality: array(string()),
+    typeOfEmployment: nullable(EmploymentTypeSchema),
+    workingTime: nullable(WorkingTimeSchema),
+    workingLanguage: array(string()),
+    naceCode: nullable(string()),
+  })
+});
+export type JobApplicantProfile = Output<typeof JobApplicantProfileSchema>; 
+

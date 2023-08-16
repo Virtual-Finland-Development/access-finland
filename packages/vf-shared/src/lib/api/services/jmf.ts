@@ -1,3 +1,4 @@
+import { isExportedApplication } from '@/lib/utils';
 import type {
   JmfRecommendationsRequestPayload,
   JmfRecommendationsResponse,
@@ -8,8 +9,13 @@ import { TESTBED_API_BASE_URL } from '../endpoints';
 export async function getRecommendations(
   payload: JmfRecommendationsRequestPayload
 ): Promise<JmfRecommendationsResponse> {
+
+  const url = isExportedApplication()
+  ? `${TESTBED_API_BASE_URL}/jmf/recommendations`
+  : `/api/jmf/recommendations`;
+
   const { data } = await apiClient.post(
-    `${TESTBED_API_BASE_URL}/jmf/recommendations`,
+    url,
     payload
   );
   return data;

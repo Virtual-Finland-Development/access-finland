@@ -17,7 +17,7 @@ const nextSafeConfig = {
   contentSecurityPolicy: {
     'base-uri': "'none'",
     'child-src': "'none'",
-    'connect-src': ["'self'", CODESETS_BASE_URL],
+    'connect-src': ["'self'", CODESETS_BASE_URL, 'https://fonts.googleapis.com/'],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
     'form-action': "'self'",
