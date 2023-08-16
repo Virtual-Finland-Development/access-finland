@@ -1,19 +1,30 @@
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
 import { Block, IconChevronRight } from 'suomifi-ui-components';
-import europeImage from '../../images/your_europe_logo.svg';
+import { isExportedApplication } from '@/lib/utils';
+import virtualFinlandLogo from '../../images/virtualfinland_logo_small.png';
 import CustomHeading from '../ui/custom-heading';
 import CustomImage from '../ui/custom-image';
 import CustomLink from '../ui/custom-link';
 import CustomText from '../ui/custom-text';
 
 const HELP_LINKS = [
-  { href: '#', label: 'Who runs this service?' },
-  { href: '#', label: 'What are the steps in the imigration process?' },
-  { href: '#', label: 'What I need to know about Residence permit?' },
-  { href: '#', label: 'EU requirements for those arriving outside region' },
-  { href: '#', label: 'What do I need to know about Finland?' },
-  { href: '#', label: 'I present a company. What should I do?' },
-  { href: '#', label: 'I have family coming with me. What should I do?' },
+  {
+    href: 'https://jobsinfinland.fi/',
+    label: 'Jobs in Finland - Looking for a job in Finland?',
+  },
+  {
+    href: 'https://www.infofinland.fi/',
+    label: 'Info Finland - Your guide to living in Finland!',
+  },
+  {
+    href: 'https://finland.fi/',
+    label:
+      'This is Finland – Things you should and shouldn’t know about Finland!',
+  },
+  {
+    href: 'https://enterfinland.fi/',
+    label: 'Enter Finland - Are you ready move to Finland?',
+  },
 ];
 
 function Help() {
@@ -29,7 +40,7 @@ function Help() {
               <li key={item.label}>
                 <div className="flex flex-row gap-1 items-center">
                   <IconChevronRight className="-ml-1 text-base flex-shrink-0 text-suomifi-orange" />
-                  <CustomLink href={item.href} $base>
+                  <CustomLink href={item.href} $base isExternal>
                     {item.label}
                   </CustomLink>
                 </div>
@@ -41,20 +52,20 @@ function Help() {
       <Block variant="section" className="bg-suomifi-blue-bg-light px-4 py-6">
         <div className="container md:px-4">
           <CustomHeading variant="h3" className="!text-lg">
-            Do you need help?
+            Do you need help with this application or profile?
           </CustomHeading>
           <div className="mt-4 flex flex-col gap-2">
             <div className="flex flex-col gap-1">
-              <CustomText $base $bold>
-                All help channels under one address
-              </CustomText>
               <CustomText $base>
-                Find help for people, organisations or companies from here:
+                Send email to us and describe your problem:{' '}
+                <a
+                  href="mailto:virtualfinland.um@gov.fi"
+                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                >
+                  virtualfinland.um@gov.fi
+                </a>
               </CustomText>
             </div>
-            <CustomLink href="">
-              Additional information on Public Service Info
-            </CustomLink>
           </div>
         </div>
       </Block>
@@ -63,30 +74,51 @@ function Help() {
 }
 
 function Social() {
+  const isExportedApp = isExportedApplication();
+
   return (
     <Block
       variant="section"
       className="bg-suomifi-blue-bg-dark px-4 pt-2 pb-14 p-6"
+      style={{
+        background: 'linear-gradient(270deg, #01041c 0%, #002da1 100%)',
+      }}
     >
-      <div className="container flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-white border-b py-6">
-          <div className="flex flex-row items-center gap-2">
-            <GrTwitter />
-            <CustomText>@virtualfinland</CustomText>
-          </div>
+      <div className="container flex flex-col">
+        {isExportedApp && (
+          <div className="flex flex-col gap-3 text-white border-b py-8">
+            <div className="flex flex-row items-center gap-2">
+              <GrTwitter />
+              <CustomText>@virtualfinland</CustomText>
+            </div>
 
-          <div className="flex flex-row items-center gap-2">
-            <GrFacebook />
-            <CustomText>@virtualfinland</CustomText>
+            <div className="flex flex-row items-center gap-2">
+              <GrFacebook />
+              <CustomText>@virtualfinland</CustomText>
+            </div>
+          </div>
+        )}
+        <div className="pt-8 text-white">
+          <a
+            href="https://thevirtualfinland.fi/en/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <CustomImage
+              src={virtualFinlandLogo}
+              alt="Virtual Finland"
+              width={250}
+              height={75}
+              priority
+            />
+          </a>
+          <div className="flex flex-col gap-1 mt-6">
+            <CustomText $base $bold>
+              Virtual Finland aims to make it easier for foreign employees,
+              companies, and students to relocate to Finland
+            </CustomText>
           </div>
         </div>
-        <CustomImage
-          src={europeImage}
-          alt="Your Europe image"
-          width={250}
-          height={75}
-          priority
-        />
       </div>
     </Block>
   );

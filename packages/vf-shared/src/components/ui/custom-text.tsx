@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Text } from 'suomifi-ui-components';
 
@@ -18,7 +19,7 @@ const StyledText = styled(Text).attrs<StyledTextProps>(
 `;
 
 interface Props extends StyledTextProps {
-  children: string;
+  children: ReactNode;
 }
 
 export default function CustomText(props: Props) {

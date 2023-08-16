@@ -9,11 +9,16 @@ import {
 interface StyledLinkProps {
   $bold?: boolean;
   $base?: boolean;
+  isExternal?: boolean;
 }
 
 const StyledLink = styled(SuomiFiLink).attrs<StyledLinkProps>(
-  ({ $bold, $base }) => ({
+  ({ $bold, $base, isExternal }) => ({
     className: `${$bold ? '!font-bold' : ''} ${$base ? '!text-base' : ''}`,
+    ...(isExternal && {
+      rel: 'noopener noreferrer',
+      target: '_blank',
+    }),
   })
 )<StyledLinkProps>``;
 
@@ -23,7 +28,18 @@ type CustomLinkProps = Omit<SuomiFiLinkProps, 'href'> &
 
 const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
   (
-    { href, replace, scroll, shallow, locale, $bold, $base, children, onClick },
+    {
+      href,
+      replace,
+      scroll,
+      shallow,
+      locale,
+      $bold,
+      $base,
+      children,
+      onClick,
+      isExternal,
+    },
     ref
   ) => {
     return (
@@ -42,6 +58,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
           $bold={$bold}
           $base={$base}
           onClick={onClick}
+          isExternal={isExternal}
         >
           {children}
         </StyledLink>

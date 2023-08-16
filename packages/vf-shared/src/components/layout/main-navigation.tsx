@@ -208,8 +208,10 @@ function UserControl({ className }: { className: string }) {
 
 export default function MainNavigation({
   navigationItems,
+  languages,
 }: {
   navigationItems: { name: string; href: string }[];
+  languages: { code: string; label: string }[];
 }) {
   const { isAuthenticated } = useAuth();
   const [mobileNavPanelOpen, setMobileNavPanelOpen] = useState(false);
@@ -226,7 +228,7 @@ export default function MainNavigation({
                 suomiFiBlue="light"
                 className="!text-lg !font-bold"
               >
-                VIRTUAL FINLAND
+                ACCESS FINLAND
               </CustomHeading>
             </Link>
 
@@ -234,15 +236,15 @@ export default function MainNavigation({
             <div className="flex flex-row items-center gap-6">
               {/* Language menu */}
               <LanguageMenu name="EN" className="!font-bold">
-                <LanguageMenuItem onSelect={() => {}}>
-                  Suomeksi (FI)
-                </LanguageMenuItem>
-                <LanguageMenuItem onSelect={() => {}}>
-                  På Svenska (SV)
-                </LanguageMenuItem>
-                <LanguageMenuItem onSelect={() => {}} selected>
-                  In English (EN)
-                </LanguageMenuItem>
+                {languages.map(l => (
+                  <LanguageMenuItem
+                    key={l.code}
+                    onSelect={() => {}}
+                    selected={l.code === 'en'}
+                  >
+                    {l.label}
+                  </LanguageMenuItem>
+                ))}
               </LanguageMenu>
 
               {/* Mobile menu toggle button */}

@@ -10,12 +10,17 @@ const Container = styled.div.attrs({
 interface Props {
   children: ReactNode;
   navigationItems: { name: string; href: string }[];
+  languages: { code: string; label: string }[];
 }
 
-export default function MainLayout({ children, navigationItems }: Props) {
+export default function MainLayout({
+  children,
+  navigationItems,
+  languages,
+}: Props) {
   return (
     <>
-      <MainNavigation navigationItems={navigationItems} />
+      <MainNavigation navigationItems={navigationItems} languages={languages} />
       <Container>{children}</Container>
       <Footer />
     </>
