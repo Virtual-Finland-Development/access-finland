@@ -39,6 +39,8 @@ const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
   forceDelete: true,
 });
 
+const nextJsPublicStage = env === "test" ? "dev" : env; // MVP fargate runs in test, but that's actually the dev 
+
 // ECR Docker image
 const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
   repositoryUrl: repository.url,
@@ -49,7 +51,7 @@ const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
     NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
     NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
     BACKEND_SECRET_SIGN_KEY: backendSignKey,
-    NEXT_PUBLIC_STAGE: env,
+    NEXT_PUBLIC_STAGE: nextJsPublicStage,
     TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
     TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
   },
