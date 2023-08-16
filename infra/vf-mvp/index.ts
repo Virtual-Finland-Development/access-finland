@@ -37,28 +37,6 @@ const backendSignKey = pulumi.interpolate`${
   }).result
 }`;
 
-// ECR repository
-const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
-  tags,
-  forceDelete: true,
-});
-
-
-// ECR Docker image
-const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
-  repositoryUrl: repository.url,
-  path: '../../', // path to a directory to use for the Docker build context (root of the repo)
-  dockerfile: '../../apps/vf-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
-  extraOptions: ['--platform', 'linux/amd64'],
-  args: {
-    NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
-    NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
-    BACKEND_SECRET_SIGN_KEY: backendSignKey,
-    NEXT_PUBLIC_STAGE: envOverride,
-    TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
-    TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
-  },
-});
 
 // ECS cluster
 const cluster = new aws.ecs.Cluster(`${projectName}-ecs-cluster-${env}`, {
@@ -112,67 +90,6 @@ const lbListenerRule = new aws.lb.ListenerRule(
         },
       },
     ],
-  }
-);
-
-// ECS Task role
-const awsIdentity = pulumi.output(aws.getCallerIdentity());
-const taskRole = new aws.iam.Role(`${projectName}-fargate-task-role-${env}`, {
-  tags,
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    Service: 'ecs-tasks.amazonaws.com',
-  }),
-});
-
-const sinunaAccessPolicy = new aws.iam.Policy(
-  `${projectName}-fargate-task-role-sinuna-policy-${env}`,
-  {
-    tags,
-    policy: {
-      Version: '2012-10-17',
-      Statement: [
-        {
-          Effect: 'Allow',
-          Action: ['ssm:GetParameter'],
-          Resource: [
-            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
-            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
-          ],
-        },
-      ],
-    },
-  }
-);
-
-// Attach a policy to grant access to Parameter Store
-new aws.iam.RolePolicyAttachment(`${projectName}-fargate-task-role-sinuna-policy-attachment-${env}`, {
-  role: taskRole.name,
-  policyArn: sinunaAccessPolicy.arn,
-});
-
-// Fargate service
-new awsx.ecs.FargateService(
-  `${projectName}-fargate-service-${env}`,
-  {
-    tags,
-    cluster: cluster.arn,
-    assignPublicIp: true,
-    continueBeforeSteadyState: false,
-    taskDefinitionArgs: {
-      containers: {
-        service: {
-          image: image.imageUri,
-          portMappings: [
-            {
-              targetGroup: lb.defaultTargetGroup,
-            },
-          ],
-        },
-      },
-      taskRole: {
-        roleArn: taskRole.arn,
-      },
-    },
   }
 );
 
@@ -239,6 +156,90 @@ const cdn = new aws.cloudfront.Distribution(
   },
   {
     protect: false,
+  }
+);
+
+// ECS Task role
+const awsIdentity = pulumi.output(aws.getCallerIdentity());
+const taskRole = new aws.iam.Role(`${projectName}-fargate-task-role-${env}`, {
+  tags,
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'ecs-tasks.amazonaws.com',
+  }),
+});
+
+const sinunaAccessPolicy = new aws.iam.Policy(
+  `${projectName}-fargate-task-role-sinuna-policy-${env}`,
+  {
+    tags,
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['ssm:GetParameter'],
+          Resource: [
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
+            pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
+          ],
+        },
+      ],
+    },
+  }
+);
+
+// Attach a policy to grant access to Parameter Store
+new aws.iam.RolePolicyAttachment(`${projectName}-fargate-task-role-sinuna-policy-attachment-${env}`, {
+  role: taskRole.name,
+  policyArn: sinunaAccessPolicy.arn,
+});
+
+// ECR repository
+const repository = new awsx.ecr.Repository(`${projectName}-ecr-repo-${env}`, {
+  tags,
+  forceDelete: true,
+});
+
+// ECR Docker image
+const image = new awsx.ecr.Image(`${projectName}-mvp-image-${env}`, {
+  repositoryUrl: repository.url,
+  path: '../../', // path to a directory to use for the Docker build context (root of the repo)
+  dockerfile: '../../apps/vf-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
+  extraOptions: ['--platform', 'linux/amd64'],
+  args: {
+    NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
+    NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
+    BACKEND_SECRET_SIGN_KEY: backendSignKey,
+    NEXT_PUBLIC_STAGE: envOverride,
+    TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
+    TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource"),
+    FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdn.domainName}`,
+  },
+});
+
+// Fargate service
+new awsx.ecs.FargateService(
+  `${projectName}-fargate-service-${env}`,
+  {
+    tags,
+    cluster: cluster.arn,
+    assignPublicIp: true,
+    continueBeforeSteadyState: false,
+    taskDefinitionArgs: {
+      containers: {
+        service: {
+          image: image.imageUri,
+          portMappings: [
+            {
+              targetGroup: lb.defaultTargetGroup,
+            },
+          ],
+        },
+      },
+      taskRole: {
+        roleArn: taskRole.arn,
+      },
+    },
   }
 );
 
