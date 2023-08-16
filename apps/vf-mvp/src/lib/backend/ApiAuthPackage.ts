@@ -1,6 +1,7 @@
 import { LoggedInState } from '@mvp/../../../packages/vf-shared/src/types';
 import { randomBytes } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { BACKEND_SECRET_SIGN_KEY } from './api-constants';
 
 export function createApiAuthPackage(loggedInState: LoggedInState) {
   const csrfToken = generateCSRFToken();
@@ -49,7 +50,7 @@ export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
  * Resolve (not super secret, safe to keep in runtime env) secret sign key
  */
 function resolveSecretSignKey() {
-  return process.env.BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
+  return BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
 }
 
 /**

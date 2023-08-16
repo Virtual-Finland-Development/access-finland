@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { NextApiRequest } from 'next';
+import { FRONTEND_ORIGIN_URI } from './api-constants';
 
 /**
  * Generates a base64-hash string
@@ -34,8 +35,8 @@ export function resolveBase64Hash(hash: string): string {
 export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
   let origin;
 
-  if (typeof process.env.FRONTEND_ORIGIN_URI === 'string') {
-    origin = process.env.FRONTEND_ORIGIN_URI;
+  if (typeof FRONTEND_ORIGIN_URI === 'string') {
+    origin = FRONTEND_ORIGIN_URI;
   } else {
     // Next.js doesn't apparenly provide the request origin in a way that's easy to use, have to parse it from the headers:
     const protocol = String(req.headers['x-forwarded-proto'] || 'https').split(
