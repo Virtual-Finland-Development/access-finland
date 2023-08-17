@@ -10,7 +10,7 @@ const {
   backendSignKey
 } = setup;
 
-export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cdn: aws.cloudfront.Distribution) {
+export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cluster: aws.ecs.Cluster, cdn: aws.cloudfront.Distribution) {
 
   // ECS Task role
   const awsIdentity = pulumi.output(aws.getCallerIdentity());
@@ -70,11 +70,6 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
       TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource"),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdn.domainName}`,
     },
-  });
-
-  // ECS cluster
-  const cluster = new aws.ecs.Cluster(nameResource('ecs-cluster'), {
-    tags,
   });
 
   // Fargate service
