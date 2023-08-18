@@ -1,5 +1,5 @@
 {
-  "name": "vf-mvp-infra-amplify",
+  "name": "af-mvp-infra-amplify",
   "devDependencies": {
     "@types/node": "^16"
   },

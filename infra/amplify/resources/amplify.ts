@@ -22,13 +22,12 @@ export function configureAmplify() {
     aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
   );
 
-  const testbedConfig = new pulumi.Config("testbed");
+  const testbedConfig = new pulumi.Config('testbed');
 
   // Next.js Amplify App
   const amplifyApp = new aws.amplify.App(nameResource('amplifyApp'), {
     tags,
-    repository:
-      'https://github.com/Virtual-Finland-Development/virtual-finland',
+    repository: 'https://github.com/Virtual-Finland-Development/access-finland',
     accessToken: githubAccessToken,
     iamServiceRoleArn: amplifyServiceRole.arn,
     enableAutoBranchCreation: false,
@@ -41,8 +40,12 @@ export function configureAmplify() {
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
-      TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
-      TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource")
+      TESTBED_PRODUCT_GATEWAY_BASE_URL:
+        process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
+        testbedConfig.require('gatewayUrl'),
+      TESTBED_DEFAULT_DATA_SOURCE:
+        process.env.TESTBED_DEFAULT_DATA_SOURCE ||
+        testbedConfig.require('defaultDataSource'),
     },
     platform: 'WEB_COMPUTE',
     buildSpec: `
