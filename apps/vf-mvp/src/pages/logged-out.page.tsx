@@ -39,7 +39,7 @@ export default function LoggedOutPage() {
   return (
     <Page title="Logged out">
       <Page.Block className="bg-white">
-        <Alert status="neutral" labelText="Logged out from Virtual Finland!">
+        <Alert status="neutral" labelText="Logged out from Access Finland!">
           <div className="flex flex-col gap-3 items-start">
             <Text>
               Note that the Sinuna login session might still be active. Manage

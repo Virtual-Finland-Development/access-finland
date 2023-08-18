@@ -1,6 +1,6 @@
-# Virtual Finland monorepo / workspaces (Turborepo)
+# Access Finland monorepo / workspaces (Turborepo)
 
-Virtual Finland apps and shared components.
+Access Finland apps and shared components.
 
 ## What's inside?
 
@@ -8,8 +8,8 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `vf-features`: a [Next.js](https://nextjs.org/) app. Virtual Finland "demo app" that contains experimental features.
-- `vf-mvp`: another [Next.js](https://nextjs.org/) app. MVP app for the VF project, production.
+- `vf-features`: a [Next.js](https://nextjs.org/) app. Access Finland "demo app" that contains experimental features.
+- `vf-mvp`: another [Next.js](https://nextjs.org/) app. Access Finland MVP app for the VF project, production.
 - `vf-shared`: React components and utils shared by both `vf-features` and `vf-mvp` applications.
 - `tailwind-config`: shared taildwind configs
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)

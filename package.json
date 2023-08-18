@@ -1,5 +1,5 @@
 {
-  "name": "virtual-finland",
+  "name": "access-finland",
   "private": true,
   "scripts": {
     "build": "turbo run build",

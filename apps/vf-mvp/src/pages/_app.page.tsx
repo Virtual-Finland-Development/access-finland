@@ -56,8 +56,8 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Head>
-          <title>Virtual Finland</title>
-          <meta name="description" content="Virtual Finland demo app" />
+          <title>Access Finland</title>
+          <meta name="description" content="Access Finland app" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
