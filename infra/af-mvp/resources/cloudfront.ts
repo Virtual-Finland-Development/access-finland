@@ -8,8 +8,11 @@ const {
   customHeaderValue,
 } = setup;
 
-export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer) {
+export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer, domainSetup: { domainName?: string, certificate?: aws.acm.Certificate }) {
 
+  const domainNames = domainSetup.domainName ? [domainSetup.domainName] : undefined;
+  const domainCertificateArn = domainSetup.certificate ? domainSetup.certificate.arn : undefined;
+  
   // CloudFront
   return new aws.cloudfront.Distribution(
     nameResource('cdn'),
@@ -20,6 +23,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       priceClass: 'PriceClass_All',
       waitForDeployment: true,
       retainOnDelete: false,
+      aliases: domainNames,
       origins: [
         {
           originId: lb.loadBalancer.arn,
@@ -68,6 +72,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       },
       viewerCertificate: {
         cloudfrontDefaultCertificate: true,
+        acmCertificateArn: domainCertificateArn,
       },
       tags,
     },

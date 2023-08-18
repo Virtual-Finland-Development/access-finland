@@ -11,8 +11,8 @@ const tags = {
 };
 const config = new pulumi.Config();
 
-// @temporary overrides for testing --->
-const envOverride = 'dev';
+// Env/stage override for specific systems --->
+const envOverride = environment === 'test' ? 'dev' : environment;
 // <---
 
 // external apis
@@ -40,6 +40,9 @@ const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(nameResource("uuid")).result
 }`;
 
+// CDN custom domain name
+const domainName = config.require('domainName');
+
 const setup = {
   organizationName,
   environment,
@@ -52,6 +55,13 @@ const setup = {
   },
   backendSignKey,
   customHeaderValue,
+  cdn: {
+    domainName,
+    waf: {
+      username: config.get('wafUsername'),
+      password: config.get('wafPassword'),
+    }
+  }
 };
 
 export default setup;

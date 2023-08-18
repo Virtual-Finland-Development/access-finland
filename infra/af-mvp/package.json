@@ -4,6 +4,8 @@
     "@types/node": "^16"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.391.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.391.0",
     "@pulumi/aws": "^5.23.0",
     "@pulumi/awsx": "^1.0.2",
     "@pulumi/pulumi": "^3.49.0",
