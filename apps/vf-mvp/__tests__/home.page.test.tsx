@@ -12,7 +12,7 @@ describe('Home page', () => {
     });
 
     const heading = screen.getByRole('heading', {
-      name: /the only service you need for moving into Finland/i,
+      name: /first point of contact with finland/i,
     });
 
     expect(heading).toBeInTheDocument();
