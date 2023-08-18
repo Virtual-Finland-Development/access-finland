@@ -10,9 +10,9 @@ const {
 } = setup;
 
 export function createDomainSetup() : { domainName?: string, certificate?: aws.acm.Certificate } {
-  
+
   if (domainName) {
-    const awsCertsRegion = new aws.Provider("aws-certificates-region", {region: "us-east-1"});
+    const awsCertsRegion = new aws.Provider(nameResource("cert-region"), {region: "us-east-1"});
     
     const certificate = new aws.acm.Certificate(nameResource('domainCertificate'), {
       domainName: domainName,

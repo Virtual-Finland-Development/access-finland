@@ -5,12 +5,13 @@ import setup, { nameResource } from '../utils/setup';
 
 const {
   tags,
-  customHeaderValue
+  customHeaderValue,
+  environment
 } = setup;
 
 export function createLoadBalancer() {
-
-    const loadBalancer = new awsx.lb.ApplicationLoadBalancer(nameResource('alb'), {
+    // Loadbalancer name can't exceed 32 characters
+    const loadBalancer = new awsx.lb.ApplicationLoadBalancer(`af-alb-${environment}`, {
         tags,
         defaultTargetGroup: {
           deregistrationDelay: 0,

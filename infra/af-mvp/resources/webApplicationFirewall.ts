@@ -23,7 +23,7 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
     const cognitoUserPool = createCognitoUserPool();
 
     // Create a firewall
-    const firewallRegion = new aws.Provider("aws-waf-region", {region: "us-east-1"});
+    const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), {region: 'us-east-1'});
     const webApplicationFirewall = new aws.wafv2.WebAcl(nameResource('webApplicationFirewall'), {
         defaultAction: {
             allow: {},
