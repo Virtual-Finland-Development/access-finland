@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  virtual-finland:
+  access-finland:
     image: node:18-alpine
     user: node
     command: sh -c "npm install && npm run dev"
@@ -25,15 +25,15 @@ services:
       - AWS_PROFILE=${AWS_PROFILE:-default}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.virtual-finland-mvp.rule=Host(`virtual-finland.localhost`)
-      - traefik.http.routers.virtual-finland-mvp.entrypoints=web
-      - traefik.http.routers.virtual-finland-mvp.service=virtual-finland-mvp-service
-      - traefik.http.services.virtual-finland-mvp-service.loadbalancer.server.port=3001
+      - traefik.http.routers.access-finland-mvp.rule=Host(`access-finland.localhost`)
+      - traefik.http.routers.access-finland-mvp.entrypoints=web
+      - traefik.http.routers.access-finland-mvp.service=access-finland-mvp-service
+      - traefik.http.services.access-finland-mvp-service.loadbalancer.server.port=3001
 
-      - traefik.http.routers.virtual-finland-features.rule=Host(`features.virtual-finland.localhost`)
-      - traefik.http.routers.virtual-finland-features.entrypoints=web
-      - traefik.http.routers.virtual-finland-features.service=virtual-finland-features-service
-      - traefik.http.services.virtual-finland-features-service.loadbalancer.server.port=3000
+      - traefik.http.routers.access-finland-features.rule=Host(`features.access-finland.localhost`)
+      - traefik.http.routers.access-finland-features.entrypoints=web
+      - traefik.http.routers.access-finland-features.service=access-finland-features-service
+      - traefik.http.services.access-finland-features-service.loadbalancer.server.port=3000
 
 networks:
   vfd-network:

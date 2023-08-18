@@ -8,9 +8,9 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `vf-features`: a [Next.js](https://nextjs.org/) app. Access Finland "demo app" that contains experimental features.
-- `vf-mvp`: another [Next.js](https://nextjs.org/) app. Access Finland MVP app for the VF project, production.
-- `vf-shared`: React components and utils shared by both `vf-features` and `vf-mvp` applications.
+- `af-features`: a [Next.js](https://nextjs.org/) app. Access Finland "demo app" that contains experimental features.
+- `af-mvp`: another [Next.js](https://nextjs.org/) app. Access Finland MVP app for the VF project, production.
+- `af-shared`: React components and utils shared by both `af-features` and `af-mvp` applications.
 - `tailwind-config`: shared taildwind configs
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo

@@ -1,11 +1,11 @@
 version: '3'
 
 services:
-  vf-mvp:
-    container_name: vf-mvp
+  af-mvp:
+    container_name: af-mvp
     build:
       context: .
-      dockerfile: ./apps/vf-mvp/Dockerfile
+      dockerfile: ./apps/af-mvp/Dockerfile
     restart: always
     environment:
       - AWS_PROFILE=${AWS_PROFILE:-default}
