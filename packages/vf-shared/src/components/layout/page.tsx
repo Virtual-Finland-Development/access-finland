@@ -18,7 +18,7 @@ function Page(props: Props) {
   return (
     <>
       <Head>
-        <title>{title} - Virtual Finland</title>
+        <title>{title} - Access Finland</title>
       </Head>
 
       <Breadcrumbs />

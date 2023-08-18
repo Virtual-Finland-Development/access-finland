@@ -36,7 +36,7 @@ export default function ProfileNotAuthenticated() {
         <Checkbox variant="large">Grant permissions</Checkbox>
       </div>
       <div className="flex flex-col items-start gap-4 mt-6">
-        <Text>Let’s sign in to Virtual Finland</Text>
+        <Text>Let’s sign in to Access Finland</Text>
         <Button onClick={loginHandler} disabled={isLoading} className="!w-auto">
           {isLoading ? 'Redirecting...' : `Sign in with ${authMethod}`}
         </Button>
