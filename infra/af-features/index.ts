@@ -5,7 +5,7 @@ import * as fs from 'fs';
 
 // Import the program's configuration settings.
 const config = new pulumi.Config();
-const path = config.get('artifactPath') || '../../apps/vf-features/out';
+const path = config.get('artifactPath') || '../../apps/af-features/out';
 const indexDocument = config.get('indexDocument') || 'index.html';
 const errorDocument = config.get('errorDocument') || '404.html';
 
