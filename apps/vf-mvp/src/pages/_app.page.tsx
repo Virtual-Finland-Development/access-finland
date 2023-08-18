@@ -38,6 +38,8 @@ const NAV_ITEMS = [
   { name: 'Profile', href: '/profile' },
 ];
 
+const LANGUAGES = [{ code: 'en', label: 'In English (EN)' }];
+
 const queryClient = new QueryClient();
 
 const Container = styled.div.attrs({
@@ -84,7 +86,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
             return (
               <ToastProvider>
                 <ModalProvider>
-                  <MainLayout navigationItems={NAV_ITEMS}>
+                  <MainLayout navigationItems={NAV_ITEMS} languages={LANGUAGES}>
                     <ComponentContextProvider>
                       <Component {...pageProps} />
                     </ComponentContextProvider>
