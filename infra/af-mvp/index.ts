@@ -5,7 +5,7 @@ import { createContentDeliveryNetwork } from './resources/cloudfront';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
 import { createFargateService } from './resources/fargate';
 import { createLoadBalancer } from './resources/loadBalancer';
-//import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';  // TODO
+import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';
 
 // Certfificate and domain setup
 //const domainSetup = createDomainSetup(); // TODO
@@ -16,9 +16,9 @@ const loadBalancer = createLoadBalancer();
 // Cloudfront CDN
 const cdn = createContentDeliveryNetwork(loadBalancer);
 // Web application firewall
-//createWebAppFirewallProtection(cdn);  // TODO
+const wafSetup = createWebAppFirewallProtection(cdn);
 // ECS Fargate service
-const fargateService = createFargateService(loadBalancer, cluster, cdn);
+const fargateService = createFargateService(loadBalancer, cluster, cdn, wafSetup);
 // Auto-scaling policies
 createECSAutoScaling(cluster, fargateService);
 

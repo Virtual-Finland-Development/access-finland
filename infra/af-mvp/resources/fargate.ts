@@ -10,7 +10,7 @@ const {
   backendSignKey
 } = setup;
 
-export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cluster: aws.ecs.Cluster, cdn: aws.cloudfront.Distribution) {
+export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cluster: aws.ecs.Cluster, cdn: aws.cloudfront.Distribution, wafSetup?: { userPool: aws.cognito.UserPool, userPoolClient: aws.cognito.UserPoolClient, cognitoDomain: aws.cognito.UserPoolDomain, sharedCookieSecret: string }) {
 
   // ECS Task role
   const awsIdentity = pulumi.output(aws.getCallerIdentity());
@@ -88,6 +88,20 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
               {
                 targetGroup: loadBalancer.defaultTargetGroup,
               },
+            ],
+            environment: [
+              {
+                name: 'WAF_USER_POOL_ID',
+                value: wafSetup?.userPool.id || '',
+              },
+              {
+                name: 'WAF_USER_POOL_CLIENT_ID',
+                value: wafSetup?.userPoolClient.id || '',
+              },
+              {
+                name: 'WAF_SHARED_COOKIE_SECRET',
+                value: wafSetup?.sharedCookieSecret || '',
+              }
             ],
           },
         },

@@ -10,6 +10,8 @@ const tags = {
   'vfd:stack': environment,
 };
 const config = new pulumi.Config();
+// AWS setup
+const awsSetup = new pulumi.Config('aws');
 
 // Env/stage override for specific systems --->
 const envOverride = environment === 'test' ? 'dev' : environment;
@@ -61,6 +63,9 @@ const setup = {
       username: config.get('wafUsername'),
       password: config.get('wafPassword'),
     }
+  },
+  awsSetup: {
+    region: awsSetup.get('region') || 'us-east-1',
   }
 };
 
