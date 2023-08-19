@@ -54,11 +54,19 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
                         <title>Access Denied</title>
                         <meta charset="UTF-8">
                         <meta http-equiv="refresh" content="5;${cognitoLoginUri}">
+                        <style>
+                            body {
+                                background: #909090;
+                                color: #ffffff;
+                                border: solid #bdefff 1px;
+                                text-align: center;
+                            }
+                        </style>
                     </head>
                     <body>
-                        <h1>You are not authorized to access this resource</h1>
+                        <h1>Access to this resource is restriced</h1>
                         <p>Redirecting to the login page in 5 seconds..</p>
-                        <p>If you are not redirected, please click <a href="${cognitoLoginUri}">here</a>.</p>
+                        <p>If you are not redirected, please follow the redirection link <a href="${cognitoLoginUri}">here</a>.</p>
                     </body>
                 </html>
                 `,
