@@ -60,5 +60,5 @@ jobs:
         with:
           work-dir: ./infra/af-mvp
           command: up
-          stack-name: ${{ env.pulumi_stack_organization }}/test
+          stack-name: ${{ env.pulumi_stack_organization }}/${{ env.environment }}
           upsert: true # create stack if no exists

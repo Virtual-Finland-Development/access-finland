@@ -84,6 +84,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact-${{ inputs.deployment_stage }}
-          path: apps/vf-features/out
+          path: apps/af-features/out
           retention-days: 1
           if-no-files-found: error

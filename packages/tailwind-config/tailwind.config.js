@@ -13,8 +13,8 @@ module.exports = {
   content: [
     // app content
     'src/**/*.{js,ts,jsx,tsx}',
-    // vf-shared content
-    '../../packages/vf-shared/src/**/*.{js,ts,jsx,tsx}',
+    // af-shared content
+    '../../packages/af-shared/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     container: {

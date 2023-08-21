@@ -34,7 +34,7 @@ export function configureAmplify() {
     enableBranchAutoBuild: false,
     enableBranchAutoDeletion: false,
     environmentVariables: {
-      AMPLIFY_MONOREPO_APP_ROOT: 'apps/vf-mvp',
+      AMPLIFY_MONOREPO_APP_ROOT: 'apps/af-mvp',
       AMPLIFY_DIFF_DEPLOY: 'false',
       NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
@@ -59,22 +59,22 @@ export function configureAmplify() {
                   - yum install -y jq
               build:
                 commands:
-                  - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/vf-mvp/.env
-                  - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/vf-mvp/.env
-                  - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/vf-mvp/.env
-                  - echo "BACKEND_SECRET_SIGN_KEY=$BACKEND_SECRET_SIGN_KEY" >> apps/vf-mvp/.env
-                  - echo "TESTBED_PRODUCT_GATEWAY_BASE_URL=$TESTBED_PRODUCT_GATEWAY_BASE_URL" >> apps/vf-mvp/.env
-                  - echo "TESTBED_DEFAULT_DATA_SOURCE=$TESTBED_DEFAULT_DATA_SOURCE" >> apps/vf-mvp/.env
-                  - npx turbo run build --filter=vf-mvp
+                  - echo $secrets | jq -r "to_entries|map(\\\"\\(.key)=\\(.value|tostring)\\\")|.[]" > apps/af-mvp/.env
+                  - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/af-mvp/.env
+                  - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/af-mvp/.env
+                  - echo "BACKEND_SECRET_SIGN_KEY=$BACKEND_SECRET_SIGN_KEY" >> apps/af-mvp/.env
+                  - echo "TESTBED_PRODUCT_GATEWAY_BASE_URL=$TESTBED_PRODUCT_GATEWAY_BASE_URL" >> apps/af-mvp/.env
+                  - echo "TESTBED_DEFAULT_DATA_SOURCE=$TESTBED_DEFAULT_DATA_SOURCE" >> apps/af-mvp/.env
+                  - npx turbo run build --filter=af-mvp
             artifacts:
-              baseDirectory: apps/vf-mvp/.next
+              baseDirectory: apps/af-mvp/.next
               files:
                 - '**/*'
             cache:
               paths:
                 - node_modules/**/*
             buildPath: /
-          appRoot: apps/vf-mvp
+          appRoot: apps/af-mvp
     `,
   });
 

@@ -45,18 +45,18 @@ jobs:
       - name: Install Pulumi CLI
         uses: pulumi/actions@v4
       - name: Install dependencies
-        working-directory: ./infra/vf-features
+        working-directory: ./infra/af-features
         run: npm ci && npm run build
       - name: Select Pulumi stack
-        working-directory: ./infra/vf-features
+        working-directory: ./infra/af-features
         run: pulumi stack select ${{ env.pulumi_stack_organization }}/${{ inputs.deployment_stage }} --create
       - name: Set artifact path in Pulumi config
-        working-directory: ./infra/vf-features
+        working-directory: ./infra/af-features
         run: pulumi config set artifactPath ../../out
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:
-          work-dir: ./infra/vf-features
+          work-dir: ./infra/af-features
           command: up
           stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.deployment_stage }}
           upsert: true # create stack if no exists

@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 
+import { DistributionArgs } from '@pulumi/aws/cloudfront';
 import setup, { nameResource } from '../utils/setup';
 
 const {
@@ -8,8 +9,20 @@ const {
   customHeaderValue,
 } = setup;
 
-export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer) {
+export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer, domainSetup?: { domainName?: string, certificate?: aws.acm.Certificate }) {
 
+  // CloudFront domain name
+  const domainNames = domainSetup?.domainName ? [domainSetup.domainName] : undefined;
+
+  // CloudFront viewer certificate
+  const viewerCertificate: DistributionArgs["viewerCertificate"] = {
+    cloudfrontDefaultCertificate: true,
+  };
+  if (domainSetup?.certificate) {
+    viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
+    viewerCertificate.sslSupportMethod = 'sni-only';
+  }
+  
   // CloudFront
   return new aws.cloudfront.Distribution(
     nameResource('cdn'),
@@ -20,6 +33,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       priceClass: 'PriceClass_All',
       waitForDeployment: true,
       retainOnDelete: false,
+      aliases: domainNames,
       origins: [
         {
           originId: lb.loadBalancer.arn,
@@ -66,9 +80,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
           restrictionType: 'none',
         },
       },
-      viewerCertificate: {
-        cloudfrontDefaultCertificate: true,
-      },
+      viewerCertificate: viewerCertificate,
       tags,
     },
     {

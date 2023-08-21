@@ -59,7 +59,7 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
   const image = new awsx.ecr.Image(nameResource('mvp-image'), {
     repositoryUrl: repository.url,
     path: '../../', // path to a directory to use for the Docker build context (root of the repo)
-    dockerfile: '../../apps/vf-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
+    dockerfile: '../../apps/af-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
     extraOptions: ['--platform', 'linux/amd64'],
     args: {
       NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
