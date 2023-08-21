@@ -1,11 +1,8 @@
-name: access-finland
-runtime: nodejs
-description: Access Finland app
 config:
-  testbed:gatewayUrl: https://gateway.testbed.fi
   testbed:defaultDataSource: virtualfinland:development
-  #domainName: accessfinland.dev
+  testbed:gatewayUrl: https://gateway.testbed.fi
+  waf:enabled: "true"
   waf:username: accessfinland
-  waf:password: Acce$$Finland123
-  waf:enabled: true
-  
+  waf:password:
+    secure: AAABANcOsZlz3menj6HWQC5usVKbFqhk4AwkdyNwzaFP0mTJ+yHaL78KGMOODJchgRmT
+  #domainName: accessfinland.dev
