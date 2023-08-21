@@ -5,6 +5,7 @@ config:
   testbed:gatewayUrl: https://gateway.testbed.fi
   testbed:defaultDataSource: virtualfinland:staging
   domainSetup:domainName: staging.accessfinland.dev
-  domainSetup:enabled: false
+  domainSetup:domainRootName: accessfinland.dev
+  domainSetup:enabled: true
   #wafUsername: accessfinland
   #wafPassword: Acce$$Finland123

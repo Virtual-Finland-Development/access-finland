@@ -58,6 +58,7 @@ const setup = {
   cdn: {
     domainSetup: {
       domainName: domainConfig.get('domainName'),
+      domainRootName: domainConfig.get('domainRootName') || domainConfig.get('domainName'),
       enabled: domainConfig.getBoolean('enabled'),
     },
     waf: {
