@@ -38,7 +38,7 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
 
     // Create a firewall
     const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), { region: 'us-east-1' });
-    new aws.wafv2.WebAcl(nameResource('webApplicationFirewall'), {
+    const webApplicationFirewall = new aws.wafv2.WebAcl(nameResource('webApplicationFirewall'), {
         defaultAction: {
             block: {
                 customResponse: {
@@ -152,12 +152,10 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
     }, { provider: firewallRegion }); // Cloudfrount WAF must be defined in us-east-1
 
     // Attach the firewall to the CDN
-    // TODO: This is not working, need to figure out why: must be a malfunc in pulumi-terraform translation. 
-    // The link between the WAF and the CDN must be done manually for now.
-   /*  const webApplicationFirewallAssociation = new aws.wafv2.WebAclAssociation(nameResource('webApplicationFirewallAssociation'), {
+    new aws.wafv2.WebAclAssociation(nameResource('webApplicationFirewallAssociation'), {
         resourceArn: cdn.arn,
         webAclArn: webApplicationFirewall.arn,
-    }); */
+    }, { provider: firewallRegion });
     
     return {
         cognitoDomain,

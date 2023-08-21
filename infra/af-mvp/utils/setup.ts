@@ -65,7 +65,7 @@ const setup = {
     waf: {
       enabled: wafConfig.getBoolean('enabled'),
       username: wafConfig.get('username'),
-      password: config.get('password'),
+      password: wafConfig.get('password'),
     }
   },
   awsSetup: {
