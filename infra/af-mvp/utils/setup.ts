@@ -45,6 +45,9 @@ const customHeaderValue = pulumi.interpolate`${
 // CDN custom domain name
 const domainName = config.require('domainName');
 
+// WAF configuration
+const wafConfig = new pulumi.Config('waf');
+
 const setup = {
   organizationName,
   environment,
@@ -60,8 +63,9 @@ const setup = {
   cdn: {
     domainName,
     waf: {
-      username: config.get('wafUsername'),
-      password: config.get('wafPassword'),
+      enabled: wafConfig.getBoolean('enabled'),
+      username: wafConfig.get('username'),
+      password: config.get('password'),
     }
   },
   awsSetup: {

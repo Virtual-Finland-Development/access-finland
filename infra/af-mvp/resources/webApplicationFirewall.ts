@@ -1,5 +1,6 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from '@pulumi/pulumi';
+import * as random from '@pulumi/random';
 import * as fs from "fs";
 
 import setup, { nameResource } from '../utils/setup';
@@ -7,10 +8,7 @@ import setup, { nameResource } from '../utils/setup';
 const {
     tags,
     cdn: {
-      waf: {
-        username,
-        password,
-      }
+      waf,
     },
     awsSetup: {
         region,
@@ -20,12 +18,19 @@ const {
 
 export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution) {
     
-    if (!username || !password) {
-        console.log("> Skipping WAF setup");
+    if (!waf.enabled) {
         return;
+    } else if (!waf.username || !waf.password) {
+        throw new Error("WAF enabled but no username or password provided");
     }
-    const sharedCookieSecret = "terde";
-    
+
+    // Random value for shared cookie secret
+    const sharedCookieSecret = pulumi.interpolate`${
+        new random.RandomPassword(nameResource('wafCookieHash'), {
+        length: 32,
+        }).result
+    }`;
+
     const callbackUri = pulumi.interpolate`https://${cdn.domainName}/api/auth/cognito/callback`;
     const { userPool, userPoolClient, cognitoDomain } = createCognitoUserPool(callbackUri);
 
@@ -165,7 +170,7 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
 
 function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
 
-    if (!username || !password) {
+    if (!waf.username || !waf.password) {
         throw new Error("Username and password must be set in the config");
     }
 
@@ -216,8 +221,8 @@ function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
     // Create a static user
     const user = new aws.cognito.User(nameResource("wafUser"), {
         userPoolId: userPool.id,
-        username: username,
-        password: password,
+        username: waf.username,
+        password: waf.password,
         messageAction: "SUPPRESS",
     });
 
