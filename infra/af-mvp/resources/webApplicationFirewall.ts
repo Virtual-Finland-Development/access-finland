@@ -152,12 +152,12 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
     }, { provider: firewallRegion }); // Cloudfrount WAF must be defined in us-east-1
 
     // Attach the firewall to the CDN
-    new aws.wafv2.WebAclAssociation(nameResource('webApplicationFirewallAssociation'), {
-        resourceArn: cdn.arn,
-        webAclArn: webApplicationFirewall.arn,
-    }, { provider: firewallRegion });
+    aws.cloudfront.Distribution.get(nameResource('cdn-waf-update'), cdn.id, {
+        webAclId: webApplicationFirewall.arn,
+    });
     
     return {
+        webApplicationFirewall,
         cognitoDomain,
         userPool,
         userPoolClient,
