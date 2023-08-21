@@ -8,3 +8,4 @@ config:
   waf:username: accessfinland
   waf:password: Acce$$Finland123
   waf:enabled: true
+  

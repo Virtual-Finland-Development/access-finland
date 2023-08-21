@@ -21,8 +21,6 @@ export function createWebAppFirewallProtection() {
     
     if (!waf.enabled) {
         return;
-    } else if (!waf.username || !waf.password) {
-        throw new Error("WAF enabled but no username or password provided");
     }
  
     const cdnURL = currentStackReference.getOutput('cdnURL');
@@ -169,10 +167,6 @@ export function createWebAppFirewallProtection() {
 
 function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
 
-    if (!waf.username || !waf.password) {
-        throw new Error("Username and password must be set in the config");
-    }
-
     const userPool = new aws.cognito.UserPool(nameResource('wafUserPool'), {
         adminCreateUserConfig: {
             allowAdminCreateUserOnly: true,
@@ -217,18 +211,19 @@ function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
         userPoolId: cognitoDomain.userPoolId,
     });
     
-    // Create a static user
-    const user = new aws.cognito.User(nameResource("wafUser"), {
-        userPoolId: userPool.id,
-        username: waf.username,
-        password: waf.password,
-        messageAction: "SUPPRESS",
-    });
+    if (waf.username && waf.password) {
+        // Create a static user
+        new aws.cognito.User(nameResource("wafUser"), {
+            userPoolId: userPool.id,
+            username: waf.username,
+            password: waf.password,
+            messageAction: "SUPPRESS",
+        });
+    }
 
     return  {
         cognitoDomain,
         userPool,
         userPoolClient,
-        user,
     };
 }
