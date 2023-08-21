@@ -4,6 +4,7 @@ description: Access Finland app
 config:
   testbed:gatewayUrl: https://gateway.testbed.fi
   testbed:defaultDataSource: virtualfinland:staging
-  #domainName: accessfinland.dev
+  domainSetup:domainName: access-finland.dev
+  domainSetup:enabled: false
   #wafUsername: accessfinland
   #wafPassword: Acce$$Finland123

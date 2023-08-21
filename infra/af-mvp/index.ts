@@ -1,20 +1,20 @@
 import * as pulumi from '@pulumi/pulumi';
 
 import { createContentDeliveryNetwork } from './resources/cloudfront';
-//import { createDomainSetup } from './resources/domainSetup';  // TODO
+import { createDomainSetup } from './resources/domainSetup';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
 import { createFargateService } from './resources/fargate';
 import { createLoadBalancer } from './resources/loadBalancer';
 //import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';  // TODO
 
 // Certfificate and domain setup
-//const domainSetup = createDomainSetup(); // TODO
+const domainSetup = createDomainSetup();
 // ECS Cluster
 const cluster = createECSCluster();
 // Application load balancer
 const loadBalancer = createLoadBalancer();
 // Cloudfront CDN
-const cdn = createContentDeliveryNetwork(loadBalancer);
+const cdn = createContentDeliveryNetwork(loadBalancer, domainSetup);
 // Web application firewall
 //createWebAppFirewallProtection(cdn);  // TODO
 // ECS Fargate service

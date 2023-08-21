@@ -41,7 +41,7 @@ const customHeaderValue = pulumi.interpolate`${
 }`;
 
 // CDN custom domain name
-const domainName = config.require('domainName');
+const domainConfig = new pulumi.Config('domainSetup');
 
 const setup = {
   organizationName,
@@ -56,7 +56,10 @@ const setup = {
   backendSignKey,
   customHeaderValue,
   cdn: {
-    domainName,
+    domainSetup: {
+      domainName: domainConfig.get('domainName'),
+      enabled: domainConfig.getBoolean('enabled'),
+    },
     waf: {
       username: config.get('wafUsername'),
       password: config.get('wafPassword'),
