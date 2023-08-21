@@ -16,13 +16,13 @@ export function createDomainSetup() : { domainName?: string, certificate?: aws.a
       throw new Error('Domain name is required when CDN is enabled');
     }
     
-    const awsCertsRegion = new aws.Provider(nameResource("cert-region"), {region: "us-east-1"});
+    const awsCertsRegion = new aws.Provider(nameResource("cert-region"), { region: "us-east-1" });
     
     const certificate = new aws.acm.Certificate(nameResource('domainCertificate'), {
       domainName: domainSetup.domainName,
       validationMethod: 'DNS',
       tags,
-    }, { provider: awsCertsRegion});
+    }, { provider: awsCertsRegion, protect: true });
 
     return {
       domainName: domainSetup.domainName,
