@@ -32,18 +32,13 @@ export default async function handler(
 ) {
   const queryParams = req.query;
 
-  if (process.env.NEXT_PUBLIC_STAGE !== 'mvp-staging') {
-    res.status(401).json({ error: 'Unauthorized' });
-    return res;
-  }
-  
   // A redirect hack to get the params from the url hash:
   // - AWS Cognito redirects to the callback with the params in the hash, nextjs doesn't parse the hash.
   // @see: https://stackoverflow.com/a/72071612
   if (ifNotObjectOrEmptyObject(queryParams)) {
     res.writeHead(302, { 'Content-Type': 'text/html' })
     res.write(`
-        <script nonce="vfafmvpstaging">
+        <script nonce="vfaf-${process.env.NEXT_PUBLIC_STAGE}">
             const queryString = window.location.hash.replace('#', '')
             window.location.href='${req.url}?redirected_from_hash=true&'+ queryString 
         </script>

@@ -10,13 +10,6 @@ const isDev = process.env.NODE_ENV !== 'production';
 const CODESETS_BASE_URL =
   process.env.NEXT_PUBLIC_CODESETS_BASE_URL || 'http://localhost:3166';
 
-let scriptSrcPolicy = "'self'";
-
-// Allow inline-script for mvp-staging: cognito login callback handler
-if (process.env.NEXT_PUBLIC_STAGE === 'mvp-staging') {
-  scriptSrcPolicy = "'nonce-vfafmvpstaging' 'self'";
-}
-
 // https://trezy.gitbook.io/next-safe/usage/configuration
 const nextSafeConfig = {
   isDev,
@@ -39,7 +32,7 @@ const nextSafeConfig = {
     'media-src': "'self'",
     'object-src': "'none'",
     'prefetch-src': false,
-    'script-src': scriptSrcPolicy,
+    'script-src': `'nonce-vfaf-${process.env.NEXT_PUBLIC_STAGE}' 'self'`,
     'style-src': ["'self'", 'https://fonts.googleapis.com/', "'unsafe-inline'"],
     'worker-src': "'self'",
     mergeDefaultDirectives: false,

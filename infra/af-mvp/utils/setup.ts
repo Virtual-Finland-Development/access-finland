@@ -14,8 +14,12 @@ const config = new pulumi.Config();
 const awsSetup = new pulumi.Config('aws');
 
 // Env/stage override for specific systems --->
-const envOverride = environment === 'test' ? 'dev' : environment;
+const envOverride = ['test', 'mvp-dev'].includes(environment) ? 'dev' : environment;
 // <---
+
+const currentStackReference = new pulumi.StackReference(
+  `${organizationName}/${projectName}/${environment}`
+)
 
 // external apis
 const codesetsEndpoint = new pulumi.StackReference(
@@ -49,6 +53,7 @@ const domainName = config.require('domainName');
 const wafConfig = new pulumi.Config('waf');
 
 const setup = {
+  currentStackReference,
   organizationName,
   environment,
   projectName,

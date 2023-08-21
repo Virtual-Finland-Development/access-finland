@@ -13,10 +13,10 @@ import { createWebAppFirewallProtection } from './resources/webApplicationFirewa
 const cluster = createECSCluster();
 // Application load balancer
 const loadBalancer = createLoadBalancer();
-// Cloudfront CDN
-const cdn = createContentDeliveryNetwork(loadBalancer);
 // Web application firewall
-const wafSetup = createWebAppFirewallProtection(cdn);
+const wafSetup = createWebAppFirewallProtection();
+// Cloudfront CDN
+const cdn = createContentDeliveryNetwork(loadBalancer, undefined, wafSetup?.webApplicationFirewall);
 // ECS Fargate service
 const fargateService = createFargateService(loadBalancer, cluster, cdn, wafSetup);
 // Auto-scaling policies

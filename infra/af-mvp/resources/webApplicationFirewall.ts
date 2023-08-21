@@ -13,25 +13,33 @@ const {
     awsSetup: {
         region,
     },
+    currentStackReference,
   } = setup;
   
 
-export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution) {
+export function createWebAppFirewallProtection() {
     
     if (!waf.enabled) {
         return;
     } else if (!waf.username || !waf.password) {
         throw new Error("WAF enabled but no username or password provided");
     }
+ 
+    const cdnURL = currentStackReference.getOutput('cdnURL');
+    if (!cdnURL) {
+        console.log("Skipped creating WAF as it's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created.");
+        return;
+    }
 
     // Random value for shared cookie secret
     const sharedCookieSecret = pulumi.interpolate`${
         new random.RandomPassword(nameResource('wafCookieHash'), {
         length: 32,
+        special: false
         }).result
     }`;
 
-    const callbackUri = pulumi.interpolate`https://${cdn.domainName}/api/auth/cognito/callback`;
+    const callbackUri = pulumi.interpolate`${cdnURL}/api/auth/cognito/callback`;
     const { userPool, userPoolClient, cognitoDomain } = createCognitoUserPool(callbackUri);
 
     const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`
@@ -58,21 +66,21 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
                     <head>
                         <title>Access Denied</title>
                         <meta charset="UTF-8">
-                        <meta http-equiv="refresh" content="5;${cognitoLoginUri}">
+                        <meta http-equiv="refresh" content="3;${cognitoLoginUri}">
                         <style>
                             body {
                                 background: #909090;
                                 color: #ffffff;
-                                border: dashed #bdefff 4px;
-                                box-shadow: 60px -16px teal;
                                 text-align: center;
+                                font-family: "Arial";
+                                font-size: 1.5em;
                             }
                         </style>
                     </head>
                     <body>
                         <h1>ACCESS DENIED</h1>
-                        <p>Access to this resource is restricted.</p>
-                        <p>Redirecting to the login page in 5 seconds.. If you are not redirected, please follow the redirection link <a href="${cognitoLoginUri}">here</a>.</p>
+                        <p><b>Redirecting</b> to the login page..</p>
+                        <p>If you are not redirected, please follow the redirection link <a href="${cognitoLoginUri}">here</a>.</p>
                     </body>
                 </html>
                 `,
@@ -151,18 +159,11 @@ export function createWebAppFirewallProtection(cdn: aws.cloudfront.Distribution)
         },
     }, { provider: firewallRegion }); // Cloudfrount WAF must be defined in us-east-1
 
-    // Attach the firewall to the CDN
-    aws.cloudfront.Distribution.get(nameResource('cdn-waf-update'), cdn.id, {
-        webAclId: webApplicationFirewall.arn,
-    });
-    
     return {
         webApplicationFirewall,
-        cognitoDomain,
         userPool,
         userPoolClient,
         sharedCookieSecret,
-        cognitoLoginUri,
     }
 }
 
