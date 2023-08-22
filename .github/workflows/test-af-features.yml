@@ -1,4 +1,4 @@
-name: Build and test the af-features app
+name: Build and test AF Features
 
 on:
   pull_request:

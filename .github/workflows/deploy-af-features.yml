@@ -1,4 +1,4 @@
-name: Deploy a stage
+name: Test and deploy AF features
 
 on:
   workflow_call:

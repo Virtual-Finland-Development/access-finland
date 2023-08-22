@@ -1,4 +1,4 @@
-name: Test and deploy MVP
+name: Test and deploy AF MVP
 
 on:
   workflow_dispatch:
