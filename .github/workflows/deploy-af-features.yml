@@ -1,4 +1,4 @@
-name: Test and deploy AF features
+name: Deploy AF Features
 
 on:
   workflow_call:
