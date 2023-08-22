@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   deploy:
-    uses: Virtual-Finland-Development/access-finland/.github/workflows/deployment.yml@main
+    uses: Virtual-Finland-Development/access-finland/.github/workflows/test-and-deploy-af-features.yml@main
     with:
       deployment_stage: staging
     secrets: inherit
