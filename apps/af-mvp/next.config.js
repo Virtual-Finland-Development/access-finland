@@ -32,7 +32,7 @@ const nextSafeConfig = {
     'media-src': "'self'",
     'object-src': "'none'",
     'prefetch-src': false,
-    'script-src': "'self'",
+    'script-src': `'nonce-vfaf-${process.env.NEXT_PUBLIC_STAGE}' 'self'`,
     'style-src': ["'self'", 'https://fonts.googleapis.com/', "'unsafe-inline'"],
     'worker-src': "'self'",
     mergeDefaultDirectives: false,

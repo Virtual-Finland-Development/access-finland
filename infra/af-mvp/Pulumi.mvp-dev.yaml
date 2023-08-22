@@ -1,0 +1,8 @@
+config:
+  testbed:defaultDataSource: virtualfinland:development
+  testbed:gatewayUrl: https://gateway.testbed.fi
+  waf:enabled: "true"
+  waf:username: accessfinland
+  waf:password:
+    secure: AAABANcOsZlz3menj6HWQC5usVKbFqhk4AwkdyNwzaFP0mTJ+yHaL78KGMOODJchgRmT
+  #domainName: accessfinland.dev

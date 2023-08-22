@@ -9,7 +9,7 @@ const {
   customHeaderValue,
 } = setup;
 
-export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer, domainSetup?: { domainName?: string, certificate?: aws.acm.Certificate }) {
+export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer, domainSetup?: { domainName?: string, certificate?: aws.acm.Certificate }, webApplicationFirewall?: aws.wafv2.WebAcl) {
 
   // CloudFront domain name
   const domainNames = domainSetup?.domainName ? [domainSetup.domainName] : undefined;
@@ -22,6 +22,9 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
     viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
     viewerCertificate.sslSupportMethod = 'sni-only';
   }
+
+  // Firewall config
+  const webAclId = webApplicationFirewall? webApplicationFirewall.arn : undefined;
   
   // CloudFront
   return new aws.cloudfront.Distribution(
@@ -81,6 +84,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
         },
       },
       viewerCertificate: viewerCertificate,
+      webAclId: webAclId,
       tags,
     },
     {

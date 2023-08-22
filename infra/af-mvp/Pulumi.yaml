@@ -6,3 +6,4 @@ config:
   testbed:gatewayUrl: https://gateway.testbed.fi
   testbed:defaultDataSource: virtualfinland:development
   domainName: ""
+  waf:enabled: false
