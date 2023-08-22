@@ -32,7 +32,7 @@ const DataProductRouter = {
       const serializedError =
         error?.response?.data?.error || error?.response?.data;
 
-      if (serializedError.status) {
+      if (serializedError?.status) {
         res.status(serializedError.status).json({
           message:
             serializedError?.title ||
