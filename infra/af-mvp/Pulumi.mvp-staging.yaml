@@ -7,5 +7,4 @@ config:
   domainSetup:domainName: staging.accessfinland.dev
   domainSetup:domainRootName: accessfinland.dev
   domainSetup:enabled: true
-  #wafUsername: accessfinland
-  #wafPassword: Acce$$Finland123
+  waf:enabled: true

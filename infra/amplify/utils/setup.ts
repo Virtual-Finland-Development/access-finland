@@ -13,6 +13,9 @@ const config = new pulumi.Config();
 const githubAccessToken =
   config.get('githubAccessToken') || process.env.GITHUB_ACCESS_TOKEN || '';
 
+// AWS setup
+const awsSetup = new pulumi.Config('aws');
+
 // @temporary overrides for testing --->
 const envOverride = 'dev';
 const amplifyBranchOverride = 'aws-amplify';
@@ -51,6 +54,9 @@ const setup = {
     usersApiEndpoint,
   },
   backendSignKey,
+  awsSetup: {
+    region: awsSetup.get('region') || 'us-east-1',
+  }
 };
 
 export default setup;

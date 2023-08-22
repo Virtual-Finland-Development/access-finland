@@ -1,0 +1,17 @@
+name: Automatic deployments
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  deploy-af-mvp:
+    uses: Virtual-Finland-Development/access-finland/.github/workflows/deploy-af-mvp.yml@main
+    with:
+      deployment_stage: mvp-dev
+    secrets: inherit
+  deploy-af-features:
+    uses: Virtual-Finland-Development/access-finland/.github/workflows/deploy-af-features.yml@main
+    with:
+      deployment_stage: dev
+    secrets: inherit

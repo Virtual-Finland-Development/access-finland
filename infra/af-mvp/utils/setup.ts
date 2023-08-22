@@ -10,10 +10,16 @@ const tags = {
   'vfd:stack': environment,
 };
 const config = new pulumi.Config();
+// AWS setup
+const awsSetup = new pulumi.Config('aws');
 
 // Env/stage override for specific systems --->
-const envOverride = environment === 'test' ? 'dev' : environment;
+const envOverride = ['test', 'mvp-dev'].includes(environment) ? 'dev' : environment;
 // <---
+
+const currentStackReference = new pulumi.StackReference(
+  `${organizationName}/${projectName}/${environment}`
+)
 
 // external apis
 const codesetsEndpoint = new pulumi.StackReference(
@@ -43,7 +49,11 @@ const customHeaderValue = pulumi.interpolate`${
 // CDN custom domain name
 const domainConfig = new pulumi.Config('domainSetup');
 
+// WAF configuration
+const wafConfig = new pulumi.Config('waf');
+
 const setup = {
+  currentStackReference,
   organizationName,
   environment,
   projectName,
@@ -62,9 +72,13 @@ const setup = {
       enabled: domainConfig.getBoolean('enabled'),
     },
     waf: {
-      username: config.get('wafUsername'),
-      password: config.get('wafPassword'),
+      enabled: wafConfig.getBoolean('enabled'),
+      username: wafConfig.get('username'),
+      password: wafConfig.get('password'),
     }
+  },
+  awsSetup: {
+    region: awsSetup.get('region') || 'us-east-1',
   }
 };
 

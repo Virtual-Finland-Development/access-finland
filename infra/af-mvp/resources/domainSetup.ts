@@ -1,23 +1,35 @@
 
 import * as aws from '@pulumi/aws';
-import { DistributionArgs } from '@pulumi/aws/cloudfront';
 import setup, { nameResource } from '../utils/setup';
 
 const {
   tags,
   cdn: {
     domainSetup,
-  }
+  },
+  currentStackReference
 } = setup;
 
+function parseDomainNameFromURL(url: string) {
+  const urlObject = new URL(url);
+  return urlObject.hostname;
+}
 
-export function createDomainSetup(cdn: aws.cloudfront.Distribution) {
+
+export function createDomainSetup() {
 
   if (domainSetup.enabled) {
     if (!domainSetup.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
     }
-  
+
+    const cdnURL = currentStackReference.getOutput('cdnURL');
+    if (!cdnURL) {
+      console.log("Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created.");
+      return;
+    }
+
+    const cdnDomainName = cdnURL.apply(url => parseDomainNameFromURL(url));
     const awsCertsRegion = new aws.Provider(nameResource("cert-region"), { region: "us-east-1" });
     
     const zone = new aws.route53.Zone(nameResource('domainZone'), {
@@ -31,46 +43,30 @@ export function createDomainSetup(cdn: aws.cloudfront.Distribution) {
       tags,
     }, { provider: awsCertsRegion, protect: false });
 
-    configureCloudFront({ domainName: domainSetup.domainName, certificate, zone }, cdn);
+    // The main dns record
+    new aws.route53.Record(nameResource('domainRecord'), {
+      name: domainSetup.domainName,
+      type: 'CNAME',
+      ttl: 300,
+      records: [cdnDomainName],
+      zoneId: zone.arn,
+    });
+
+    // Cert validation record
+    const certValidation = new aws.route53.Record(nameResource('certValidation'), {
+        name: certificate.domainValidationOptions[0].resourceRecordName,
+        records: [certificate.domainValidationOptions[0].resourceRecordValue],
+        ttl: 60,
+        type: certificate.domainValidationOptions[0].resourceRecordType,
+        zoneId: zone.zoneId,
+    });
+
+    new aws.acm.CertificateValidation(nameResource('cert'), {
+        certificateArn: certificate.arn,
+        validationRecordFqdns: [certValidation.fqdn],
+    });
+
+    return { domainName: domainSetup.domainName, certificate: certificate };
   }
-}
-
-function configureCloudFront(domainSetup: { domainName: string, certificate: aws.acm.Certificate, zone: aws.route53.Zone }, cdn: aws.cloudfront.Distribution) {
-
-  // CloudFront viewer certificate
-  const viewerCertificate: DistributionArgs["viewerCertificate"] = {
-    cloudfrontDefaultCertificate: true,
-    acmCertificateArn: domainSetup.certificate.arn,
-    sslSupportMethod: 'sni-only',
-  };
-  const domainAliases = [domainSetup.domainName];
-
-  // Update cloudfront distribution
-  aws.cloudfront.Distribution.get(nameResource('cdn-udpate'), cdn.id, {
-    viewerCertificate: viewerCertificate,
-    aliases: domainAliases,
-  });
-
-  // The main dns record
-  new aws.route53.Record(nameResource('domainRecord'), {
-    name: domainSetup.domainName,
-    type: 'CNAME',
-    ttl: 300,
-    records: [cdn.domainName],
-    zoneId: domainSetup.zone.arn,
-  });
-
-  // Cert validation record
-  const certValidation = new aws.route53.Record(nameResource('certValidation'), {
-      name: domainSetup.certificate.domainValidationOptions[0].resourceRecordName,
-      records: [domainSetup.certificate.domainValidationOptions[0].resourceRecordValue],
-      ttl: 60,
-      type: domainSetup.certificate.domainValidationOptions[0].resourceRecordType,
-      zoneId: domainSetup.zone.zoneId,
-  });
-
-  new aws.acm.CertificateValidation(nameResource('cert'), {
-      certificateArn: domainSetup.certificate.arn,
-      validationRecordFqdns: [certValidation.fqdn],
-  });
+  return { domainName: undefined, certificate: undefined }
 }

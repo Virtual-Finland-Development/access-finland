@@ -1,4 +1,4 @@
-name: Deploy a stage
+name: Deploy AF Features
 
 on:
   workflow_call:
@@ -6,15 +6,22 @@ on:
       deployment_stage:
         required: true
         type: string
-
+  workflow_dispatch:
+    inputs:
+      deployment_stage:
+        required: true
+        type: choice
+        description: 'Deployment stage'
+        options:
+          - dev
+          - staging
 env:
   pulumi_stack_organization: virtualfinland
-  aws_region: eu-north-1
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
 jobs:
   build:
-    uses: Virtual-Finland-Development/access-finland/.github/workflows/build-and-test.yml@main
+    uses: Virtual-Finland-Development/access-finland/.github/workflows/test-af-features.yml@main
     with:
       deployment_stage: ${{ inputs.deployment_stage }}
       wants_artifacts: true
@@ -33,9 +40,6 @@ jobs:
         with:
           name: build-artifact-${{ inputs.deployment_stage }}
           path: ./out
-      - name: Display structure of downloaded artifact files
-        run: |
-          ls -R out
       - name: Configure AWS credentials
         uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
         with:

@@ -1,9 +1,10 @@
-name: Build and test the app
+name: Test AF Features
 
 on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
   workflow_call:
     inputs:
       deployment_stage:
@@ -18,7 +19,6 @@ jobs:
   build-and-test:
     name: Build the app
     runs-on: ubuntu-latest
-    environment: ${{ inputs.deployment_stage }}
     strategy:
       matrix:
         node-version: [18.x]
@@ -30,7 +30,7 @@ jobs:
       - name: App install, test
         run: |
           npm ci
-          npm run test:ci
+          npm run test:features:ci
       - name: auth-gw url from Pulumi
         if: ${{ inputs.deployment_stage }}
         uses: Virtual-Finland-Development/pulumi-outputs-action@v1

@@ -1,0 +1,25 @@
+name: Test AF MVP
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build the app
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: App install, test
+        run: |
+          npm ci
+          npm run test:mvp:ci
