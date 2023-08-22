@@ -16,7 +16,7 @@ env:
 
 jobs:
   test:
-    uses: Virtual-Finland-Development/access-finland/.github/workflows/test-mvp-app.yml@main
+    uses: Virtual-Finland-Development/access-finland/.github/workflows/test-af-mvp.yml@main
   deploy:
     name: Deployment
     runs-on: ubuntu-latest
