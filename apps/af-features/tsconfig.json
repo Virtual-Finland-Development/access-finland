@@ -7,7 +7,7 @@
     "paths": {
       "@pages/*": ["pages/*"],
       "@shared/*": ["../../../packages/af-shared/src/*"],
-      "@/*": ["../../../packages/af-shared/src/*"]
+      "@/*": ["../../../packages/af-shared/src/*"] // af-shared used alias, needs to be able to build
     }
   }
 }

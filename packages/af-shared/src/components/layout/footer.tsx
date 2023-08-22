@@ -1,11 +1,11 @@
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
+import virtualFinlandLogo from '@/images/virtualfinland_logo_small.png';
 import { Block, IconChevronRight } from 'suomifi-ui-components';
 import { isExportedApplication } from '@/lib/utils';
-import virtualFinlandLogo from '../../images/virtualfinland_logo_small.png';
-import CustomHeading from '../ui/custom-heading';
-import CustomImage from '../ui/custom-image';
-import CustomLink from '../ui/custom-link';
-import CustomText from '../ui/custom-text';
+import CustomHeading from '@/components/ui/custom-heading';
+import CustomImage from '@/components/ui/custom-image';
+import CustomLink from '@/components/ui/custom-link';
+import CustomText from '@/components/ui/custom-text';
 
 const HELP_LINKS = [
   {

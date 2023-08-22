@@ -1,4 +1,4 @@
-import { Label, Text } from 'suomifi-ui-components';
+import { Label } from 'suomifi-ui-components';
 import type { Education, EducationField, EducationLevel } from '@/types';
 import { useModal } from '@/context/modal-context';
 import EducationsEdit from './educations-edit';
@@ -37,7 +37,7 @@ export default function EducationsSelect(props: Props) {
     <div>
       <Label>Educations</Label>
       {!userEducations?.length ? (
-        <Text className="!text-base">
+        <div className="!text-base">
           <span>No educations selected, </span>
           <button
             type="button"
@@ -46,20 +46,18 @@ export default function EducationsSelect(props: Props) {
           >
             click here to add.
           </button>
-        </Text>
+        </div>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userEducations.map((e, index) => (
             <li key={`${e.educationField}-${index}`}>
-              <Text className="!text-base">
-                <button
-                  type="button"
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                  onClick={openEducationEdit}
-                >
-                  {e.educationName}
-                </button>
-              </Text>
+              <button
+                type="button"
+                className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600 text-left"
+                onClick={openEducationEdit}
+              >
+                {e.educationName}
+              </button>
             </li>
           ))}
         </ul>

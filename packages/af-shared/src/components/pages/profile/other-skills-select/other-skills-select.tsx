@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Label, Text } from 'suomifi-ui-components';
+import { Label } from 'suomifi-ui-components';
 import type { EscoSkill, OtherSkill } from '@/types';
 import { SKILL_LEVEL_LABELS } from '@/lib/constants';
 import { useModal } from '@/context/modal-context';
@@ -61,7 +61,7 @@ export default function OtherSkillsSelect(props: Props) {
     <div>
       <Label>Other skills</Label>
       {!userOtherSkills?.length ? (
-        <Text className="!text-base">
+        <div className="!text-base">
           <span>No skills selected, </span>
           <button
             type="button"
@@ -70,20 +70,18 @@ export default function OtherSkillsSelect(props: Props) {
           >
             click here to add.
           </button>
-        </Text>
+        </div>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userOtherSkillsWithLabels.map((s, index) => (
             <li key={`${s.escoIdentifier}-${index}`}>
-              <Text className="!text-base">
-                <button
-                  type="button"
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                  onClick={openEdit}
-                >
-                  {s.label} ({SKILL_LEVEL_LABELS[s.skillLevel]})
-                </button>
-              </Text>
+              <button
+                type="button"
+                className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600 text-left"
+                onClick={openEdit}
+              >
+                {s.label} ({SKILL_LEVEL_LABELS[s.skillLevel]})
+              </button>
             </li>
           ))}
         </ul>

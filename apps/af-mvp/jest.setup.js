@@ -1,9 +1,9 @@
 // Configure or set up a testing framework before each test.
 import '@testing-library/jest-dom/extend-expect';
-// msw settings
-import server from 'af-shared/src/lib/testing/mocks/server';
 // next-dynamic imports mock
 import preloadAll from 'jest-next-dynamic';
+// msw settings
+import server from '@shared/lib/testing/mocks/server';
 
 // This will mock `next/dynamic`, so make sure to import it before any of your components.
 beforeAll(async () => await preloadAll());

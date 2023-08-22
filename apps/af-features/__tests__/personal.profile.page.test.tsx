@@ -1,5 +1,4 @@
 import PersonalProfilePage from '@pages/profile/personal-profile.page';
-import * as UtilsExports from '@/lib/utils/auth';
 import {
   MOCK_AUTH_STATE,
   MOCK_ISO_COUNTRIES,
@@ -10,6 +9,7 @@ import {
   renderWithProviders,
   screen,
 } from '@shared/lib/testing/utils/testing-library-utils';
+import * as UtilsExports from '@shared/lib/utils/auth';
 
 describe('Personal profile page', () => {
   it('renders a personal profile page / form for authenticated user, with correct profile values', async () => {

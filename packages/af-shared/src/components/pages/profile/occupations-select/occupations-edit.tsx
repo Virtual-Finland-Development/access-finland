@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Button, IconArrowRight } from 'suomifi-ui-components';
 import type { JmfRecommendation, UserOccupation } from '@/types';
-import JmfRecommendationsSelect from '../jmf-recommendations/jmf-recommendations';
+import JmfRecommendationsSelect from '@/components/pages/profile/jmf-recommendations/jmf-recommendations';
 import OccupationsAdditionalInfo from './occupations-additional-info';
 
 export interface UserOccupationSelection extends UserOccupation {

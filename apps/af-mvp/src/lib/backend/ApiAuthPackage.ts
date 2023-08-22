@@ -1,6 +1,6 @@
-import { LoggedInState } from '@mvp/../../../packages/af-shared/src/types';
 import { randomBytes } from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { LoggedInState } from '@shared/types';
 import { BACKEND_SECRET_SIGN_KEY } from './api-constants';
 
 export function createApiAuthPackage(loggedInState: LoggedInState) {

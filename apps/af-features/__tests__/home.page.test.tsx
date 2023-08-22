@@ -3,7 +3,7 @@ import {
   act,
   renderWithProviders,
   screen,
-} from '@/lib/testing/utils/testing-library-utils';
+} from '@shared/lib/testing/utils/testing-library-utils';
 
 describe('Home page', () => {
   it('renders a heading', async () => {
