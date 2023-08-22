@@ -6,7 +6,15 @@ on:
       deployment_stage:
         required: true
         type: string
-
+  workflow_dispatch:
+    inputs:
+      deployment_stage:
+        required: true
+        type: choice
+        description: 'Deployment stage'
+        options:
+          - dev
+          - staging
 env:
   pulumi_stack_organization: virtualfinland
 
