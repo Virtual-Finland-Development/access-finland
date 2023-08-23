@@ -1,5 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
+import * as pulumi from '@pulumi/pulumi';
 
 import { DistributionArgs } from '@pulumi/aws/cloudfront';
 import setup, { nameResource } from '../utils/setup';
@@ -27,7 +28,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
   const webAclId = webApplicationFirewall? webApplicationFirewall.arn : undefined;
   
   // CloudFront
-  return new aws.cloudfront.Distribution(
+  const cdn = new aws.cloudfront.Distribution(
     nameResource('cdn'),
     {
       enabled: true,
@@ -91,4 +92,9 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       protect: false,
     }
   );
+
+  return {
+    cdn,
+    domainName: pulumi.interpolate `${domainSetup?.domainName ? domainSetup.domainName : cdn.domainName}`,
+  }
 }

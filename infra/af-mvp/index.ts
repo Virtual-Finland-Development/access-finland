@@ -16,14 +16,16 @@ const domainSetup = createDomainSetup();
 // Web application firewall
 const wafSetup = createWebAppFirewallProtection();
 // Cloudfront CDN
-const cdn = createContentDeliveryNetwork(loadBalancer, domainSetup, wafSetup?.webApplicationFirewall);
+const cdnSetup = createContentDeliveryNetwork(loadBalancer, domainSetup, wafSetup?.webApplicationFirewall);
 // ECS Fargate service
-const fargateService = createFargateService(loadBalancer, cluster, cdn, wafSetup);
+const fargateService = createFargateService(loadBalancer, cluster, cdnSetup, wafSetup);
 // Auto-scaling policies
 createECSAutoScaling(cluster, fargateService);
 
+
+export const url = pulumi.interpolate`https://${cdnSetup.domainName}`;
 // Export the URL of load balancer.
-export const url = loadBalancer.loadBalancer.dnsName;
+export const lbUrl = loadBalancer.loadBalancer.dnsName;
 // Export the CloudFront url.
-export const cdnURL = pulumi.interpolate`https://${cdn.domainName}`;
+export const cdnURL = pulumi.interpolate`https://${cdnSetup.cdn.domainName}`;
 
