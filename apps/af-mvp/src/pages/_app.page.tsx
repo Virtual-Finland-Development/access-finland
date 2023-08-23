@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import styled from 'styled-components';
 import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
-import 'af-shared/src/styles.css';
+import '@shared/styles.css';
 import '../styles/globals.css';
 import 'suomifi-ui-components/dist/main.css';
 import 'react-phone-number-input/style.css';

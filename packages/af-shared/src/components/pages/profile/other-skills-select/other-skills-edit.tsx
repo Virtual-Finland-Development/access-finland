@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Button, IconArrowRight } from 'suomifi-ui-components';
 import { JmfRecommendation, OtherSkill, SkillLevel } from '@/types';
-import JmfRecommendationsSelect from '../jmf-recommendations/jmf-recommendations';
+import JmfRecommendationsSelect from '@/components/pages/profile/jmf-recommendations/jmf-recommendations';
 import OtherSkillsAdditionalInfo from './other-skills-additional-info';
 import { UserOtherSkill } from './other-skills-select';
 

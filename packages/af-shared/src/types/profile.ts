@@ -1,4 +1,12 @@
-import { Output, array, nativeEnum, nullable, number, object, string } from 'valibot';
+import {
+  Output,
+  array,
+  nativeEnum,
+  nullable,
+  number,
+  object,
+  string,
+} from 'valibot';
 
 /**
  * Person/BasicInformation
@@ -10,7 +18,9 @@ export const PersonBasicInformationSchema = object({
   phoneNumber: string(),
   residency: string(),
 });
-export type PersonBasicInformation = Output<typeof PersonBasicInformationSchema>; 
+export type PersonBasicInformation = Output<
+  typeof PersonBasicInformationSchema
+>;
 
 export const EducationSchema = object({
   educationName: string(),
@@ -19,7 +29,7 @@ export const EducationSchema = object({
   graduationDate: string(),
   institutionName: string(),
 });
-export type Education = Output<typeof EducationSchema>; 
+export type Education = Output<typeof EducationSchema>;
 
 export enum SkillLevel {
   'beginner' = 'beginner',
@@ -32,21 +42,21 @@ export const OtherSkillSchema = object({
   escoIdentifier: string(),
   skillLevel: SkillLevelSchema,
 });
-export type OtherSkill = Output<typeof OtherSkillSchema>; 
+export type OtherSkill = Output<typeof OtherSkillSchema>;
 
 export const LanguageSkillSchema = object({
   escoIdentifier: string(),
   languageCode: string(),
   skillLevel: string(),
 });
-export type LanguageSkill = Output<typeof LanguageSkillSchema>; 
+export type LanguageSkill = Output<typeof LanguageSkillSchema>;
 
 export const CertificationSchema = object({
   certificationName: string(),
   escoIdentifier: array(string()),
   institutionName: string(),
 });
-export type Certification = Output<typeof CertificationSchema>; 
+export type Certification = Output<typeof CertificationSchema>;
 
 export enum EmploymentType {
   'permanent',
@@ -74,7 +84,7 @@ export const UserOccupationSchema = object({
   workExperience: number(),
   employer: string(),
 });
-export type UserOccupation = Output<typeof UserOccupationSchema>; 
+export type UserOccupation = Output<typeof UserOccupationSchema>;
 
 export const JobApplicantProfileSchema = object({
   occupations: array(UserOccupationSchema),
@@ -90,7 +100,6 @@ export const JobApplicantProfileSchema = object({
     workingTime: nullable(WorkingTimeSchema),
     workingLanguage: array(string()),
     naceCode: nullable(string()),
-  })
+  }),
 });
-export type JobApplicantProfile = Output<typeof JobApplicantProfileSchema>; 
-
+export type JobApplicantProfile = Output<typeof JobApplicantProfileSchema>;

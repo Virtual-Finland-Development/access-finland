@@ -1,6 +1,5 @@
 import WorkingProfilePage from '@pages/profile/working-profile.page';
 import userEvent from '@testing-library/user-event';
-import * as UtilsExports from '@/lib/utils/auth';
 import { EMPLOYMENT_TYPE_LABELS } from '@shared/lib/constants';
 import {
   MOCK_AUTH_STATE,
@@ -12,6 +11,7 @@ import {
   screen,
   within,
 } from '@shared/lib/testing/utils/testing-library-utils';
+import * as UtilsExports from '@shared/lib/utils/auth';
 
 describe('Personal profile page', () => {
   it.only('renders a working profile page / form for authenticated user, with correct profile values', async () => {

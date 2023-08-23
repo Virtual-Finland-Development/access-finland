@@ -1,11 +1,11 @@
 import CompanyEditIndexPage from '@pages/company/edit/index.page';
-import { MOCK_AUTH_STATE } from '@/lib/testing/mocks/mock-values';
+import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import {
   act,
   renderWithProviders,
   screen,
-} from '@/lib/testing/utils/testing-library-utils';
-import * as UtilsExports from '@/lib/utils/auth';
+} from '@shared/lib/testing/utils/testing-library-utils';
+import * as UtilsExports from '@shared/lib/utils/auth';
 
 describe('Company edit index page', () => {
   it('renders a list of user created companies, if user is authenticated', async () => {

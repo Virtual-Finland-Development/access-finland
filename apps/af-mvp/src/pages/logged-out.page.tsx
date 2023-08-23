@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { getRuntimeStage } from 'af-shared/src/lib/utils';
 import { Link, Text } from 'suomifi-ui-components';
+import { getRuntimeStage } from '@shared/lib/utils';
 import Page from '@shared/components/layout/page';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
