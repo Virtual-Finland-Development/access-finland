@@ -23,6 +23,7 @@ const fargateService = createFargateService(loadBalancer, cluster, cdnSetup, waf
 createECSAutoScaling(cluster, fargateService);
 
 
+// Export url actually used by the application
 export const url = pulumi.interpolate`https://${cdnSetup.domainName}`;
 // Export the URL of load balancer.
 export const lbUrl = loadBalancer.loadBalancer.dnsName;
