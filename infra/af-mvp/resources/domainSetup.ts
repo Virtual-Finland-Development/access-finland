@@ -15,7 +15,6 @@ function parseDomainNameFromURL(url: string) {
   return urlObject.hostname;
 }
 
-
 export function createDomainSetup() {
 
   if (domainSetup.enabled) {
@@ -41,7 +40,7 @@ export function createDomainSetup() {
       domainName: domainSetup.domainName,
       validationMethod: 'DNS',
       tags,
-    }, { provider: awsCertsRegion, protect: false });
+    }, { provider: awsCertsRegion, protect: true });
 
     // The main dns record
     new aws.route53.Record(nameResource('domainRecord'), {
@@ -49,22 +48,22 @@ export function createDomainSetup() {
       type: 'CNAME',
       ttl: 300,
       records: [cdnDomainName],
-      zoneId: zone.arn,
+      zoneId: zone.id,
     });
-
+    
     // Cert validation record
     const certValidation = new aws.route53.Record(nameResource('certValidation'), {
         name: certificate.domainValidationOptions[0].resourceRecordName,
         records: [certificate.domainValidationOptions[0].resourceRecordValue],
         ttl: 60,
         type: certificate.domainValidationOptions[0].resourceRecordType,
-        zoneId: zone.zoneId,
+        zoneId: zone.id,
     });
 
     new aws.acm.CertificateValidation(nameResource('cert'), {
         certificateArn: certificate.arn,
         validationRecordFqdns: [certValidation.fqdn],
-    });
+    }, { provider: awsCertsRegion });
 
     return { domainName: domainSetup.domainName, certificate: certificate };
   }
