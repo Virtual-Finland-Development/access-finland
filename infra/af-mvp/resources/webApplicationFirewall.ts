@@ -23,8 +23,8 @@ export function createWebAppFirewallProtection() {
         return;
     }
  
-    const cdnURL = currentStackReference.getOutput('cdnURL');
-    if (!cdnURL) {
+    const url = currentStackReference.getOutput('url');
+    if (!url) {
         console.log("Skipped creating WAF as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created.");
         return;
     }
@@ -37,7 +37,7 @@ export function createWebAppFirewallProtection() {
         }).result
     }`;
 
-    const callbackUri = pulumi.interpolate`${cdnURL}/api/auth/cognito/callback`;
+    const callbackUri = pulumi.interpolate`${url}/api/auth/cognito/callback`;
     const { userPool, userPoolClient, cognitoDomain } = createCognitoUserPool(callbackUri);
 
     const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`
