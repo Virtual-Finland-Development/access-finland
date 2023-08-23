@@ -1,14 +1,13 @@
 import * as aws from '@pulumi/aws';
 import { DistributionArgs } from '@pulumi/aws/cloudfront';
-import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
-import { DomainSetup } from '../utils/types';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 
 const { tags, customHeaderValue } = setup;
 
 export function createContentDeliveryNetwork(
-  appLoadBalancer: awsx.lb.ApplicationLoadBalancer,
+  loadBalancerSetup: LoadBalancerSetup,
   domainSetup: DomainSetup,
   webApplicationFirewall?: aws.wafv2.WebAcl
 ) {
@@ -27,9 +26,7 @@ export function createContentDeliveryNetwork(
   }
 
   // Load-balancer domain name
-  const loadBalancerDomainName = domainSetup?.loadBalancerDomainName
-    ? domainSetup?.loadBalancerDomainName
-    : appLoadBalancer.loadBalancer.dnsName;
+  const loadBalancerDomainName = loadBalancerSetup.domainName;
 
   // Firewall config
   const webAclId = webApplicationFirewall
@@ -49,7 +46,7 @@ export function createContentDeliveryNetwork(
       aliases: domainNames,
       origins: [
         {
-          originId: appLoadBalancer.loadBalancer.arn,
+          originId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
           domainName: loadBalancerDomainName,
           customOriginConfig: {
             originProtocolPolicy: 'https-only',
@@ -66,7 +63,7 @@ export function createContentDeliveryNetwork(
         },
       ],
       defaultCacheBehavior: {
-        targetOriginId: appLoadBalancer.loadBalancer.arn,
+        targetOriginId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
         viewerProtocolPolicy: 'redirect-to-https',
         allowedMethods: [
           'HEAD',

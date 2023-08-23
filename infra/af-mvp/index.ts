@@ -11,18 +11,18 @@ const domainSetup = createDomainSetup();
 // ECS Cluster
 const cluster = createECSCluster();
 // Application load balancer
-const loadBalancer = createLoadBalancer(domainSetup);
+const loadBalancerSetup = createLoadBalancer(domainSetup);
 // Web application firewall
 const wafSetup = createWebAppFirewallProtection();
 // Cloudfront CDN
 const cdnSetup = createContentDeliveryNetwork(
-  loadBalancer,
+  loadBalancerSetup,
   domainSetup,
   wafSetup?.webApplicationFirewall
 );
 // ECS Fargate service
 const fargateService = createFargateService(
-  loadBalancer,
+  loadBalancerSetup,
   cluster,
   cdnSetup,
   wafSetup
@@ -32,7 +32,7 @@ createECSAutoScaling(cluster, fargateService);
 
 // Export url actually used by the application
 export const url = pulumi.interpolate`https://${cdnSetup.domainName}`;
-// Export the URL of load balancer.
-export const lbUrl = loadBalancer.loadBalancer.dnsName;
+// Export load balancer url.
+export const lbUrl = loadBalancerSetup.url;
 // Export the CloudFront url.
 export const cdnURL = pulumi.interpolate`https://${cdnSetup.cdn.domainName}`;

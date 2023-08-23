@@ -1,8 +1,9 @@
 import * as aws from '@pulumi/aws';
 import { ListenerArgs } from '@pulumi/aws/alb';
 import * as awsx from '@pulumi/awsx';
+import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
-import { DomainSetup } from '../utils/types';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 import { createDomainCnameRecord } from './domainSetup';
 
 const {
@@ -13,9 +14,9 @@ const {
   },
 } = setup;
 
-export function createLoadBalancer(domainSetup: DomainSetup) {
+export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup {
   // Loadbalancer name can't exceed 32 characters
-  const loadBalancer = new awsx.lb.ApplicationLoadBalancer(
+  const appLoadBalancer = new awsx.lb.ApplicationLoadBalancer(
     nameResource('alb', 32),
     {
       tags,
@@ -38,7 +39,7 @@ export function createLoadBalancer(domainSetup: DomainSetup) {
     const loadBalancerCert = createDomainCnameRecord(
       domainSetup.zone,
       domainSetup?.loadBalancerDomainName,
-      loadBalancer.loadBalancer.dnsName,
+      appLoadBalancer.loadBalancer.dnsName,
       awsLocalCertsProvider
     );
     listenerArgs = {
@@ -49,7 +50,7 @@ export function createLoadBalancer(domainSetup: DomainSetup) {
   }
 
   const listener = new aws.lb.Listener(nameResource('alb-listener'), {
-    loadBalancerArn: loadBalancer.loadBalancer.arn,
+    loadBalancerArn: appLoadBalancer.loadBalancer.arn,
     ...listenerArgs,
     defaultActions: [
       {
@@ -68,7 +69,7 @@ export function createLoadBalancer(domainSetup: DomainSetup) {
     actions: [
       {
         type: 'forward',
-        targetGroupArn: loadBalancer.defaultTargetGroup.arn,
+        targetGroupArn: appLoadBalancer.defaultTargetGroup.arn,
       },
     ],
     conditions: [
@@ -81,5 +82,12 @@ export function createLoadBalancer(domainSetup: DomainSetup) {
     ],
   });
 
-  return loadBalancer;
+  const domainName = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}` : appLoadBalancer.loadBalancer.dnsName;
+  const url = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`https://${domainSetup.loadBalancerDomainName}` :  pulumi.interpolate`http://${appLoadBalancer.loadBalancer.dnsName}`;
+
+  return {
+    appLoadBalancer,
+    domainName: domainName,
+    url: url,
+  };
 }

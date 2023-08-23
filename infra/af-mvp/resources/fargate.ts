@@ -2,12 +2,13 @@ import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
+import { LoadBalancerSetup } from '../utils/types';
 import { createContainerImage } from './ecrContainerImage';
 
 const { tags, envOverride } = setup;
 
 export function createFargateService(
-  loadBalancer: awsx.lb.ApplicationLoadBalancer,
+  loadBalancerSetup: LoadBalancerSetup,
   cluster: aws.ecs.Cluster,
   cdnSetup: {
     cdn: aws.cloudfront.Distribution;
@@ -72,7 +73,7 @@ export function createFargateService(
           image: image.imageUri,
           portMappings: [
             {
-              targetGroup: loadBalancer.defaultTargetGroup,
+              targetGroup: loadBalancerSetup.appLoadBalancer.defaultTargetGroup,
             },
           ],
           environment: [
