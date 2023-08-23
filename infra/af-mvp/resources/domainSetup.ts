@@ -1,13 +1,11 @@
-
 import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 
 const {
   tags,
-  cdn: {
-    domainSetup,
-  },
-  currentStackReference
+  cdn: { domainConfig },
+  currentStackReference,
 } = setup;
 
 function parseDomainNameFromURL(url: string) {
@@ -16,56 +14,75 @@ function parseDomainNameFromURL(url: string) {
 }
 
 export function createDomainSetup() {
-
-  if (domainSetup.enabled) {
-    if (!domainSetup.domainName) {
+  if (domainConfig.enabled) {
+    if (!domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
     }
 
     const cdnURL = currentStackReference.getOutput('cdnURL');
     if (!cdnURL) {
-      console.log("Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created.");
+      console.log(
+        "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
+      );
       return;
     }
 
     const cdnDomainName = cdnURL.apply(url => parseDomainNameFromURL(url));
-    const awsCertsRegion = new aws.Provider(nameResource("cert-region"), { region: "us-east-1" });
-    
-    const zone = new aws.route53.Zone(nameResource('domainZone'), {
-      name: domainSetup.domainRootName,
-      tags,
-    }, { protect: true });
 
-    const certificate = new aws.acm.Certificate(nameResource('domainCertificate'), {
-      domainName: domainSetup.domainName,
+    const zone = new aws.route53.Zone(
+      nameResource('domainZone'),
+      {
+        name: domainConfig.domainRootName,
+        tags,
+      },
+      { protect: true } // Keep the zone from being destroyed
+    );
+
+    const certificate = createDomainCnameRecord(
+      zone,
+      domainConfig.domainName,
+      cdnDomainName
+    );
+
+    return {
+      domainName: domainConfig.domainName,
+      loadBalancerDomainName: `loadbalancer.${domainConfig.domainName}`,
+      certificate,
+      zone,
+    };
+  }
+  return;
+}
+
+export function createDomainCnameRecord(
+  zone: aws.route53.Zone,
+  domainName: string,
+  destinationDomainName: pulumi.Output<string>,
+  certRegionProvider: aws.Provider = domainConfig.awsCertsRegionProvider
+) {
+  const domainNameResourceIdent = domainName.replace(/\./g, '-');
+
+  const certificate = new aws.acm.Certificate(
+    nameResource(`${domainNameResourceIdent}-domain-certificate`),
+    {
+      domainName: domainName,
       validationMethod: 'DNS',
       tags,
-    }, { provider: awsCertsRegion, protect: true });
+    },
+    { provider: certRegionProvider }
+  );
 
-    // The main dns record
-    new aws.route53.Record(nameResource('domainRecord'), {
-      name: domainSetup.domainName,
+  // The main dns record
+  new aws.route53.Record(
+    nameResource(`${domainNameResourceIdent}-cname-record`),
+    {
+      name: domainName,
       type: 'CNAME',
       ttl: 300,
-      records: [cdnDomainName],
+      records: [destinationDomainName],
       zoneId: zone.id,
-    });
-    
-    // Cert validation record
-    const certValidation = new aws.route53.Record(nameResource('certValidation'), {
-        name: certificate.domainValidationOptions[0].resourceRecordName,
-        records: [certificate.domainValidationOptions[0].resourceRecordValue],
-        ttl: 60,
-        type: certificate.domainValidationOptions[0].resourceRecordType,
-        zoneId: zone.id,
-    });
+    }
+  );
 
-    new aws.acm.CertificateValidation(nameResource('cert'), {
-        certificateArn: certificate.arn,
-        validationRecordFqdns: [certValidation.fqdn],
-    }, { provider: awsCertsRegion });
-
-    return { domainName: domainSetup.domainName, certificate: certificate };
-  }
-  return { domainName: undefined, certificate: undefined }
+  return certificate;
 }

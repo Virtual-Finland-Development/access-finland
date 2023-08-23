@@ -4,13 +4,21 @@ import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { createContainerImage } from './ecrContainerImage';
 
-const {
-  tags,
-  envOverride,
-} = setup;
+const { tags, envOverride } = setup;
 
-export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cluster: aws.ecs.Cluster, cdnSetup: { cdn: aws.cloudfront.Distribution, domainName: pulumi.Output<string> }, wafSetup?: { userPool: aws.cognito.UserPool, userPoolClient: aws.cognito.UserPoolClient, sharedCookieSecret: pulumi.Output<string> }) {
-
+export function createFargateService(
+  loadBalancer: awsx.lb.ApplicationLoadBalancer,
+  cluster: aws.ecs.Cluster,
+  cdnSetup: {
+    cdn: aws.cloudfront.Distribution;
+    domainName: pulumi.Output<string>;
+  },
+  wafSetup?: {
+    userPool: aws.cognito.UserPool;
+    userPoolClient: aws.cognito.UserPoolClient;
+    sharedCookieSecret: pulumi.Output<string>;
+  }
+) {
   // ECS Task role
   const awsIdentity = pulumi.output(aws.getCallerIdentity());
   const taskRole = new aws.iam.Role(nameResource('fargate-task-role'), {
@@ -41,51 +49,51 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
   );
 
   // Attach a policy to grant access to Parameter Store
-  new aws.iam.RolePolicyAttachment(nameResource('fargate-task-role-sinuna-policy-attachment'), {
-    role: taskRole.name,
-    policyArn: sinunaAccessPolicy.arn,
-  });
+  new aws.iam.RolePolicyAttachment(
+    nameResource('fargate-task-role-sinuna-policy-attachment'),
+    {
+      role: taskRole.name,
+      policyArn: sinunaAccessPolicy.arn,
+    }
+  );
 
   // ECR Container image
   const image = createContainerImage(cdnSetup);
 
   // Fargate service
-  return new awsx.ecs.FargateService(
-    nameResource('fargate-service'),
-    {
-      tags,
-      cluster: cluster.arn,
-      assignPublicIp: true,
-      continueBeforeSteadyState: false,
-      taskDefinitionArgs: {
-        containers: {
-          service: {
-            image: image.imageUri,
-            portMappings: [
-              {
-                targetGroup: loadBalancer.defaultTargetGroup,
-              },
-            ],
-            environment: [
-              {
-                name: 'WAF_USER_POOL_ID',
-                value: wafSetup?.userPool.id || '',
-              },
-              {
-                name: 'WAF_USER_POOL_CLIENT_ID',
-                value: wafSetup?.userPoolClient.id || '',
-              },
-              {
-                name: 'WAF_SHARED_COOKIE_SECRET',
-                value: wafSetup?.sharedCookieSecret || '',
-              }
-            ],
-          },
-        },
-        taskRole: {
-          roleArn: taskRole.arn,
+  return new awsx.ecs.FargateService(nameResource('fargate-service'), {
+    tags,
+    cluster: cluster.arn,
+    assignPublicIp: true,
+    continueBeforeSteadyState: false,
+    taskDefinitionArgs: {
+      containers: {
+        service: {
+          image: image.imageUri,
+          portMappings: [
+            {
+              targetGroup: loadBalancer.defaultTargetGroup,
+            },
+          ],
+          environment: [
+            {
+              name: 'WAF_USER_POOL_ID',
+              value: wafSetup?.userPool.id || '',
+            },
+            {
+              name: 'WAF_USER_POOL_CLIENT_ID',
+              value: wafSetup?.userPoolClient.id || '',
+            },
+            {
+              name: 'WAF_SHARED_COOKIE_SECRET',
+              value: wafSetup?.sharedCookieSecret || '',
+            },
+          ],
         },
       },
-    }
-  );
+      taskRole: {
+        roleArn: taskRole.arn,
+      },
+    },
+  });
 }

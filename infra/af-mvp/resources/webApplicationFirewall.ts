@@ -1,64 +1,64 @@
-import * as aws from "@pulumi/aws";
+import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
-
 import setup, { nameResource } from '../utils/setup';
 import { createCognitoUserPool } from './cognito';
 
 const {
-    tags,
-    cdn: {
-      waf,
-    },
-    awsSetup: {
-        region,
-    },
-    currentStackReference,
-  } = setup;
-  
+  tags,
+  cdn: { waf },
+  awsSetup: { region },
+  currentStackReference,
+} = setup;
 
 export function createWebAppFirewallProtection() {
-    
-    if (!waf.enabled) {
-        return;
-    }
- 
-    const url = currentStackReference.getOutput('url');
-    if (!url) {
-        console.log("Skipped creating WAF as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created.");
-        return;
-    }
+  if (!waf.enabled) {
+    return;
+  }
 
-    // Random value for shared cookie secret
-    const sharedCookieSecret = pulumi.interpolate`${
-        new random.RandomPassword(nameResource('wafCookieHash'), {
-        length: 32,
-        special: false
-        }).result
-    }`;
+  const url = currentStackReference.getOutput('url');
+  if (!url) {
+    console.log(
+      "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
+    );
+    return;
+  }
 
-    const callbackUri = pulumi.interpolate`${url}/api/auth/cognito/callback`;
-    const { userPool, userPoolClient, cognitoDomain } = createCognitoUserPool(callbackUri);
+  // Random value for shared cookie secret
+  const sharedCookieSecret = pulumi.interpolate`${
+    new random.RandomPassword(nameResource('wafCookieHash'), {
+      length: 32,
+      special: false,
+    }).result
+  }`;
 
-    const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`
+  const callbackUri = pulumi.interpolate`${url}/api/auth/cognito/callback`;
+  const { userPool, userPoolClient, cognitoDomain } =
+    createCognitoUserPool(callbackUri);
 
-    // Create a firewall
-    const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), { region: 'us-east-1' });
-    const webApplicationFirewall = new aws.wafv2.WebAcl(nameResource('webApplicationFirewall'), {
-        defaultAction: {
-            block: {
-                customResponse: {
-                    responseCode: 403,
-                    customResponseBodyKey: 'AccessDenied',
-                },
-            },
+  const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
+
+  // Create a firewall
+  const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), {
+    region: 'us-east-1',
+  });
+  const webApplicationFirewall = new aws.wafv2.WebAcl(
+    nameResource('webApplicationFirewall'),
+    {
+      defaultAction: {
+        block: {
+          customResponse: {
+            responseCode: 403,
+            customResponseBodyKey: 'AccessDenied',
+          },
         },
-        description: 'Locks the staging site for unauthorized users',
-        customResponseBodies: [
-            {
-                key: 'AccessDenied',
-                contentType: 'TEXT_HTML',
-                content: pulumi.interpolate`
+      },
+      description: 'Locks the staging site for unauthorized users',
+      customResponseBodies: [
+        {
+          key: 'AccessDenied',
+          contentType: 'TEXT_HTML',
+          content: pulumi.interpolate`
                 <!DOCTYPE html>
                 <html>
                     <head>
@@ -82,133 +82,135 @@ export function createWebAppFirewallProtection() {
                     </body>
                 </html>
                 `,
-            },
-        ],
-        rules: [
-            {
-                name: 'TryToGetAccess',
-                priority: 1,
-                action: {
-                    allow: {},
-                },
-                statement: {
-                    byteMatchStatement: {
-                        searchString: "/api/auth/cognito/callback",
-                        fieldToMatch: {
-                            uriPath: {}
-                        },
-                        textTransformations: [
-                            {
-                                priority: 0,
-                                type: "NONE"
-                            }
-                        ],
-                        positionalConstraint: "EXACTLY"
-                    }
-                },
-                visibilityConfig: {
-                    cloudwatchMetricsEnabled: true,
-                    sampledRequestsEnabled: true,
-                    metricName: "TryToGetAccess"
-                }
-            },
-            {
-                name: 'PassThroughAssets',
-                priority: 2,
-                action: {
-                    allow: {},
-                },
-                statement: {
-                    orStatement: {
-                        statements: [
-                            {
-                                byteMatchStatement: {
-                                    searchString: ".png",
-                                    fieldToMatch: {
-                                        uriPath: {}
-                                    },
-                                    textTransformations: [
-                                        {
-                                            priority: 0,
-                                            type: "NONE"
-                                        }
-                                    ],
-                                    positionalConstraint: "ENDS_WITH"
-                                }
-                            },
-                            {
-                                byteMatchStatement: {
-                                    searchString: ".ico",
-                                    fieldToMatch: {
-                                        uriPath: {}
-                                    },
-                                    textTransformations: [
-                                        {
-                                            priority: 0,
-                                            type: "NONE"
-                                        }
-                                    ],
-                                    positionalConstraint: "ENDS_WITH"
-                                }
-                            }
-                        ],
-                    }
-                },
-                visibilityConfig: {
-                    cloudwatchMetricsEnabled: false,
-                    sampledRequestsEnabled: false,
-                    metricName: "PassThroughAssets"
-                }
-            },
-            {
-                name: 'GrantAccess',
-                priority: 0,
-                action: {
-                    allow: {},
-                },
-                statement: {
-                    byteMatchStatement: {
-                        searchString: sharedCookieSecret,
-                        fieldToMatch: {
-                            cookies: {
-                                matchPatterns: [
-                                    {
-                                        includedCookies: ['cognito-identity.amazonaws.com'],
-                                    }
-                                ],
-                                oversizeHandling: "NO_MATCH",
-                                matchScope: "VALUE",
-                            }
-                        },
-                        textTransformations: [
-                          {
-                            priority: 0,
-                            type: "NONE"
-                          }
-                        ],
-                        positionalConstraint: "EXACTLY"
-                      }
-                },
-                visibilityConfig: {
-                    cloudwatchMetricsEnabled: true,
-                    metricName: nameResource('webApplicationFirewallGrantAccess'),
-                    sampledRequestsEnabled: true,
-                },
-            }
-        ],
-        scope: 'CLOUDFRONT',
-        tags,
-        visibilityConfig: {
-            cloudwatchMetricsEnabled: true,
-            metricName: nameResource('webApplicationFirewall'),
-            sampledRequestsEnabled: true,
         },
-    }, { provider: firewallRegion }); // Cloudfrount WAF must be defined in us-east-1
+      ],
+      rules: [
+        {
+          name: 'TryToGetAccess',
+          priority: 1,
+          action: {
+            allow: {},
+          },
+          statement: {
+            byteMatchStatement: {
+              searchString: '/api/auth/cognito/callback',
+              fieldToMatch: {
+                uriPath: {},
+              },
+              textTransformations: [
+                {
+                  priority: 0,
+                  type: 'NONE',
+                },
+              ],
+              positionalConstraint: 'EXACTLY',
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: true,
+            sampledRequestsEnabled: true,
+            metricName: 'TryToGetAccess',
+          },
+        },
+        {
+          name: 'PassThroughAssets',
+          priority: 2,
+          action: {
+            allow: {},
+          },
+          statement: {
+            orStatement: {
+              statements: [
+                {
+                  byteMatchStatement: {
+                    searchString: '.png',
+                    fieldToMatch: {
+                      uriPath: {},
+                    },
+                    textTransformations: [
+                      {
+                        priority: 0,
+                        type: 'NONE',
+                      },
+                    ],
+                    positionalConstraint: 'ENDS_WITH',
+                  },
+                },
+                {
+                  byteMatchStatement: {
+                    searchString: '.ico',
+                    fieldToMatch: {
+                      uriPath: {},
+                    },
+                    textTransformations: [
+                      {
+                        priority: 0,
+                        type: 'NONE',
+                      },
+                    ],
+                    positionalConstraint: 'ENDS_WITH',
+                  },
+                },
+              ],
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: false,
+            sampledRequestsEnabled: false,
+            metricName: 'PassThroughAssets',
+          },
+        },
+        {
+          name: 'GrantAccess',
+          priority: 0,
+          action: {
+            allow: {},
+          },
+          statement: {
+            byteMatchStatement: {
+              searchString: sharedCookieSecret,
+              fieldToMatch: {
+                cookies: {
+                  matchPatterns: [
+                    {
+                      includedCookies: ['cognito-identity.amazonaws.com'],
+                    },
+                  ],
+                  oversizeHandling: 'NO_MATCH',
+                  matchScope: 'VALUE',
+                },
+              },
+              textTransformations: [
+                {
+                  priority: 0,
+                  type: 'NONE',
+                },
+              ],
+              positionalConstraint: 'EXACTLY',
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: true,
+            metricName: nameResource('webApplicationFirewallGrantAccess'),
+            sampledRequestsEnabled: true,
+          },
+        },
+      ],
+      scope: 'CLOUDFRONT',
+      tags,
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: nameResource('webApplicationFirewall'),
+        sampledRequestsEnabled: true,
+      },
+    },
+    { provider: firewallRegion }
+  ); // Cloudfrount WAF must be defined in us-east-1
 
-    return {
-        webApplicationFirewall,
-        userPool,
-        userPoolClient,
-        sharedCookieSecret,
-    }
+  return {
+    webApplicationFirewall,
+    userPool,
+    userPoolClient,
+    sharedCookieSecret,
+  };
 }

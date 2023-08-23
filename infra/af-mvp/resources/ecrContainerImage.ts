@@ -7,12 +7,14 @@ const {
   tags,
   envOverride,
   externalApis: { codesetsEndpoint, usersApiEndpoint },
-  backendSignKey
+  backendSignKey,
 } = setup;
 
-export function createContainerImage(cdnSetup: { cdn: aws.cloudfront.Distribution, domainName: pulumi.Output<string> }) {
-
-  const testbedConfig = new pulumi.Config("testbed");
+export function createContainerImage(cdnSetup: {
+  cdn: aws.cloudfront.Distribution;
+  domainName: pulumi.Output<string>;
+}) {
+  const testbedConfig = new pulumi.Config('testbed');
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
@@ -31,8 +33,12 @@ export function createContainerImage(cdnSetup: { cdn: aws.cloudfront.Distributio
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
-      TESTBED_PRODUCT_GATEWAY_BASE_URL: process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL || testbedConfig.require("gatewayUrl"),
-      TESTBED_DEFAULT_DATA_SOURCE: process.env.TESTBED_DEFAULT_DATA_SOURCE || testbedConfig.require("defaultDataSource"),
+      TESTBED_PRODUCT_GATEWAY_BASE_URL:
+        process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
+        testbedConfig.require('gatewayUrl'),
+      TESTBED_DEFAULT_DATA_SOURCE:
+        process.env.TESTBED_DEFAULT_DATA_SOURCE ||
+        testbedConfig.require('defaultDataSource'),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
     },
   });
