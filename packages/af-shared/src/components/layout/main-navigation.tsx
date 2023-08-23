@@ -15,10 +15,10 @@ import {
   ServiceNavigationItem,
   Text,
 } from 'suomifi-ui-components';
-import { useAuth } from '../../context/auth-context';
-import api from '../../lib/api';
-import CustomHeading from '../ui/custom-heading';
-import CustomLink from '../ui/custom-link';
+import api from '@/lib/api';
+import { useAuth } from '@/context/auth-context';
+import CustomHeading from '@/components/ui/custom-heading';
+import CustomLink from '@/components/ui/custom-link';
 
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { Text } from 'suomifi-ui-components';
 import { Label } from 'suomifi-ui-components';
 import type { Nace } from '@/types';
 import { findNace, getGroupedNaceCodes } from '@/lib/utils';
@@ -44,11 +43,11 @@ export default function IndustrySelect(props: Props) {
   return (
     <div>
       <Label>Preferred industry to work in</Label>
-      <Text className="!text-base">
+      <div className="!text-base">
         {!userNaceCode && <span>No industry selected, </span>}
         <button
           type="button"
-          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600 text-left"
           onClick={openNaceSelect}
         >
           {!userNaceCode
@@ -56,7 +55,7 @@ export default function IndustrySelect(props: Props) {
             : findNace(naceCodes || [], userNaceCode)?.prefLabel.en ||
               'undefined industry'}
         </button>
-      </Text>
+      </div>
     </div>
   );
 }

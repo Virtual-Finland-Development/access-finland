@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { IoAdd } from 'react-icons/io5';
-import { Label, Text, TextInput } from 'suomifi-ui-components';
+import { Label } from 'suomifi-ui-components';
 import type { Occupation, UserOccupation } from '@/types';
 import { useModal } from '@/context/modal-context';
 import OccupationsEdit from './occupations-edit';
@@ -69,7 +68,7 @@ export default function OccupationsSelect(props: Props) {
     <div data-testid="occupation-selections">
       <Label>Occupations</Label>
       {!userOccupations?.length ? (
-        <Text className="!text-base">
+        <div className="!text-base">
           <span>No occupations selected, </span>
           <button
             type="button"
@@ -78,21 +77,19 @@ export default function OccupationsSelect(props: Props) {
           >
             click here to add.
           </button>
-        </Text>
+        </div>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userOccupations.map((uo, index) => (
             <li key={`${uo.escoIdentifier}-${index}`}>
-              <Text className="!text-base">
-                <button
-                  type="button"
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                  onClick={openEdit}
-                >
-                  {occupations?.find(o => o.uri === uo.escoIdentifier)
-                    ?.prefLabel.en || ''}
-                </button>
-              </Text>
+              <button
+                type="button"
+                className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600 text-left"
+                onClick={openEdit}
+              >
+                {occupations?.find(o => o.uri === uo.escoIdentifier)?.prefLabel
+                  .en || ''}
+              </button>
             </li>
           ))}
         </ul>

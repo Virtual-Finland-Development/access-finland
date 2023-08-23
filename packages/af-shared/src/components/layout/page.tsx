@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { ReactNode } from 'react';
 import { Block } from 'suomifi-ui-components';
-import CustomHeading from '../ui/custom-heading';
+import CustomHeading from '@/components/ui/custom-heading';
 import BackButton from './back-button';
 import Breadcrumbs from './breadcrumbs';
 

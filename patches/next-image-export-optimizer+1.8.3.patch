@@ -1,5 +1,5 @@
 diff --git a/node_modules/next-image-export-optimizer/package.json b/node_modules/next-image-export-optimizer/package.json
-index 02580dd..17319e9 100644
+index aa5c821..8a6bdd2 100644
 --- a/node_modules/next-image-export-optimizer/package.json
 +++ b/node_modules/next-image-export-optimizer/package.json
 @@ -11,7 +11,8 @@

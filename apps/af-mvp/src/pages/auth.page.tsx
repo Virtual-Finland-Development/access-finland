@@ -1,11 +1,11 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { LoginState } from 'af-shared/src/lib/api/services/auth';
-import { SESSION_STORAGE_REDIRECT_KEY } from 'af-shared/src/lib/constants';
-import { JSONSessionStorage } from 'af-shared/src/lib/utils/JSONStorage';
 import cookie from 'cookie';
 import { Text } from 'suomifi-ui-components';
+import { LoginState } from '@shared/lib/api/services/auth';
+import { SESSION_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
+import { JSONSessionStorage } from '@shared/lib/utils/JSONStorage';
 import Alert from '@shared/components/ui/alert';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';

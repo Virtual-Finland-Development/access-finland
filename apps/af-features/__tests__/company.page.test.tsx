@@ -1,11 +1,11 @@
 import { act } from 'react-dom/test-utils';
 import CompanyPage from '@pages/company/index.page';
-import * as UtilsExports from '@/lib/utils/auth';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import {
   renderWithProviders,
   screen,
 } from '@shared/lib/testing/utils/testing-library-utils';
+import * as UtilsExports from '@shared/lib/utils/auth';
 
 describe('Company index page', () => {
   it('renders a identification button, if user is not authenticated', async () => {

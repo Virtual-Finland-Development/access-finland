@@ -113,6 +113,54 @@ export function createWebAppFirewallProtection() {
                 }
             },
             {
+                name: 'PassThroughAssets',
+                priority: 2,
+                action: {
+                    allow: {},
+                },
+                statement: {
+                    orStatement: {
+                        statements: [
+                            {
+                                byteMatchStatement: {
+                                    searchString: ".png",
+                                    fieldToMatch: {
+                                        uriPath: {}
+                                    },
+                                    textTransformations: [
+                                        {
+                                            priority: 0,
+                                            type: "NONE"
+                                        }
+                                    ],
+                                    positionalConstraint: "ENDS_WITH"
+                                }
+                            },
+                            {
+                                byteMatchStatement: {
+                                    searchString: ".ico",
+                                    fieldToMatch: {
+                                        uriPath: {}
+                                    },
+                                    textTransformations: [
+                                        {
+                                            priority: 0,
+                                            type: "NONE"
+                                        }
+                                    ],
+                                    positionalConstraint: "ENDS_WITH"
+                                }
+                            }
+                        ],
+                    }
+                },
+                visibilityConfig: {
+                    cloudwatchMetricsEnabled: false,
+                    sampledRequestsEnabled: false,
+                    metricName: "PassThroughAssets"
+                }
+            },
+            {
                 name: 'GrantAccess',
                 priority: 0,
                 action: {

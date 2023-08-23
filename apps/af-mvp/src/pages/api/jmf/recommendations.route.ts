@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
-import { JMF_SKILL_RECOMMENDATIONS_ENDPOINT } from 'af-shared/src/lib/api/endpoints';
+import axios from 'axios';
+import { parse } from 'valibot';
 import {
   JmfRecommendationsRequestPayloadSchema,
   JmfRecommendationsResponseSchema,
-} from 'af-shared/src/types';
-import axios from 'axios';
-import { parse } from 'valibot';
+} from '@shared/types';
+import { JMF_SKILL_RECOMMENDATIONS_ENDPOINT } from '@shared/lib/api/endpoints';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Parse input

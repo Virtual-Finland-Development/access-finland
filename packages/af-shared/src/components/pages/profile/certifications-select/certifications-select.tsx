@@ -1,4 +1,4 @@
-import { Label, Text } from 'suomifi-ui-components';
+import { Label } from 'suomifi-ui-components';
 import type { Certification, EscoSkill } from '@/types';
 import { useModal } from '@/context/modal-context';
 import CertificationsEdit from './certifications-edit';
@@ -35,7 +35,7 @@ export default function CertificationsSelect(props: Props) {
     <div>
       <Label>Certifications</Label>
       {!userCertifications?.length ? (
-        <Text className="!text-base">
+        <div className="!text-base">
           <span>No certifications selected, </span>
           <button
             type="button"
@@ -44,20 +44,18 @@ export default function CertificationsSelect(props: Props) {
           >
             click here to add.
           </button>
-        </Text>
+        </div>
       ) : (
         <ul className="list-disc list-outside text-base ml-[17px]">
           {userCertifications.map((c, index) => (
             <li key={`${c.escoIdentifier}-${index}`}>
-              <Text className="!text-base">
-                <button
-                  type="button"
-                  className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
-                  onClick={openEdit}
-                >
-                  {c.certificationName}
-                </button>
-              </Text>
+              <button
+                type="button"
+                className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600 text-left"
+                onClick={openEdit}
+              >
+                {c.certificationName}
+              </button>
             </li>
           ))}
         </ul>

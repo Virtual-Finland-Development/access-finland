@@ -7,7 +7,7 @@ import {
 import { Button, IconPlus, IconRemove, Text } from 'suomifi-ui-components';
 import type { Certification, EscoSkill } from '@/types';
 import FormInput from '@/components/form/form-input';
-import MoreRecommendations from '../jmf-recommendations/more-recommendations';
+import MoreRecommendations from '@/components/pages/profile/jmf-recommendations/more-recommendations';
 
 interface Props {
   userCertifications: Certification[];
