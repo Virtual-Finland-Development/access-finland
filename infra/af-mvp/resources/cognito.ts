@@ -23,7 +23,7 @@ export function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
       ],
     },
     tags,
-  });
+  }, { protect: true }); // Delete only by overriding the resource protection manually
 
   // Create cognito domain for hosted UI login
   const loginDomainIdent = `${setup.projectName}-${setup.environment}`;

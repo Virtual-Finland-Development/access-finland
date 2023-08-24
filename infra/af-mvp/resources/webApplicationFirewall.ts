@@ -16,8 +16,8 @@ export function createWebAppFirewallProtection() {
     return;
   }
 
-  const url = currentStackReference.getOutput('url');
-  if (!url) {
+  const appUrl = currentStackReference.getOutput('url');
+  if (!appUrl) {
     console.log(
       "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
     );
@@ -32,7 +32,8 @@ export function createWebAppFirewallProtection() {
     }).result
   }`;
 
-  const callbackUri = pulumi.interpolate`${url}/api/auth/cognito/callback`;
+
+  const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
   const { userPool, userPoolClient, cognitoDomain } =
     createCognitoUserPool(callbackUri);
 
