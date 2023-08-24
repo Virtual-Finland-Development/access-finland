@@ -25,6 +25,7 @@ jobs:
     uses: Virtual-Finland-Development/access-finland/.github/workflows/test-af-mvp.yml@main
   deploy:
     name: Deployment
+    environment: ${{ inputs.deployment_stage }}
     runs-on: ubuntu-latest
     needs: test
     permissions:
