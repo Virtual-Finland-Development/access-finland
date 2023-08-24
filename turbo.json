@@ -18,7 +18,8 @@
     "TESTBED_DEFAULT_DATA_SOURCE",
     "WAF_SHARED_COOKIE_SECRET",
     "WAF_USER_POOL_ID",
-    "WAF_USER_POOL_CLIENT_ID"
+    "WAF_USER_POOL_CLIENT_ID",
+    "USERS_API_ACCESS_KEY"
   ],
   "pipeline": {
     "build": {

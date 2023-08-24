@@ -1,7 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
+import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
+import { USERS_API_ACCESS_KEY } from '../../api-constants';
 
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse) {
@@ -16,6 +17,7 @@ const UsersApiRouter = {
         headers: {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
           'Content-Type': 'application/json',
+          'X-Api-Key': USERS_API_ACCESS_KEY,
         },
       });
       res.status(200).json({ message: 'Deletion successful' });

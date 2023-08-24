@@ -7,7 +7,8 @@ const {
   tags,
   envOverride,
   externalApis: { codesetsEndpoint, usersApiEndpoint },
-  backendSignKey
+  backendSignKey,
+  infrastructureStackName
 } = setup;
 
 export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalancer, cluster: aws.ecs.Cluster, cdn: aws.cloudfront.Distribution, wafSetup?: { userPool: aws.cognito.UserPool, userPoolClient: aws.cognito.UserPoolClient, sharedCookieSecret: pulumi.Output<string> }) {
@@ -46,8 +47,11 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
     role: taskRole.name,
     policyArn: sinunaAccessPolicy.arn,
   });
-
+  
+  // Configs
   const testbedConfig = new pulumi.Config("testbed");
+  var stackReference = new pulumi.StackReference(infrastructureStackName);
+  var sharedAccessKey = stackReference.requireOutput("SharedAccessKey");
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
@@ -101,7 +105,11 @@ export function createFargateService(loadBalancer: awsx.lb.ApplicationLoadBalanc
               {
                 name: 'WAF_SHARED_COOKIE_SECRET',
                 value: wafSetup?.sharedCookieSecret || '',
-              }
+              },
+              {
+                name: 'USERS_API_ACCESS_KEY',
+                value: sharedAccessKey,
+              },
             ],
           },
         },

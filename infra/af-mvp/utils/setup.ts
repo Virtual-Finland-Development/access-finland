@@ -75,7 +75,8 @@ const setup = {
   },
   awsSetup: {
     region: awsSetup.get('region') || 'us-east-1',
-  }
+  },
+  infrastructureStackName: `${organizationName}/infrastructure/${environment}`,
 };
 
 export default setup;
