@@ -3,7 +3,7 @@ runtime: nodejs
 description: Access Finland app
 config:
   testbed:gatewayUrl: https://gateway.testbed.fi
-  testbed:defaultDataSource: virtualfinland:staging
+  testbed:defaultDataSource: accessfinland:staging
   domainSetup:domainName: staging.accessfinland.dev
   domainSetup:domainRootName: accessfinland.dev
   domainSetup:enabled: true

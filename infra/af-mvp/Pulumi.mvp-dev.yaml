@@ -1,5 +1,5 @@
 config:
-  testbed:defaultDataSource: virtualfinland:development
+  testbed:defaultDataSource: accessfinland:development
   testbed:gatewayUrl: https://gateway.testbed.fi
   waf:enabled: true
   waf:username: accessfinland
