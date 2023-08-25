@@ -25,6 +25,7 @@ const DataProductRouter = {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
           'X-Consent-Token': '',
           'Content-Type': 'application/json',
+          'User-Agent': 'Access Finland - MVP Application',
         },
       });
       res.status(response.status).json(response.data);
