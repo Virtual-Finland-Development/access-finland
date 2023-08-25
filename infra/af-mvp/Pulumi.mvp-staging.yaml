@@ -3,6 +3,6 @@ runtime: nodejs
 description: Access Finland app
 config:
   testbed:gatewayUrl: https://gateway.testbed.fi
-  testbed:defaultDataSource: virtualfinland:staging
+  testbed:defaultDataSource: accessfinland:staging
   #domainName: accessfinland.dev
   waf:enabled: true

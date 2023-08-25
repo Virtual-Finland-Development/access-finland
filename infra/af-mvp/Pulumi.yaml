@@ -4,6 +4,6 @@ description: Access Finland app
 config:
   aws:region: eu-north-1
   testbed:gatewayUrl: https://gateway.testbed.fi
-  testbed:defaultDataSource: virtualfinland:development
+  testbed:defaultDataSource: accessfinland:development
   domainName: ""
   waf:enabled: false
