@@ -16,13 +16,15 @@ export function createContentDeliveryNetwork(
     ? [domainSetup.domainName]
     : undefined;
 
-  // CloudFront viewer certificate
+  // CloudFront viewer certificate setup
   const viewerCertificate: DistributionArgs['viewerCertificate'] = {
     cloudfrontDefaultCertificate: true,
   };
+  let originProtocolPolicy = 'http-only';
   if (domainSetup?.certificate) {
     viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
     viewerCertificate.sslSupportMethod = 'sni-only';
+    originProtocolPolicy = 'https-only';
   }
 
   // Load-balancer domain name
@@ -49,7 +51,7 @@ export function createContentDeliveryNetwork(
           originId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
           domainName: loadBalancerDomainName,
           customOriginConfig: {
-            originProtocolPolicy: 'https-only',
+            originProtocolPolicy: originProtocolPolicy,
             originSslProtocols: ['TLSv1.2'],
             httpPort: 80,
             httpsPort: 443,
