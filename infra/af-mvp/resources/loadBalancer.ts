@@ -4,7 +4,7 @@ import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
-import { createDomainCnameRecord } from './domainSetup';
+import { createDomainRecordAndCertificate } from './domainSetup';
 
 const {
   tags,
@@ -36,7 +36,7 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
 
   if (domainSetup?.loadBalancerDomainName) {
     // Setup loadbalancer HTTPS listener for the custom domain
-    const loadBalancerCert = createDomainCnameRecord(
+    const { certificate } = createDomainRecordAndCertificate(
       domainSetup.zone,
       domainSetup?.loadBalancerDomainName,
       appLoadBalancer.loadBalancer.dnsName,
@@ -45,7 +45,7 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
     listenerArgs = {
       port: 443,
       protocol: 'HTTPS',
-      certificateArn: loadBalancerCert.arn,
+      certificateArn: certificate.arn,
     };
   }
 

@@ -38,7 +38,7 @@ export function createDomainSetup() {
       { protect: true } // Keep the zone from being destroyed
     );
 
-    const certificate = createDomainCnameRecord(
+    const { certificate } = createDomainRecordAndCertificate(
       zone,
       domainConfig.domainName,
       cdnDomainName
@@ -54,7 +54,7 @@ export function createDomainSetup() {
   return;
 }
 
-export function createDomainCnameRecord(
+export function createDomainRecordAndCertificate(
   zone: aws.route53.Zone,
   domainName: string,
   destinationDomainName: pulumi.Output<string>,
@@ -73,7 +73,7 @@ export function createDomainCnameRecord(
   );
 
   // The main dns record
-  new aws.route53.Record(
+  const record = new aws.route53.Record(
     nameResource(`${domainNameResourceIdent}-cname-record`),
     {
       name: domainName,
@@ -84,5 +84,8 @@ export function createDomainCnameRecord(
     }
   );
 
-  return certificate;
+  return {
+    certificate,
+    record,
+  };
 }
