@@ -1,33 +1,42 @@
 import * as aws from '@pulumi/aws';
-import * as awsx from '@pulumi/awsx';
-
 import { DistributionArgs } from '@pulumi/aws/cloudfront';
+import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 
-const {
-  tags,
-  customHeaderValue,
-} = setup;
+const { tags, customHeaderValue } = setup;
 
-export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer, domainSetup?: { domainName?: string, certificate?: aws.acm.Certificate }, webApplicationFirewall?: aws.wafv2.WebAcl) {
-
+export function createContentDeliveryNetwork(
+  loadBalancerSetup: LoadBalancerSetup,
+  domainSetup: DomainSetup,
+  webApplicationFirewall?: aws.wafv2.WebAcl
+) {
   // CloudFront domain name
-  const domainNames = domainSetup?.domainName ? [domainSetup.domainName] : undefined;
+  const domainNames = domainSetup?.domainName
+    ? [domainSetup.domainName]
+    : undefined;
 
-  // CloudFront viewer certificate
-  const viewerCertificate: DistributionArgs["viewerCertificate"] = {
+  // CloudFront viewer certificate setup
+  const viewerCertificate: DistributionArgs['viewerCertificate'] = {
     cloudfrontDefaultCertificate: true,
   };
+  let originProtocolPolicy = 'http-only';
   if (domainSetup?.certificate) {
     viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
     viewerCertificate.sslSupportMethod = 'sni-only';
+    originProtocolPolicy = 'https-only';
   }
 
+  // Load-balancer domain name
+  const loadBalancerDomainName = loadBalancerSetup.domainName;
+
   // Firewall config
-  const webAclId = webApplicationFirewall? webApplicationFirewall.arn : undefined;
-  
+  const webAclId = webApplicationFirewall
+    ? webApplicationFirewall.arn
+    : undefined;
+
   // CloudFront
-  return new aws.cloudfront.Distribution(
+  const cdn = new aws.cloudfront.Distribution(
     nameResource('cdn'),
     {
       enabled: true,
@@ -39,10 +48,10 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       aliases: domainNames,
       origins: [
         {
-          originId: lb.loadBalancer.arn,
-          domainName: lb.loadBalancer.dnsName,
+          originId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
+          domainName: loadBalancerDomainName,
           customOriginConfig: {
-            originProtocolPolicy: 'http-only',
+            originProtocolPolicy: originProtocolPolicy,
             originSslProtocols: ['TLSv1.2'],
             httpPort: 80,
             httpsPort: 443,
@@ -56,7 +65,7 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
         },
       ],
       defaultCacheBehavior: {
-        targetOriginId: lb.loadBalancer.arn,
+        targetOriginId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
         viewerProtocolPolicy: 'redirect-to-https',
         allowedMethods: [
           'HEAD',
@@ -91,4 +100,11 @@ export function createContentDeliveryNetwork(lb: awsx.lb.ApplicationLoadBalancer
       protect: false,
     }
   );
+
+  return {
+    cdn,
+    domainName: pulumi.interpolate`${
+      domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
+    }`,
+  };
 }

@@ -5,5 +5,7 @@ config:
   aws:region: eu-north-1
   testbed:gatewayUrl: https://gateway.testbed.fi
   testbed:defaultDataSource: accessfinland:development
-  domainName: ""
+  domainSetup:domainName: ''
+  domainSetup:domainRootName: ''
+  domainSetup:enabled: false
   waf:enabled: false
