@@ -5,7 +5,7 @@ import setup, { nameResource } from '../utils/setup';
 import { LoadBalancerSetup } from '../utils/types';
 import { createContainerImage } from './ecrContainerImage';
 
-const { tags, envOverride } = setup;
+const { tags, envOverride, infrastructureStackName } = setup;
 
 export function createFargateService(
   loadBalancerSetup: LoadBalancerSetup,
@@ -58,8 +58,20 @@ export function createFargateService(
     }
   );
 
+  new aws.iam.RolePolicyAttachment(
+    nameResource('fargate-task-role-sinuna-policy-attachment'),
+    {
+      role: taskRole.name,
+      policyArn: sinunaAccessPolicy.arn,
+    }
+  );
+
   // ECR Container image
   const image = createContainerImage(cdnSetup);
+
+  // Configs
+  const stackReference = new pulumi.StackReference(infrastructureStackName);
+  const sharedAccessKey = stackReference.requireOutput('SharedAccessKey');
 
   // Fargate service
   return new awsx.ecs.FargateService(nameResource('fargate-service'), {
@@ -88,6 +100,10 @@ export function createFargateService(
             {
               name: 'WAF_SHARED_COOKIE_SECRET',
               value: wafSetup?.sharedCookieSecret || '',
+            },
+            {
+              name: 'USERS_API_ACCESS_KEY',
+              value: sharedAccessKey,
             },
           ],
         },
