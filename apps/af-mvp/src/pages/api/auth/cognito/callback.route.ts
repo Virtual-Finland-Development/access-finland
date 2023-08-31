@@ -66,8 +66,9 @@ export default async function handler(
     res
       .setHeader('Set-Cookie', [
         cookie.serialize('cognito-identity.amazonaws.com', sharedCookieSecret, {
+          path: '/',
           httpOnly: true,
-          sameSite: 'strict',
+          sameSite: 'lax',
           expires: new Date(payload.exp * 1000),
         }),
       ])
