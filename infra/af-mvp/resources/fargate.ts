@@ -58,14 +58,6 @@ export function createFargateService(
     }
   );
 
-  new aws.iam.RolePolicyAttachment(
-    nameResource('fargate-task-role-sinuna-policy-attachment'),
-    {
-      role: taskRole.name,
-      policyArn: sinunaAccessPolicy.arn,
-    }
-  );
-
   // ECR Container image
   const image = createContainerImage(cdnSetup);
 
