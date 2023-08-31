@@ -53,11 +53,11 @@ jobs:
       - name: Configure testbed data source
         if: env.environment == 'dev'
         working-directory: ./infra/amplify
-        run:  pulumi config set testbed:defaultDataSource virtualfinland:development
+        run: pulumi config set testbed:defaultDataSource accessfinland:development
       - name: Configure testbed data source
         if: env.environment != 'dev'
         working-directory: ./infra/amplify
-        run:  pulumi config set testbed:defaultDataSource virtualfinland:${{ env.environment }}
+        run: pulumi config set testbed:defaultDataSource accessfinland:${{ env.environment }}
       - name: Deploy with Pulumi
         uses: pulumi/actions@v4
         with:
