@@ -87,7 +87,7 @@ export default loggedOutAuthMiddleware(async function handler(
     //
     // Redirect to the frontend with the error
     //
-    return res.redirect(303, `${returnBackUri}?error=${badEvent.data.error}?error_description=${badEvent.data.error_description}`);
+    return res.redirect(303, `${returnBackUri}?error=${badEvent.data.error}&error_description=${badEvent.data.error_description}`);
   }
 
   throw new Error('Invalid login response.');
