@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps<{
   let csrfToken = null;
 
   if (req.cookies.csrfToken) {
-    // Pop the auth token from the cookie
+    // Pop (retrieve and clear) the auth token from the cookie
     csrfToken = req.cookies.csrfToken;
     res.setHeader(
       'Set-Cookie',
