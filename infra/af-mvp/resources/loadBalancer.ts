@@ -4,7 +4,6 @@ import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 import {
-  defaultSecurityGroup,
   defaultSubnetIds,
   defaultVpcId,
 } from './defaultVpc';
@@ -21,13 +20,57 @@ const {
 export function createLoadBalancer(
   domainSetup: DomainSetup
 ): LoadBalancerSetup {
+
+  // Inbound load balancer security rules
+  const ingress = [
+    {
+      protocol: 'tcp',
+      fromPort: 80,
+      toPort: 80,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    },
+  ];
+
+  // If we have a domain (SSL)
+  if (domainSetup?.loadBalancerDomainName) {
+    ingress.push({
+      protocol: 'tcp',
+      fromPort: 443,
+      toPort: 443,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    });
+  }
+
+  // Outbound rules
+  const egress = [
+    {
+      protocol: '-1',
+      fromPort: 0,
+      toPort: 0,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    },
+  ];
+  
+  // Security group
+  const loadBalancerSecurityGroup = new aws.ec2.SecurityGroup(
+    nameResource('alb-sg'),
+    {
+      vpcId: defaultVpcId,
+      ingress: ingress,
+      egress: egress,
+    }
+  );
+
   // Loadbalancer name can't exceed 32 characters
   const appLoadBalancer = new aws.lb.LoadBalancer(nameResource('alb', 32), {
     internal: false,
     loadBalancerType: 'application',
     enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and to end-user is handled in cloudfront
     subnets: defaultSubnetIds,
-    securityGroups: [defaultSecurityGroup.id],
+    securityGroups: [loadBalancerSecurityGroup.id],
     tags,
   });
 
