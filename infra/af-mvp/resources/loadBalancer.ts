@@ -3,7 +3,11 @@ import { ListenerArgs } from '@pulumi/aws/alb';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
-import { defaultSecurityGroup, defaultSubnetIds, defaultVpcId } from './defaultVpc';
+import {
+  defaultSecurityGroup,
+  defaultSubnetIds,
+  defaultVpcId,
+} from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
 const {
@@ -14,8 +18,9 @@ const {
   },
 } = setup;
 
-export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup {
-  
+export function createLoadBalancer(
+  domainSetup: DomainSetup
+): LoadBalancerSetup {
   // Loadbalancer name can't exceed 32 characters
   const appLoadBalancer = new aws.lb.LoadBalancer(nameResource('alb', 32), {
     internal: false,
@@ -27,16 +32,24 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
   });
 
   // Target group
-  const targetGroup = new aws.lb.TargetGroup(
-    nameResource('alb-tg', 32),
-    {
-      port: 3000, // Nextjs app port
+  const targetGroup = new aws.lb.TargetGroup(nameResource('alb-tg', 32), {
+    port: 3000, // Nextjs app port
+    protocol: 'HTTP',
+    targetType: 'ip',
+    deregistrationDelay: 0,
+    vpcId: defaultVpcId,
+    healthCheck: {
+      enabled: true,
+      healthyThreshold: 5,
+      interval: 30,
+      matcher: '200',
+      path: '/',
+      port: 'traffic-port',
       protocol: 'HTTP',
-      targetType: 'ip',
-      deregistrationDelay: 0,
-      vpcId: defaultVpcId,
-    }
-  );
+      timeout: 5,
+      unhealthyThreshold: 2,
+    },
+  });
 
   // Listener
   let listenerArgs: Partial<ListenerArgs> = {
@@ -92,8 +105,12 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
     ],
   });
 
-  const domainName = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}` : appLoadBalancer.dnsName;
-  const url = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`https://${domainSetup.loadBalancerDomainName}` :  pulumi.interpolate`http://${appLoadBalancer.dnsName}`;
+  const domainName = domainSetup?.loadBalancerDomainName
+    ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}`
+    : appLoadBalancer.dnsName;
+  const url = domainSetup?.loadBalancerDomainName
+    ? pulumi.interpolate`https://${domainSetup.loadBalancerDomainName}`
+    : pulumi.interpolate`http://${appLoadBalancer.dnsName}`;
 
   return {
     appLoadBalancer,
