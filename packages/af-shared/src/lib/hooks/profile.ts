@@ -14,11 +14,11 @@ const QUERY_OPTIONS = {
 /**
  * Get person basic information.
  */
-function usePersonBasicInfo() {
+function usePersonBasicInfo(enabled: boolean = true) {
   const query = useQuery(
     BASIC_INFO_QUERY_KEYS,
     async () => await api.profile.getPersonBasicInfo(),
-    QUERY_OPTIONS
+    { ...QUERY_OPTIONS, enabled }
   );
 
   useErrorToast({
@@ -35,11 +35,11 @@ function usePersonBasicInfo() {
 /**
  * Get person job applicant profile.
  */
-function useJobApplicantProfile() {
+function useJobApplicantProfile(enabled: boolean = true) {
   const query = useQuery(
     JOB_APPLICATION_QUERY_KEYS,
     async () => await api.profile.getJobApplicantProfile(),
-    QUERY_OPTIONS
+    { ...QUERY_OPTIONS, enabled }
   );
 
   useErrorToast({

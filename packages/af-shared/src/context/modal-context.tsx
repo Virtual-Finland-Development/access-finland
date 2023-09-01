@@ -4,8 +4,10 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
+import { REQUEST_NOT_AUTHORIZED } from '@/lib/constants';
 
 const Modal = dynamic(() => import('@/components/ui/modal'));
 
@@ -42,6 +44,20 @@ function ModalProvider({ children }: ModalProviderProps) {
 
     setModal(null);
   }, [modal]);
+
+  // Make sure any opened modal is closed when user is presented with alert window about expired token
+  useEffect(() => {
+    const onWindowMessageEvent = (event: MessageEvent) => {
+      if (event.data === REQUEST_NOT_AUTHORIZED) {
+        closeModal();
+      }
+    };
+    // make sure Next.js is running on client-side (window is defined), before attempting to add window listeners
+    if (typeof window !== 'undefined') {
+      window.addEventListener('message', onWindowMessageEvent);
+      return () => window.removeEventListener('message', onWindowMessageEvent);
+    }
+  }, [closeModal]);
 
   return (
     <ModalContext.Provider
