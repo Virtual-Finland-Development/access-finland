@@ -68,7 +68,7 @@ export function createLoadBalancer(
   const appLoadBalancer = new aws.lb.LoadBalancer(nameResource('alb', 32), {
     internal: false,
     loadBalancerType: 'application',
-    enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and to end-user is handled in cloudfront
+    enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and the end-user traffic is handled by cloudfront
     subnets: defaultSubnetIds,
     securityGroups: [loadBalancerSecurityGroup.id],
     tags,
