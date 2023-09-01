@@ -1,5 +1,4 @@
 import * as aws from '@pulumi/aws';
-import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 
 export type DomainSetup =
@@ -12,7 +11,8 @@ export type DomainSetup =
   | undefined;
 
 export type LoadBalancerSetup = {
-  appLoadBalancer: awsx.lb.ApplicationLoadBalancer,
+  appLoadBalancer: aws.lb.LoadBalancer,
+  targetGroup: aws.lb.TargetGroup,
   domainName: pulumi.Output<string>,
   url: pulumi.Output<string>,
 }

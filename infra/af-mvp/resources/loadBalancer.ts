@@ -1,9 +1,9 @@
 import * as aws from '@pulumi/aws';
 import { ListenerArgs } from '@pulumi/aws/alb';
-import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
+import { defaultSecurityGroup, defaultSubnetIds, defaultVpcId } from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
 const {
@@ -15,16 +15,26 @@ const {
 } = setup;
 
 export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup {
+  
   // Loadbalancer name can't exceed 32 characters
-  const appLoadBalancer = new awsx.lb.ApplicationLoadBalancer(
-    nameResource('alb', 32),
+  const appLoadBalancer = new aws.lb.LoadBalancer(nameResource('alb', 32), {
+    internal: false,
+    loadBalancerType: 'application',
+    enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and to end-user is handled in cloudfront
+    subnets: defaultSubnetIds,
+    securityGroups: [defaultSecurityGroup.id],
+    tags,
+  });
+
+  // Target group
+  const targetGroup = new aws.lb.TargetGroup(
+    nameResource('alb-tg', 32),
     {
-      tags,
-      defaultTargetGroup: {
-        deregistrationDelay: 0,
-        port: 3000,
-      },
-      enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and to end-user is handled in cloudfront
+      port: 3000, // Nextjs app port
+      protocol: 'HTTP',
+      targetType: 'ip',
+      deregistrationDelay: 0,
+      vpcId: defaultVpcId,
     }
   );
 
@@ -39,7 +49,7 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
     const { certificate } = createDomainRecordAndCertificate(
       domainSetup.zone,
       domainSetup?.loadBalancerDomainName,
-      appLoadBalancer.loadBalancer.dnsName,
+      appLoadBalancer.dnsName,
       awsLocalCertsProvider
     );
     listenerArgs = {
@@ -50,7 +60,7 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
   }
 
   const listener = new aws.lb.Listener(nameResource('alb-listener'), {
-    loadBalancerArn: appLoadBalancer.loadBalancer.arn,
+    loadBalancerArn: appLoadBalancer.arn,
     ...listenerArgs,
     defaultActions: [
       {
@@ -69,7 +79,7 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
     actions: [
       {
         type: 'forward',
-        targetGroupArn: appLoadBalancer.defaultTargetGroup.arn,
+        targetGroupArn: targetGroup.arn,
       },
     ],
     conditions: [
@@ -82,11 +92,12 @@ export function createLoadBalancer(domainSetup: DomainSetup): LoadBalancerSetup 
     ],
   });
 
-  const domainName = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}` : appLoadBalancer.loadBalancer.dnsName;
-  const url = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`https://${domainSetup.loadBalancerDomainName}` :  pulumi.interpolate`http://${appLoadBalancer.loadBalancer.dnsName}`;
+  const domainName = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}` : appLoadBalancer.dnsName;
+  const url = domainSetup?.loadBalancerDomainName ? pulumi.interpolate`https://${domainSetup.loadBalancerDomainName}` :  pulumi.interpolate`http://${appLoadBalancer.dnsName}`;
 
   return {
     appLoadBalancer,
+    targetGroup,
     domainName: domainName,
     url: url,
   };

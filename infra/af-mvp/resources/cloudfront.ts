@@ -48,7 +48,7 @@ export function createContentDeliveryNetwork(
       aliases: domainNames,
       origins: [
         {
-          originId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
+          originId: loadBalancerSetup.appLoadBalancer.arn,
           domainName: loadBalancerDomainName,
           customOriginConfig: {
             originProtocolPolicy: originProtocolPolicy,
@@ -65,7 +65,7 @@ export function createContentDeliveryNetwork(
         },
       ],
       defaultCacheBehavior: {
-        targetOriginId: loadBalancerSetup.appLoadBalancer.loadBalancer.arn,
+        targetOriginId: loadBalancerSetup.appLoadBalancer.arn,
         viewerProtocolPolicy: 'redirect-to-https',
         allowedMethods: [
           'HEAD',
