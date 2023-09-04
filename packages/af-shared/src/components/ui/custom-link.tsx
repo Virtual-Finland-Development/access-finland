@@ -9,12 +9,15 @@ import {
 interface StyledLinkProps {
   $bold?: boolean;
   $base?: boolean;
+  disableVisited?: boolean;
   isExternal?: boolean;
 }
 
 const StyledLink = styled(SuomiFiLink).attrs<StyledLinkProps>(
-  ({ $bold, $base, isExternal }) => ({
-    className: `${$bold ? '!font-bold' : ''} ${$base ? '!text-base' : ''}`,
+  ({ $bold, $base, disableVisited, isExternal }) => ({
+    className: `${$bold ? '!font-bold' : ''} ${$base ? '!text-base' : ''} ${
+      disableVisited ? 'visited:!text-blue-600' : ''
+    }`,
     ...(isExternal && {
       rel: 'noopener noreferrer',
       target: '_blank',
@@ -36,6 +39,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
       locale,
       $bold,
       $base,
+      disableVisited = false,
       children,
       onClick,
       isExternal,
@@ -57,6 +61,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
           ref={ref}
           $bold={$bold}
           $base={$base}
+          disableVisited={disableVisited}
           onClick={onClick}
           isExternal={isExternal}
         >

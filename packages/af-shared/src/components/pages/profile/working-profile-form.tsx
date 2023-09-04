@@ -294,7 +294,7 @@ export default function WorkingProfileForm(props: Props) {
         <Button
           variant="secondary"
           icon={<IconArrowLeft />}
-          onClick={() => router.push('/profile')}
+          onClick={() => router.back()}
         >
           Back
         </Button>
