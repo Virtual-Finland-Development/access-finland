@@ -37,6 +37,8 @@ export default function AuthPage({
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
+  const { error } = router.query;
+  const userCancelled = error && error === 'cancelled';
 
   const routerActions = useCallback(async () => {
     setLoading(true);
@@ -50,8 +52,8 @@ export default function AuthPage({
 
     // Login was a no-show
     setLoading(false);
-    setAuthError('Authentication failed.');
-  }, [csrfToken]);
+    setAuthError(userCancelled ? 'Login cancelled.' : 'Authentication failed.');
+  }, [csrfToken, userCancelled]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -63,15 +65,20 @@ export default function AuthPage({
     return <Loading />;
   }
 
+  const status = userCancelled ? 'warning' : 'error';
+  const labelText = userCancelled ? 'Cancelled' : 'Error';
+
   if (authError) {
     return (
-      <div className="min-w-xl max-w-xl">
-        <Alert status="error" labelText="Error">
-          <div className="flex flex-col gap-3">
-            <Text>{authError}</Text>
-            <CustomLink href="/">Go to home page</CustomLink>
-          </div>
-        </Alert>
+      <div className="container flex justify-center p-4">
+        <div className="w-[600px]">
+          <Alert status={status} labelText={labelText}>
+            <div className="flex flex-col gap-3">
+              <Text>{authError}</Text>
+              <CustomLink href="/">Go to home page</CustomLink>
+            </div>
+          </Alert>
+        </div>
       </div>
     );
   }
