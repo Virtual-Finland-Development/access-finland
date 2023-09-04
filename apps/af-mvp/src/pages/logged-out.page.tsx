@@ -1,9 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Link, Text } from 'suomifi-ui-components';
+import SinunaLogo from '@shared/images/sinuna-logo.svg';
+import CustomHeading from 'af-shared/src/components/ui/custom-heading';
+import { Button, Text } from 'suomifi-ui-components';
 import { getRuntimeStage } from '@shared/lib/utils';
 import Page from '@shared/components/layout/page';
 import Alert from '@shared/components/ui/alert';
+import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 
@@ -39,20 +42,43 @@ export default function LoggedOutPage() {
   return (
     <Page title="Logged out">
       <Page.Block className="bg-white">
-        <Alert status="neutral" labelText="Logged out from Access Finland!">
+        <Alert status="neutral">
           <div className="flex flex-col gap-3 items-start">
-            <Text>
-              Note that the Sinuna login session might still be active. Manage
-              Sinuna login session here:
-            </Text>
-            <Link
-              target="_blank"
-              rel="noreferrer noopener"
-              href={sinunaLoginServiceLink}
-            >
-              Sinuna Service
-            </Link>
-            <CustomLink href="/">Go to home page</CustomLink>
+            <CustomHeading variant="h2">
+              Logged out from Access Finland!
+            </CustomHeading>
+            <div className="flex flex-col gap-6">
+              <Text>
+                You have logged out successfully from Access Finland. Note that
+                the Sinuna login session might still be active.
+              </Text>
+              <div className="flex items-start flex-wrap gap-6">
+                <div className="flex flex-col items-start gap-3">
+                  <Text>
+                    Manage your Sinuna login session in Sinuna Service.
+                  </Text>
+                  <Button
+                    className="!w-auto"
+                    onClick={() =>
+                      window.open(sinunaLoginServiceLink, '_blank')
+                    }
+                  >
+                    Sinuna service
+                  </Button>
+                </div>
+                <CustomImage
+                  src={SinunaLogo}
+                  alt="Sinuna logo"
+                  width={250}
+                  priority
+                />
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <CustomLink disableVisited href="/">
+              Continue to Home page
+            </CustomLink>
           </div>
         </Alert>
       </Page.Block>

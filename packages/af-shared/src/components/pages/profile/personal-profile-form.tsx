@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, IconArrowLeft } from 'suomifi-ui-components';
+import { Button, IconArrowLeft, IconArrowRight } from 'suomifi-ui-components';
 import type { PersonBasicInformation } from '@/types';
 import api from '@/lib/api';
 import { useCountries } from '@/lib/hooks/codesets';
@@ -17,11 +17,10 @@ import Loading from '@/components/ui/loading';
 
 interface Props {
   personBasicInformation: PersonBasicInformation | undefined;
-  onSubmitSuccess: () => void;
 }
 
 export default function PersonalProfileForm(props: Props) {
-  const { personBasicInformation, onSubmitSuccess } = props;
+  const { personBasicInformation } = props;
   const { userEmail } = useAuth();
   const { data: countries, isLoading } = useCountries();
   const toast = useToast();
@@ -58,9 +57,6 @@ export default function PersonalProfileForm(props: Props) {
           title: 'Success',
           content: 'Profile information saved successfully!',
         });
-        onSubmitSuccess();
-      } else {
-        onSubmitSuccess();
       }
     } catch (error: any) {
       toast({
@@ -136,11 +132,23 @@ export default function PersonalProfileForm(props: Props) {
         <Button
           variant="secondary"
           icon={<IconArrowLeft />}
-          onClick={() => router.push('/profile')}
+          onClick={() => router.back()}
         >
           Back
         </Button>
-        <Button type="submit">Save</Button>
+        <Button type="submit" disabled={Object.keys(dirtyFields).length < 1}>
+          Save
+        </Button>
+        {personBasicInformation && (
+          <Button
+            variant="secondary"
+            iconRight={<IconArrowRight />}
+            className="!ml-auto"
+            onClick={() => router.push('/profile/working-profile')}
+          >
+            Working profile
+          </Button>
+        )}
       </div>
     </form>
   );

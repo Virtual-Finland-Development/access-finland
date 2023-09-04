@@ -39,7 +39,6 @@ export default function PersonalProfilePage() {
             <Page.Block className="bg-white">
               <PersonalProfileForm
                 personBasicInformation={personBasicInformation}
-                onSubmitSuccess={() => router.push('/profile/working-profile')}
               />
             </Page.Block>
           </>
