@@ -1,6 +1,7 @@
 import { IconUserBadge } from 'suomifi-ui-components';
 import { Text } from 'suomifi-ui-components';
 import { useJobApplicantProfile } from '@shared/lib/hooks/profile';
+import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import WorkingProfileForm from '@shared/components/pages/profile/working-profile-form';
@@ -8,7 +9,9 @@ import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 
 export default function WorkingProfilePage() {
-  const { data: jobApplicationProfile, isLoading } = useJobApplicantProfile();
+  const { isAuthenticated } = useAuth();
+  const { data: jobApplicationProfile, isLoading } =
+    useJobApplicantProfile(isAuthenticated);
 
   return (
     <AuthSentry redirectPath="/profile">

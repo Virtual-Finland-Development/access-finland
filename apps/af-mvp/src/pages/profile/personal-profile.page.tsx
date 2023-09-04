@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { IconUserProfile } from 'suomifi-ui-components';
 import { Text } from 'suomifi-ui-components';
 import { usePersonBasicInfo } from '@shared/lib/hooks/profile';
+import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
@@ -9,7 +10,9 @@ import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 
 export default function PersonalProfilePage() {
-  const { data: personBasicInformation, isLoading } = usePersonBasicInfo();
+  const { isAuthenticated } = useAuth();
+  const { data: personBasicInformation, isLoading } =
+    usePersonBasicInfo(isAuthenticated);
   const router = useRouter();
 
   return (
