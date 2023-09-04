@@ -50,14 +50,17 @@ export default function ProfileAuthenticated() {
               deserunt mollit anim id est laborum.
             </Text>
 
+            {/* If either of the profile requests fail (not 404), display errors instead of profile details */}
             {[personBasicInfoErrorCode, jobApplicationProfileErrorCode].some(
-              code => typeof code === 'number' && code !== 404
+              code => code && code !== 404
             ) ? (
               <ProfileErrors
-                errorMessages={[
-                  personBasicInfoErrorMsg,
-                  jobApplicationProfileErrorMsg,
-                ]}
+                errorMessages={
+                  [
+                    personBasicInfoErrorMsg,
+                    jobApplicationProfileErrorMsg,
+                  ].filter(msg => msg) as string[]
+                }
               />
             ) : (
               <ProfileDetails
