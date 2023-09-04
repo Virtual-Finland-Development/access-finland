@@ -76,13 +76,15 @@ export default function AuthPage() {
 
   if (authError) {
     return (
-      <div className="min-w-xl max-w-xl">
-        <Alert status="error" labelText="Error">
-          <div className="flex flex-col gap-3">
-            <Text>{authError}</Text>
-            <CustomLink href="/">Go to home page</CustomLink>
-          </div>
-        </Alert>
+      <div className="container flex justify-center p-4">
+        <div className="w-[600px]">
+          <Alert status="error" labelText="Error">
+            <div className="flex flex-col gap-3">
+              <Text>{authError}</Text>
+              <CustomLink href="/">Go to home page</CustomLink>
+            </div>
+          </Alert>
+        </div>
       </div>
     );
   }
