@@ -3,19 +3,18 @@ name: Deploy AF MVP
 on:
   workflow_call:
     inputs:
-      deployment_stage:
+      environment:
         required: true
         type: string
   workflow_dispatch:
     inputs:
-      deployment_stage:
+      environment:
         required: true
         type: choice
         description: 'Deployment stage'
         options:
           - mvp-dev
           - mvp-staging
-          - mvp-production
 env:
   pulumi_stack_organization: virtualfinland
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -25,7 +24,7 @@ jobs:
     uses: Virtual-Finland-Development/access-finland/.github/workflows/test-af-mvp.yml@main
   deploy:
     name: Deployment
-    environment: ${{ inputs.deployment_stage }}
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     needs: test
     permissions:
@@ -36,7 +35,7 @@ jobs:
       - name: Configure AWS credentials
         uses: Virtual-Finland-Development/infrastructure/.github/actions/configure-aws-credentials@main
         with:
-          environment: ${{ inputs.deployment_stage }}
+          environment: ${{ inputs.environment }}
           aws-region: ${{ secrets.AWS_REGION }}
           pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install infra dependencies
@@ -47,5 +46,5 @@ jobs:
         with:
           work-dir: ./infra/af-mvp
           command: up
-          stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.deployment_stage }}
+          stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.environment }}
           upsert: true # create stack if no exists
