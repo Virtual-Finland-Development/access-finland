@@ -62,9 +62,9 @@ export default async function handler(
     const verifier = CognitoJwtVerifier.create({
       userPoolId: userPoolId!,
       tokenUse: 'id',
-      clientId: userPoolClientId,
+      clientId: userPoolClientId!,
     });
-    // @ts-ignore
+
     const payload = await verifier.verify(cognitoLoginResponse.id_token);
 
     // Success, redirect to the root page with the shared cookie
