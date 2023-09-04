@@ -29,7 +29,17 @@ function usePersonBasicInfo(enabled: boolean = true) {
         : undefined,
   });
 
-  return query;
+  const errorResponse = (query.error as AxiosError)?.response;
+  const errorCode = errorResponse?.status || undefined;
+  const errorMsg = errorResponse?.statusText
+    ? `Person basic information: ${errorResponse.statusText}`
+    : undefined;
+
+  return {
+    ...query,
+    errorCode,
+    errorMsg,
+  };
 }
 
 /**
@@ -50,7 +60,17 @@ function useJobApplicantProfile(enabled: boolean = true) {
         : undefined,
   });
 
-  return query;
+  const errorResponse = (query.error as AxiosError)?.response;
+  const errorCode = errorResponse?.status || undefined;
+  const errorMsg = errorResponse?.statusText
+    ? `Job applicant profile: ${errorResponse.statusText}`
+    : undefined;
+
+  return {
+    ...query,
+    errorCode,
+    errorMsg,
+  };
 }
 
 export { usePersonBasicInfo, useJobApplicantProfile };

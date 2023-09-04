@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
 import { NextApiRequest } from 'next';
+import jwt from 'jsonwebtoken';
 import { FRONTEND_ORIGIN_URI } from './api-constants';
 
 /**

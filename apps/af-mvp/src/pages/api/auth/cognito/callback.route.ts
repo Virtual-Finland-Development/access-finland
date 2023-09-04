@@ -1,6 +1,6 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import cookie from 'cookie';
-import { NextApiRequest, NextApiResponse } from "next";
 import { object, parse, string } from 'valibot';
 
 const CognitoLoginResponseSchema = object({
@@ -12,7 +12,11 @@ const CognitoLoginResponseSchema = object({
 });
 
 function ifNotObjectOrEmptyObject(value: any): boolean {
-  if (typeof value !== "object" || value === null || Object.keys(value).length === 0) {
+  if (
+    typeof value !== 'object' ||
+    value === null ||
+    Object.keys(value).length === 0
+  ) {
     return true;
   }
   return false;
@@ -20,10 +24,10 @@ function ifNotObjectOrEmptyObject(value: any): boolean {
 
 /**
  * For AWS WAF & Cognition login, sets the access cookie and redirects to the root page
- * 
- * @param req 
- * @param res 
- * @returns 
+ *
+ * @param req
+ * @param res
+ * @returns
  */
 
 export default async function handler(
@@ -36,28 +40,28 @@ export default async function handler(
   // - AWS Cognito redirects to the callback with the params in the hash, nextjs doesn't parse the hash.
   // @see: https://stackoverflow.com/a/72071612
   if (ifNotObjectOrEmptyObject(queryParams)) {
-    res.writeHead(302, { 'Content-Type': 'text/html' })
+    res.writeHead(302, { 'Content-Type': 'text/html' });
     res.write(`
         <script nonce="vfaf-${process.env.NEXT_PUBLIC_STAGE}">
             const queryString = window.location.hash.replace('#', '')
             window.location.href='${req.url}?redirected_from_hash=true&'+ queryString 
         </script>
-    `)
+    `);
     res.end();
     return res;
   }
 
   try {
     const cognitoLoginResponse = parse(CognitoLoginResponseSchema, queryParams);
-    
+
     const userPoolId = process.env.WAF_USER_POOL_ID;
     const userPoolClientId = process.env.WAF_USER_POOL_CLIENT_ID;
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
-    
+
     // AWS Cognito verifier that expects valid access tokens
     const verifier = CognitoJwtVerifier.create({
       userPoolId: userPoolId,
-      tokenUse: "id",
+      tokenUse: 'id',
       clientId: userPoolClientId,
     });
     const payload = await verifier.verify(cognitoLoginResponse.id_token);
@@ -77,4 +81,4 @@ export default async function handler(
     console.error(error);
     res.status(401).json({ error: error.message, trace: error.stack });
   }
-};
+}
