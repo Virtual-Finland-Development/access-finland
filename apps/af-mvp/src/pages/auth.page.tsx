@@ -43,6 +43,12 @@ export default function AuthPage({
   const routerActions = useCallback(async () => {
     setLoading(true);
 
+    if (userCancelled) {
+      // Login was cancelled
+      window.location.assign('/'); // Redirect to the app root
+      return;
+    }
+
     if (csrfToken) {
       LoginState.setCsrfToken(csrfToken); // "Logs in" by storing the CSRF key
       const redirectPath = JSONSessionStorage.pop(SESSION_STORAGE_REDIRECT_KEY); // Redirect to the original path
@@ -52,7 +58,7 @@ export default function AuthPage({
 
     // Login was a no-show
     setLoading(false);
-    setAuthError(userCancelled ? 'Login cancelled.' : 'Authentication failed.');
+    setAuthError('Authentication failed.');
   }, [csrfToken, userCancelled]);
 
   useEffect(() => {
@@ -65,14 +71,11 @@ export default function AuthPage({
     return <Loading />;
   }
 
-  const status = userCancelled ? 'warning' : 'error';
-  const labelText = userCancelled ? 'Cancelled' : 'Error';
-
   if (authError) {
     return (
       <div className="container flex justify-center p-4">
         <div className="w-[600px]">
-          <Alert status={status} labelText={labelText}>
+          <Alert status="error" labelText="Error">
             <div className="flex flex-col gap-3">
               <Text>{authError}</Text>
               <CustomLink href="/">Go to home page</CustomLink>
