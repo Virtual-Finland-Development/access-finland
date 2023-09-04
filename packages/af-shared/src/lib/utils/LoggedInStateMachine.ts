@@ -5,7 +5,7 @@ import { LOCAL_STORAGE_AUTH_KEY, LOCAL_STORAGE_CSRF_KEY } from '../constants';
 import { JSONLocalStorage } from './JSONStorage';
 
 export class LoggedInStateMachine {
-  inMemoryLoggedInState: LoggedInState;
+  inMemoryLoggedInState: LoggedInState | undefined | null;
 
   async getLoggedInState(): Promise<LoggedInState | null> {
     if (isExportedApplication()) {

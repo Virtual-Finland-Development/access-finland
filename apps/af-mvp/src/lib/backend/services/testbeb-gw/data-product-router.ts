@@ -10,7 +10,7 @@ const DataProductRouter = {
     req: NextApiRequest,
     res: NextApiResponse
   ) {
-    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
     const requestBody = this.parseDataProductRequestBody(dataProduct, req);
 

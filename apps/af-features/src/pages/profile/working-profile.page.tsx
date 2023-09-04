@@ -44,7 +44,7 @@ export default function WorkingProfilePage() {
             </Page.Block>
             <Page.Block className="bg-white">
               {errorCode && errorCode !== 404 ? (
-                <ProfileErrors errorMessages={[errorMsg]} />
+                <ProfileErrors errorMessages={[errorMsg!]} />
               ) : (
                 <WorkingProfileForm
                   jobApplicationProfile={jobApplicationProfile}

@@ -8,7 +8,7 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
 
   try {
     // Dummy check the token decodes
-    jwt.decode(loggedInState.idToken);
+    jwt.decode(loggedInState.idToken!);
   } catch (error) {
     console.error(error);
     throw new Error('Invalid idToken');

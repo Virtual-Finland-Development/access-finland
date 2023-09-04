@@ -10,7 +10,7 @@ const UsersApiRouter = {
       res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
 
     try {
       await axios.delete(`${USERS_API_BASE_URL}/user`, {

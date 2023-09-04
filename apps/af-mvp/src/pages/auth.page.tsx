@@ -14,10 +14,10 @@ import Loading from '@shared/components/ui/loading';
 export const getServerSideProps: GetServerSideProps<{
   csrfToken: string | null;
 }> = async ({ req, res }) => {
-  let csrfToken = null;
+  let csrfToken: string | null = null;
 
   if (req.cookies.csrfToken) {
-    // Pop the auth token from the cookie
+    // Pop (retrieve and clear) the auth token from the cookie
     csrfToken = req.cookies.csrfToken;
     res.setHeader(
       'Set-Cookie',
@@ -37,9 +37,17 @@ export default function AuthPage({
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
+  const { error } = router.query;
+  const userCancelled = error && error === 'cancelled';
 
   const routerActions = useCallback(async () => {
     setLoading(true);
+
+    if (userCancelled) {
+      // Login was cancelled
+      window.location.assign('/'); // Redirect to the app root
+      return;
+    }
 
     if (csrfToken) {
       LoginState.setCsrfToken(csrfToken); // "Logs in" by storing the CSRF key
@@ -51,7 +59,7 @@ export default function AuthPage({
     // Login was a no-show
     setLoading(false);
     setAuthError('Authentication failed.');
-  }, [csrfToken]);
+  }, [csrfToken, userCancelled]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -65,13 +73,15 @@ export default function AuthPage({
 
   if (authError) {
     return (
-      <div className="min-w-xl max-w-xl">
-        <Alert status="error" labelText="Error">
-          <div className="flex flex-col gap-3">
-            <Text>{authError}</Text>
-            <CustomLink href="/">Go to home page</CustomLink>
-          </div>
-        </Alert>
+      <div className="container flex justify-center p-4">
+        <div className="w-[600px]">
+          <Alert status="error" labelText="Error">
+            <div className="flex flex-col gap-3">
+              <Text>{authError}</Text>
+              <CustomLink href="/">Go to home page</CustomLink>
+            </div>
+          </Alert>
+        </div>
       </div>
     );
   }

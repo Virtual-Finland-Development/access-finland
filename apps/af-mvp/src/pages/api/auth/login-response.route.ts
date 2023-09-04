@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { resolveIdTokenExpiresAt } from '@mvp/lib/backend/api-utils';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
@@ -7,25 +6,31 @@ import {
   retrieveUserInfoWithAccessToken,
 } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
-import { object, parse, string } from 'valibot';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Output, object, safeParse, string } from 'valibot';
 
-const LoginResponseSchema = object({
+const GoodLoginResponseSchema = object({
   code: string(),
   state: string(),
 });
 
-export default loggedOutAuthMiddleware(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  //
-  // Parse input
-  //
-  const queryParams = parse(LoginResponseSchema, req.query);
+const BadLoginResponseSchema = object({
+  error: string(),
+  error_description: string(),
+});
 
-  //
-  // Handle login response
-  //
+const returnBackUri = '/auth'; // Static frontend auth callback handler uri
+
+/**
+ * Handle a good login response.
+ * 
+ * @param queryParams 
+ * @param req 
+ * @param res 
+ */
+async function handleGoodLoginResponse(queryParams: Output<typeof GoodLoginResponseSchema>, 
+  req: NextApiRequest,
+  res: NextApiResponse) {
   // Get the token
   const tokens = await retrieveSinunaTokensWithLoginCode(req, queryParams.code);
   // Get user info
@@ -37,7 +42,9 @@ export default loggedOutAuthMiddleware(async function handler(
     profileData: userInfo,
   });
 
-  const returnBackUrl = '/auth'; // Static frontends auth handler url
+  //
+  // Setup the login session and redirect to the frontend
+  //
   res
     .setHeader('Set-Cookie', [
       cookie.serialize('apiAuthPackage', apiAuthPackage.encrypted, {
@@ -61,5 +68,51 @@ export default loggedOutAuthMiddleware(async function handler(
         expires: new Date(),
       }),
     ])
-    .redirect(303, returnBackUrl);
+    .redirect(303, returnBackUri);
+}
+
+/**
+ * Handle the bad login response.
+ * 
+ * @param queryParams 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+function handleBadLoginResponse(queryParams: Output<typeof BadLoginResponseSchema>, 
+  req: NextApiRequest,
+  res: NextApiResponse) {
+  
+  //
+  // Redirect to the frontend with the error
+  //
+  return res.setHeader('Set-Cookie', [
+    cookie.serialize('sinunaCsrf', '', {
+        // Clear the sinunaCsrf cookie
+        path: '/api',
+        httpOnly: true,
+        sameSite: 'lax',
+        expires: new Date(),
+      }),
+    ])
+    .redirect(303, `${returnBackUri}?error=${queryParams.error}&error_description=${queryParams.error_description}`);
+}
+
+export default loggedOutAuthMiddleware(async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  
+  // Parse the query params
+  const goodEvent = safeParse(GoodLoginResponseSchema, req.query);
+  if (goodEvent.success) {
+    return await handleGoodLoginResponse(goodEvent.data, req, res);
+  }
+
+  const badEvent = safeParse(BadLoginResponseSchema, req.query);
+  if (badEvent.success) {
+    return handleBadLoginResponse(badEvent.data, req, res);
+  }
+
+  throw new Error('Invalid login response.');
 });

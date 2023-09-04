@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router';
 import { Button, IconBook, IconUserProfile, Text } from 'suomifi-ui-components';
+import { useAuth } from '@shared/context/auth-context';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 
 export default function HomePage() {
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   return (
@@ -41,11 +43,13 @@ export default function HomePage() {
 
       <Page.Block className="bg-suomifi-blue-bg-light">
         <CustomHeading variant="h2" suomiFiBlue="dark">
-          Start by creating your profile
+          {isAuthenticated
+            ? 'Manage your profile'
+            : 'Start by creating your profile'}
         </CustomHeading>
         <div className="py-4">
           <Button onClick={() => router.push('/profile')}>
-            Create profile
+            {isAuthenticated ? 'Go to profile' : 'Create profile'}
           </Button>
         </div>
       </Page.Block>

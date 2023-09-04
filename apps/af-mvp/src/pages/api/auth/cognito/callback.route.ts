@@ -60,21 +60,26 @@ export default async function handler(
 
     // AWS Cognito verifier that expects valid access tokens
     const verifier = CognitoJwtVerifier.create({
-      userPoolId: userPoolId,
+      userPoolId: userPoolId!,
       tokenUse: 'id',
-      clientId: userPoolClientId,
+      clientId: userPoolClientId!,
     });
+
     const payload = await verifier.verify(cognitoLoginResponse.id_token);
 
     // Success, redirect to the root page with the shared cookie
     res
       .setHeader('Set-Cookie', [
-        cookie.serialize('cognito-identity.amazonaws.com', sharedCookieSecret, {
-          path: '/',
-          httpOnly: true,
-          sameSite: 'lax',
-          expires: new Date(payload.exp * 1000),
-        }),
+        cookie.serialize(
+          'cognito-identity.amazonaws.com',
+          sharedCookieSecret!,
+          {
+            path: '/',
+            httpOnly: true,
+            sameSite: 'lax',
+            expires: new Date(payload.exp * 1000),
+          }
+        ),
       ])
       .redirect(303, '/');
   } catch (error) {
