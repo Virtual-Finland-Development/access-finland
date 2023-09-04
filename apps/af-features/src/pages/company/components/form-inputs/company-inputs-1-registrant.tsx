@@ -66,7 +66,6 @@ export default function CompanyRegistrant() {
         rules={{ required: 'Phone number is required.' }}
         labelText="Phone number"
         hintText="Use international format (+358xxx)"
-        error={formState.errors?.company?.registrant?.phoneNumber}
         readOnly
       />
     </div>

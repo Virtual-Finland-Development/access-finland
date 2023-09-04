@@ -128,7 +128,7 @@ export const findNace = (
 };
 
 export function isExportedApplication() {
-  return process.env.NEXT_PUBLIC_IS_EXPORT || false;
+  return Boolean(process.env.NEXT_PUBLIC_IS_EXPORT);
 }
 
 /**

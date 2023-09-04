@@ -1,7 +1,7 @@
 import { ReactNode, forwardRef } from 'react';
 import {
   Control,
-  FieldError,
+  Controller,
   FieldValues,
   Path,
   RegisterOptions,
@@ -20,7 +20,6 @@ interface Props<T extends FieldValues> extends PhoneInputControllerProps<T> {
   labelText: ReactNode;
   hintText?: string;
   optionalText?: string;
-  error?: FieldError | undefined;
   readOnly?: boolean;
   showStatusText?: boolean;
 }
@@ -49,7 +48,6 @@ export default function FormPhoneInput<T extends FieldValues>(props: Props<T>) {
     rules,
     labelText,
     hintText,
-    error,
     readOnly = false,
     showStatusText = true,
   } = props;
@@ -61,16 +59,22 @@ export default function FormPhoneInput<T extends FieldValues>(props: Props<T>) {
   };
 
   return (
-    <PhoneInput
+    <Controller
       name={name}
       control={control}
-      rules={{ validate: phoneFieldValidation, ...rules }}
-      inputComponent={PhoneInputComponent}
-      labelText={labelText}
-      hintText={hintText}
-      status={error ? 'error' : 'default'}
-      statusText={showStatusText && error ? error.message : ''}
-      readOnly={readOnly}
+      rules={{ ...rules, validate: phoneFieldValidation }}
+      render={({ fieldState: { error } }) => (
+        <PhoneInput
+          name={name}
+          control={control}
+          inputComponent={PhoneInputComponent}
+          labelText={labelText}
+          hintText={hintText}
+          status={error ? 'error' : 'default'}
+          statusText={showStatusText && error ? error.message : ''}
+          readOnly={readOnly}
+        />
+      )}
     />
   );
 }
