@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
 import { NextApiRequest } from 'next';
+import jwt from 'jsonwebtoken';
 import { FRONTEND_ORIGIN_URI } from './api-constants';
 
 /**
@@ -61,5 +61,5 @@ export function resolveFrontendOriginUrl(req: NextApiRequest, path?: string) {
  */
 export function resolveIdTokenExpiresAt(idToken: string): string {
   const decoded = jwt.decode(idToken) as jwt.JwtPayload;
-  return new Date(decoded.exp * 1000).toISOString(); // convert seconds to milliseconds and then to ISO string
+  return new Date(decoded.exp! * 1000).toISOString(); // convert seconds to milliseconds and then to ISO string
 }

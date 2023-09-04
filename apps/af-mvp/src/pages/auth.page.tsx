@@ -14,7 +14,7 @@ import Loading from '@shared/components/ui/loading';
 export const getServerSideProps: GetServerSideProps<{
   csrfToken: string | null;
 }> = async ({ req, res }) => {
-  let csrfToken = null;
+  let csrfToken: string | null = null;
 
   if (req.cookies.csrfToken) {
     // Pop (retrieve and clear) the auth token from the cookie
