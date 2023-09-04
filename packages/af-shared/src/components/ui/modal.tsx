@@ -41,7 +41,7 @@ export default function Modal(props: Props) {
     <SuomiFiModal
       // for unit tests not to fail when modal is included, resolve appElementId by using querySelector
       // will be undefined in tests, which is fine
-      appElementId={document.querySelector('#__next')?.id}
+      appElementId={document.querySelector('#__next')?.id as string}
       visible
       variant={width > 640 ? 'default' : 'smallScreen'}
       onEscKeyDown={() => closeOnEsc && closeModal()}

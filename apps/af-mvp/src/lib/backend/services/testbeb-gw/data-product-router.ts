@@ -1,6 +1,6 @@
-import { DataProductShemas, type DataProduct } from '@shared/types';
-import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
+import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 
 const DataProductRouter = {
@@ -10,7 +10,7 @@ const DataProductRouter = {
     req: NextApiRequest,
     res: NextApiResponse
   ) {
-    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+    const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
     const endpointUrl = this.getDataProductEndpoint(dataProduct, dataSource);
     const requestBody = this.parseDataProductRequestBody(dataProduct, req);
 
@@ -50,21 +50,21 @@ const DataProductRouter = {
   },
 
   getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
-
     const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
     const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
 
-    if (!gatewayEndpoint) throw new Error('Missing data product gateway endpoint');
+    if (!gatewayEndpoint)
+      throw new Error('Missing data product gateway endpoint');
     if (!dataSource) dataSource = defaultDataSource;
 
     return `${gatewayEndpoint}/${dataProduct}?source=${dataSource}`;
   },
 
-  parseDataProductRequestBody(dataProduct: DataProduct, req: NextApiRequest) { 
+  parseDataProductRequestBody(dataProduct: DataProduct, req: NextApiRequest) {
     if (req.body) {
       return DataProductShemas[dataProduct].parse(req.body);
     }
-    return '{}'
+    return '{}';
   },
 };
 

@@ -21,7 +21,7 @@ export async function extractPdfTextContent(data: any) {
   try {
     const pdf = await getDocument(data).promise;
 
-    const pages = [];
+    const pages: number[] = [];
 
     for (let i = 0; i < pdf.numPages; i++) {
       pages.push(i + 1);
