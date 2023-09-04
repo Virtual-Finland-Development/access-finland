@@ -9,12 +9,12 @@ import cookie from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Output, object, safeParse, string } from 'valibot';
 
-const LoginResponseSchema = object({
+const GoodLoginResponseSchema = object({
   code: string(),
   state: string(),
 });
 
-const FailedLoginResponseSchema = object({
+const BadLoginResponseSchema = object({
   error: string(),
   error_description: string(),
 });
@@ -28,7 +28,7 @@ const returnBackUri = '/auth'; // Static frontend auth callback handler uri
  * @param req 
  * @param res 
  */
-async function handleGoodLoginResponse(queryParams: Output<typeof LoginResponseSchema>, 
+async function handleGoodLoginResponse(queryParams: Output<typeof GoodLoginResponseSchema>, 
   req: NextApiRequest,
   res: NextApiResponse) {
   // Get the token
@@ -71,23 +71,47 @@ async function handleGoodLoginResponse(queryParams: Output<typeof LoginResponseS
     .redirect(303, returnBackUri);
 }
 
+/**
+ * Handle the bad login response.
+ * 
+ * @param queryParams 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+function handleBadLoginResponse(queryParams: Output<typeof BadLoginResponseSchema>, 
+  req: NextApiRequest,
+  res: NextApiResponse) {
+  
+  //
+  // Redirect to the frontend with the error
+  //
+  return res.setHeader('Set-Cookie', [
+    cookie.serialize('sinunaCsrf', '', {
+        // Clear the sinunaCsrf cookie
+        path: '/api',
+        httpOnly: true,
+        sameSite: 'lax',
+        expires: new Date(),
+      }),
+    ])
+    .redirect(303, `${returnBackUri}?error=${queryParams.error}&error_description=${queryParams.error_description}`);
+}
+
 export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   
   // Parse the query params
-  const goodEvent = safeParse(LoginResponseSchema, req.query);
+  const goodEvent = safeParse(GoodLoginResponseSchema, req.query);
   if (goodEvent.success) {
     return await handleGoodLoginResponse(goodEvent.data, req, res);
   }
 
-  const badEvent = safeParse(FailedLoginResponseSchema, req.query);
+  const badEvent = safeParse(BadLoginResponseSchema, req.query);
   if (badEvent.success) {
-    //
-    // Redirect to the frontend with the error
-    //
-    return res.redirect(303, `${returnBackUri}?error=${badEvent.data.error}&error_description=${badEvent.data.error_description}`);
+    return handleBadLoginResponse(badEvent.data, req, res);
   }
 
   throw new Error('Invalid login response.');
