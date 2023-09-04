@@ -7,6 +7,7 @@ import api from '@/lib/api';
 import { useCountries } from '@/lib/hooks/codesets';
 import { BASIC_INFO_QUERY_KEYS } from '@/lib/hooks/profile';
 import { pickRandomName } from '@/lib/utils';
+import { isExportedApplication } from '@/lib/utils';
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/context/toast-context';
 import FormInput from '@/components/form/form-input';
@@ -18,6 +19,16 @@ import Loading from '@/components/ui/loading';
 interface Props {
   personBasicInformation: PersonBasicInformation | undefined;
 }
+
+const isExportedApp = isExportedApplication();
+
+const DEFAULT_VALUES: PersonBasicInformation = {
+  givenName: isExportedApp ? pickRandomName('firstName') : '',
+  lastName: isExportedApp ? pickRandomName('lastName') : '',
+  email: '',
+  phoneNumber: isExportedApp ? '+1 231 231 2312' : '',
+  residency: '',
+};
 
 export default function PersonalProfileForm(props: Props) {
   const { personBasicInformation } = props;
@@ -36,16 +47,12 @@ export default function PersonalProfileForm(props: Props) {
       ? {
           ...personBasicInformation,
           email: personBasicInformation.email || userEmail!,
-          phoneNumber: personBasicInformation.phoneNumber || '+1 231 231 2312',
+          phoneNumber:
+            personBasicInformation.phoneNumber || DEFAULT_VALUES.phoneNumber,
         }
-      : {
-          givenName: pickRandomName('firstName'),
-          lastName: pickRandomName('lastName'),
-          email: userEmail!,
-          phoneNumber: '+1 231 231 2312',
-          residency: '',
-        },
+      : { ...DEFAULT_VALUES, email: userEmail! },
   });
+
   const onSubmit: SubmitHandler<PersonBasicInformation> = async values => {
     try {
       if (Object.keys(dirtyFields).length) {
@@ -83,14 +90,14 @@ export default function PersonalProfileForm(props: Props) {
             labelText="Given name"
             control={control}
             rules={{ required: 'Given name is required.' }}
-            readOnly
+            readOnly={isExportedApp}
           />
           <FormInput
             name={`lastName`}
             labelText="Last name"
             control={control}
             rules={{ required: 'Last name is required.' }}
-            readOnly
+            readOnly={isExportedApp}
           />
           <FormInput
             type="email"
@@ -98,7 +105,7 @@ export default function PersonalProfileForm(props: Props) {
             labelText="Email"
             control={control}
             rules={{ required: 'Email is required.' }}
-            readOnly
+            readOnly={isExportedApp}
           />
         </div>
         <div className="flex flex-col gap-4 items-start">
@@ -108,7 +115,7 @@ export default function PersonalProfileForm(props: Props) {
             rules={{ required: 'Phone number is required.' }}
             labelText="Phone number"
             hintText="Use international format (+358xxx)"
-            readOnly
+            readOnly={isExportedApp}
           />
           <FormSingleSelect
             name={`residency`}
@@ -136,7 +143,10 @@ export default function PersonalProfileForm(props: Props) {
         >
           Back
         </Button>
-        <Button type="submit" disabled={Object.keys(dirtyFields).length < 1}>
+        <Button
+          type="submit"
+          disabled={Object.keys(dirtyFields).length < 1 || isSubmitting}
+        >
           Save
         </Button>
         {personBasicInformation && (

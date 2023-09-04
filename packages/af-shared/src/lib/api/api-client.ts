@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { isPast, parseISO } from 'date-fns';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
+import { getValidAuthState } from '../utils/auth';
 import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from './endpoints';
 import { LoginState } from './services/auth';
 
@@ -51,13 +51,15 @@ apiClient.interceptors.request.use(async config => {
   return config;
 });
 
+// set global flag to avoid multiple alerts popping up
+// this will be reset when the user logs in again (auth redirect)
+let tokenExpirationAlertDisplayed = false;
+
 apiClient.interceptors.response.use(
   response => response,
   async error => {
-    const storedAuthState = await LoginState.getLoggedInState();
-    const hasExpired = storedAuthState?.expiresAt
-      ? isPast(parseISO(storedAuthState.expiresAt))
-      : false;
+    // either no token, or it has expired
+    const hasExpired = !(await getValidAuthState()).isValid;
 
     if (
       error.config?.url &&
@@ -65,7 +67,12 @@ apiClient.interceptors.response.use(
         isProtectedNextJsEndpoint(error.config.url)) &&
       hasExpired
     ) {
-      window.postMessage(REQUEST_NOT_AUTHORIZED);
+      if (!tokenExpirationAlertDisplayed) {
+        tokenExpirationAlertDisplayed = true;
+        window.postMessage(REQUEST_NOT_AUTHORIZED);
+      }
+
+      // essentially, silence the error for token expiration cases for UI
       return new Promise(() => {});
     }
 

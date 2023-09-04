@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { resolveIdTokenExpiresAt } from '@mvp/lib/backend/api-utils';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
@@ -6,7 +7,6 @@ import {
   retrieveUserInfoWithAccessToken,
 } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { object, parse, string } from 'valibot';
 
 const LoginResponseSchema = object({
