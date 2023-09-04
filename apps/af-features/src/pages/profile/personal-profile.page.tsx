@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { IconUserProfile } from 'suomifi-ui-components';
 import { Text } from 'suomifi-ui-components';
 import { usePersonBasicInfo } from '@shared/lib/hooks/profile';
@@ -10,7 +9,6 @@ import Loading from '@shared/components/ui/loading';
 
 export default function PersonalProfilePage() {
   const { data: personBasicInformation, isLoading } = usePersonBasicInfo();
-  const router = useRouter();
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -39,7 +37,6 @@ export default function PersonalProfilePage() {
             <Page.Block className="bg-white">
               <PersonalProfileForm
                 personBasicInformation={personBasicInformation}
-                onSubmitSuccess={() => router.push('/profile/working-profile')}
               />
             </Page.Block>
           </>
