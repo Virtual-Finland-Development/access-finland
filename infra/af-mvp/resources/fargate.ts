@@ -77,7 +77,7 @@ export function createFargateService(
           image: image.imageUri,
           portMappings: [
             {
-              targetGroup: loadBalancerSetup.appLoadBalancer.defaultTargetGroup,
+              targetGroup: loadBalancerSetup.targetGroup,
             },
           ],
           environment: [
