@@ -13,14 +13,16 @@ export default function ProfileAuthenticated() {
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
-    errorCode: personBasicInfoErrorCode,
-    errorMsg: personBasicInfoErrorMsg,
+    /* errorCode: personBasicInfoErrorCode,
+    errorMsg: personBasicInfoErrorMsg, */
+    errorResponse: personBasicInfoErrorResponse,
   } = usePersonBasicInfo();
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
-    errorCode: jobApplicationProfileErrorCode,
-    errorMsg: jobApplicationProfileErrorMsg,
+    /* errorCode: jobApplicationProfileErrorCode,
+    errorMsg: jobApplicationProfileErrorMsg, */
+    errorResponse: jobApplicationProfileErrorResponse,
   } = useJobApplicantProfile();
 
   const isLoading = basicInformationLoading || jobApplicationProfileLoading;
@@ -51,14 +53,15 @@ export default function ProfileAuthenticated() {
             </Text>
 
             {/* If either of the profile requests fail (not 404), display errors instead of profile details */}
-            {[personBasicInfoErrorCode, jobApplicationProfileErrorCode].some(
-              code => code && code !== 404
-            ) ? (
+            {[
+              personBasicInfoErrorResponse,
+              jobApplicationProfileErrorResponse,
+            ].some(response => response?.shouldPrintError) ? (
               <ProfileErrors
                 errorMessages={
                   [
-                    personBasicInfoErrorMsg,
-                    jobApplicationProfileErrorMsg,
+                    personBasicInfoErrorResponse?.message,
+                    jobApplicationProfileErrorResponse?.message,
                   ].filter(msg => msg) as string[]
                 }
               />

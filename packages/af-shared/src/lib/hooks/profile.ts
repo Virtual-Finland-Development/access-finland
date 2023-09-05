@@ -11,6 +11,28 @@ const QUERY_OPTIONS = {
   retry: false,
 };
 
+function formatErrorResponse(
+  error: AxiosError | undefined,
+  messagePrefix: string
+) {
+  const errorResponse = error?.response;
+
+  if (!errorResponse || !errorResponse.data) {
+    return undefined;
+  }
+
+  const statusCode = errorResponse.status;
+  const message = `${messagePrefix}: ${
+    errorResponse.statusText || 'something went wrong'
+  }`;
+
+  return {
+    statusCode,
+    message,
+    shouldPrintError: statusCode !== 404,
+  };
+}
+
 /**
  * Get person basic information.
  */
@@ -29,16 +51,14 @@ function usePersonBasicInfo(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = (query.error as AxiosError)?.response;
-  const errorCode = errorResponse?.status || undefined;
-  const errorMsg = errorResponse?.statusText
-    ? `Person basic information: ${errorResponse.statusText}`
-    : undefined;
+  const errorResponse = formatErrorResponse(
+    query.error as AxiosError,
+    'Person basic information'
+  );
 
   return {
     ...query,
-    errorCode,
-    errorMsg,
+    errorResponse,
   };
 }
 
@@ -60,16 +80,14 @@ function useJobApplicantProfile(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = (query.error as AxiosError)?.response;
-  const errorCode = errorResponse?.status || undefined;
-  const errorMsg = errorResponse?.statusText
-    ? `Job applicant profile: ${errorResponse.statusText}`
-    : undefined;
+  const errorResponse = formatErrorResponse(
+    query.error as AxiosError,
+    'Job applicant profile'
+  );
 
   return {
     ...query,
-    errorCode,
-    errorMsg,
+    errorResponse,
   };
 }
 

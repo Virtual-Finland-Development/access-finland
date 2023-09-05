@@ -14,8 +14,7 @@ export default function WorkingProfilePage() {
   const {
     data: jobApplicationProfile,
     isLoading,
-    errorCode,
-    errorMsg,
+    errorResponse,
   } = useJobApplicantProfile(isAuthenticated);
 
   return (
@@ -43,8 +42,8 @@ export default function WorkingProfilePage() {
               </div>
             </Page.Block>
             <Page.Block className="bg-white">
-              {errorCode && errorCode !== 404 ? (
-                <ProfileErrors errorMessages={[errorMsg!]} />
+              {errorResponse?.shouldPrintError ? (
+                <ProfileErrors errorMessages={[errorResponse.message]} />
               ) : (
                 <WorkingProfileForm
                   jobApplicationProfile={jobApplicationProfile}

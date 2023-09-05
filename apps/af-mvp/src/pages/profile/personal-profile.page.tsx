@@ -14,8 +14,7 @@ export default function PersonalProfilePage() {
   const {
     data: personBasicInformation,
     isLoading,
-    errorCode,
-    errorMsg,
+    errorResponse,
   } = usePersonBasicInfo(isAuthenticated);
 
   return (
@@ -43,8 +42,8 @@ export default function PersonalProfilePage() {
               </div>
             </Page.Block>
             <Page.Block className="bg-white">
-              {errorCode && errorCode !== 404 ? (
-                <ProfileErrors errorMessages={[errorMsg!]} />
+              {errorResponse?.shouldPrintError ? (
+                <ProfileErrors errorMessages={[errorResponse.message]} />
               ) : (
                 <PersonalProfileForm
                   personBasicInformation={personBasicInformation}
