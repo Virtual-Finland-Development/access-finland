@@ -43,6 +43,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
       children,
       onClick,
       isExternal,
+      target = '_self',
     },
     ref
   ) => {
@@ -64,6 +65,7 @@ const CustomLink = forwardRef<HTMLAnchorElement, CustomLinkProps>(
           disableVisited={disableVisited}
           onClick={onClick}
           isExternal={isExternal}
+          target={target}
         >
           {children}
         </StyledLink>

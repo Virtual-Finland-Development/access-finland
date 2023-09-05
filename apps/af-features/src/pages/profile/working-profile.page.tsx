@@ -4,7 +4,7 @@ import { useJobApplicantProfile } from '@shared/lib/hooks/profile';
 import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
-import ProfileErrors from '@shared/components/pages/profile/profile-errors/profile-errors';
+import ProfileErrors from '@shared/components/pages/profile/profile-errors';
 import WorkingProfileForm from '@shared/components/pages/profile/working-profile-form';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';

@@ -5,7 +5,7 @@ import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
-import ProfileErrors from '@shared/components/pages/profile/profile-errors/profile-errors';
+import ProfileErrors from '@shared/components/pages/profile/profile-errors';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 

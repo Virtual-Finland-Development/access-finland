@@ -1,12 +1,26 @@
 import {
   Output,
   array,
+  boolean,
   nativeEnum,
   nullable,
   number,
   object,
   string,
 } from 'valibot';
+
+/**
+ * Profile TOS Agreement
+ */
+export const ProfileTosAgreementSchema = object({
+  termsOfServiceUrl: string(),
+  description: string(),
+  version: string(),
+  accepted: boolean(),
+  acceptedAt: string(),
+  acceptedPreviousVersion: boolean(),
+});
+export type ProfileTosAgreement = Output<typeof ProfileTosAgreementSchema>;
 
 /**
  * Person/BasicInformation
