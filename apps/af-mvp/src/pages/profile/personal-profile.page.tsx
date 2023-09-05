@@ -5,13 +5,17 @@ import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
+import ProfileErrors from '@shared/components/pages/profile/profile-errors/profile-errors';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 
 export default function PersonalProfilePage() {
   const { isAuthenticated } = useAuth();
-  const { data: personBasicInformation, isLoading } =
-    usePersonBasicInfo(isAuthenticated);
+  const {
+    data: personBasicInformation,
+    isLoading,
+    errorResponse,
+  } = usePersonBasicInfo(isAuthenticated);
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -38,9 +42,13 @@ export default function PersonalProfilePage() {
               </div>
             </Page.Block>
             <Page.Block className="bg-white">
-              <PersonalProfileForm
-                personBasicInformation={personBasicInformation}
-              />
+              {errorResponse?.shouldPrintError ? (
+                <ProfileErrors errorMessages={[errorResponse.message]} />
+              ) : (
+                <PersonalProfileForm
+                  personBasicInformation={personBasicInformation}
+                />
+              )}
             </Page.Block>
           </>
         )}

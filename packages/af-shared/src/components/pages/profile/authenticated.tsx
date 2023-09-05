@@ -7,13 +7,18 @@ import Page from '@/components/layout/page';
 import CustomHeading from '@/components/ui/custom-heading';
 import Loading from '@/components/ui/loading';
 import ProfileDetails from './profile-details/profile-details';
+import ProfileErrors from './profile-errors/profile-errors';
 
 export default function ProfileAuthenticated() {
-  const { data: personBasicInformation, isLoading: basicInformationLoading } =
-    usePersonBasicInfo();
+  const {
+    data: personBasicInformation,
+    isLoading: basicInformationLoading,
+    errorResponse: personBasicInfoErrorResponse,
+  } = usePersonBasicInfo();
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
+    errorResponse: jobApplicationProfileErrorResponse,
   } = useJobApplicantProfile();
 
   const isLoading = basicInformationLoading || jobApplicationProfileLoading;
@@ -43,10 +48,25 @@ export default function ProfileAuthenticated() {
               deserunt mollit anim id est laborum.
             </Text>
 
-            <ProfileDetails
-              personBasicInformation={personBasicInformation}
-              jobApplicationProfile={jobApplicationProfile}
-            />
+            {/* If either of the profile requests fail (not 404), display errors instead of profile details */}
+            {[
+              personBasicInfoErrorResponse,
+              jobApplicationProfileErrorResponse,
+            ].some(response => response?.shouldPrintError) ? (
+              <ProfileErrors
+                errorMessages={
+                  [
+                    personBasicInfoErrorResponse?.message,
+                    jobApplicationProfileErrorResponse?.message,
+                  ].filter(msg => msg) as string[]
+                }
+              />
+            ) : (
+              <ProfileDetails
+                personBasicInformation={personBasicInformation}
+                jobApplicationProfile={jobApplicationProfile}
+              />
+            )}
           </div>
         </Page.Block>
       )}

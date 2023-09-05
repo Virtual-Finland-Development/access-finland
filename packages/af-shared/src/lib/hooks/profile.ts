@@ -11,6 +11,29 @@ const QUERY_OPTIONS = {
   retry: false,
 };
 
+function formatErrorResponse(error: unknown, messagePrefix: string) {
+  if (!error || !(error instanceof AxiosError)) {
+    return undefined;
+  }
+
+  const errorResponse = error?.response;
+
+  if (!errorResponse) {
+    return undefined;
+  }
+
+  const statusCode = errorResponse.status;
+  const message = `${messagePrefix}: ${
+    errorResponse.statusText || 'something went wrong'
+  }`;
+
+  return {
+    statusCode,
+    message,
+    shouldPrintError: statusCode !== 404,
+  };
+}
+
 /**
  * Get person basic information.
  */
@@ -29,7 +52,15 @@ function usePersonBasicInfo(enabled: boolean = true) {
         : undefined,
   });
 
-  return query;
+  const errorResponse = formatErrorResponse(
+    query.error,
+    'Person basic information'
+  );
+
+  return {
+    ...query,
+    errorResponse,
+  };
 }
 
 /**
@@ -50,7 +81,15 @@ function useJobApplicantProfile(enabled: boolean = true) {
         : undefined,
   });
 
-  return query;
+  const errorResponse = formatErrorResponse(
+    query.error,
+    'Job applicant profile'
+  );
+
+  return {
+    ...query,
+    errorResponse,
+  };
 }
 
 export { usePersonBasicInfo, useJobApplicantProfile };
