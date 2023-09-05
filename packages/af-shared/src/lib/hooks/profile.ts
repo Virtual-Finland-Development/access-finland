@@ -125,7 +125,7 @@ function useJobApplicantProfile(enabled: boolean = true) {
     query.error,
     'Job applicant profile'
   );
-  console.log(query.fetchStatus);
+
   return {
     ...query,
     isLoading: query.isLoading && query.fetchStatus !== 'idle',
