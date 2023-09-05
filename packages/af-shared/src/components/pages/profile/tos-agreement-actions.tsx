@@ -127,7 +127,10 @@ export default function TosAgreementActions(props: Props) {
     }
   };
 
-  const onCancel = async () => await api.auth.directToAuthLogout();
+  const onCancel = async () => {
+    setIsLoading(true);
+    await api.auth.directToAuthLogout();
+  };
 
   return (
     <InlineAlert status={isNewUser ? 'neutral' : 'warning'}>
