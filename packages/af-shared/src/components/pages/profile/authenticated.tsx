@@ -13,15 +13,11 @@ export default function ProfileAuthenticated() {
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
-    /* errorCode: personBasicInfoErrorCode,
-    errorMsg: personBasicInfoErrorMsg, */
     errorResponse: personBasicInfoErrorResponse,
   } = usePersonBasicInfo();
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
-    /* errorCode: jobApplicationProfileErrorCode,
-    errorMsg: jobApplicationProfileErrorMsg, */
     errorResponse: jobApplicationProfileErrorResponse,
   } = useJobApplicantProfile();
 

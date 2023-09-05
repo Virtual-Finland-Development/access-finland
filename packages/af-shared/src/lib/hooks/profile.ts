@@ -11,13 +11,14 @@ const QUERY_OPTIONS = {
   retry: false,
 };
 
-function formatErrorResponse(
-  error: AxiosError | undefined,
-  messagePrefix: string
-) {
+function formatErrorResponse(error: unknown, messagePrefix: string) {
+  if (!error || !(error instanceof AxiosError)) {
+    return undefined;
+  }
+
   const errorResponse = error?.response;
 
-  if (!errorResponse || !errorResponse.data) {
+  if (!errorResponse) {
     return undefined;
   }
 
@@ -52,7 +53,7 @@ function usePersonBasicInfo(enabled: boolean = true) {
   });
 
   const errorResponse = formatErrorResponse(
-    query.error as AxiosError,
+    query.error,
     'Person basic information'
   );
 
@@ -81,7 +82,7 @@ function useJobApplicantProfile(enabled: boolean = true) {
   });
 
   const errorResponse = formatErrorResponse(
-    query.error as AxiosError,
+    query.error,
     'Job applicant profile'
   );
 
