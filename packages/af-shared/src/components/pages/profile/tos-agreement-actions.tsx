@@ -8,6 +8,7 @@ import { useToast } from '@/context/toast-context';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomLink from '@/components/ui/custom-link';
 import DangerButton from '@/components/ui/danger-button';
+import Loading from '@/components/ui/loading';
 import ProfileDeleteConfirmation from './profile-details/profile-delete-confirmation';
 
 interface AgreementProps {
@@ -41,13 +42,18 @@ function Agreement(props: AgreementProps) {
         our Privacy Policy. If you do not agree with these terms, please do not
         create an account on Access Finland.
       </Text>
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-row items-center gap-3">
         <Button onClick={onAccept} disabled={isLoading}>
           Accept
         </Button>
         <Button variant="secondary" onClick={onCancel} disabled={isLoading}>
           I don’t accept, sign out
         </Button>
+        {isLoading && (
+          <div className="mt-1 ml-1">
+            <Loading variant="small" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -88,13 +94,18 @@ function AgreementChange(props: AgreementChangeProps) {
         are able to delete your Access Finland profile and stop using the
         service.
       </Text>
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-row items-center gap-3">
         <Button onClick={onAccept} disabled={isLoading}>
           Accept
         </Button>
         <DangerButton onClick={onDelete} disabled={isLoading}>
           I don’t accept, delete my profile
         </DangerButton>
+        {isLoading && (
+          <div className="mt-1 ml-1">
+            <Loading variant="small" />
+          </div>
+        )}
       </div>
     </div>
   );
