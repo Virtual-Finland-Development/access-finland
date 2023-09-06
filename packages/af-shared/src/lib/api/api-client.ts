@@ -20,6 +20,8 @@ const PROTECTED_URLS = [
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
+  '/api/testbed-gw/test/lsipii/Service/Terms/Agreement',
+  '/api/testbed-gw/test/lsipii/Service/Terms/Agreement/Write',
   '/api/testbed-gw/draft/Person/BasicInformation',
   '/api/testbed-gw/draft/Person/BasicInformation/Write',
   '/api/testbed-gw/draft/Person/JobApplicantProfile',
