@@ -4,28 +4,35 @@ import {
   usePersonBasicInfo,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
+import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import CustomHeading from '@/components/ui/custom-heading';
 import Loading from '@/components/ui/loading';
 import ProfileDataSentry from './profile-data-sentry';
 import ProfileDetails from './profile-details/profile-details';
 
+const isExport = isExportedApplication();
+
 export default function ProfileAuthenticated() {
   const {
     data: agreement,
     isLoading: agreementLoading,
     errorResponse: agreementErrorResponse,
-  } = useProfileTosAgreement();
+  } = useProfileTosAgreement(!isExport); // enable TOS functionality for MVP only
+
+  // for MVP: data fetch enabled if user has accepted the agreement, for Featues OK
+  const shouldFetchProfileData = !!agreement?.accepted || isExport;
+
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
     errorResponse: personBasicInfoErrorResponse,
-  } = usePersonBasicInfo(!!agreement?.accepted);
+  } = usePersonBasicInfo(shouldFetchProfileData);
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
     errorResponse: jobApplicationProfileErrorResponse,
-  } = useJobApplicantProfile(!!agreement?.accepted);
+  } = useJobApplicantProfile(shouldFetchProfileData);
 
   const isLoading =
     agreementLoading || basicInformationLoading || jobApplicationProfileLoading;

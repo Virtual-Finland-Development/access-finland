@@ -4,6 +4,7 @@ import {
   usePersonBasicInfo,
   useProfileTosAgreement,
 } from '@shared/lib/hooks/profile';
+import { isExportedApplication } from '@shared/lib/utils';
 import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
@@ -12,18 +13,25 @@ import ProfileDataSentry from '@shared/components/pages/profile/profile-data-sen
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 
+const isExport = isExportedApplication();
+
 export default function PersonalProfilePage() {
   const { isAuthenticated } = useAuth();
   const {
     data: agreement,
     isLoading: agreementLoading,
     errorResponse: agreementErrorResponse,
-  } = useProfileTosAgreement(isAuthenticated);
+  } = useProfileTosAgreement(isAuthenticated && !isExport); // enable TOS functionality for MVP only
+
+  // for MVP: enabled if user has accepted the agreement, OK for Features if user is authenticated
+  const shouldFetchProfileData =
+    !!agreement?.accepted || (isExport && isAuthenticated);
+
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
     errorResponse: personBasicInfoErrorResponse,
-  } = usePersonBasicInfo(!!agreement?.accepted);
+  } = usePersonBasicInfo(shouldFetchProfileData);
 
   const isLoading = agreementLoading || basicInformationLoading;
 

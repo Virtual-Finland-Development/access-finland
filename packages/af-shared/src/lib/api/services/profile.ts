@@ -24,10 +24,6 @@ const DUMMY_TOS_AGREEMENT = {
 };
 
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  // for Featarues app, provide dummy data
-  if (isExport) {
-    return Promise.resolve(DUMMY_TOS_AGREEMENT);
-  }
   /* const { data } = await utilizeDataProduct(
     'test/lsipii/Service/Terms/Agreement'
   ); */
