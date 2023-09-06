@@ -31,7 +31,7 @@ function Agreement(props: AgreementProps) {
         throughout your usage of our services.
       </Text>
       <Text>
-        <CustomLink href="/info/terms-of-use" target="_blank" disableVisited>
+        <CustomLink href="/terms-of-use" target="_blank" disableVisited>
           Access Finland Terms of Use
         </CustomLink>
       </Text>
@@ -83,7 +83,7 @@ function AgreementChange(props: AgreementChangeProps) {
         platform. By continuing to use our services, you agree to abide by these
         updated terms.
       </Text>
-      <CustomLink href="/info/terms-of-use" target="_blank" disableVisited>
+      <CustomLink href="/terms-of-use" target="_blank" disableVisited>
         Updated Terms of Use
       </CustomLink>
       <Text>
