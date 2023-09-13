@@ -4,7 +4,6 @@ import {
   useJobApplicantProfile,
   useProfileTosAgreement,
 } from '@shared/lib/hooks/profile';
-import { isExportedApplication } from '@shared/lib/utils';
 import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
@@ -13,19 +12,15 @@ import WorkingProfileForm from '@shared/components/pages/profile/working-profile
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
 
-const isExport = isExportedApplication();
-
 export default function WorkingProfilePage() {
   const { isAuthenticated } = useAuth();
   const {
     data: agreement,
-    isLoading: agreementLoading,
+    isFetching: agreementFetching,
     errorResponse: agreementErrorResponse,
-  } = useProfileTosAgreement(isAuthenticated && !isExport); // enable TOS functionality for MVP only
+  } = useProfileTosAgreement(isAuthenticated);
 
-  // for MVP: enabled if user has accepted the agreement, OK for Features if user is authenticated
-  const shouldFetchProfileData =
-    !!agreement?.accepted || (isExport && isAuthenticated);
+  const shouldFetchProfileData = !agreementFetching && agreement?.accepted;
 
   const {
     data: jobApplicationProfile,
@@ -33,7 +28,7 @@ export default function WorkingProfilePage() {
     errorResponse: jobApplicationProfileErrorResponse,
   } = useJobApplicantProfile(shouldFetchProfileData);
 
-  const isLoading = agreementLoading || jobApplicationProfileLoading;
+  const isLoading = agreementFetching || jobApplicationProfileLoading;
 
   return (
     <AuthSentry redirectPath="/profile">

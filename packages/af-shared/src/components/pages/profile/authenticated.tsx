@@ -16,18 +16,20 @@ const isExport = isExportedApplication();
 export default function ProfileAuthenticated() {
   const {
     data: agreement,
-    isLoading: agreementLoading,
+    isFetching: agreementFetching,
     errorResponse: agreementErrorResponse,
   } = useProfileTosAgreement(!isExport); // enable TOS functionality for MVP only
 
   // for MVP: data fetch enabled if user has accepted the agreement, for Featues OK
-  const shouldFetchProfileData = !!agreement?.accepted || isExport;
+  const shouldFetchProfileData =
+    isExport || (!agreementFetching && agreement?.accepted);
 
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
     errorResponse: personBasicInfoErrorResponse,
   } = usePersonBasicInfo(shouldFetchProfileData);
+
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
@@ -35,7 +37,9 @@ export default function ProfileAuthenticated() {
   } = useJobApplicantProfile(shouldFetchProfileData);
 
   const isLoading =
-    agreementLoading || basicInformationLoading || jobApplicationProfileLoading;
+    agreementFetching ||
+    basicInformationLoading ||
+    jobApplicationProfileLoading;
 
   return (
     <Page.Block className="bg-white">
