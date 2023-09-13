@@ -21,7 +21,7 @@ export const handlers = [
     res(ctx.json(MOCK_USER_COMPANIES))
   ),
   // profile tos
-  rest.get(
+  rest.post(
     'http://localhost/api/testbed-gw/test/lsipii/Service/Terms/Agreement',
     (_, res, ctx) => res(ctx.json(MOCK_TOS_AGREEMENT))
   ),
