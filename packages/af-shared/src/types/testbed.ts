@@ -4,10 +4,10 @@ import {
 } from './profile';
 
 export const DataProductShemas = {
-  'draft/Person/BasicInformation': PersonBasicInformationSchema,
-  'draft/Person/BasicInformation/Write': PersonBasicInformationSchema,
-  'draft/Person/JobApplicantProfile': JobApplicantProfileSchema,
-  'draft/Person/JobApplicantProfile/Write': JobApplicantProfileSchema,
+  'Person/BasicInformation': PersonBasicInformationSchema,
+  'Person/BasicInformation/Write': PersonBasicInformationSchema,
+  'Person/JobApplicantProfile': JobApplicantProfileSchema,
+  'Person/JobApplicantProfile/Write': JobApplicantProfileSchema,
 };
 
 export type DataProduct = keyof typeof DataProductShemas;
