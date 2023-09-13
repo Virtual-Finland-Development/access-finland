@@ -2,7 +2,10 @@ import { Fragment, ReactNode, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, InlineAlert, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
-import { PROFILE_TOS_AGREEMENT_QUERY_KEYS } from '@/lib/hooks/profile';
+import {
+  PROFILE_TOS_AGREEMENT_QUERY_KEYS,
+  useProfileTosAgreement,
+} from '@/lib/hooks/profile';
 import { useModal } from '@/context/modal-context';
 import { useToast } from '@/context/toast-context';
 import CustomHeading from '@/components/ui/custom-heading';
@@ -54,21 +57,26 @@ function AgreementContent(props: AgreementProps) {
 }
 
 interface Props {
-  isNewUser: boolean;
+  agreement: ReturnType<typeof useProfileTosAgreement>['data'];
 }
 
 export default function TosAgreementActions(props: Props) {
-  const { isNewUser } = props;
+  const { agreement } = props;
   const reactQueryClient = useQueryClient();
   const toast = useToast();
   const { openModal, closeModal } = useModal();
   const [isLoading, setIsLoading] = useState(false);
 
+  const isNewUser = !agreement?.acceptedPreviousVersion;
+
   const onAccept = async () => {
     setIsLoading(true);
 
     try {
-      const response = await api.profile.saveProfileTosAgreement();
+      const response = await api.profile.saveProfileTosAgreement({
+        version: agreement?.version!,
+        accepted: true,
+      });
       reactQueryClient.setQueryData(PROFILE_TOS_AGREEMENT_QUERY_KEYS, response);
     } catch (error) {
       toast({

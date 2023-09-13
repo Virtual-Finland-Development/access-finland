@@ -22,6 +22,11 @@ export const ProfileTosAgreementSchema = object({
 });
 export type ProfileTosAgreement = Output<typeof ProfileTosAgreementSchema>;
 
+export const ProfileTosAgreementWriteSchema = object({
+  version: string(),
+  accepted: boolean(),
+});
+
 /**
  * Person/BasicInformation
  */

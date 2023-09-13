@@ -27,9 +27,7 @@ export default function ProfileDataSentry(props: Props) {
       ) : (
         <Fragment>
           {agreement && !agreement.accepted ? (
-            <TosAgreementActions
-              isNewUser={!agreement.acceptedPreviousVersion}
-            />
+            <TosAgreementActions agreement={agreement} />
           ) : (
             <Fragment>{children}</Fragment>
           )}

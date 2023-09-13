@@ -14,45 +14,21 @@ import { utilizeDataProduct } from './testbed-gw';
  */
 const isExport = isExportedApplication();
 
-const DUMMY_TOS_AGREEMENT = {
-  termsOfServiceUrl: '',
-  description: '',
-  version: '',
-  accepted: false,
-  acceptedAt: '',
-  acceptedPreviousVersion: false,
-};
-
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  /* const { data } = await utilizeDataProduct(
+  const { data } = await utilizeDataProduct(
     'test/lsipii/Service/Terms/Agreement'
-  ); */
-  const savedAgreement = localStorage.getItem('profileTosAgreement');
-  const data = savedAgreement
-    ? JSON.parse(savedAgreement)
-    : DUMMY_TOS_AGREEMENT;
-
-  return new Promise(resolve => {
-    setTimeout(() => resolve(data), 2000);
-  });
+  );
+  return data;
 }
 
-export async function saveProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  /* const { data } = await utilizeDataProduct(
-    'test/lsipii/Service/Terms/Agreement/Write'
-  ); */
-
-  const agreement = {
-    ...DUMMY_TOS_AGREEMENT,
-    accepted: true,
-    acceptedPreviousVersion: true,
-  };
-
-  localStorage.setItem('profileTosAgreement', JSON.stringify(agreement));
-
-  return new Promise(resolve => {
-    setTimeout(() => resolve(agreement), 2000);
-  });
+export async function saveProfileTosAgreement(
+  payload: Pick<ProfileTosAgreement, 'version' | 'accepted'>
+): Promise<ProfileTosAgreement> {
+  const { data } = await utilizeDataProduct(
+    'test/lsipii/Service/Terms/Agreement/Write',
+    payload
+  );
+  return data;
 }
 
 export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
