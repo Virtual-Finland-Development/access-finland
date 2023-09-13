@@ -36,7 +36,7 @@ export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`
       )
-    : utilizeDataProduct('draft/Person/BasicInformation');
+    : utilizeDataProduct('Person/BasicInformation');
 
   const { data } = await method;
   return data;
@@ -50,7 +50,7 @@ export async function savePersonBasicInfo(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
         payload
       )
-    : utilizeDataProduct('draft/Person/BasicInformation/Write', payload);
+    : utilizeDataProduct('Person/BasicInformation/Write', payload);
 
   const { data } = await method;
   return data;
@@ -61,7 +61,7 @@ export async function getJobApplicantProfile(): Promise<JobApplicantProfile> {
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`
       )
-    : utilizeDataProduct('draft/Person/JobApplicantProfile');
+    : utilizeDataProduct('Person/JobApplicantProfile');
 
   const { data } = await method;
   return data;
@@ -75,7 +75,7 @@ export async function saveJobApplicantProfile(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
         payload
       )
-    : utilizeDataProduct('draft/Person/JobApplicantProfile/Write', payload);
+    : utilizeDataProduct('Person/JobApplicantProfile/Write', payload);
 
   const { data } = await method;
   return data;

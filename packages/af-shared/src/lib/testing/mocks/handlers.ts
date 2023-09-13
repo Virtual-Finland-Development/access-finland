@@ -35,11 +35,11 @@ export const handlers = [
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
   ),
   rest.post(
-    'http://localhost/api/testbed-gw/draft/Person/BasicInformation',
+    'http://localhost/api/testbed-gw/Person/BasicInformation',
     (_, res, ctx) => res(ctx.json(MOCK_PERSON_BASIC_INFO))
   ),
   rest.post(
-    'http://localhost/api/testbed-gw/draft/Person/JobApplicantProfile',
+    'http://localhost/api/testbed-gw/Person/JobApplicantProfile',
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
   ),
   // codesets, add values as needed for tests
