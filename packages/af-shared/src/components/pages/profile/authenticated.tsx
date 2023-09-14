@@ -1,13 +1,13 @@
-import { Text } from 'suomifi-ui-components';
+import Page from '@/components/layout/page';
+import CustomHeading from '@/components/ui/custom-heading';
+import Loading from '@/components/ui/loading';
 import {
   useJobApplicantProfile,
   usePersonBasicInfo,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
 import { isExportedApplication } from '@/lib/utils';
-import Page from '@/components/layout/page';
-import CustomHeading from '@/components/ui/custom-heading';
-import Loading from '@/components/ui/loading';
+import { Text } from 'suomifi-ui-components';
 import ProfileDataSentry from './profile-data-sentry';
 import ProfileDetails from './profile-details/profile-details';
 
@@ -22,7 +22,7 @@ export default function ProfileAuthenticated() {
 
   // for MVP: data fetch enabled if user has accepted the agreement, for Featues OK
   const shouldFetchProfileData =
-    isExport || (!agreementFetching && agreement?.accepted);
+    isExport || (!agreementFetching && agreement?.hasAcceptedLatest);
 
   const {
     data: personBasicInformation,

@@ -6,6 +6,7 @@ import {
   nullable,
   number,
   object,
+  optional,
   string,
 } from 'valibot';
 
@@ -13,12 +14,14 @@ import {
  * Profile TOS Agreement
  */
 export const ProfileTosAgreementSchema = object({
-  termsOfServiceUrl: string(),
-  description: string(),
-  version: string(),
-  accepted: boolean(),
-  acceptedAt: string(),
-  acceptedPreviousVersion: boolean(),
+  currentTerms: object({
+    url: string(),
+    description: string(),
+    version: string(),
+  }),
+  acceptedVersion: optional(string()),
+  acceptedAt: optional(string()),
+  hasAcceptedLatest: boolean(),
 });
 export type ProfileTosAgreement = Output<typeof ProfileTosAgreementSchema>;
 

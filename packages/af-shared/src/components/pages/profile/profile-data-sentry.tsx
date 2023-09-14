@@ -1,8 +1,8 @@
-import { Fragment, ReactNode } from 'react';
 import {
   FormattedErrorResponse,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
+import { Fragment, ReactNode } from 'react';
 import ProfileErrors from './profile-errors';
 import TosAgreementActions from './tos-agreement-actions';
 
@@ -26,7 +26,7 @@ export default function ProfileDataSentry(props: Props) {
         />
       ) : (
         <Fragment>
-          {agreement && !agreement.accepted ? (
+          {agreement && !agreement.hasAcceptedLatest ? (
             <TosAgreementActions agreement={agreement} />
           ) : (
             <Fragment>{children}</Fragment>

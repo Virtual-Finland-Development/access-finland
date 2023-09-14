@@ -1,16 +1,15 @@
-import { IconUserBadge } from 'suomifi-ui-components';
-import { Text } from 'suomifi-ui-components';
-import {
-  useJobApplicantProfile,
-  useProfileTosAgreement,
-} from '@shared/lib/hooks/profile';
-import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import ProfileDataSentry from '@shared/components/pages/profile/profile-data-sentry';
 import WorkingProfileForm from '@shared/components/pages/profile/working-profile-form';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
+import { useAuth } from '@shared/context/auth-context';
+import {
+  useJobApplicantProfile,
+  useProfileTosAgreement,
+} from '@shared/lib/hooks/profile';
+import { IconUserBadge, Text } from 'suomifi-ui-components';
 
 export default function WorkingProfilePage() {
   const { isAuthenticated } = useAuth();
@@ -20,7 +19,7 @@ export default function WorkingProfilePage() {
     errorResponse: agreementErrorResponse,
   } = useProfileTosAgreement(isAuthenticated);
 
-  const shouldFetchProfileData = !agreementFetching && agreement?.accepted;
+  const shouldFetchProfileData = !agreementFetching && agreement?.hasAcceptedLatest;
 
   const {
     data: jobApplicationProfile,
