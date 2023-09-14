@@ -22,7 +22,7 @@ export const handlers = [
   ),
   // profile tos
   rest.post(
-    'http://localhost/api/testbed-gw/test/lsipii/Service/Terms/Agreement',
+    'http://localhost/api/testbed-gw/Service/Terms/Agreement',
     (_, res, ctx) => res(ctx.json(MOCK_TOS_AGREEMENT))
   ),
   // profile

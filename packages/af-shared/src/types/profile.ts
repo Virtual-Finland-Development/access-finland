@@ -29,6 +29,9 @@ export const ProfileTosAgreementWriteSchema = object({
   version: string(),
   accepted: boolean(),
 });
+export type ProfileTosAgreementWrite = Output<
+  typeof ProfileTosAgreementWriteSchema
+>;
 
 /**
  * Person/BasicInformation
