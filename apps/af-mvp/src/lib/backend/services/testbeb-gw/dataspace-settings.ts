@@ -11,5 +11,5 @@ export function getDataProductRoutePath(dataProduct: DataProduct) {
   if (stage === 'mvp-staging' || stage === 'mvp-production') {
     return `${dataProduct}_${schemaVersion}`;
   }
-  return `Draft/${dataProduct}`;
+  return `draft/${dataProduct}`;
 }
