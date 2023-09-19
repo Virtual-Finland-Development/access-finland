@@ -36,7 +36,7 @@ export function createContainerImage(cdnSetup: {
       /* TESTBED_PRODUCT_GATEWAY_BASE_URL:
         process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
         testbedConfig.require('gatewayUrl'), */
-      TESTBED_PRODUCT_GATEWAY_BASE_URL: `${usersApiEndpoint}/productizer`,
+      TESTBED_PRODUCT_GATEWAY_BASE_URL: pulumi.interpolate`${usersApiEndpoint}/productizer`,
       TESTBED_DEFAULT_DATA_SOURCE:
         process.env.TESTBED_DEFAULT_DATA_SOURCE ||
         testbedConfig.require('defaultDataSource'),
