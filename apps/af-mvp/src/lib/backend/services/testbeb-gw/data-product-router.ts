@@ -30,20 +30,20 @@ async function execute(
     });
     res.status(response.status).json(response.data);
   } catch (error: any) {
-    const serializedError =
-      error?.response?.data?.error || error?.response?.data;
+    const statusCode = error.response?.status || 500;
 
-    if (serializedError?.status) {
-      res.status(serializedError.status).json({
+    if (error.response?.data?.type) {
+      res.status(statusCode).json({
         message:
-          serializedError?.title ||
-          `Data source returned: ${serializedError.status}`,
-        data: error.response.data,
+          (error.response?.data?.message
+            ? `${error.response?.data.type}: ${error.response?.data?.message}`
+            : null) ||
+          `Data source returned error type: ${error.response?.data?.type}`,
         context: 'DataProductSource',
       });
     } else {
       res
-        .status(error?.response?.status || 500)
+        .status(statusCode)
         .json({ message: error.message, context: 'ApiRouter' });
     }
   }
