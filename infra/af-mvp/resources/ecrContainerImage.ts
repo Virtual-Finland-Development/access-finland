@@ -33,9 +33,10 @@ export function createContainerImage(cdnSetup: {
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
-      TESTBED_PRODUCT_GATEWAY_BASE_URL:
+      /* TESTBED_PRODUCT_GATEWAY_BASE_URL:
         process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
-        testbedConfig.require('gatewayUrl'),
+        testbedConfig.require('gatewayUrl'), */
+      TESTBED_PRODUCT_GATEWAY_BASE_URL: `${usersApiEndpoint}/productizer`,
       TESTBED_DEFAULT_DATA_SOURCE:
         process.env.TESTBED_DEFAULT_DATA_SOURCE ||
         testbedConfig.require('defaultDataSource'),
