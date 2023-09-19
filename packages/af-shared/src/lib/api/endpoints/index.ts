@@ -8,9 +8,9 @@ export const PRH_MOCK_BASE_URL = process.env.NEXT_PUBLIC_PRH_MOCK_BASE_URL
   ? removeTrailingSlash(process.env.NEXT_PUBLIC_PRH_MOCK_BASE_URL)
   : 'http://localhost:5059';
 
-export const TESTBED_API_BASE_URL = process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL
+/* export const TESTBED_API_BASE_URL = process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL
   ? removeTrailingSlash(process.env.NEXT_PUBLIC_TESTBED_API_BASE_URL)
-  : 'http://localhost:3003';
+  : 'http://localhost:3003'; */
 
 export const CODESETS_BASE_URL = process.env.NEXT_PUBLIC_CODESETS_BASE_URL
   ? removeTrailingSlash(process.env.NEXT_PUBLIC_CODESETS_BASE_URL)
@@ -20,6 +20,10 @@ export const USERS_API_BASE_URL = process.env.NEXT_PUBLIC_USERS_API_BASE_URL
   ? removeTrailingSlash(process.env.NEXT_PUBLIC_USERS_API_BASE_URL)
   : 'http://localhost:5001';
 
-export const JMF_SKILL_RECOMMENDATIONS_ENDPOINT = process.env.JMF_SKILL_RECOMMENDATIONS_ENDPOINT 
+// @TODO: revert back
+export const TESTBED_API_BASE_URL = USERS_API_BASE_URL;
+
+export const JMF_SKILL_RECOMMENDATIONS_ENDPOINT = process.env
+  .JMF_SKILL_RECOMMENDATIONS_ENDPOINT
   ? process.env.JMF_SKILL_RECOMMENDATIONS_ENDPOINT
-  : "https://tyomarkkinatori.fi/hakupalvelu/api/1.0/skillrecommendation/skillrecommendation/";
+  : 'https://tyomarkkinatori.fi/hakupalvelu/api/1.0/skillrecommendation/skillrecommendation/';
