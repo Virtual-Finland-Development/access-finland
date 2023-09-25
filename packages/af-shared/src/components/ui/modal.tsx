@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { ReactNode } from 'react';
+import { FreeFocusInside } from 'react-focus-lock';
 import FocusLockUI from 'react-focus-lock/UI';
 import {
   ModalContent,
@@ -47,11 +48,13 @@ export default function Modal(props: Props) {
       onEscKeyDown={() => closeOnEsc && closeModal()}
     >
       <FocusLockUI sideCar={FocusLockSidecar} className="overflow-auto">
-        <ModalContent>
-          <ModalTitle>{title}</ModalTitle>
-          {content}
-        </ModalContent>
-        {footerContent && <ModalFooter>{footerContent}</ModalFooter>}
+        <FreeFocusInside>
+          <ModalContent>
+            <ModalTitle>{title}</ModalTitle>
+            {content}
+          </ModalContent>
+          {footerContent && <ModalFooter>{footerContent}</ModalFooter>}
+        </FreeFocusInside>
       </FocusLockUI>
     </SuomiFiModal>
   );
