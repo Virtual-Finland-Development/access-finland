@@ -169,7 +169,7 @@ export default function JmfRecommendationsSelect(
   };
 
   return (
-    <>
+    <form onSubmit={handleSave}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 p-4 border border-gray-300 bg-suomifi-blue-bg-light w-full">
           <CustomHeading variant="h4">
@@ -273,15 +273,15 @@ export default function JmfRecommendationsSelect(
               Close
             </Button>
             <Button
+              type="submit"
               disabled={!selected.length}
               iconRight={<IconArrowRight />}
-              onClick={handleSave}
             >
               Save
             </Button>
           </div>
         )}
       </div>
-    </>
+    </form>
   );
 }

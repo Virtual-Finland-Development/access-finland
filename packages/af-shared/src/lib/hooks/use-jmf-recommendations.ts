@@ -26,6 +26,7 @@ export default function useJmfRecommendations(
     {
       refetchOnWindowFocus: false,
       enabled: false,
+      retry: false,
     }
   );
 
