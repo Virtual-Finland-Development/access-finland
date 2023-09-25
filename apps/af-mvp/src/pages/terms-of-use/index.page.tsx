@@ -8,59 +8,56 @@ export default function TermsOfUsagePage() {
     <Page title="Terms of Use">
       <Page.Block className="bg-white">
         <article className="flex flex-col gap-6">
-          <CustomHeading variant="h2">Käyttöehdot</CustomHeading>
+          <CustomHeading variant="h2">Terms of Use</CustomHeading>
           <Text className="italic !font-bold">
-            Access Finland Käyttöehdot v1.0, 18.09.2023
+            Access Finland Terms of Use v1.0, 18.09.2023
           </Text>
 
           <Text>
-            Ulkoministeriön (jäljempänä &quot;Palveluntarjoaja&quot;) tuottaman
-            Access Finland palvelun (jäljempänä “Palvelu”) käyttämiseen
-            sovelletaan näitä käyttöehtoja (jäljempänä “Käyttöehdot“). Palvelun
-            käyttäjä (jäljempänä &quot;Käyttäjä&quot;) vakuuttaa tutustuneensa
-            näihin käyttöehtoihin ja sitoutuu noudattamaan niitä käyttäessään
-            Palvelua.
+            These Terms of Use (“Terms of Use”) shall govern the Access Finland
+            Service(“Service”) produced by the Ministry of Foreign affairs
+            (“Service Provider”). The Service user (“User”) shall assure that
+            they have read these Terms of Use and undertake to comply with them
+            when using the Service.
           </Text>
           <Text>
-            Palvelun kirjautumista vaativan osan käyttö edellyttää Käyttäjän
-            rekisteröitymistä. Rekisteröityessään Palveluun Käyttäjästä tulee
-            Palveluntarjoajan asiakas ja Käyttäjän tiedot rekisteröidään Access
-            to Finland -palvelun asiakasrekisteriin.
+            The use of the part of Service that requires logging in, requires
+            that the User subscribes to the Service. When subscribing to the
+            Service, the User shall become a customer of the Service Provider
+            and the User’s data is registered in the Service register.
+          </Text>
+          <Text>
+            In these Terms of Use, Service means the version of the Access
+            Finland, which is a publicly funded web service that collects and
+            share information given by immigrant for other Finnish services such
+            as open vacancies based on profile information and make it easier to
+            use such a services.
           </Text>
 
-          <CustomHeading variant="h3">Palvelun kuvaus</CustomHeading>
+          <CustomHeading variant="h3">Service Description</CustomHeading>
           <Text>
-            Palvelu tarkoittaa näissä Käyttöehdoissa Access to Finland
-            verkkopalvelua, joka on maahantulijoille tarkoitettu työpaikkahakuun
-            liittyvää tietosisältöä keräävä ja jakava palvelu. Access to
-            Finaland verkkopalvelu on on julkisesti rahoitettu digitaalinen
-            palvelu, jonka tarkoituksena on helpottaa maahantulijan elämää
-            keräämällä työnhakuun liittyvää tietoa uudelleenkäytettäväksi eri
-            työnhakupalveluissa jotka on liitetty Access to Finland
-            verkkopalveluun.
+            The Service Provider aims at producing Service which is as
+            high-grade as possible and shall be responsible for ensuring that
+            the content of the Service complies with the law and good practice.
           </Text>
           <Text>
-            Palveluntarjoaja pyrkii tuottamaan mahdollisimman korkeatasoista
-            Palvelua sekä vastaa siitä, että Palvelun sisältö on lainmukaista ja
-            hyvän tavan mukaista.
+            The Service Provider shall have all rights (proprietary rights,
+            copyright and other intellectual property rights) relating to the
+            Service. The User shall be granted the access right to the Service
+            in compliance with these Terms of Use, but the User shall not be
+            granted any other rights that relate to the Service.
           </Text>
           <Text>
-            Kaikki oikeudet (omistusoikeus, tekijänoikeus ja muut
-            immateriaalioikeudet) Palveluun ovat Palveluntarjoajalla. Käyttäjä
-            saa oikeuden käyttää Palvelua näiden käyttöehtojen mukaisesti, mutta
-            Käyttäjä ei saa Palveluun liittyviä oikeuksia.
-          </Text>
-          <Text>
-            Käyttäjän käyttöoikeuden sisältö määritellään tässä
-            käyttöehtodokumentissa, joka Käyttäjän on hyväksyttävä itseään
-            sitovaksi rekisteröityessään Palveluun
+            The content of the User’s access right is defined in these Terms of
+            Use which the User accepts as a binding contract when subscribing to
+            the Service.
           </Text>
 
           <CustomHeading variant="h3">
-            Tietojen kerääminen ja käyttö
+            Collecting and using information
           </CustomHeading>
           <CustomHeading variant="h4">
-            Henkilön perustiedot{' '}
+            Person basic information{' '}
             <CustomLink
               $bold
               isExternal
@@ -71,12 +68,13 @@ export default function TermsOfUsagePage() {
             </CustomLink>
           </CustomHeading>
           <Text>
-            Henkilön perustietoja joiden avulla luodaan tili Access to Finland
-            palveluun ja yhdessä työnhakutietiojen kanssa voidaan käyttää
-            tylpaikkojen kohdennettuun hakuun.
+            These are basic profile information that are needed to create
+            low-level Digital Identity and Access Finland service account.
+            Together with Job applicant profile information these can be used
+            for example to offer matching vacancies in other services.
           </Text>
           <CustomHeading variant="h4">
-            Henkilön työnhakutiedot{' '}
+            Job applicant profile{' '}
             <CustomLink
               $bold
               isExternal
@@ -87,101 +85,106 @@ export default function TermsOfUsagePage() {
             </CustomLink>
           </CustomHeading>
           <Text>
-            Tietojen perusteella käyttäjälle voidaan kohdentaa sopivia
-            työpaikkailmoituksia.
+            This information can be used to provide person list of vacancies
+            that match the profile.
+          </Text>
+
+          <CustomHeading variant="h3">Storing information</CustomHeading>
+          <Text>
+            Profile data is stored inside European Union, and the data is stored
+            encrypted.
           </Text>
 
           <CustomHeading variant="h3">
-            Tietojen säilytys ja suojaus
-          </CustomHeading>
-          <Text>Tieto talletetaan EU alueen sisälle kryptattuna.</Text>
-
-          <CustomHeading variant="h3">
-            Kolmansien osapuolten kanssa jaettavat tiedot
+            Data sharing with 3rd party
           </CustomHeading>
           <Text>
-            Profiilin tietoja jaetaan Kehan kanssa työpaikkojen
-            suosittelemiseksi.
+            Profile information is shared with KEHA Centre to match open
+            vacancies. Data sharing consent is given by user by accepting this
+            Terms of Use.
           </Text>
 
-          <CustomHeading variant="h3">Evästeet ja seuranta</CustomHeading>
+          <CustomHeading variant="h3">Cookies</CustomHeading>
           <Text>
-            Seurantaevästeitä ei käytetä. Access to Finland voi käyttää palvelun
-            sisäisesti evästeitä, Sinuna tunnistautuminen asettaa palvelun
-            käyttämiseksi oman sessioevästeen.
+            Access Finland service can use internal cookies: Sinuna low-level
+            authentication sets a cookie to enable use of service.
           </Text>
 
           <CustomHeading variant="h3">
-            Käyttäjän vastuut ja oikeudet
+            User’s rights and liabilities
           </CustomHeading>
           <Text>
-            Kirjautuneen käyttäjän palvelun käytön edellytyksenä on
-            Käyttöehtojen hyväksyminen Käyttäjää sitovaksi. Hyväksyttyään
-            käyttöehdot Käyttäjä sitoutuu:
+            A prerequisite for using the service is that the User approves the
+            binding Terms of Use.
+          </Text>
+          <Text>
+            After accepting the Terms of Use, the User shall undertake
           </Text>
           <ul className="list-outside list-disc ms-8">
             <li>
               <Text>
-                noudattamaan tunnisteet antaneen tahon kanssa tekemiään
-                sopimuksia ja tunnisteiden käyttöön liittyviä ehtoja (palvelua
-                voi käyttää vain omilla henkilökohtaisilla tunnisteilla),
+                to comply with the agreements made with the party that provides
+                the ID and the terms and conditions that relate to the use of
+                the ID (the Service may only be used with the User’s personal
+                ID),
               </Text>
             </li>
             <li>
               <Text>
-                vastaamaan siitä, että hänen palveluun toimittamansa tiedot ovat
-                totuudenmukaisia ja palvelun käyttötarkoitusta vastaavia ja että
-                hän ei palvelua käyttäessään aiheuta häiriötä muille käyttäjille
-                eikä loukkaa muiden käyttäjien eikä Palveluntarjoajan oikeuksia,
+                to assume responsibility for only providing truthful information
+                that complies with the purpose of the Service, and for not
+                causing any disturbance to others or infringing the rights of
+                other users or the Service Provider by means of the User’s
+                Service use,
               </Text>
             </li>
             <li>
               <Text>
-                vastaamaan henkilöllisyytensä paljastumisesta tilanteessa, jossa
-                Käyttäjä liittää Palveluun linkkejä esimerkiksi ulkopuolisiin
-                palveluihin ja
+                to assume responsibility for revealing their identity in a
+                situation in which the User, for example, posts links to
+                external services to the Service, and
               </Text>
             </li>
             <li>
               <Text>
-                vastaamaan kaikista hänelle Palvelun käytöstä aiheutuvista
-                omista käyttökustannuksista (esimerkiksi Internet-verkon
-                käyttömaksut, mahdolliset puhelumaksut).
+                to cover all personal costs that may be caused to them for using
+                the Service (e.g. Internet connection charges, possible phone
+                calls).
               </Text>
             </li>
           </ul>
           <Text>
-            Henkilötietoihin liittyvät oikeudet on kuvattu
-            Palvelun Tietosuojaselosteessa.
+            The rights that relate to the personal data are described in the
+            Information security and register description.
           </Text>
           <CustomLink href="#">
-            Access Finland tietosuojaseloste (TBD)
+            Access Finland Information Security and Register Description (TBD)
           </CustomLink>
 
-          <CustomHeading variant="h3">Muutokset käyttöehtoihin</CustomHeading>
+          <CustomHeading variant="h3">Changing the Terms of Use</CustomHeading>
           <Text>
-            Päivitetyt käyttöehdot hyväksytetään käyttäjällä kirjautuessa.
-            Käyttäjän on mahdollista kietäytyä ja poistaa tili.
+            The Service Provider constantly develops Access Finland which may
+            cause changes to the content of the Service. When the Service
+            Provider publish new Terms, Service user must approve them prior
+            logging to service.
+          </Text>
+          <Text>
+            If the User does not accept the new Terms of Use, they shall have
+            the right to stop using the Service and remove their data from the
+            Service.
           </Text>
 
-          <CustomHeading variant="h3">Oikeudellinen viitekehys</CustomHeading>
+          <CustomHeading variant="h3">Applicable legislation</CustomHeading>
           <Text>
-            Näihin Käyttöehtoihin ja näiden käyttöehtojen tarkoittamiin
-            Palveluihin sekä Palvelusta mahdollisesti tehtyyn sopimukseen
-            sovelletaan Suomen lakia.
-          </Text>
-
-          <CustomHeading variant="h3">Hyväksyntäprosessi</CustomHeading>
-          <Text>
-            Käyttäjien on hyväksyttävä käyttöehdot palveluun kirjautuessaan. Jos
-            käyttöehtoja päivitetään, käyttäjä joutuu hyväksymään päivitetyt
-            käyttöehdot kirjautumisen yhteydessä.
+            These Terms of Use and the Services referred to in them as well as
+            any agreement concluded concerning the Service shall be governed by
+            Finnish law.
           </Text>
 
           <div className="flex flex-col gap-4">
-            <CustomHeading variant="h3">Yhteystiedot</CustomHeading>
+            <CustomHeading variant="h3">Contact Information</CustomHeading>
             <Text>
-              Hankkeen/tietosuojavaltuutettu sähköposti{' '}
+              Access Finland can be contacted by email:{' '}
               <a
                 href="mailto:virtualfinland.um@gov.fi"
                 className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
