@@ -1,16 +1,15 @@
-import { IconUserProfile } from 'suomifi-ui-components';
-import { Text } from 'suomifi-ui-components';
-import {
-  usePersonBasicInfo,
-  useProfileTosAgreement,
-} from '@shared/lib/hooks/profile';
-import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
 import ProfileDataSentry from '@shared/components/pages/profile/profile-data-sentry';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
+import { useAuth } from '@shared/context/auth-context';
+import {
+  usePersonBasicInfo,
+  useProfileTosAgreement,
+} from '@shared/lib/hooks/profile';
+import { IconUserProfile, Text } from 'suomifi-ui-components';
 
 export default function PersonalProfilePage() {
   const { isAuthenticated } = useAuth();
@@ -20,7 +19,7 @@ export default function PersonalProfilePage() {
     errorResponse: agreementErrorResponse,
   } = useProfileTosAgreement(isAuthenticated);
 
-  const shouldFetchProfileData = !agreementFetching && agreement?.accepted;
+  const shouldFetchProfileData = !agreementFetching && agreement?.hasAcceptedLatest;
 
   const {
     data: personBasicInformation,

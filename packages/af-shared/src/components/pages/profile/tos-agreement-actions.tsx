@@ -1,17 +1,17 @@
-import { Fragment, ReactNode, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, InlineAlert, Text } from 'suomifi-ui-components';
+import CustomHeading from '@/components/ui/custom-heading';
+import CustomLink from '@/components/ui/custom-link';
+import DangerButton from '@/components/ui/danger-button';
+import Loading from '@/components/ui/loading';
+import { useModal } from '@/context/modal-context';
+import { useToast } from '@/context/toast-context';
 import api from '@/lib/api';
 import {
   PROFILE_TOS_AGREEMENT_QUERY_KEYS,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
-import { useModal } from '@/context/modal-context';
-import { useToast } from '@/context/toast-context';
-import CustomHeading from '@/components/ui/custom-heading';
-import CustomLink from '@/components/ui/custom-link';
-import DangerButton from '@/components/ui/danger-button';
-import Loading from '@/components/ui/loading';
+import { useQueryClient } from '@tanstack/react-query';
+import { Fragment, ReactNode, useState } from 'react';
+import { Button, InlineAlert, Text } from 'suomifi-ui-components';
 import ProfileDeleteConfirmation from './profile-details/profile-delete-confirmation';
 
 const TITLE = {
@@ -67,14 +67,14 @@ export default function TosAgreementActions(props: Props) {
   const { openModal, closeModal } = useModal();
   const [isLoading, setIsLoading] = useState(false);
 
-  const isNewUser = !agreement?.acceptedPreviousVersion;
+  const isNewUser = !agreement?.acceptedVersion;
 
   const onAccept = async () => {
     setIsLoading(true);
 
     try {
       const response = await api.profile.saveProfileTosAgreement({
-        version: agreement?.version!,
+        version: agreement?.currentTerms.version!,
         accepted: true,
       });
       reactQueryClient.setQueryData(PROFILE_TOS_AGREEMENT_QUERY_KEYS, response);

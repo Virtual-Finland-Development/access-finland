@@ -87,12 +87,14 @@ export const MOCK_USER_COMPANIES = [
 
 // TOS agreement
 export const MOCK_TOS_AGREEMENT = {
-  termsOfServiceUrl: '',
-  description: '',
-  version: '',
-  accepted: true,
+  currentTerms: {
+    url: '',
+    description: '',
+    version: '',
+  },
+  acceptedVersion: '',
   acceptedAt: '',
-  acceptedPreviousVersion: true,
+  hasAcceptedLatest: true,
 };
 
 // profile
