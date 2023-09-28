@@ -7,10 +7,10 @@ import { LoginState } from './services/auth';
 const apiClient = axios.create({});
 
 const PROTECTED_URLS = [
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment/Write`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment/Write_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write_v1.0`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/establishment`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/beneficial-owners`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,

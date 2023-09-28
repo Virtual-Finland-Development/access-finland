@@ -29,7 +29,7 @@ export async function getCompany(
   nationalIdentifier: string
 ): Promise<NonListedCompany> {
   const { data } = await apiClient.post(
-    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment`,
+    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment_v1.0`,
     { nationalIdentifier },
     { headers: { 'Content-Type': 'application/json' } }
   );
@@ -85,7 +85,7 @@ export async function saveBeneficialOwners(
   beneficialOwners: Partial<BenecifialOwners>
 ): Promise<BenecifialOwners> {
   const { data } = await apiClient.post(
-    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write`,
+    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write_v1.0`,
     { nationalIdentifier, data: beneficialOwners }
   );
   return data;
@@ -107,7 +107,7 @@ export async function saveSignatoryRights(
   signatoryRights: Partial<SignatoryRights>
 ): Promise<SignatoryRights> {
   const { data } = await apiClient.post(
-    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write`,
+    `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write_v1.0`,
     { nationalIdentifier, data: signatoryRights }
   );
   return data;
