@@ -1,8 +1,7 @@
-import { DataProductShemas, type DataProduct } from '@shared/types';
-import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
+import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-import { getDataProductRoutePath } from './dataspace-settings';
 
 async function execute(
   dataProduct: DataProduct,
