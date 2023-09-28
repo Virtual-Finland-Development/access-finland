@@ -65,6 +65,7 @@ export function configureAmplify() {
                   - echo "BACKEND_SECRET_SIGN_KEY=$BACKEND_SECRET_SIGN_KEY" >> apps/af-mvp/.env
                   - echo "DATASPACE_PRODUCT_GATEWAY_BASE_URL=$DATASPACE_PRODUCT_GATEWAY_BASE_URL" >> apps/af-mvp/.env
                   - echo "DATASPACE_DEFAULT_DATA_SOURCE=$DATASPACE_DEFAULT_DATA_SOURCE" >> apps/af-mvp/.env
+                  - echo "DATASPACE_DEFAULT_SCHEMA_VERSION=$DATASPACE_DEFAULT_SCHEMA_VERSION" >> apps/af-mvp/.env
                   - npx turbo run build --filter=af-mvp
             artifacts:
               baseDirectory: apps/af-mvp/.next

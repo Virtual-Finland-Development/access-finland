@@ -34,8 +34,11 @@ export function createContainerImage(cdnSetup: {
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
       DATASPACE_PRODUCT_GATEWAY_BASE_URL: dataspaceConfig.require('gatewayUrl'),
-      DATASPACE_DEFAULT_DATA_SOURCE: dataspaceConfig.require('defaultDataSource'),
-      DATASPACE_DEFAULT_SCHEMA_VERSION: dataspaceConfig.require('defaultSchemaVersion'),
+      DATASPACE_DEFAULT_DATA_SOURCE:
+        dataspaceConfig.require('defaultDataSource'),
+      DATASPACE_DEFAULT_SCHEMA_VERSION: dataspaceConfig.require(
+        'defaultSchemaVersion'
+      ),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
     },
   });
