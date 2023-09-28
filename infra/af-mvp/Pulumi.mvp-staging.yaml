@@ -4,7 +4,7 @@ description: Access Finland app
 config:
   dataspace:gatewayUrl: https://gateway.staging.datafinland.dev
   dataspace:defaultDataSource: accessfinland
-  dataspace:defaultSchemaVersion: 0.1
+  dataspace:defaultSchemaVersion: "0.1"
   domainSetup:domainName: staging.accessfinland.dev
   domainSetup:domainRootName: accessfinland.dev
   domainSetup:enabled: true

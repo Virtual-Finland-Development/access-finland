@@ -5,7 +5,7 @@ config:
   aws:region: eu-north-1
   dataspace:gatewayUrl: https://gateway.testbed.fi
   dataspace:defaultDataSource: accessfinland:development
-  dataspace:defaultSchemaVersion: 1.0
+  dataspace:defaultSchemaVersion: "1.0"
   domainSetup:domainName: ''
   domainSetup:domainRootName: ''
   domainSetup:enabled: false
