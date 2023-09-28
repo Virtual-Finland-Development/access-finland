@@ -1,6 +1,7 @@
 config:
-  testbed:defaultDataSource: accessfinland:development
-  testbed:gatewayUrl: https://gateway.testbed.fi
+  dataspace:defaultDataSource: accessfinland:development
+  dataspace:gatewayUrl: https://gateway.testbed.fi
+  dataspace:defaultSchemaVersion: 1.0
   waf:enabled: true
   waf:username: accessfinland
   waf:password:

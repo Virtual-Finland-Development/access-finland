@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
 import { DataProductShemas, type DataProduct } from '@shared/types';
+import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 import { getDataProductRoutePath } from './dataspace-settings';
 
@@ -50,8 +50,8 @@ async function execute(
 }
 
 function getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
-  const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
-  const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
+  const gatewayEndpoint = process.env.DATASPACE_PRODUCT_GATEWAY_BASE_URL;
+  const defaultDataSource = process.env.DATASPACE_DEFAULT_DATA_SOURCE;
   const dataProductRoutePath = getDataProductRoutePath(dataProduct);
 
   if (!gatewayEndpoint)
@@ -59,6 +59,14 @@ function getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
   if (!dataSource) dataSource = defaultDataSource;
 
   return `${gatewayEndpoint}/${dataProductRoutePath}?source=${dataSource}`;
+}
+
+function getDataProductRoutePath(dataProduct: DataProduct) {
+  if (dataProduct.startsWith('test/')) {
+    return dataProduct;
+  }
+  const schemaVersion = process.env.DATASPACE_DEFAULT_SCHEMA_VERSION;
+  return `${dataProduct}_v${schemaVersion}`;
 }
 
 function parseDataProductRequestBody(
