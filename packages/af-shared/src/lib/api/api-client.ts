@@ -20,10 +20,10 @@ const PROTECTED_URLS = [
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
-  '/api/testbed-gw/Person/BasicInformation',
-  '/api/testbed-gw/Person/BasicInformation/Write',
-  '/api/testbed-gw/Person/JobApplicantProfile',
-  '/api/testbed-gw/Person/JobApplicantProfile/Write',
+  '/api/dataspace/Person/BasicInformation',
+  '/api/dataspace/Person/BasicInformation/Write',
+  '/api/dataspace/Person/JobApplicantProfile',
+  '/api/dataspace/Person/JobApplicantProfile/Write',
   '/api/users-api',
   '/api/jmf/recommendations',
 ];

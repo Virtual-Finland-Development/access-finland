@@ -7,9 +7,7 @@ export function utilizeDataProduct(
   dataSource?: string
 ) {
   return apiClient.post(
-    `/api/testbed-gw/${dataProduct}${
-      dataSource ? `?source=${dataSource}` : ''
-    }`,
+    `/api/dataspace/${dataProduct}${dataSource ? `?source=${dataSource}` : ''}`,
     inputData
   );
 }
