@@ -1,30 +1,30 @@
-import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Button, InlineAlert, Text } from 'suomifi-ui-components';
-import type {
-  BenecifialOwners,
-  CompanyBasicInformation,
-  SignatoryRight,
-  SignatoryRights,
-} from '@shared/types';
-import api from '@shared/lib/api';
-import { COMPANY_DATA_LABELS } from '@shared/lib/constants';
-import dummyCompanyDataFI from '@shared/lib/fake-data/company-search-fi.json';
-import dummyCompanyDataNO from '@shared/lib/fake-data/company-search-no.json';
-import dummyCompanyDataSE from '@shared/lib/fake-data/company-search-se.json';
-import { useToast } from '@shared/context/toast-context';
 import FormInput from '@shared/components/form/form-input';
 import FormSingleSelect from '@shared/components/form/form-single-select';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import DetailsExpander from '@shared/components/ui/details-expander/details-expander';
 import Loading from '@shared/components/ui/loading';
+import { useToast } from '@shared/context/toast-context';
+import api from '@shared/lib/api';
+import { COMPANY_DATA_LABELS } from '@shared/lib/constants';
+import dummyCompanyDataFI from '@shared/lib/fake-data/company-search-fi.json';
+import dummyCompanyDataNO from '@shared/lib/fake-data/company-search-no.json';
+import dummyCompanyDataSE from '@shared/lib/fake-data/company-search-se.json';
+import type {
+  BenecifialOwners,
+  CompanyBasicInformation,
+  SignatoryRight,
+  SignatoryRights,
+} from '@shared/types';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button, InlineAlert, Text } from 'suomifi-ui-components';
 
 const SOURCE_OPTIONS = [
   { labelText: 'Norway', uniqueItemId: 'no' },
   { labelText: 'Sweden', uniqueItemId: 'se' },
   { labelText: 'Finland', uniqueItemId: 'fi' },
-  { labelText: 'Virtual Finland', uniqueItemId: 'virtualfinland' },
+  { labelText: 'Virtual Finland', uniqueItemId: 'accessfinland' },
 ];
 
 interface FormProps {
@@ -62,7 +62,7 @@ export default function CompanySearchPage() {
         setDummyData(dummyCompanyDataSE as DummyData);
         break;
       case 'fi':
-      case 'virtualfinland':
+      case 'accessfinland':
         setDummyData(dummyCompanyDataFI as DummyData);
         break;
       default:

@@ -3,5 +3,6 @@ runtime: nodejs
 description: Access Finland app
 config:
   aws:region: eu-north-1
-  testbed:gatewayUrl: https://gateway.testbed.fi
-  testbed:defaultDataSource: accessfinland:development
+  dataspace:gatewayUrl: https://gateway.testbed.fi
+  dataspace:defaultDataSource: accessfinland:development
+  dataspace:defaultSchemaVersion: 1.0
