@@ -7,7 +7,7 @@ import {
 import { isExportedApplication } from '@/lib/utils';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
-import { utilizeDataProduct } from './testbed-gw';
+import { utilizeDataProduct } from './dataspace';
 
 /**
  * Use internal api routes for MVP app (!isExport).

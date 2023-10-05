@@ -1,8 +1,8 @@
-import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
-import DataProductRouter from '@mvp/lib/backend/services/testbeb-gw/data-product-router';
-import type { DataProduct } from '@shared/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
+import DataProductRouter from '@mvp/lib/backend/services/dataspace/data-product-router';
 import { array, minLength, object, optional, parse, string } from 'valibot';
+import type { DataProduct } from '@shared/types';
 
 const DataProductRequestSchema = object({
   slug: array(string(), [minLength(1)]),

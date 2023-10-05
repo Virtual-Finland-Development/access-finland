@@ -7,10 +7,10 @@ import { LoginState } from './services/auth';
 const apiClient = axios.create({});
 
 const PROTECTED_URLS = [
-  `${PRH_MOCK_BASE_URL}/draft/NSG/Agent/LegalEntity/NonListedCompany/Establishment`,
-  `${PRH_MOCK_BASE_URL}/draft/NSG/Agent/LegalEntity/NonListedCompany/Establishment/Write`,
-  `${PRH_MOCK_BASE_URL}/draft/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write`,
-  `${PRH_MOCK_BASE_URL}/draft/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment/Write_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write_v1.0`,
+  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write_v1.0`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/establishment`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/beneficial-owners`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,
@@ -20,12 +20,12 @@ const PROTECTED_URLS = [
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
-  '/api/testbed-gw/Service/Terms/Agreement',
-  '/api/testbed-gw/Service/Terms/Agreement/Write',
-  '/api/testbed-gw/Person/BasicInformation',
-  '/api/testbed-gw/Person/BasicInformation/Write',
-  '/api/testbed-gw/Person/JobApplicantProfile',
-  '/api/testbed-gw/Person/JobApplicantProfile/Write',
+  '/api/dataspace/Service/Terms/Agreement',
+  '/api/dataspace/Service/Terms/Agreement/Write',
+  '/api/dataspace/Person/BasicInformation',
+  '/api/dataspace/Person/BasicInformation/Write',
+  '/api/dataspace/Person/JobApplicantProfile',
+  '/api/dataspace/Person/JobApplicantProfile/Write',
   '/api/users-api',
   '/api/jmf/recommendations',
 ];
