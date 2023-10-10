@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 import { USERS_API_ACCESS_KEY } from '../../api-constants';
@@ -18,6 +19,7 @@ const UsersApiRouter = {
           Authorization: `Bearer ${apiAuthPackage.idToken}`,
           'Content-Type': 'application/json',
           'X-Api-Key': USERS_API_ACCESS_KEY,
+          'x-request-trace-id': uuidv4(),
         },
       });
       res.status(200).json({ message: 'Deletion successful' });

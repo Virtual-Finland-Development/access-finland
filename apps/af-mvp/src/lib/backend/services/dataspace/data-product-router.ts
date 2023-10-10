@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 
@@ -25,6 +26,7 @@ async function execute(
         'X-Consent-Token': '',
         'Content-Type': 'application/json',
         'User-Agent': 'Access Finland - MVP Application',
+        'x-request-trace-id': uuidv4(),
       },
     });
     res.status(response.status).json(response.data);
