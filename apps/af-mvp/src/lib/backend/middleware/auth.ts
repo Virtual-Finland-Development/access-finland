@@ -31,28 +31,27 @@ export function loggedInAuthMiddleware(handler: NextApiHandler) {
 
 export function loggedOutAuthMiddleware(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    const traceId = uuidv4();
-    req.headers['X-Request-Trace-Id'] = traceId;
-
     try {
       return await handler(req, res);
     } catch (error) {
-      logError(error, traceId);
+      logError(error);
       return res.status(401).json({ error: 'Unauthorized.' });
     }
   };
 }
 
-function logError(error: Error, traceId: string) {
+function logError(error: Error, traceId?: string) {
+  if (traceId) {
+    console.error(`trace: ${traceId}`);
+  }
+
   if (error instanceof AxiosError) {
     console.error(
       `Axios: ${error.message}, status code: ${error.response?.status}`
     );
   } else if (error instanceof ValiError) {
     console.error(`Vali: ${error.message}`, JSON.stringify(error.issues));
-    console.error(`trace: ${traceId}`);
   } else {
     console.error(error);
-    console.error(`trace: ${traceId}`);
   }
 }
