@@ -1,17 +1,17 @@
-import CustomHeading from '@/components/ui/custom-heading';
-import CustomLink from '@/components/ui/custom-link';
-import DangerButton from '@/components/ui/danger-button';
-import Loading from '@/components/ui/loading';
-import { useModal } from '@/context/modal-context';
-import { useToast } from '@/context/toast-context';
+import { Fragment, ReactNode, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, InlineAlert, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
 import {
   PROFILE_TOS_AGREEMENT_QUERY_KEYS,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
-import { useQueryClient } from '@tanstack/react-query';
-import { Fragment, ReactNode, useState } from 'react';
-import { Button, InlineAlert, Text } from 'suomifi-ui-components';
+import { useModal } from '@/context/modal-context';
+import { useToast } from '@/context/toast-context';
+import CustomHeading from '@/components/ui/custom-heading';
+import CustomLink from '@/components/ui/custom-link';
+import DangerButton from '@/components/ui/danger-button';
+import Loading from '@/components/ui/loading';
 import ProfileDeleteConfirmation from './profile-details/profile-delete-confirmation';
 
 const TITLE = {
@@ -46,7 +46,7 @@ function AgreementContent(props: AgreementProps) {
       <CustomHeading variant="h3">{TITLE[contentKey]}</CustomHeading>
       <Text>{CONTENT_1[contentKey]}</Text>
       <Text>
-        <CustomLink href="/terms-of-use" target="_blank" disableVisited>
+        <CustomLink href="/info/terms-of-use" target="_blank" disableVisited>
           {LINK_TITLE[contentKey]}
         </CustomLink>
       </Text>

@@ -4,7 +4,7 @@ import {
   ServiceNavigationItem,
   Text,
 } from 'suomifi-ui-components';
-import { IconFileCabinet, IconSupport } from 'suomifi-ui-components';
+import { IconSupport } from 'suomifi-ui-components';
 import useDimensions from '@shared/lib/hooks/use-dimensions';
 import CustomRouterLink from '@shared/components/ui/custom-router-link';
 
@@ -40,28 +40,13 @@ export default function InfoNavigation() {
         }`}
         initiallyExpanded={false}
       >
-        <ServiceNavigationItem
-          selected={router.route === INFO_ROUTES.aboutTheService}
-        >
-          <CustomRouterLink href="/info">About the Service</CustomRouterLink>
-        </ServiceNavigationItem>
-        <ServiceNavigationItem
-          selected={router.route === INFO_ROUTES.termsOfUse}
-        >
-          <CustomRouterLink href="/info/terms-of-use">
-            Terms of Use
-          </CustomRouterLink>
-        </ServiceNavigationItem>
-        <ServiceNavigationItem
-          selected={
-            router.route ===
-            INFO_ROUTES.informationSecurityAndRegisterDescription
-          }
-        >
-          <CustomRouterLink href="/info/information-security-and-register-description">
-            Information Security and Register Description
-          </CustomRouterLink>
-        </ServiceNavigationItem>
+        {Object.entries(INFO_ROUTES).map(([key, value]) => (
+          <ServiceNavigationItem selected={router.route === value} key={key}>
+            <CustomRouterLink href={value}>
+              {INFO_ROUTES_TITLES[value]}
+            </CustomRouterLink>
+          </ServiceNavigationItem>
+        ))}
       </ServiceNavigation>
     </div>
   );
