@@ -68,9 +68,25 @@ function Help() {
                 </a>
               </CustomText>
               {!isExportedApp && (
-                <CustomLink href="/terms-of-use" disableVisited $base>
-                  Access Finland - Terms of Use
-                </CustomLink>
+                <div className="flex flex-col items-start">
+                  <CustomLink
+                    href="/info/about-the-service"
+                    disableVisited
+                    $base
+                  >
+                    About the Service
+                  </CustomLink>
+                  <CustomLink href="/info/terms-of-use" disableVisited $base>
+                    Terms of Use
+                  </CustomLink>
+                  <CustomLink
+                    href="/info/information-security-and-register-description"
+                    disableVisited
+                    $base
+                  >
+                    Information Security and Register Description
+                  </CustomLink>
+                </div>
               )}
             </div>
           </div>
