@@ -8,7 +8,7 @@ export default function InformationSecurityAndRegisterDescriptionPage() {
     <InfoPagesLayout title="Information Security and Register Description">
       <article className="flex flex-col gap-6">
         <CustomHeading variant="h2">
-          Access Finland -palvelun tietosuojaseloste
+          Access Finland data protection statement
         </CustomHeading>
         <Text className="italic !font-bold">
           <span className="block">
