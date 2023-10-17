@@ -1,6 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "globalEnv": [
     "ANALYZE",
     "NEXT_PUBLIC_AUTH_GW_BASE_URL",
@@ -14,25 +16,44 @@
     "BACKEND_SECRET_SIGN_KEY",
     "FRONTEND_ORIGIN_URI",
     "JMF_SKILL_RECOMMENDATIONS_ENDPOINT",
-    "TESTBED_PRODUCT_GATEWAY_BASE_URL",
-    "TESTBED_DEFAULT_DATA_SOURCE",
+    "DATASPACE_PRODUCT_GATEWAY_BASE_URL",
+    "DATASPACE_DEFAULT_DATA_SOURCE",
     "WAF_SHARED_COOKIE_SECRET",
     "WAF_USER_POOL_ID",
     "WAF_USER_POOL_CLIENT_ID",
-    "USERS_API_ACCESS_KEY"
+    "USERS_API_ACCESS_KEY",
+    "DATASPACE_DEFAULT_SCHEMA_VERSION"
   ],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "build:features": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "build:mvp": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "start": {},
     "start:mvp": {},
@@ -41,8 +62,12 @@
       "cache": false
     },
     "test:ci": {
-      "outputs": ["coverage/**"],
-      "dependsOn": ["build"]
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "build"
+      ]
     },
     "lint": {},
     "check-types": {},

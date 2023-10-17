@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-import { getDataProductRoutePath } from './dataspace-settings';
 
 async function execute(
   dataProduct: DataProduct,
@@ -30,28 +29,28 @@ async function execute(
     });
     res.status(response.status).json(response.data);
   } catch (error: any) {
-    const serializedError =
-      error?.response?.data?.error || error?.response?.data;
+    const statusCode = error.response?.status || 500;
 
-    if (serializedError?.status) {
-      res.status(serializedError.status).json({
+    if (error.response?.data?.type) {
+      res.status(statusCode).json({
         message:
-          serializedError?.title ||
-          `Data source returned: ${serializedError.status}`,
-        data: error.response.data,
+          (error.response?.data?.message
+            ? `${error.response?.data.type}: ${error.response?.data?.message}`
+            : null) ||
+          `Data source returned error type: ${error.response?.data?.type}`,
         context: 'DataProductSource',
       });
     } else {
       res
-        .status(error?.response?.status || 500)
+        .status(statusCode)
         .json({ message: error.message, context: 'ApiRouter' });
     }
   }
 }
 
 function getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
-  const gatewayEndpoint = process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL;
-  const defaultDataSource = process.env.TESTBED_DEFAULT_DATA_SOURCE;
+  const gatewayEndpoint = process.env.DATASPACE_PRODUCT_GATEWAY_BASE_URL;
+  const defaultDataSource = process.env.DATASPACE_DEFAULT_DATA_SOURCE;
   const dataProductRoutePath = getDataProductRoutePath(dataProduct);
 
   if (!gatewayEndpoint)
@@ -59,6 +58,16 @@ function getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
   if (!dataSource) dataSource = defaultDataSource;
 
   return `${gatewayEndpoint}/${dataProductRoutePath}?source=${dataSource}`;
+}
+
+function getDataProductRoutePath(dataProduct: DataProduct) {
+  if (dataProduct.startsWith('test/')) {
+    return dataProduct;
+  }
+  const schemaVersion = process.env.DATASPACE_DEFAULT_SCHEMA_VERSION;
+  if (!schemaVersion) throw new Error('Missing data product schema version');
+
+  return `${dataProduct}_v${schemaVersion}`;
 }
 
 function parseDataProductRequestBody(

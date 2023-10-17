@@ -22,7 +22,7 @@ export const handlers = [
   ),
   // profile tos
   rest.post(
-    'http://localhost/api/testbed-gw/test/lsipii/Service/Terms/Agreement',
+    'http://localhost/api/testbed-gw/Service/Terms/Agreement',
     (_, res, ctx) => res(ctx.json(MOCK_TOS_AGREEMENT))
   ),
   // profile
@@ -35,11 +35,11 @@ export const handlers = [
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
   ),
   rest.post(
-    'http://localhost/api/testbed-gw/Person/BasicInformation',
+    'http://localhost/api/dataspace/Person/BasicInformation',
     (_, res, ctx) => res(ctx.json(MOCK_PERSON_BASIC_INFO))
   ),
   rest.post(
-    'http://localhost/api/testbed-gw/Person/JobApplicantProfile',
+    'http://localhost/api/dataspace/Person/JobApplicantProfile',
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
   ),
   // codesets, add values as needed for tests

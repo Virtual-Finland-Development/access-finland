@@ -2,11 +2,12 @@ import {
   JobApplicantProfile,
   PersonBasicInformation,
   ProfileTosAgreement,
+  ProfileTosAgreementWrite,
 } from '@/types';
 import { isExportedApplication } from '@/lib/utils';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
-import { utilizeDataProduct } from './testbed-gw';
+import { utilizeDataProduct } from './dataspace';
 
 /**
  * Use internal api routes for MVP app (!isExport).
@@ -15,17 +16,15 @@ import { utilizeDataProduct } from './testbed-gw';
 const isExport = isExportedApplication();
 
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  const { data } = await utilizeDataProduct(
-    'test/lsipii/Service/Terms/Agreement'
-  );
+  const { data } = await utilizeDataProduct('Service/Terms/Agreement');
   return data;
 }
 
 export async function saveProfileTosAgreement(
-  payload: Pick<ProfileTosAgreement, 'version' | 'accepted'>
+  payload: Pick<ProfileTosAgreementWrite, 'version' | 'accepted'>
 ): Promise<ProfileTosAgreement> {
   const { data } = await utilizeDataProduct(
-    'test/lsipii/Service/Terms/Agreement/Write',
+    'Service/Terms/Agreement/Write',
     payload
   );
   return data;

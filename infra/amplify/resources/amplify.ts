@@ -22,7 +22,7 @@ export function configureAmplify() {
     aws.iam.getRole({ name: 'amplifyconsole-backend-role' })
   );
 
-  const testbedConfig = new pulumi.Config('testbed');
+  const dataspaceConfig = new pulumi.Config('dataspace');
 
   // Next.js Amplify App
   const amplifyApp = new aws.amplify.App(nameResource('amplifyApp'), {
@@ -40,12 +40,12 @@ export function configureAmplify() {
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
-      TESTBED_PRODUCT_GATEWAY_BASE_URL:
-        process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
-        testbedConfig.require('gatewayUrl'),
-      TESTBED_DEFAULT_DATA_SOURCE:
-        process.env.TESTBED_DEFAULT_DATA_SOURCE ||
-        testbedConfig.require('defaultDataSource'),
+      DATASPACE_PRODUCT_GATEWAY_BASE_URL: dataspaceConfig.require('gatewayUrl'),
+      DATASPACE_DEFAULT_DATA_SOURCE:
+        dataspaceConfig.require('defaultDataSource'),
+      DATASPACE_DEFAULT_SCHEMA_VERSION: dataspaceConfig.require(
+        'defaultSchemaVersion'
+      ),
     },
     platform: 'WEB_COMPUTE',
     buildSpec: `
@@ -63,8 +63,9 @@ export function configureAmplify() {
                   - echo "NEXT_PUBLIC_STAGE=$NEXT_PUBLIC_STAGE" >> apps/af-mvp/.env
                   - echo "FRONTEND_ORIGIN_URI=$FRONTEND_ORIGIN_URI" >> apps/af-mvp/.env
                   - echo "BACKEND_SECRET_SIGN_KEY=$BACKEND_SECRET_SIGN_KEY" >> apps/af-mvp/.env
-                  - echo "TESTBED_PRODUCT_GATEWAY_BASE_URL=$TESTBED_PRODUCT_GATEWAY_BASE_URL" >> apps/af-mvp/.env
-                  - echo "TESTBED_DEFAULT_DATA_SOURCE=$TESTBED_DEFAULT_DATA_SOURCE" >> apps/af-mvp/.env
+                  - echo "DATASPACE_PRODUCT_GATEWAY_BASE_URL=$DATASPACE_PRODUCT_GATEWAY_BASE_URL" >> apps/af-mvp/.env
+                  - echo "DATASPACE_DEFAULT_DATA_SOURCE=$DATASPACE_DEFAULT_DATA_SOURCE" >> apps/af-mvp/.env
+                  - echo "DATASPACE_DEFAULT_SCHEMA_VERSION=$DATASPACE_DEFAULT_SCHEMA_VERSION" >> apps/af-mvp/.env
                   - npx turbo run build --filter=af-mvp
             artifacts:
               baseDirectory: apps/af-mvp/.next

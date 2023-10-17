@@ -21,9 +21,17 @@ export default function BackButton() {
     return null;
   }
 
+  const handleBackClick = () => {
+    if (router.route === '/info/about-the-service') {
+      router.push('/');
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <div className="block md:hidden px-4 -mb-2">
-      <StyledButton onClick={() => router.back()}>BACK</StyledButton>
+      <StyledButton onClick={handleBackClick}>BACK</StyledButton>
     </div>
   );
 }

@@ -14,7 +14,7 @@ export function createContainerImage(cdnSetup: {
   cdn: aws.cloudfront.Distribution;
   domainName: pulumi.Output<string>;
 }) {
-  const testbedConfig = new pulumi.Config('testbed');
+  const dataspaceConfig = new pulumi.Config('dataspace');
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
@@ -33,13 +33,10 @@ export function createContainerImage(cdnSetup: {
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
       BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
-      /* TESTBED_PRODUCT_GATEWAY_BASE_URL:
-        process.env.TESTBED_PRODUCT_GATEWAY_BASE_URL ||
-        testbedConfig.require('gatewayUrl'), */
-      TESTBED_PRODUCT_GATEWAY_BASE_URL: pulumi.interpolate`${usersApiEndpoint}/productizer`,
-      TESTBED_DEFAULT_DATA_SOURCE:
-        process.env.TESTBED_DEFAULT_DATA_SOURCE ||
-        testbedConfig.require('defaultDataSource'),
+      DATASPACE_PRODUCT_GATEWAY_BASE_URL: pulumi.interpolate`${usersApiEndpoint}/productizer`,
+      DATASPACE_DEFAULT_DATA_SOURCE:
+        process.env.DATASPACE_DEFAULT_DATA_SOURCE ||
+        dataspaceConfig.require('defaultDataSource'),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
     },
   });

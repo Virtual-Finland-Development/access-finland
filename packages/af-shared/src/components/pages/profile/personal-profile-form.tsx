@@ -1,20 +1,19 @@
-import { useRouter } from 'next/router';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, IconArrowLeft, IconArrowRight } from 'suomifi-ui-components';
-import type { PersonBasicInformation } from '@/types';
-import api from '@/lib/api';
-import { useCountries } from '@/lib/hooks/codesets';
-import { BASIC_INFO_QUERY_KEYS } from '@/lib/hooks/profile';
-import { pickRandomName } from '@/lib/utils';
-import { isExportedApplication } from '@/lib/utils';
-import { useAuth } from '@/context/auth-context';
-import { useToast } from '@/context/toast-context';
 import FormInput from '@/components/form/form-input';
 import FormPhoneInput from '@/components/form/form-phone-input';
 import FormSingleSelect from '@/components/form/form-single-select';
 import CustomHeading from '@/components/ui/custom-heading';
 import Loading from '@/components/ui/loading';
+import { useAuth } from '@/context/auth-context';
+import { useToast } from '@/context/toast-context';
+import api from '@/lib/api';
+import { useCountries } from '@/lib/hooks/codesets';
+import { BASIC_INFO_QUERY_KEYS } from '@/lib/hooks/profile';
+import { isExportedApplication, pickRandomName } from '@/lib/utils';
+import type { PersonBasicInformation } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button, IconArrowLeft, IconArrowRight } from 'suomifi-ui-components';
 
 interface Props {
   personBasicInformation: PersonBasicInformation | undefined;
@@ -89,14 +88,12 @@ export default function PersonalProfileForm(props: Props) {
             name={`givenName`}
             labelText="Given name"
             control={control}
-            rules={{ required: 'Given name is required.' }}
             readOnly={isExportedApp}
           />
           <FormInput
             name={`lastName`}
             labelText="Last name"
             control={control}
-            rules={{ required: 'Last name is required.' }}
             readOnly={isExportedApp}
           />
           <FormInput
@@ -112,7 +109,6 @@ export default function PersonalProfileForm(props: Props) {
           <FormPhoneInput
             name={`phoneNumber`}
             control={control}
-            rules={{ required: 'Phone number is required.' }}
             labelText="Phone number"
             hintText="Use international format (+358xxx)"
             readOnly={isExportedApp}
@@ -120,7 +116,6 @@ export default function PersonalProfileForm(props: Props) {
           <FormSingleSelect
             name={`residency`}
             control={control}
-            rules={{ required: 'Residency is required.' }}
             labelText="Country of residence"
             hintText="Filter by typing or select from dropdown"
             items={

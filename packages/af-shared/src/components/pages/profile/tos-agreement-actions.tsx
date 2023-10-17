@@ -46,7 +46,7 @@ function AgreementContent(props: AgreementProps) {
       <CustomHeading variant="h3">{TITLE[contentKey]}</CustomHeading>
       <Text>{CONTENT_1[contentKey]}</Text>
       <Text>
-        <CustomLink href="/terms-of-use" target="_blank" disableVisited>
+        <CustomLink href="/info/terms-of-use" target="_blank" disableVisited>
           {LINK_TITLE[contentKey]}
         </CustomLink>
       </Text>
@@ -67,14 +67,14 @@ export default function TosAgreementActions(props: Props) {
   const { openModal, closeModal } = useModal();
   const [isLoading, setIsLoading] = useState(false);
 
-  const isNewUser = !agreement?.acceptedPreviousVersion;
+  const isNewUser = !agreement?.acceptedVersion;
 
   const onAccept = async () => {
     setIsLoading(true);
 
     try {
       const response = await api.profile.saveProfileTosAgreement({
-        version: agreement?.version!,
+        version: agreement?.currentTerms.version!,
         accepted: true,
       });
       reactQueryClient.setQueryData(PROFILE_TOS_AGREEMENT_QUERY_KEYS, response);
