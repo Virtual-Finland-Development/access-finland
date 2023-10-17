@@ -16,15 +16,15 @@ import { utilizeDataProduct } from './dataspace';
 const isExport = isExportedApplication();
 
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  const { data } = await utilizeDataProduct('Service/Terms/Agreement');
+  const { data } = await apiClient.get('/api/users-api/terms-of-service');
   return data;
 }
 
 export async function saveProfileTosAgreement(
-  payload: Pick<ProfileTosAgreementWrite, 'version' | 'accepted'>
+  payload: ProfileTosAgreementWrite
 ): Promise<ProfileTosAgreement> {
-  const { data } = await utilizeDataProduct(
-    'Service/Terms/Agreement/Write',
+  const { data } = await apiClient.post(
+    '/api/users-api/terms-of-service',
     payload
   );
   return data;
