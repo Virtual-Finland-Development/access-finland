@@ -37,6 +37,9 @@ export function createContainerImage(cdnSetup: {
       DATASPACE_DEFAULT_DATA_SOURCE:
         process.env.DATASPACE_DEFAULT_DATA_SOURCE ||
         dataspaceConfig.require('defaultDataSource'),
+      DATASPACE_DEFAULT_SCHEMA_VERSION: dataspaceConfig.require(
+        'defaultSchemaVersion'
+      ),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
     },
   });
