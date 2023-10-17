@@ -3,12 +3,12 @@ import CustomHeading from '@/components/ui/custom-heading';
 import CustomLink from '@shared/components/ui/custom-link';
 import InfoPagesLayout from '../components/info-pages-layout';
 
-export default function InformationSecurityAndRegisterDescriptionPage() {
+export default function DataProtectionStatementPage() {
   return (
-    <InfoPagesLayout title="Information Security and Register Description">
+    <InfoPagesLayout title="Data protection statement">
       <article className="flex flex-col gap-6">
         <CustomHeading variant="h2">
-          Access Finland data protection statement
+          Access Finland’s data protection statement
         </CustomHeading>
         <Text className="italic !font-bold">
           <span className="block">

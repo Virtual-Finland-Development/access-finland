@@ -80,11 +80,11 @@ function Help() {
                     Terms of Use
                   </CustomLink>
                   <CustomLink
-                    href="/info/information-security-and-register-description"
+                    href="/info/data-protection-statement"
                     disableVisited
                     $base
                   >
-                    Information Security and Register Description
+                    Data protection statement
                   </CustomLink>
                 </div>
               )}
