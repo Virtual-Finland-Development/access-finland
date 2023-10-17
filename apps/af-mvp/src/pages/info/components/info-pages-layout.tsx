@@ -18,7 +18,7 @@ export default function InfoPagesLayout(props: InfoPagesLayoutProps) {
         <div className="lg:shrink-0 bg-white">
           <InfoNavigation />
         </div>
-        <Page.Block className="bg-white grow border-l">
+        <Page.Block className="bg-white grow lg:border-l">
           <div className="lg:-mx-10">{children}</div>
         </Page.Block>
       </div>
