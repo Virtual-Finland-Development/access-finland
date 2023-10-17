@@ -15,7 +15,7 @@ const INFO_ROUTES = {
 };
 
 const INFO_ROUTES_TITLES = {
-  [INFO_ROUTES.aboutTheService]: 'About the service',
+  [INFO_ROUTES.aboutTheService]: 'About the Service',
   [INFO_ROUTES.termsOfUse]: 'Terms of Use',
   [INFO_ROUTES.dataProtectionStatement]: 'Data protection statement',
 };

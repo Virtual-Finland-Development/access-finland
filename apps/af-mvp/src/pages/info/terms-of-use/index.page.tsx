@@ -147,14 +147,11 @@ export default function TermsOfUsagePage() {
           </li>
         </ul>
         <Text>
-          The rights that relate to the personal data are described in the
-          Information security and register description.
+          The rights that relate to the personal data are described in the data
+          protection statement.
         </Text>
-        <CustomLink
-          href="/info/information-security-and-register-description"
-          disableVisited
-        >
-          Access Finland Information Security and Register Description (TBD)
+        <CustomLink href="/info/data-protection-statement" disableVisited>
+          Access Finland’s data protection statement
         </CustomLink>
 
         <CustomHeading variant="h3">Changing the Terms of Use</CustomHeading>
