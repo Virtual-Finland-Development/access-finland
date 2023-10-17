@@ -20,6 +20,8 @@ const PROTECTED_URLS = [
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
+  '/api/dataspace/Service/Terms/Agreement',
+  '/api/dataspace/Service/Terms/Agreement/Write',
   '/api/dataspace/Person/BasicInformation',
   '/api/dataspace/Person/BasicInformation/Write',
   '/api/dataspace/Person/JobApplicantProfile',

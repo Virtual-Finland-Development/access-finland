@@ -1,4 +1,9 @@
-import { JobApplicantProfile, PersonBasicInformation } from '@/types';
+import {
+  JobApplicantProfile,
+  PersonBasicInformation,
+  ProfileTosAgreement,
+  ProfileTosAgreementWrite,
+} from '@/types';
 import { isExportedApplication } from '@/lib/utils';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
@@ -9,6 +14,21 @@ import { utilizeDataProduct } from './dataspace';
  * API routes defined for MVP app in apps/af-mvp/src/pages/api.
  */
 const isExport = isExportedApplication();
+
+export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
+  const { data } = await apiClient.get('/api/users-api/terms-of-service');
+  return data;
+}
+
+export async function saveProfileTosAgreement(
+  payload: ProfileTosAgreementWrite
+): Promise<ProfileTosAgreement> {
+  const { data } = await apiClient.post(
+    '/api/users-api/terms-of-service',
+    payload
+  );
+  return data;
+}
 
 export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
   const method = isExport

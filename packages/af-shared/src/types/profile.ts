@@ -1,6 +1,7 @@
 import {
   Output,
   array,
+  boolean,
   nativeEnum,
   nullable,
   number,
@@ -8,6 +9,29 @@ import {
   optional,
   string,
 } from 'valibot';
+
+/**
+ * Profile TOS Agreement
+ */
+export const ProfileTosAgreementSchema = object({
+  currentTerms: object({
+    url: string(),
+    description: string(),
+    version: string(),
+  }),
+  acceptedVersion: nullable(string()),
+  acceptedAt: nullable(string()),
+  hasAcceptedLatest: boolean(),
+});
+export type ProfileTosAgreement = Output<typeof ProfileTosAgreementSchema>;
+
+export const ProfileTosAgreementWriteSchema = object({
+  version: string(),
+  accepted: boolean(),
+});
+export type ProfileTosAgreementWrite = Output<
+  typeof ProfileTosAgreementWriteSchema
+>;
 
 /**
  * Person/BasicInformation

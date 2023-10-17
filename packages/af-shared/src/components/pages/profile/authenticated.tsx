@@ -1,75 +1,83 @@
-import { Text } from 'suomifi-ui-components';
-import {
-  useJobApplicantProfile,
-  usePersonBasicInfo,
-} from '@/lib/hooks/profile';
 import Page from '@/components/layout/page';
 import CustomHeading from '@/components/ui/custom-heading';
 import Loading from '@/components/ui/loading';
+import {
+  useJobApplicantProfile,
+  usePersonBasicInfo,
+  useProfileTosAgreement,
+} from '@/lib/hooks/profile';
+import { isExportedApplication } from '@/lib/utils';
+import { Text } from 'suomifi-ui-components';
+import ProfileDataSentry from './profile-data-sentry';
 import ProfileDetails from './profile-details/profile-details';
-import ProfileErrors from './profile-errors/profile-errors';
+
+const isExport = isExportedApplication();
 
 export default function ProfileAuthenticated() {
+  const {
+    data: agreement,
+    isFetching: agreementFetching,
+    errorResponse: agreementErrorResponse,
+  } = useProfileTosAgreement(!isExport); // enable TOS functionality for MVP only
+
+  // for MVP: data fetch enabled if user has accepted the agreement, for Featues OK
+  const shouldFetchProfileData =
+    isExport || (!agreementFetching && agreement?.hasAcceptedLatest);
+
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
     errorResponse: personBasicInfoErrorResponse,
-  } = usePersonBasicInfo();
+  } = usePersonBasicInfo(shouldFetchProfileData);
+
   const {
     data: jobApplicationProfile,
     isLoading: jobApplicationProfileLoading,
     errorResponse: jobApplicationProfileErrorResponse,
-  } = useJobApplicantProfile();
+  } = useJobApplicantProfile(shouldFetchProfileData);
 
-  const isLoading = basicInformationLoading || jobApplicationProfileLoading;
+  const isLoading =
+    agreementFetching ||
+    basicInformationLoading ||
+    jobApplicationProfileLoading;
 
   return (
-    <>
-      {isLoading ? (
-        <Page.Block className="bg-white flex items-center justify-center min-h-[200px]">
+    <Page.Block className="bg-white">
+      <div className="flex flex-col gap-6 items-start">
+        <div className="flex flex-row items-center">
+          <CustomHeading variant="h2" suomiFiBlue="dark">
+            Profile
+          </CustomHeading>
+        </div>
+
+        <Text>
+          Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod
+          tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim
+          veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex
+          ea commodi consequat. Quis aute iure reprehenderit in voluptate velit
+          esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat
+          cupiditat non proident, sunt in culpa qui officia deserunt mollit anim
+          id est laborum.
+        </Text>
+
+        {isLoading ? (
           <Loading />
-        </Page.Block>
-      ) : (
-        <Page.Block className="bg-white">
-          <div className="flex flex-col gap-6 items-start">
-            <div className="flex flex-row items-center">
-              <CustomHeading variant="h2" suomiFiBlue="dark">
-                Profile
-              </CustomHeading>
-            </div>
-
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod
-              tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid
-              ex ea commodi consequat. Quis aute iure reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              obcaecat cupiditat non proident, sunt in culpa qui officia
-              deserunt mollit anim id est laborum.
-            </Text>
-
-            {/* If either of the profile requests fail (not 404), display errors instead of profile details */}
-            {[
+        ) : (
+          <ProfileDataSentry
+            agreement={agreement}
+            errorResponses={[
+              agreementErrorResponse,
               personBasicInfoErrorResponse,
               jobApplicationProfileErrorResponse,
-            ].some(response => response?.shouldPrintError) ? (
-              <ProfileErrors
-                errorMessages={
-                  [
-                    personBasicInfoErrorResponse?.message,
-                    jobApplicationProfileErrorResponse?.message,
-                  ].filter(msg => msg) as string[]
-                }
-              />
-            ) : (
-              <ProfileDetails
-                personBasicInformation={personBasicInformation}
-                jobApplicationProfile={jobApplicationProfile}
-              />
-            )}
-          </div>
-        </Page.Block>
-      )}
-    </>
+            ]}
+          >
+            <ProfileDetails
+              personBasicInformation={personBasicInformation}
+              jobApplicationProfile={jobApplicationProfile}
+            />
+          </ProfileDataSentry>
+        )}
+      </div>
+    </Page.Block>
   );
 }

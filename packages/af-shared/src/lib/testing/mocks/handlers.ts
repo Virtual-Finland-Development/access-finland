@@ -9,6 +9,7 @@ import {
   MOCK_ISO_COUNTRIES,
   MOCK_JOB_APPLICANT_INFO,
   MOCK_PERSON_BASIC_INFO,
+  MOCK_TOS_AGREEMENT,
   MOCK_USER_COMPANIES,
 } from './mock-values';
 
@@ -18,6 +19,11 @@ export const handlers = [
   // companies
   rest.get(`${PRH_MOCK_BASE_URL}/users/${userId}/companies`, (_, res, ctx) =>
     res(ctx.json(MOCK_USER_COMPANIES))
+  ),
+  // profile tos
+  rest.post(
+    'http://localhost/api/testbed-gw/Service/Terms/Agreement',
+    (_, res, ctx) => res(ctx.json(MOCK_TOS_AGREEMENT))
   ),
   // profile
   rest.get(
