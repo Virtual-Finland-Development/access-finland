@@ -65,8 +65,9 @@ function getDataProductRoutePath(dataProduct: DataProduct) {
     return dataProduct;
   }
   const schemaVersion = process.env.DATASPACE_DEFAULT_SCHEMA_VERSION;
-  if (typeof schemaVersion !== 'string' || schemaVersion.length < 1)
-    throw new Error('Missing data product schema version');
+  if (typeof schemaVersion !== 'string' || schemaVersion.length < 1) {
+    throw new Error(`Invalid schema version: ${schemaVersion}`);
+  }
 
   return `${dataProduct}_v${schemaVersion}`;
 }
