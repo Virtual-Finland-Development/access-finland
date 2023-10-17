@@ -19,8 +19,8 @@ export const ProfileTosAgreementSchema = object({
     description: string(),
     version: string(),
   }),
-  acceptedVersion: optional(string()),
-  acceptedAt: optional(string()),
+  acceptedVersion: nullable(string()),
+  acceptedAt: nullable(string()),
   hasAcceptedLatest: boolean(),
 });
 export type ProfileTosAgreement = Output<typeof ProfileTosAgreementSchema>;
