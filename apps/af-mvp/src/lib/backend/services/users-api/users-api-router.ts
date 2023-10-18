@@ -26,6 +26,10 @@ const UsersApiRouter = {
             usersApiRequestHeaders
           );
         case 'GET /api/users-api/terms-of-service':
+          // Prevent cloudfront caching of the GET-response
+          // @see: https://nextjs.org/docs/pages/api-reference/next-config-js/headers#cache-control
+          res.setHeader('Cache-Control', 'no-store');
+
           return await UsersApiRouter.retrieveTermsOfService(
             req,
             res,
