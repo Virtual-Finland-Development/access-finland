@@ -83,7 +83,7 @@ export async function saveJobApplicantProfile(
 export async function deleteProfile() {
   const url = isExport
     ? `${TESTBED_API_BASE_URL}/users-api/user`
-    : `/api/users-api`;
+    : `/api/users-api/user`;
 
   const { data } = await apiClient.delete(url);
   return data;
