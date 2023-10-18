@@ -21,9 +21,8 @@ export const handlers = [
     res(ctx.json(MOCK_USER_COMPANIES))
   ),
   // profile tos
-  rest.post(
-    'http://localhost/api/testbed-gw/Service/Terms/Agreement',
-    (_, res, ctx) => res(ctx.json(MOCK_TOS_AGREEMENT))
+  rest.get('http://localhost/api/users-api/terms-of-service', (_, res, ctx) =>
+    res(ctx.json(MOCK_TOS_AGREEMENT))
   ),
   // profile
   rest.get(
