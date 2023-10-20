@@ -140,6 +140,7 @@ const setup = {
     region: awsSetup.get('region') || 'us-east-1',
   },
   infrastructureStackName: `${organizationName}/infrastructure/${envOverride}`,
+  monitoringStackName: `${organizationName}/cloudwatch-logs-alerts/${envOverride}`,
 };
 
 export default setup;
