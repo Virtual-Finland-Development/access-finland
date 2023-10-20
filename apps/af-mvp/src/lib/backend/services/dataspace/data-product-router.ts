@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
+import logger from '../../logger';
 
 async function execute(
   dataProduct: DataProduct,
@@ -30,21 +31,23 @@ async function execute(
     res.status(response.status).json(response.data);
   } catch (error: any) {
     const statusCode = error.response?.status || 500;
+    const responseData = error.response?.data?.type
+      ? {
+          message:
+            (error.response?.data?.message
+              ? `${error.response?.data.type}: ${error.response?.data?.message}`
+              : null) ||
+            `Data source returned error type: ${error.response?.data?.type}`,
+          context: 'DataProductSource',
+        }
+      : { message: error.message, context: 'ApiRouter' };
 
-    if (error.response?.data?.type) {
-      res.status(statusCode).json({
-        message:
-          (error.response?.data?.message
-            ? `${error.response?.data.type}: ${error.response?.data?.message}`
-            : null) ||
-          `Data source returned error type: ${error.response?.data?.type}`,
-        context: 'DataProductSource',
-      });
-    } else {
-      res
-        .status(statusCode)
-        .json({ message: error.message, context: 'ApiRouter' });
-    }
+    logger.error(
+      `Data product request failed with code ${statusCode}`,
+      responseData
+    );
+
+    res.status(statusCode).json(responseData);
   }
 }
 

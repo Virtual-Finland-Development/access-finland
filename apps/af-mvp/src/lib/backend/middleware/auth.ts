@@ -1,7 +1,8 @@
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { decryptApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { AxiosError } from 'axios';
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { ValiError } from 'valibot';
+import logger from '../logger';
 
 export function loggedInAuthMiddleware(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
@@ -19,7 +20,7 @@ export function loggedInAuthMiddleware(handler: NextApiHandler) {
     try {
       return await handler(req, res);
     } catch (error) {
-      logError(error);
+      logError('loggedInAuthMiddleware', error);
       return res.status(500).json({ error: 'Internal server error.' });
     }
   };
@@ -30,21 +31,25 @@ export function loggedOutAuthMiddleware(handler: NextApiHandler) {
     try {
       return await handler(req, res);
     } catch (error) {
-      logError(error);
+      logError('loggedOutAuthMiddleware', error);
       return res.status(401).json({ error: 'Unauthorized.' });
     }
   };
 }
 
-
-function logError(error: Error) {
+function logError(contextName: string, error: Error) {
   if (error instanceof AxiosError) {
-    console.error(
+    logger.error(
+      contextName,
       `Axios: ${error.message}, status code: ${error.response?.status}`
     );
   } else if (error instanceof ValiError) {
-    console.error(`Vali: ${error.message}`, JSON.stringify(error.issues));
+    logger.error(
+      contextName,
+      `Vali: ${error.message}`,
+      JSON.stringify(error.issues)
+    );
   } else {
-    console.error(error);
+    logger.error(contextName, error);
   }
 }
