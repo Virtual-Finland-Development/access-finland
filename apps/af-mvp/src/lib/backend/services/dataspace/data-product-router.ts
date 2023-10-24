@@ -25,7 +25,6 @@ async function execute(
         'X-Consent-Token': '',
         'Content-Type': 'application/json',
         'User-Agent': 'Access Finland - MVP Application',
-        'X-Request-Trace-Id': req.headers['X-Request-Trace-Id'],
       },
     });
     res.status(response.status).json(response.data);
