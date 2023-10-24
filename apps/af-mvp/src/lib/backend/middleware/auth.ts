@@ -20,7 +20,7 @@ export function loggedInAuthMiddleware(handler: NextApiHandler) {
     // request tracing
     let traceId: string | undefined = undefined;
     // trace ID can't be set for dataspace request headers, may be blocked
-    // header is not merged in data-product-router.ts, this is for additional safety and to prevent polluting untraceable logs
+    // header is not merged in data-product-router.ts, this is for additional safety and to prevent polluting logs with untraceable request ids (dataspace requests)
     if (!req.url?.includes('/api/dataspace/')) {
       traceId = uuidv4();
       req.headers['X-Request-Trace-Id'] = traceId;
