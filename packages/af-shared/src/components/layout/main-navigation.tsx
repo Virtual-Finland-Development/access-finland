@@ -33,7 +33,7 @@ const MobileMenuToggleButton = styled(Button).attrs({
   }
 `;
 
-type NavItems = { name: string; href: string }[];
+type NavItems = { name: string; href: string; description: string }[];
 
 const DeskTopNavIcons = {
   '/': IconHome,
@@ -86,7 +86,7 @@ function DesktopMenuPopover({
                       >
                         {item.name}
                       </CustomLink>
-                      <Text>Page info here.</Text>
+                      <Text>{item.description}</Text>
                     </div>
                   </>
                 </div>
@@ -213,7 +213,7 @@ export default function MainNavigation({
   navigationItems,
   languages,
 }: {
-  navigationItems: { name: string; href: string }[];
+  navigationItems: NavItems;
   languages: { code: string; label: string }[];
 }) {
   const { isAuthenticated } = useAuth();
