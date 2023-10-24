@@ -33,7 +33,7 @@ const MobileMenuToggleButton = styled(Button).attrs({
   }
 `;
 
-type NavItems = { name: string; href: string; description: string }[];
+export type NavItems = { name: string; href: string; description: string }[];
 
 const DeskTopNavIcons = {
   '/': IconHome,

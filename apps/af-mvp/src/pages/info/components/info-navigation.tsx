@@ -9,13 +9,11 @@ import useDimensions from '@shared/lib/hooks/use-dimensions';
 import CustomRouterLink from '@shared/components/ui/custom-router-link';
 
 const INFO_ROUTES = {
-  aboutTheService: '/info/about-the-service',
   termsOfUse: '/info/terms-of-use',
   dataProtectionStatement: '/info/data-protection-statement',
 };
 
 const INFO_ROUTES_TITLES = {
-  [INFO_ROUTES.aboutTheService]: 'About the Service',
   [INFO_ROUTES.termsOfUse]: 'Terms of Use',
   [INFO_ROUTES.dataProtectionStatement]: 'Data protection statement',
 };
