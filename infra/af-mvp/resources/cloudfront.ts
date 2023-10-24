@@ -67,15 +67,7 @@ export function createContentDeliveryNetwork(
       defaultCacheBehavior: {
         targetOriginId: loadBalancerSetup.appLoadBalancer.arn,
         viewerProtocolPolicy: 'redirect-to-https',
-        allowedMethods: [
-          'HEAD',
-          'DELETE',
-          'POST',
-          'GET',
-          'OPTIONS',
-          'PUT',
-          'PATCH',
-        ],
+        allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
         cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
         defaultTtl: 600,
         maxTtl: 600,
@@ -87,6 +79,32 @@ export function createContentDeliveryNetwork(
           },
         },
       },
+      orderedCacheBehaviors: [
+        {
+          pathPattern: '/api/*',
+          targetOriginId: loadBalancerSetup.appLoadBalancer.arn,
+          viewerProtocolPolicy: 'redirect-to-https',
+          allowedMethods: [
+            'HEAD',
+            'DELETE',
+            'POST',
+            'GET',
+            'OPTIONS',
+            'PUT',
+            'PATCH',
+          ],
+          cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+          defaultTtl: 0,
+          maxTtl: 0,
+          minTtl: 0,
+          forwardedValues: {
+            queryString: true,
+            cookies: {
+              forward: 'all',
+            },
+          },
+        },
+      ],
       restrictions: {
         geoRestriction: {
           restrictionType: 'none',

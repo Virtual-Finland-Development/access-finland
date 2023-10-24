@@ -1,16 +1,18 @@
-import Link, { LinkProps } from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Dialog, Popover, Transition } from '@headlessui/react';
 import styled from 'styled-components';
 import {
   Button,
+  IconBuildings,
   IconClose,
   IconFileCabinet,
+  IconHome,
   IconMenu,
+  IconUserProfile,
   LanguageMenu,
   LanguageMenuItem,
-  RouterLink,
   ServiceNavigation,
   ServiceNavigationItem,
   Text,
@@ -19,6 +21,7 @@ import api from '@/lib/api';
 import { useAuth } from '@/context/auth-context';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomLink from '@/components/ui/custom-link';
+import CustomRouterLink from '@/components/ui/custom-router-link';
 
 const MobileMenuToggleButton = styled(Button).attrs({
   variant: 'secondaryNoBorder',
@@ -32,19 +35,11 @@ const MobileMenuToggleButton = styled(Button).attrs({
 
 type NavItems = { name: string; href: string }[];
 
-interface MobileLink extends LinkProps {
-  children: ReactNode;
-}
-
-function MobileLink({ onClick, children, href }: MobileLink) {
-  return (
-    <Link href={href} passHref legacyBehavior>
-      <RouterLink onClick={onClick} className="!normal-case">
-        {children}
-      </RouterLink>
-    </Link>
-  );
-}
+const DeskTopNavIcons = {
+  '/': IconHome,
+  '/profile': IconUserProfile,
+  '/company': IconBuildings,
+};
 
 const DesktopNavItem = styled(Link).attrs<{
   $isActive: boolean;
@@ -73,22 +68,30 @@ function DesktopMenuPopover({
             )}
           </Popover.Button>
           <Popover.Panel className="absolute right-0 z-10 mt-3 origin-top-right bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none flex flex-col px-4">
-            {navigationItems.map(item => (
-              <div
-                key={item.href}
-                className="flex flex-row items-center justify-start gap-4 w-80 border-b last:border-none border-b-gray-300 p-4"
-              >
-                <>
-                  <IconFileCabinet className="flex-shrink-0 h-12 w-12" />
-                  <div className="flex flex-col">
-                    <CustomLink href={item.href} $bold onClick={() => close()}>
-                      {item.name}
-                    </CustomLink>
-                    <Text>Page info here.</Text>
-                  </div>
-                </>
-              </div>
-            ))}
+            {navigationItems.map(item => {
+              const Icon = DeskTopNavIcons[item.href] || IconFileCabinet;
+
+              return (
+                <div
+                  key={item.href}
+                  className="flex flex-row items-center justify-start gap-4 w-80 border-b last:border-none border-b-gray-300 p-4"
+                >
+                  <>
+                    <Icon className="flex-shrink-0 h-12 w-12" />
+                    <div className="flex flex-col">
+                      <CustomLink
+                        href={item.href}
+                        $bold
+                        onClick={() => close()}
+                      >
+                        {item.name}
+                      </CustomLink>
+                      <Text>Page info here.</Text>
+                    </div>
+                  </>
+                </div>
+              );
+            })}
           </Popover.Panel>
         </>
       )}
@@ -167,12 +170,12 @@ function MobileNavigationPanel({
                       (item.href !== '/' && router.pathname.includes(item.href))
                     }
                   >
-                    <MobileLink
+                    <CustomRouterLink
                       href={item.href}
                       onClick={() => setIsOpen(false)}
                     >
                       {item.name}
-                    </MobileLink>
+                    </CustomRouterLink>
                   </ServiceNavigationItem>
                 </div>
               ))}

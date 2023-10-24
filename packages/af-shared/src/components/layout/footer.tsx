@@ -1,11 +1,13 @@
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
 import virtualFinlandLogo from '@/images/virtualfinland_logo_small.png';
-import { Block, IconChevronRight } from 'suomifi-ui-components';
+import { Block, IconChevronRight, Text } from 'suomifi-ui-components';
 import { isExportedApplication } from '@/lib/utils';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomImage from '@/components/ui/custom-image';
 import CustomLink from '@/components/ui/custom-link';
 import CustomText from '@/components/ui/custom-text';
+
+const isExportedApp = isExportedApplication();
 
 const HELP_LINKS = [
   {
@@ -55,7 +57,7 @@ function Help() {
             Do you need help with this application or profile?
           </CustomHeading>
           <div className="mt-4 flex flex-col gap-2">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 items-start">
               <CustomText $base>
                 Send email to us and describe your problem:{' '}
                 <a
@@ -65,6 +67,27 @@ function Help() {
                   virtualfinland.um@gov.fi
                 </a>
               </CustomText>
+              {!isExportedApp && (
+                <div className="flex flex-col items-start">
+                  <CustomLink
+                    href="/info/about-the-service"
+                    disableVisited
+                    $base
+                  >
+                    About the Service
+                  </CustomLink>
+                  <CustomLink href="/info/terms-of-use" disableVisited $base>
+                    Terms of Use
+                  </CustomLink>
+                  <CustomLink
+                    href="/info/data-protection-statement"
+                    disableVisited
+                    $base
+                  >
+                    Data protection statement
+                  </CustomLink>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -73,9 +96,7 @@ function Help() {
   );
 }
 
-function Social() {
-  const isExportedApp = isExportedApplication();
-
+function Info() {
   return (
     <Block
       variant="section"
@@ -131,7 +152,7 @@ export default function Footer() {
       className="border-t-4 border-solid border-t-suomifi-dark bg-white"
     >
       <Help />
-      <Social />
+      <Info />
     </Block>
   );
 }

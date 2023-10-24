@@ -85,6 +85,18 @@ export const MOCK_USER_COMPANIES = [
   },
 ];
 
+// TOS agreement
+export const MOCK_TOS_AGREEMENT = {
+  currentTerms: {
+    url: '',
+    description: '',
+    version: '',
+  },
+  acceptedVersion: '',
+  acceptedAt: '',
+  hasAcceptedLatest: true,
+};
+
 // profile
 export const MOCK_PERSON_BASIC_INFO = {
   email: 'foo@bar.testbed.fi',
