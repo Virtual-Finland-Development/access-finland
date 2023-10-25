@@ -6,11 +6,11 @@ import {
 } from '@shared/types';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
+import { Logger } from '../../Logger';
 import { USERS_API_ACCESS_KEY } from '../../api-constants';
-import logger from '../../logger';
 
 const UsersApiRouter = {
-  async execute(req: NextApiRequest, res: NextApiResponse) {
+  async execute(req: NextApiRequest, res: NextApiResponse, logger: Logger) {
     try {
       const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
       const usersApiRequestHeaders = {

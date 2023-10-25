@@ -2,13 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
-import logger from '../../logger';
+import { Logger } from '../../Logger';
 
 async function execute(
   dataProduct: DataProduct,
   dataSource: string | undefined,
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  logger: Logger
 ) {
   const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
   const endpoint = getDataProductEndpointInfo(dataProduct, dataSource);

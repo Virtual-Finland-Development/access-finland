@@ -1,6 +1,6 @@
 import * as console from 'console';
 
-class Logger extends console.Console {
+export class Logger extends console.Console {
   _traceId = '';
   setTraceId(traceId: string) {
     this._traceId = traceId;
@@ -51,4 +51,6 @@ class Logger extends console.Console {
   }
 }
 
-export default new Logger(process.stdout, process.stderr);
+export function createLogger() {
+  return new Logger(process.stdout, process.stderr);
+}

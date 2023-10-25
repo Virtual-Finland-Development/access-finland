@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { Logger } from '@mvp/lib/backend/Logger';
 import { loggedInAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import DataProductRouter from '@mvp/lib/backend/services/dataspace/data-product-router';
 import { array, minLength, object, optional, parse, string } from 'valibot';
@@ -9,7 +10,11 @@ const DataProductRequestSchema = object({
   source: optional(string()),
 });
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  logger: Logger
+) {
   const { slug, source } = parse(DataProductRequestSchema, req.query);
 
   if (slug.length > 0) {
@@ -19,7 +24,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       dataProduct as DataProduct,
       source,
       req,
-      res
+      res,
+      logger
     );
   }
 
