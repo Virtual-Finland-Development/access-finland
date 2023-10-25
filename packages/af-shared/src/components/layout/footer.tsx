@@ -69,13 +69,6 @@ function Help() {
               </CustomText>
               {!isExportedApp && (
                 <div className="flex flex-col items-start">
-                  <CustomLink
-                    href="/info/about-the-service"
-                    disableVisited
-                    $base
-                  >
-                    About the Service
-                  </CustomLink>
                   <CustomLink href="/info/terms-of-use" disableVisited $base>
                     Terms of Use
                   </CustomLink>

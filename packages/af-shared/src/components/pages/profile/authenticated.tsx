@@ -1,13 +1,13 @@
-import Page from '@/components/layout/page';
-import CustomHeading from '@/components/ui/custom-heading';
-import Loading from '@/components/ui/loading';
+import { Text } from 'suomifi-ui-components';
 import {
   useJobApplicantProfile,
   usePersonBasicInfo,
   useProfileTosAgreement,
 } from '@/lib/hooks/profile';
 import { isExportedApplication } from '@/lib/utils';
-import { Text } from 'suomifi-ui-components';
+import Page from '@/components/layout/page';
+import CustomHeading from '@/components/ui/custom-heading';
+import Loading from '@/components/ui/loading';
 import ProfileDataSentry from './profile-data-sentry';
 import ProfileDetails from './profile-details/profile-details';
 
@@ -51,13 +51,8 @@ export default function ProfileAuthenticated() {
         </div>
 
         <Text>
-          Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod
-          tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim
-          veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex
-          ea commodi consequat. Quis aute iure reprehenderit in voluptate velit
-          esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat
-          cupiditat non proident, sunt in culpa qui officia deserunt mollit anim
-          id est laborum.
+          This is your Access Finland profile. Its purpose is to make it easier
+          for you to interact with public service providers in Finland.
         </Text>
 
         {isLoading ? (

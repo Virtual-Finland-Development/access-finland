@@ -17,6 +17,7 @@ const UsersApiRouter = {
         Authorization: `Bearer ${apiAuthPackage.idToken}`,
         'Content-Type': 'application/json',
         'X-Api-Key': USERS_API_ACCESS_KEY,
+        'X-Request-Trace-Id': req.headers['X-Request-Trace-Id'],
       };
 
       switch (`${req.method} ${req.url}`) {

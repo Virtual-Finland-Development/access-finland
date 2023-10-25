@@ -33,10 +33,6 @@ export default function ProfileDeleteConfirmation(props: Props) {
   return (
     <div className="flex flex-col gap-3">
       <Text>
-        Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod
-        tempor incidunt ut labore et dolore magna aliqua.
-      </Text>
-      <Text>
         All the profile information you have provided will be deleted. You will
         be logged out once deletion completes. Are you sure you wish to delete
         your profile information?

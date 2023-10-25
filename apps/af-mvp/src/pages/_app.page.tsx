@@ -34,8 +34,12 @@ type ExtendedAppProps = AppProps & {
 };
 
 const NAV_ITEMS = [
-  { name: 'Home', href: '/' },
-  { name: 'Profile', href: '/profile' },
+  { name: 'Home', href: '/', description: 'Your journey begins here' },
+  {
+    name: 'Profile',
+    href: '/profile',
+    description: 'Your Access Finland profile',
+  },
 ];
 
 const LANGUAGES = [{ code: 'en', label: 'In English (EN)' }];

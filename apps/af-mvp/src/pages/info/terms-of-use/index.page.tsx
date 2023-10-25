@@ -95,11 +95,7 @@ export default function TermsOfUsagePage() {
         </Text>
 
         <CustomHeading variant="h3">Data sharing with 3rd party</CustomHeading>
-        <Text>
-          Profile information is shared with KEHA Centre to match open
-          vacancies. Data sharing consent is given by user by accepting this
-          Terms of Use.
-        </Text>
+        <Text>At the moment data is not shared outside of AF application.</Text>
 
         <CustomHeading variant="h3">Cookies</CustomHeading>
         <Text>
