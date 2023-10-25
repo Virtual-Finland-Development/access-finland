@@ -7,7 +7,7 @@ import type { NextRequest } from 'next/server';
  */
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
-  url.pathname = '/info/about-the-service';
+  url.pathname = '/info/terms-of-use';
   return NextResponse.redirect(url);
 }
 

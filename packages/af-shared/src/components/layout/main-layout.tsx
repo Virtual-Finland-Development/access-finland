@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import Footer from './footer';
-import MainNavigation from './main-navigation';
+import MainNavigation, { NavItems } from './main-navigation';
 
 const Container = styled.div.attrs({
   className: 'container flex flex-col h-full flex-1 md:px-4',
@@ -9,7 +9,7 @@ const Container = styled.div.attrs({
 
 interface Props {
   children: ReactNode;
-  navigationItems: { name: string; href: string }[];
+  navigationItems: NavItems;
   languages: { code: string; label: string }[];
 }
 
