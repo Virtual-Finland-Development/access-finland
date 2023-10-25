@@ -5,7 +5,8 @@ import setup, { nameResource } from '../utils/setup';
 import { LoadBalancerSetup } from '../utils/types';
 import { createContainerImage } from './ecrContainerImage';
 
-const { tags, envOverride, infrastructureStackName } = setup;
+const { tags, envOverride, infrastructureStackName, monitoringStackName } =
+  setup;
 
 export function createFargateService(
   loadBalancerSetup: LoadBalancerSetup,
@@ -65,8 +66,18 @@ export function createFargateService(
   const stackReference = new pulumi.StackReference(infrastructureStackName);
   const sharedAccessKey = stackReference.requireOutput('SharedAccessKey');
 
+  // Create log group (must be manually imported if already exists)
+  const logGroup = new aws.cloudwatch.LogGroup(
+    nameResource('fargate-log-group'),
+    {
+      tags,
+      name: nameResource('log-group'),
+      retentionInDays: 7,
+    }
+  );
+
   // Fargate service
-  return new awsx.ecs.FargateService(nameResource('fargate-service'), {
+  const service = new awsx.ecs.FargateService(nameResource('fargate-service'), {
     tags,
     cluster: cluster.arn,
     assignPublicIp: true,
@@ -98,6 +109,14 @@ export function createFargateService(
               value: sharedAccessKey,
             },
           ],
+          logConfiguration: {
+            logDriver: 'awslogs',
+            options: {
+              'awslogs-group': pulumi.interpolate`${logGroup.name}`,
+              'awslogs-region': aws.config.region,
+              'awslogs-stream-prefix': 'service',
+            },
+          },
         },
       },
       taskRole: {
@@ -105,4 +124,33 @@ export function createFargateService(
       },
     },
   });
+
+  createErrorMonitor(logGroup);
+
+  return service;
+}
+
+function createErrorMonitor(logGroup: aws.cloudwatch.LogGroup) {
+  const stackReference = new pulumi.StackReference(monitoringStackName);
+  const errorReportingFunctionArn = stackReference.requireOutput(
+    'errorSubLambdaFunctionArn'
+  );
+
+  // Permissions for error reporting function to be invoked from the fargate logs
+  new aws.lambda.Permission(nameResource('error-alerter-invoke-permission'), {
+    action: 'lambda:InvokeFunction',
+    function: errorReportingFunctionArn,
+    principal: 'logs.amazonaws.com',
+    sourceArn: pulumi.interpolate`${logGroup.arn}:*`,
+  });
+
+  // CloudWatch logs subscription filter
+  new aws.cloudwatch.LogSubscriptionFilter(
+    nameResource('error-alerter-log-subscription-filter'),
+    {
+      logGroup: pulumi.interpolate`${logGroup.name}`,
+      destinationArn: errorReportingFunctionArn,
+      filterPattern: 'ERROR',
+    }
+  );
 }

@@ -2,24 +2,21 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
+import { Logger } from '../../Logger';
 
 async function execute(
   dataProduct: DataProduct,
   dataSource: string | undefined,
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  logger: Logger
 ) {
   const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
-  const endpointUrl = getDataProductEndpoint(dataProduct, dataSource);
+  const endpoint = getDataProductEndpointInfo(dataProduct, dataSource);
   const requestBody = parseDataProductRequestBody(dataProduct, req);
 
-  if (!endpointUrl) {
-    res.status(400).json({ message: 'Bad request: data product' });
-    return;
-  }
-
   try {
-    const response = await axios.post(endpointUrl, requestBody, {
+    const response = await axios.post(endpoint.url.toString(), requestBody, {
       headers: {
         Authorization: `Bearer ${apiAuthPackage.idToken}`,
         'X-Consent-Token': '',
@@ -29,47 +26,67 @@ async function execute(
     });
     res.status(response.status).json(response.data);
   } catch (error: any) {
+    const errorContextPostfix = `${endpoint.dataProduct}:${endpoint.dataSource}:${endpoint.schemaVersion}`;
     const statusCode = error.response?.status || 500;
+    const responseData = error.response?.data?.type
+      ? {
+          message:
+            (error.response?.data?.message
+              ? `${error.response?.data.type}: ${error.response?.data?.message}`
+              : null) ||
+            `Data source returned error type: ${error.response?.data?.type}`,
+          context: `DataProductSource:${errorContextPostfix}`,
+        }
+      : { message: error.message, context: `ApiRouter:${errorContextPostfix}` };
 
-    if (error.response?.data?.type) {
-      res.status(statusCode).json({
-        message:
-          (error.response?.data?.message
-            ? `${error.response?.data.type}: ${error.response?.data?.message}`
-            : null) ||
-          `Data source returned error type: ${error.response?.data?.type}`,
-        context: 'DataProductSource',
-      });
-    } else {
-      res
-        .status(statusCode)
-        .json({ message: error.message, context: 'ApiRouter' });
-    }
+    logger.error(
+      `Data product request failed with code ${statusCode}`,
+      responseData
+    );
+
+    res.status(statusCode).json(responseData);
   }
 }
 
-function getDataProductEndpoint(dataProduct: DataProduct, dataSource?: string) {
+function getDataProductEndpointInfo(
+  dataProduct: DataProduct,
+  dataSource?: string
+) {
   const gatewayEndpoint = process.env.DATASPACE_PRODUCT_GATEWAY_BASE_URL;
   const defaultDataSource = process.env.DATASPACE_DEFAULT_DATA_SOURCE;
-  const dataProductRoutePath = getDataProductRoutePath(dataProduct);
+  const dataProductPathInfo = getDataProductRoutePath(dataProduct);
 
   if (!gatewayEndpoint)
     throw new Error('Missing data product gateway endpoint');
   if (!dataSource) dataSource = defaultDataSource;
 
-  return `${gatewayEndpoint}/${dataProductRoutePath}?source=${dataSource}`;
+  return {
+    url: new URL(
+      `${gatewayEndpoint}/${dataProductPathInfo.path}?source=${dataSource}`
+    ),
+    dataSource,
+    dataProduct,
+    schemaVersion: dataProductPathInfo.schemaVersion,
+  };
 }
 
 function getDataProductRoutePath(dataProduct: DataProduct) {
   if (dataProduct.startsWith('test/')) {
-    return dataProduct;
+    return {
+      path: dataProduct,
+      schemaVersion: '',
+    };
   }
+
   const schemaVersion = process.env.DATASPACE_DEFAULT_SCHEMA_VERSION;
   if (typeof schemaVersion !== 'string' || schemaVersion.length < 1) {
     throw new Error(`Invalid schema version: ${schemaVersion}`);
   }
 
-  return `${dataProduct}_v${schemaVersion}`;
+  return {
+    path: `${dataProduct}_v${schemaVersion}`,
+    schemaVersion,
+  };
 }
 
 function parseDataProductRequestBody(

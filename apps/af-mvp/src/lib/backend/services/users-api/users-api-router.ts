@@ -6,10 +6,11 @@ import {
 } from '@shared/types';
 import { USERS_API_BASE_URL } from '@shared/lib/api/endpoints';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
+import { Logger } from '../../Logger';
 import { USERS_API_ACCESS_KEY } from '../../api-constants';
 
 const UsersApiRouter = {
-  async execute(req: NextApiRequest, res: NextApiResponse) {
+  async execute(req: NextApiRequest, res: NextApiResponse, logger: Logger) {
     try {
       const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
       const usersApiRequestHeaders = {
@@ -46,13 +47,19 @@ const UsersApiRouter = {
           res.status(405).json({ message: 'Method not allowed' });
       }
     } catch (error: any) {
-      console.error(error);
-      res.status(error?.response?.status || 500).send({
+      const statusCode = error?.response?.status || 500;
+      const responseData = {
         error:
           error?.response?.statusText ||
           error?.message ||
           'Something went wrong',
-      });
+      };
+
+      logger.error(
+        `Users API request failed with code ${statusCode}`,
+        responseData
+      );
+      res.status(statusCode).send(responseData);
     }
   },
 
