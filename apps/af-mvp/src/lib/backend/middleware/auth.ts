@@ -3,10 +3,7 @@ import { decryptApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { AxiosError } from 'axios';
 import { ValiError } from 'valibot';
 import { Logger } from '../Logger';
-import {
-  NextApiHandlerWithLogger,
-  requestLoggingMiddleware,
-} from './requestLogging';
+import { requestLoggingMiddleware } from './requestLogging';
 
 export function loggedInAuthMiddleware(handler: NextApiHandlerWithLogger) {
   return requestLoggingMiddleware(

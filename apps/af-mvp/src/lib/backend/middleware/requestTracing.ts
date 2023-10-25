@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { v4 as uuidv4 } from 'uuid';
 import { Logger } from '../Logger';
-import { NextApiHandlerWithLogger } from './requestLogging';
 
 /**
  * Middleware that adds a unique traceId to the request headers and passes it to the logger
