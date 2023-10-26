@@ -39,7 +39,11 @@ async function execute(
         }
       : { message: error.message, context: `ApiRouter:${errorContextPostfix}` };
 
-    const logLevel = resolveLoggingLevel(req.url!, statusCode, responseData);
+    const logLevel = resolveErrorLoggingLevel(
+      req.url!,
+      statusCode,
+      responseData
+    );
 
     logger[logLevel](
       `Data product request failed with code ${statusCode}`,
@@ -101,7 +105,7 @@ function parseDataProductRequestBody(
   return '{}';
 }
 
-function resolveLoggingLevel(
+function resolveErrorLoggingLevel(
   requestUrl: string,
   statusCode: number,
   responseData: { message: any; context: string }
