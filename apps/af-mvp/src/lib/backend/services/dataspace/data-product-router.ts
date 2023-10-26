@@ -106,10 +106,9 @@ function resolveLoggingLevel(
   statusCode: number,
   responseData: { message: any; context: string }
 ): keyof Pick<Logger, 'error' | 'info'> {
-  if (statusCode > 404) {
+  if (statusCode <= 403 || statusCode > 404) {
     return 'error';
   } else if (
-    statusCode === 404 &&
     [
       '/api/dataspace/Person/BasicInformation',
       '/api/dataspace/Person/JobApplicantProfile',
