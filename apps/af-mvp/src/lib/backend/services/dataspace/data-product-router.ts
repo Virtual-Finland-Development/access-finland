@@ -39,6 +39,13 @@ async function execute(
         }
       : { message: error.message, context: `ApiRouter:${errorContextPostfix}` };
 
+    const logLevel = resolveLoggingLevel(req.url!, statusCode, responseData);
+
+    logger[logLevel](
+      `Data product request failed with code ${statusCode}`,
+      responseData
+    );
+
     logger.error(
       `Data product request failed with code ${statusCode}`,
       responseData
@@ -97,6 +104,26 @@ function parseDataProductRequestBody(
     return DataProductShemas[dataProduct].parse(req.body);
   }
   return '{}';
+}
+
+function resolveLoggingLevel(
+  requestUrl: string,
+  statusCode: number,
+  responseData: any
+): keyof Pick<Logger, 'error' | 'info'> {
+  if (statusCode > 404) {
+    return 'error';
+  } else if (
+    [
+      '/api/dataspace/Person/BasicInformation',
+      '/api/dataspace/Person/JobApplicantProfile',
+    ].includes(requestUrl) &&
+    responseData.message.includes('NotFound:')
+  ) {
+    return 'info';
+  } else {
+    return 'error';
+  }
 }
 
 const DataProductRouter = { execute };
