@@ -109,7 +109,7 @@ function parseDataProductRequestBody(
 function resolveLoggingLevel(
   requestUrl: string,
   statusCode: number,
-  responseData: any
+  responseData: { message: any; context: string }
 ): keyof Pick<Logger, 'error' | 'info'> {
   if (statusCode > 404) {
     return 'error';
