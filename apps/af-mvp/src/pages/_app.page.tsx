@@ -11,7 +11,6 @@ import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import '@shared/styles.css';
 import '../styles/globals.css';
-import 'suomifi-ui-components/dist/main.css';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 

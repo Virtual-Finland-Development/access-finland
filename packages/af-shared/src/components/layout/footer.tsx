@@ -1,6 +1,11 @@
 import { GrFacebook, GrTwitter } from 'react-icons/gr';
 import virtualFinlandLogo from '@/images/virtualfinland_logo_small.png';
-import { Block, IconChevronRight, Text } from 'suomifi-ui-components';
+import {
+  Block,
+  ExternalLink,
+  LinkList,
+  LinkListItem,
+} from 'suomifi-ui-components';
 import { isExportedApplication } from '@/lib/utils';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomImage from '@/components/ui/custom-image';
@@ -34,21 +39,26 @@ function Help() {
     <>
       <Block variant="section" className="bg-white px-4 py-6">
         <div className="container md:px-4">
-          <CustomHeading variant="h3" className="!text-lg">
+          <CustomHeading
+            variant="h3"
+            className="!text-lg"
+            id="help-links-heading"
+          >
             Helpful links
           </CustomHeading>
-          <ul className="mt-4">
+          <LinkList ariaDescribedBy="help-links-heading">
             {HELP_LINKS.map(item => (
-              <li key={item.label}>
-                <div className="flex flex-row gap-1 items-center">
-                  <IconChevronRight className="-ml-1 text-base flex-shrink-0 text-suomifi-orange" />
-                  <CustomLink href={item.href} $base isExternal>
-                    {item.label}
-                  </CustomLink>
-                </div>
-              </li>
+              <LinkListItem key={item.label}>
+                <ExternalLink
+                  href={item.href}
+                  labelNewWindow="Opens to a new window"
+                  smallScreen
+                >
+                  {item.label}
+                </ExternalLink>
+              </LinkListItem>
             ))}
-          </ul>
+          </LinkList>
         </div>
       </Block>
       <Block variant="section" className="bg-suomifi-blue-bg-light px-4 py-6">

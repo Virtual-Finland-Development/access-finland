@@ -238,12 +238,17 @@ export default function MainNavigation({
             {/* Controls */}
             <div className="flex flex-row items-center gap-6">
               {/* Language menu */}
-              <LanguageMenu name="EN" className="!font-bold">
+              <LanguageMenu
+                buttonText="EN"
+                aria-label="Change language, selected language: EN"
+                className="!font-bold"
+              >
                 {languages.map(l => (
                   <LanguageMenuItem
                     key={l.code}
                     onSelect={() => {}}
                     selected={l.code === 'en'}
+                    lang={l.code}
                   >
                     {l.label}
                   </LanguageMenuItem>
