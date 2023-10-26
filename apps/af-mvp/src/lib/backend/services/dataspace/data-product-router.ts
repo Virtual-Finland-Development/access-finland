@@ -110,9 +110,8 @@ function resolveErrorLoggingLevel(
   statusCode: number,
   responseData: { message: any; context: string }
 ): keyof Pick<Logger, 'error' | 'info'> {
-  if (statusCode <= 403 || statusCode > 404) {
-    return 'error';
-  } else if (
+  if (
+    statusCode === 404 &&
     [
       '/api/dataspace/Person/BasicInformation',
       '/api/dataspace/Person/JobApplicantProfile',
@@ -120,9 +119,9 @@ function resolveErrorLoggingLevel(
     responseData.message.includes('NotFound:')
   ) {
     return 'info';
-  } else {
-    return 'error';
   }
+
+  return 'error';
 }
 
 const DataProductRouter = { execute };
