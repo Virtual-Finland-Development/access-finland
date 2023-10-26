@@ -109,6 +109,7 @@ function resolveLoggingLevel(
   if (statusCode > 404) {
     return 'error';
   } else if (
+    statusCode === 404 &&
     [
       '/api/dataspace/Person/BasicInformation',
       '/api/dataspace/Person/JobApplicantProfile',
