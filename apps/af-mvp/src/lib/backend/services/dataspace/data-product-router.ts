@@ -46,11 +46,6 @@ async function execute(
       responseData
     );
 
-    logger.error(
-      `Data product request failed with code ${statusCode}`,
-      responseData
-    );
-
     res.status(statusCode).json(responseData);
   }
 }
