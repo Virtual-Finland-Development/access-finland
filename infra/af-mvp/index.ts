@@ -36,7 +36,11 @@ export const url = pulumi.interpolate`https://${cdnSetup.domainName}`;
 export const lbUrl = loadBalancerSetup.url;
 // Export the CloudFront url.
 export const cdnURL = pulumi.interpolate`https://${cdnSetup.cdn.domainName}`;
-// Other stat outputs
+
+// Outputs for the monitoring dashboard
 export const CloudFrontDistributionId = cdnSetup.cdn.id;
 export const FargateServiceName = fargateService.service.name;
-export const FargateClusterName = cluster.name;
+export const EcsClusterName = cluster.name;
+export const AppLoadBalancerArn = loadBalancerSetup.appLoadBalancer.arn;
+export const CognitoUserPoolId = wafSetup?.userPool.id;
+export const CongitoUserPoolClientId = wafSetup?.userPoolClient.id;
