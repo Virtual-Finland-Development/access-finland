@@ -19,7 +19,7 @@ Access Finland demo application. Contains experimental/demo features not to be d
 
 ## Tech
 
-Next.js static site application (SPA), pages router (https://nextjs.org/docs/pages/building-your-application/deploying/static-exports). No API routes implementation.
+Next.js static site application (SPA), pages router (https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
 
 ## Dependencies
 
