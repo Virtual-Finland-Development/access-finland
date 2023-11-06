@@ -28,3 +28,4 @@ Next.js static site application (SPA), pages router (https://nextjs.org/docs/pag
 - users-api (https://github.com/Virtual-Finland-Development/users-api)
 - codesets (https://github.com/Virtual-Finland-Development/codesets)
 - prh-mock (https://github.com/Virtual-Finland-Development/prh-mock)
+- Job Market Finland external API (https://tyomarkkinatori.fi/hakupalvelu/api/1.0/skillrecommendation/skillrecommendation/)

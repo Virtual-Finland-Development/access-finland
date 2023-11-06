@@ -21,3 +21,4 @@ Next.js application, pages router (https://nextjs.org/docs/pages/building-your-a
 
 - users-api (https://github.com/Virtual-Finland-Development/users-api)
 - codesets (https://github.com/Virtual-Finland-Development/codesets)
+- Job Market Finland external API (https://tyomarkkinatori.fi/hakupalvelu/api/1.0/skillrecommendation/skillrecommendation/)
