@@ -144,7 +144,7 @@ function MobileMenuPopover({ navigationItems }: { navigationItems: NavItems }) {
             </Popover.Button>
 
             <Transition show={open}>
-              <Popover.Panel className="absolute top-[56px]">
+              <Popover.Panel className="absolute mt-2">
                 <Transition.Child
                   enter="transition-opacity duration-300"
                   enterFrom="opacity-0"
