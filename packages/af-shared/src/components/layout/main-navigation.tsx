@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useRef, useState } from 'react';
-import { Dialog, Popover, Transition } from '@headlessui/react';
+import { Popover, Transition } from '@headlessui/react';
 import styled from 'styled-components';
 import {
   Button,
@@ -124,66 +123,76 @@ function DesktopNavigation({ navigationItems }: { navigationItems: NavItems }) {
   );
 }
 
-function MobileNavigationPanel({
-  isOpen,
-  setIsOpen,
-  navigationItems,
-}: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  navigationItems: NavItems;
-}) {
+function MobileMenuPopover({ navigationItems }: { navigationItems: NavItems }) {
   const router = useRouter();
-  const backdropRef = useRef(null);
 
   return (
-    <Transition show={isOpen}>
-      <Dialog
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="md:hidden absolute inset-0 top-[60px]"
-        initialFocus={backdropRef}
-      >
-        <Transition.Child
-          enter="transition-opacity duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-150"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div
-            className="fixed inset-0 top-[60px] bg-black/60"
-            aria-hidden="true"
-            ref={backdropRef}
-          />
-        </Transition.Child>
-        <div className="fixed inset-x-0">
-          <Dialog.Panel className="bg-white border-t border-solid border-gray-300 border-b border-b-suomifi-light">
-            <ServiceNavigation aria-label="Mobile navigation">
-              {navigationItems.map(item => (
-                <div key={item.name} className="border-b">
-                  <ServiceNavigationItem
-                    key={item.name}
-                    selected={
-                      (item.href === '/' && router.pathname === item.href) ||
-                      (item.href !== '/' && router.pathname.includes(item.href))
-                    }
-                  >
-                    <CustomRouterLink
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.name}
-                    </CustomRouterLink>
-                  </ServiceNavigationItem>
-                </div>
-              ))}
-            </ServiceNavigation>
-          </Dialog.Panel>
-        </div>
-      </Dialog>
-    </Transition>
+    <Popover className="md:hidden">
+      {({ open, close }) => {
+        // scroll to top when opening the menu, disable scrolling (popover has no scroll disabling behavior)
+        window.scrollTo(0, 0);
+        document.body.classList.toggle('overflow-y-hidden', open);
+
+        return (
+          <>
+            <Popover.Button as={MobileMenuToggleButton}>
+              {open ? (
+                <IconClose className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <IconMenu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </Popover.Button>
+
+            <Transition show={open}>
+              <Popover.Panel className="absolute mt-2">
+                <Transition.Child
+                  enter="transition-opacity duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="transition-opacity duration-150"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div
+                    className="fixed inset-0 top-[60px] bg-black/60"
+                    aria-hidden="true"
+                    onClick={close}
+                  />
+                </Transition.Child>
+                <Transition.Child>
+                  <div className="fixed inset-x-0">
+                    <div className="bg-white border-t border-solid border-gray-300 border-b border-b-suomifi-light">
+                      <ServiceNavigation aria-label="Mobile navigation">
+                        {navigationItems.map(item => (
+                          <div key={item.name} className="border-b">
+                            <ServiceNavigationItem
+                              key={item.name}
+                              selected={
+                                (item.href === '/' &&
+                                  router.pathname === item.href) ||
+                                (item.href !== '/' &&
+                                  router.pathname.includes(item.href))
+                              }
+                            >
+                              <Popover.Button
+                                as={CustomRouterLink}
+                                href={item.href}
+                              >
+                                {item.name}
+                              </Popover.Button>
+                            </ServiceNavigationItem>
+                          </div>
+                        ))}
+                      </ServiceNavigation>
+                    </div>
+                  </div>
+                </Transition.Child>
+              </Popover.Panel>
+            </Transition>
+          </>
+        );
+      }}
+    </Popover>
   );
 }
 
@@ -217,10 +226,9 @@ export default function MainNavigation({
   languages: { code: string; label: string }[];
 }) {
   const { isAuthenticated } = useAuth();
-  const [mobileNavPanelOpen, setMobileNavPanelOpen] = useState(false);
 
   return (
-    <header>
+    <header className="z-20">
       <nav className="bg-white border-b border-t-4 border-solid border-t-suomifi-dark border-b-suomifi-light relative">
         <div className="container px-4">
           <div className="relative flex h-14 items-center justify-between">
@@ -250,20 +258,6 @@ export default function MainNavigation({
                 ))}
               </LanguageMenu>
 
-              {/* Mobile menu toggle button */}
-              <div className="md:hidden">
-                <Button
-                  as={MobileMenuToggleButton}
-                  onClick={() => setMobileNavPanelOpen(isOpen => !isOpen)}
-                >
-                  {mobileNavPanelOpen ? (
-                    <IconClose className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <IconMenu className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Button>
-              </div>
-
               {/* Desktop user info / log out */}
               {isAuthenticated && (
                 <UserControl className="hidden md:flex flex-col items-end" />
@@ -271,6 +265,9 @@ export default function MainNavigation({
 
               {/* Desktop menu popover */}
               <DesktopMenuPopover navigationItems={navigationItems} />
+
+              {/* Mobile menu popover */}
+              <MobileMenuPopover navigationItems={navigationItems} />
             </div>
           </div>
 
@@ -282,13 +279,6 @@ export default function MainNavigation({
 
         {/* Desktop navigation */}
         <DesktopNavigation navigationItems={navigationItems} />
-
-        {/* Mobile navigation panel (dialog/modal) */}
-        <MobileNavigationPanel
-          isOpen={mobileNavPanelOpen}
-          setIsOpen={setMobileNavPanelOpen}
-          navigationItems={navigationItems}
-        />
       </nav>
     </header>
   );
