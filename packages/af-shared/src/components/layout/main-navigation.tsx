@@ -144,7 +144,7 @@ function MobileMenuPopover({ navigationItems }: { navigationItems: NavItems }) {
             </Popover.Button>
 
             <Transition show={open}>
-              <Popover.Panel className="absolute top-[56px] z-20">
+              <Popover.Panel className="absolute mt-2">
                 <Transition.Child
                   enter="transition-opacity duration-300"
                   enterFrom="opacity-0"
@@ -228,7 +228,7 @@ export default function MainNavigation({
   const { isAuthenticated } = useAuth();
 
   return (
-    <header>
+    <header className="z-20">
       <nav className="bg-white border-b border-t-4 border-solid border-t-suomifi-dark border-b-suomifi-light relative">
         <div className="container px-4">
           <div className="relative flex h-14 items-center justify-between">
