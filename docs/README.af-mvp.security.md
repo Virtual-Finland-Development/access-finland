@@ -20,7 +20,7 @@ The login flow is as follows:
 4. Sinuna redirects the user back to the backend app with a grant token
 5. The backend app exchanges (with Sinuna) the grant token to an access token
 6. The backend app stores the access token to a server-side encrypted session cookie with the same expiration time as the access token
-7. The app redirects the user to the frontend app main page
+7. The app redirects the user to the frontend app
 8. The frontend app makes request to the backend app that uses the access token from the session cookie to authenticate the user in external API calls for example to the dataspace gateway.
 
 The backend login flow routes are defined in the [../apps/af-mvp/src/pages/api/auth](../apps/af-mvp/src/pages/api/auth) folder.
