@@ -37,14 +37,14 @@ const STATUS_VARIANT = {
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
-const MOCK_DATA: () => Promise<Permit[]> = async () => {
+async function MOCK_DATA(): Promise<Permit[]> {
   await sleep();
   return [
     { id: 1, issuer: 'Migri', type: 'A', status: 'completed' },
     { id: 2, issuer: 'Migri', type: 'B', status: 'pending' },
     { id: 3, issuer: 'Migri', type: 'P', status: 'rejected' },
   ];
-};
+}
 
 function renderIcon(status: string) {
   switch (status) {

@@ -19,10 +19,10 @@ const DATA = {
   validityEnd: '2023-12-31',
 };
 
-const MOCK_DATA = async () => {
+async function MOCK_DATA() {
   await sleep();
   return DATA;
-};
+}
 
 function formatEuro(num) {
   return new Intl.NumberFormat('de-DE', {
