@@ -37,7 +37,7 @@ const STATUS_VARIANT = {
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
-const MOCK_DATA = async () => {
+const MOCK_DATA: () => Promise<Permit[]> = async () => {
   await sleep();
   return [
     { id: 1, issuer: 'Migri', type: 'A', status: 'completed' },
