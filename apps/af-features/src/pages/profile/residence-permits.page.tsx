@@ -68,68 +68,84 @@ function PermitsInfo({ permits }: { permits: Permit[] | undefined }) {
     return <Text>No residence permits.</Text>;
   }
 
-  return permits.map(permit => (
-    <Expander key={permit.id}>
-      <ExpanderTitleButton>
-        <div className="flex flex-row gap-2 items-center">
-          <span>{permit.issuer}</span> {renderIcon(permit.status)}
-        </div>
-      </ExpanderTitleButton>
-      <ExpanderContent className="!text-base !flex !flex-col !gap-4">
-        <div className="flex flex-col gap-4">
-          <Text>
-            1. Issuer: <span className="font-semibold">{permit.issuer}</span>
-          </Text>
-          <CustomImage src={migriLogo} alt="Migri" height={100} />
-          <Text>
-            2. Permit type: <span className="font-semibold">{permit.type}</span>
-          </Text>
-          <InlineAlert labelText="Permit type">
-            <Text>1. Permit type, or the grounds for issuing the permit:</Text>
-            <ul className="list-outside list-disc ms-8">
-              <li>
-                <Text
-                  className={permit.type === 'A' ? '!font-bold' : 'font-normal'}
-                >
-                  A = continuous residence permit
-                </Text>
-              </li>
-              <li>
-                <Text
-                  className={permit.type === 'B' ? '!font-bold' : 'font-normal'}
-                >
-                  B = temporary residence permit
-                </Text>
-              </li>
-              <li>
-                <Text
-                  className={permit.type === 'P' ? '!font-bold' : 'font-normal'}
-                >
-                  P = permanent residence permit
-                </Text>
-              </li>
-              <li>
+  return (
+    <>
+      {permits.map(permit => (
+        <Expander key={permit.id}>
+          <ExpanderTitleButton>
+            <div className="flex flex-row gap-2 items-center">
+              <span>{permit.issuer}</span> {renderIcon(permit.status)}
+            </div>
+          </ExpanderTitleButton>
+          <ExpanderContent className="!text-base !flex !flex-col !gap-4">
+            <div className="flex flex-col gap-4">
+              <Text>
+                1. Issuer:{' '}
+                <span className="font-semibold">{permit.issuer}</span>
+              </Text>
+              <CustomImage src={migriLogo} alt="Migri" height={100} />
+              <Text>
+                2. Permit type:{' '}
+                <span className="font-semibold">{permit.type}</span>
+              </Text>
+              <InlineAlert labelText="Permit type">
                 <Text>
-                  P-EU or P-EY = a long-term resident’s EU residence permit
-                  issued to a third-country national.
+                  1. Permit type, or the grounds for issuing the permit:
                 </Text>
-              </li>
-            </ul>
-          </InlineAlert>
-          <Text>
-            3. Status:{' '}
-            <span className="font-semibold">{capitalize(permit.status)}</span>
-          </Text>
-        </div>
-        <InlineAlert
-          status={STATUS_VARIANT[permit.status]}
-          labelText={capitalize(permit.status)}
-        >
-          <Text>{STATUS_TEXTS[permit.status]}</Text>
-        </InlineAlert>
-      </ExpanderContent>
-    </Expander>
-  ));
+                <ul className="list-outside list-disc ms-8">
+                  <li>
+                    <Text
+                      className={
+                        permit.type === 'A' ? '!font-bold' : 'font-normal'
+                      }
+                    >
+                      A = continuous residence permit
+                    </Text>
+                  </li>
+                  <li>
+                    <Text
+                      className={
+                        permit.type === 'B' ? '!font-bold' : 'font-normal'
+                      }
+                    >
+                      B = temporary residence permit
+                    </Text>
+                  </li>
+                  <li>
+                    <Text
+                      className={
+                        permit.type === 'P' ? '!font-bold' : 'font-normal'
+                      }
+                    >
+                      P = permanent residence permit
+                    </Text>
+                  </li>
+                  <li>
+                    <Text>
+                      P-EU or P-EY = a long-term resident’s EU residence permit
+                      issued to a third-country national.
+                    </Text>
+                  </li>
+                </ul>
+              </InlineAlert>
+              <Text>
+                3. Status:{' '}
+                <span className="font-semibold">
+                  {capitalize(permit.status)}
+                </span>
+              </Text>
+            </div>
+            <InlineAlert
+              status={STATUS_VARIANT[permit.status]}
+              labelText={capitalize(permit.status)}
+            >
+              <Text>{STATUS_TEXTS[permit.status]}</Text>
+            </InlineAlert>
+          </ExpanderContent>
+        </Expander>
+      ))}
+    </>
+  );
 }
 
 export default function ResidencePermitsPage() {
