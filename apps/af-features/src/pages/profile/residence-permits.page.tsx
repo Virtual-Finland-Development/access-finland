@@ -68,7 +68,7 @@ function PermitsInfo({ permits }: { permits: Permit[] | undefined }) {
     return <Text>No residence permits.</Text>;
   }
 
-  return permits?.map(permit => (
+  return permits.map(permit => (
     <Expander key={permit.id}>
       <ExpanderTitleButton>
         <div className="flex flex-row gap-2 items-center">
