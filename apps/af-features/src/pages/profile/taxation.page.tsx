@@ -31,6 +31,41 @@ function formatEuro(num) {
   }).format(num);
 }
 
+function TaxInfo({ data }: { data: typeof DATA | undefined }) {
+  if (!data) {
+    return <Text>No tax information.</Text>;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Text>
+        Tax rate: <span className="block font-semibold">{data!.taxRate} %</span>
+      </Text>
+      <Text>
+        Income limit for the whole year:{' '}
+        <span className="block font-semibold">
+          {formatEuro(data!.incomeLimitYear)}
+        </span>
+      </Text>
+      <Text>
+        Income limit for the rest of the year:{' '}
+        <span className="block font-semibold">
+          {formatEuro(data!.incomeLimitRestOfYear)}
+        </span>
+      </Text>
+      <Text>
+        Validity:{' '}
+        <span className="block font-semibold">
+          {format(parseISO(data!.validityStart), 'dd.MM.yyyy')} -{' '}
+          {format(parseISO(data!.validityEnd), 'dd.MM.yyyy')}
+        </span>
+      </Text>
+
+      <CustomImage src={veroLogo} alt="Vero" />
+    </div>
+  );
+}
+
 export default function TaxationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<typeof DATA | undefined>();
@@ -68,37 +103,7 @@ export default function TaxationPage() {
               vitae nunc.
             </Text>
 
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <div className="flex flex-col gap-4">
-                <Text>
-                  Tax rate:{' '}
-                  <span className="block font-semibold">{data!.taxRate} %</span>
-                </Text>
-                <Text>
-                  Income limit for the whole year:{' '}
-                  <span className="block font-semibold">
-                    {formatEuro(data!.incomeLimitYear)}
-                  </span>
-                </Text>
-                <Text>
-                  Income limit for the rest of the year:{' '}
-                  <span className="block font-semibold">
-                    {formatEuro(data!.incomeLimitRestOfYear)}
-                  </span>
-                </Text>
-                <Text>
-                  Validity:{' '}
-                  <span className="block font-semibold">
-                    {format(parseISO(data!.validityStart), 'dd.MM.yyyy')} -{' '}
-                    {format(parseISO(data!.validityEnd), 'dd.MM.yyyy')}
-                  </span>
-                </Text>
-
-                <CustomImage src={veroLogo} alt="Vero" />
-              </div>
-            )}
+            {isLoading ? <Loading /> : <TaxInfo data={data} />}
           </div>
         </Page.Block>
       </PageSideNavLayout>
