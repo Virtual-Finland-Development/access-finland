@@ -60,7 +60,7 @@ function Page(props: Props) {
                 icon={sideNavIcon}
                 items={sideNavItems}
               />
-              <div className="flex lg:-mx-8">{children}</div>
+              <div className="flex flex-col w-full lg:-mx-8">{children}</div>
             </div>
           ) : (
             <>{children}</>
@@ -78,7 +78,7 @@ interface PageBlockProps {
 
 function PageBlock(props: PageBlockProps) {
   const { className: propsClassName = '', children } = props;
-  const className = `px-4 lg:px-14 py-5 ${propsClassName}`;
+  const className = `px-4 lg:px-14 py-5 grow ${propsClassName}`;
 
   return (
     <Block variant="section" className={className}>

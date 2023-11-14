@@ -5,12 +5,12 @@ import Page from '@shared/components/layout/page';
 const SIDE_NAV_ITEMS = [
   { label: 'Your profile', href: '/profile' },
   {
-    label: 'Work permits',
-    href: '/profile/work-permits',
+    label: 'Residence permits',
+    href: '/profile/residence-permits',
   },
   {
-    label: 'Taxes',
-    href: '/profile/taxes',
+    label: 'Taxation',
+    href: '/profile/taxation',
   },
   {
     label: 'Employment contracts',
