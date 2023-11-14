@@ -41,7 +41,7 @@ The backend app routes that are protected by the [loggedInAuthMiddleware](../app
 
 ### Data Storage Summary
 
-- The backend app stores the session cookie data to a server-side encrypted HttpOnly and Secure cookie
+- The backend app stores the session cookie data to a server-side encrypted, HttpOnly and Secure cookie
 - The frontend app stores the CSRF token to the local storage
 - The data the frontend app retrieves from the backend app is stored in the frontend app memory and is not persisted to the disk
 
