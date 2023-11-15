@@ -46,16 +46,29 @@ async function MOCK_DATA(): Promise<Permit[]> {
   ];
 }
 
+function getStatusColor(status: string) {
+  switch (status) {
+    case 'completed':
+      return 'text-green-700';
+    case 'pending':
+      return 'text-orange-400';
+    case 'rejected':
+      return 'text-red-600';
+    default:
+      return '';
+  }
+}
+
 function renderIcon(status: string) {
   switch (status) {
     case 'completed':
-      return <MdDone size={22} color="green" />;
+      return <MdDone size={22} />;
     case 'pending':
-      return <MdOutlineInfo size={22} color="orange" />;
+      return <MdOutlineInfo size={22} />;
     case 'rejected':
-      return <MdCancel size={22} color="red" />;
+      return <MdCancel size={22} />;
     default:
-      return <MdOutlineInfo size={22} color="orange" />;
+      return <MdOutlineInfo size={22} />;
   }
 }
 
@@ -74,7 +87,14 @@ function PermitsInfo({ permits }: { permits: Permit[] | undefined }) {
         <Expander key={permit.id}>
           <ExpanderTitleButton>
             <div className="flex flex-row gap-2 items-center">
-              <span>{permit.issuer}</span> {renderIcon(permit.status)}
+              <span>{permit.issuer}</span>
+              <span
+                className={`flex items-center gap-1 ${getStatusColor(
+                  permit.status
+                )}`}
+              >
+                {renderIcon(permit.status)} {capitalize(permit.status)}
+              </span>
             </div>
           </ExpanderTitleButton>
           <ExpanderContent className="!text-base !flex !flex-col !gap-4">
