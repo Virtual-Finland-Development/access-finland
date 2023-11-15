@@ -15,7 +15,7 @@ Access Finland MVP application, deployed to production. Only includes features d
 
 ## Tech
 
-Next.js application, pages router (https://nextjs.org/docs/pages/building-your-application). Mix of client side fetching / API routes implementation.
+Next.js application, pages router (https://nextjs.org/docs/pages/building-your-application). Has API routes implementation, runs on Node.js.
 
 ## Dependencies
 
