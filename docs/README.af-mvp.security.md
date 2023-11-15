@@ -2,7 +2,7 @@
 
 The Access Finland MVP application is a web app that has authentication features and handles sensitive information. The following sections describe the security features of the application that make sure the authentication and other private data features are safe to use.
 
-Additinally the application is not published to public internet, but is only accessible with login credentials managed by AWS Cognito service. 
+Additionally the application is not published to public internet, but is only accessible with login credentials managed by AWS Cognito service. 
 
 The app codebase, as a monorepo, supports multiple deployable apps with different security measures. The following sections describe the security features of the MVP app. The other apps are not described in this document.
 
