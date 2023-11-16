@@ -32,7 +32,6 @@ export function createWebAppFirewallProtection() {
     }).result
   }`;
 
-
   const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
   const { userPool, userPoolClient, cognitoDomain } =
     createCognitoUserPool(callbackUri);
@@ -207,6 +206,14 @@ export function createWebAppFirewallProtection() {
     },
     { provider: firewallRegion }
   ); // Cloudfrount WAF must be defined in us-east-1
+
+  // Create user pool association
+  // @see: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-wafv2-webaclassociation.html
+  // @see: https://www.pulumi.com/registry/packages/aws/api-docs/wafv2/webaclassociation/
+  new aws.wafv2.WebAclAssociation(nameResource('wafCognitoAssociation'), {
+    webAclArn: webApplicationFirewall.arn,
+    resourceArn: userPool.arn,
+  });
 
   return {
     webApplicationFirewall,
