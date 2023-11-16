@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
+import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
 import {
   CODESETS_BASE_URL,
@@ -35,10 +35,7 @@ const NEXTJS_API_PROTECTED_URLS = [
 ];
 
 // Used to check if request url starts with any of the following list
-const NEXTJS_API_TRACEABLE_URIS = [
-  '/api/users-api/',
-  `${CODESETS_BASE_URL}/resources/`,
-];
+const NEXTJS_API_TRACEABLE_URIS = ['/api/', `${CODESETS_BASE_URL}/resources/`];
 
 function isProtectedNextJsEndpoint(url: string): boolean {
   for (const nextJsEndpoint of NEXTJS_API_PROTECTED_URLS) {
@@ -59,11 +56,13 @@ apiClient.interceptors.request.use(async config => {
       config.headers['x-csrf-token'] = LoginState.getCsrfToken();
     }
 
-    // Add traceId if applicable
+    // Add traceId where applicable: the url starts with one of the traceable uris and the application is not built in exported mode
     if (
+      !isExportedApplication() &&
       NEXTJS_API_TRACEABLE_URIS.filter(uri => config.url?.startsWith(uri))
         .length
     ) {
+      const { v4: uuidv4 } = await import('uuid'); // Lazy load uuid, as it's not needed in the exported application
       config.headers['x-request-trace-id'] = uuidv4();
     }
   }
