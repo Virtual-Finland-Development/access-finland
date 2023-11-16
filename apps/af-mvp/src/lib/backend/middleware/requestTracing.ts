@@ -7,7 +7,7 @@ import { Logger } from '../Logger';
  */
 export function requestTracingMiddleware(handler: NextApiHandlerWithLogger) {
   return async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
-    const traceId = uuidv4();
+    const traceId = req.headers['X-Request-Trace-Id'] || uuidv4();
     req.headers['X-Request-Trace-Id'] = traceId;
     logger.setTraceId(traceId); // Pass traceId to logger so it'll show up in logs for the current request
     return await handler(req, res, logger);

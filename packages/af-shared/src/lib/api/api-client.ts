@@ -1,7 +1,12 @@
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { getValidAuthState } from '../utils/auth';
-import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from './endpoints';
+import {
+  CODESETS_BASE_URL,
+  PRH_MOCK_BASE_URL,
+  TESTBED_API_BASE_URL,
+} from './endpoints';
 import { LoginState } from './services/auth';
 
 const apiClient = axios.create({});
@@ -20,14 +25,19 @@ const PROTECTED_URLS = [
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
-  '/api/dataspace/Service/Terms/Agreement',
-  '/api/dataspace/Service/Terms/Agreement/Write',
   '/api/dataspace/Person/BasicInformation',
   '/api/dataspace/Person/BasicInformation/Write',
   '/api/dataspace/Person/JobApplicantProfile',
   '/api/dataspace/Person/JobApplicantProfile/Write',
   '/api/users-api',
   '/api/jmf/recommendations',
+  '/api/users-api/terms-of-service',
+];
+
+// Used to check if request url starts with any of the following list
+const NEXTJS_API_TRACEABLE_URIS = [
+  '/api/users-api/',
+  `${CODESETS_BASE_URL}/resources/`,
 ];
 
 function isProtectedNextJsEndpoint(url: string): boolean {
@@ -47,6 +57,14 @@ apiClient.interceptors.request.use(async config => {
       config.headers['x-consent-token'] = '';
     } else if (isProtectedNextJsEndpoint(config.url)) {
       config.headers['x-csrf-token'] = LoginState.getCsrfToken();
+    }
+
+    // Add traceId if applicable
+    if (
+      NEXTJS_API_TRACEABLE_URIS.filter(uri => config.url?.startsWith(uri))
+        .length
+    ) {
+      config.headers['x-request-trace-id'] = uuidv4();
     }
   }
 
