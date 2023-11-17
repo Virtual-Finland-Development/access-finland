@@ -113,8 +113,35 @@ export function createWebAppFirewallProtection() {
           },
         },
         {
-          name: 'PassThroughAssets',
+          name: 'VerifyAccess',
           priority: 2,
+          action: {
+            allow: {},
+          },
+          statement: {
+            byteMatchStatement: {
+              searchString: '/api/auth/cognito/verify',
+              fieldToMatch: {
+                uriPath: {},
+              },
+              textTransformations: [
+                {
+                  priority: 0,
+                  type: 'NONE',
+                },
+              ],
+              positionalConstraint: 'EXACTLY',
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: true,
+            sampledRequestsEnabled: true,
+            metricName: 'VerifyAccess',
+          },
+        },
+        {
+          name: 'PassThroughAssets',
+          priority: 3,
           action: {
             allow: {},
           },
