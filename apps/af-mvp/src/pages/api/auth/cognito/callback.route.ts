@@ -63,7 +63,9 @@ export default async function handler(
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
     const expirity = payload.exp * 1000;
     const encryptedCookie = encryptUsingBackendSecret(
-      cognitoLoginResponse.id_token,
+      {
+        idToken: cognitoLoginResponse.id_token,
+      },
       expirity
     );
 

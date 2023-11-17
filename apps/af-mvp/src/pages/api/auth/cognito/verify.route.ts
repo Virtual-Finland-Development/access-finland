@@ -18,11 +18,11 @@ export default async function handler(
     if (!req.cookies.cognitoVerifyToken) {
       throw new Error('Missing cognitoVerifyToken cookie');
     }
-    const verifyToken = decryptUsingBackendSecret<string>(
+    const verifyTokenPayload = decryptUsingBackendSecret(
       req.cookies.cognitoVerifyToken
     );
 
-    await validateCognitoAccessToken(verifyToken);
+    await validateCognitoAccessToken(verifyTokenPayload.idToken);
 
     // Success
     res.json({ message: 'Verified' });

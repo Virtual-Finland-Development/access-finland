@@ -16,10 +16,7 @@ export function decryptUsingBackendSecret<T = JwtPayload>(
   return jwt.verify(encryptedData, resolveSecretSignKey()) as T;
 }
 
-export function encryptUsingBackendSecret(
-  obj: string | object | Buffer,
-  expiresIn: number
-) {
+export function encryptUsingBackendSecret(obj: object, expiresIn: number) {
   // Encrypt using secret
   return jwt.sign(obj, resolveSecretSignKey(), {
     expiresIn: expiresIn,
