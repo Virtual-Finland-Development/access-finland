@@ -28,23 +28,27 @@ function NavItems(props: NavItemsProps) {
       </span>
     );
 
-  return items.map(item => {
-    const { label, href, children } = item;
+  return (
+    <>
+      {items.map(item => {
+        const { label, href, children } = item;
 
-    return (
-      <SideNavigationItem
-        key={href}
-        subLevel={level as 1 | 2 | 3}
-        content={<CustomRouterLink href={href}>{label}</CustomRouterLink>}
-        selected={router.route === href}
-        expanded={
-          router.route.startsWith(href) || (item.children && smallScreen)
-        }
-      >
-        {children && <NavItems items={children} level={level + 1} />}
-      </SideNavigationItem>
-    );
-  });
+        return (
+          <SideNavigationItem
+            key={href}
+            subLevel={level as 1 | 2 | 3}
+            content={<CustomRouterLink href={href}>{label}</CustomRouterLink>}
+            selected={router.route === href}
+            expanded={
+              router.route.startsWith(href) || (item.children && smallScreen)
+            }
+          >
+            {children && <NavItems items={children} level={level + 1} />}
+          </SideNavigationItem>
+        );
+      })}
+    </>
+  );
 }
 
 interface Props {
