@@ -1,8 +1,54 @@
+import { format, parseISO } from 'date-fns';
 import { Text } from 'suomifi-ui-components';
 import { WorkContract } from '@shared/types';
 import { WORK_CONTRACT_LABELS } from '@shared/lib/constants';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import DetailsExpander from '@shared/components/ui/details-expander/details-expander';
+
+const formatDate = (date: string) => format(parseISO(date), 'dd.MM.yyyy');
+
+function mapContractDetails(contract: WorkContract) {
+  const {
+    employerInfo: { signatureDate, ...employerInfo },
+    employeeInfo: { signaruteDate, ...employeeInfo },
+    termsOfWork: { employmentStart, employmentEnd, ...termsOfWork },
+    compensation,
+    benefits,
+  } = contract;
+
+  const mapped = {
+    ...contract,
+    employerInfo: {
+      ...employerInfo,
+      signatureDate: formatDate(signatureDate),
+    },
+    employeeInfo: {
+      ...employeeInfo,
+      signaruteDate: formatDate(signaruteDate),
+    },
+    termsOfWork: {
+      ...termsOfWork,
+      employmentStart: formatDate(employmentStart),
+      employmentEnd: formatDate(employmentEnd),
+    },
+    compensation: {
+      ...compensation,
+      salary: `${compensation.salary} €`,
+    },
+    ...(benefits && {
+      benefits: benefits.map(benefit => ({
+        ...benefit,
+        taxableValue: `${benefit.taxableValue} €`,
+        benefitType:
+          benefit.benefitType === 'partOfSalary'
+            ? 'part of salary'
+            : 'addition to salary',
+      })),
+    }),
+  };
+
+  return mapped;
+}
 
 interface Props {
   contracts: WorkContract[] | undefined;
@@ -23,8 +69,7 @@ export default function WorkContractsDetails(props: Props) {
           <DetailsExpander<WorkContract>
             key={index}
             title={contract.employerInfo.name}
-            // values={jobApplicationProfileMapped || {}}
-            values={contract}
+            values={mapContractDetails(contract)}
             labels={WORK_CONTRACT_LABELS}
             hasValues
             showStatusIcons={false}
