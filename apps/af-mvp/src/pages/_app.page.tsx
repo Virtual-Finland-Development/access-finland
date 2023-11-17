@@ -63,7 +63,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
   useEffect(() => {
     async function verifyCognitoSession() {
       // Check if waf-cognito frontend cookie present
-      if (document.cookie.indexOf('cognito-identity.amazonaws.com') > -1) {
+      if (document.cookie.includes('wafCognitoSession')) {
         try {
           await apiClient.get('/api/auth/cognito/verify');
         } catch (error) {

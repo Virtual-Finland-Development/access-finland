@@ -38,6 +38,10 @@ export default async function handler(
           path: '/api',
           expires: new Date(0),
         }),
+        cookie.serialize('wafCognitoSession', '', {
+          path: '/',
+          expires: new Date(0),
+        }),
       ])
       .status(401)
       .json({ message: 'Unverified' });

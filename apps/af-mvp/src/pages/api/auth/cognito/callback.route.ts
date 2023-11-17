@@ -91,6 +91,16 @@ export default async function handler(
             expires: new Date(expirity),
           }
         ),
+        cookie.serialize(
+          'wafCognitoSession', // Cookie for the frontend hooks
+          'true',
+          {
+            path: '/',
+            httpOnly: false, // Accessible by frontend javascript
+            sameSite: 'strict',
+            expires: new Date(expirity),
+          }
+        ),
       ])
       .redirect(303, '/');
   } catch (error) {
