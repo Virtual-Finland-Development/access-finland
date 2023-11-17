@@ -9,11 +9,12 @@ import {
 import { IconCatalog } from 'suomifi-ui-components';
 import useDimensions from '@/lib/hooks/use-dimensions';
 import CustomRouterLink from '@/components/ui/custom-router-link';
+import { SideNavItem } from './page';
 
 interface Props {
   title: string;
   icon?: ComponentType<StaticIconProps>;
-  items: { label: string; href: string }[];
+  items: SideNavItem[];
 }
 
 export default function PageSideNavigationSingle(props: Props) {
