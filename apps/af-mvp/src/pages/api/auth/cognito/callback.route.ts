@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { encryptUsingBackendSecret } from '@mvp/lib/backend/secrets-and-tokens';
+import { validateCognitoAccessToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import { object, parse, string } from 'valibot';
 
@@ -52,32 +53,40 @@ export default async function handler(
   }
 
   try {
+    // Parse and validate
     const cognitoLoginResponse = parse(CognitoLoginResponseSchema, queryParams);
+    const payload = await validateCognitoAccessToken(
+      cognitoLoginResponse.id_token
+    );
 
-    const userPoolId = process.env.WAF_USER_POOL_ID;
-    const userPoolClientId = process.env.WAF_USER_POOL_CLIENT_ID;
+    // Success, redirect to the root page with the access cookies
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
+    const expirity = payload.exp * 1000;
+    const encryptedCookie = encryptUsingBackendSecret(
+      cognitoLoginResponse.id_token,
+      expirity
+    );
 
-    // AWS Cognito verifier that expects valid access tokens
-    const verifier = CognitoJwtVerifier.create({
-      userPoolId: userPoolId!,
-      tokenUse: 'id',
-      clientId: userPoolClientId!,
-    });
-
-    const payload = await verifier.verify(cognitoLoginResponse.id_token);
-
-    // Success, redirect to the root page with the shared cookie
     res
       .setHeader('Set-Cookie', [
         cookie.serialize(
-          'cognito-identity.amazonaws.com',
+          'cognito-identity.amazonaws.com', // Cookie for the AWS WAF
           sharedCookieSecret!,
           {
             path: '/',
             httpOnly: true,
             sameSite: 'lax',
-            expires: new Date(payload.exp * 1000),
+            expires: new Date(expirity),
+          }
+        ),
+        cookie.serialize(
+          'cognitoVerifyToken', // Cookie for the backend verification
+          encryptedCookie,
+          {
+            path: '/api',
+            httpOnly: true,
+            sameSite: 'strict',
+            expires: new Date(expirity),
           }
         ),
       ])
