@@ -9,7 +9,7 @@ import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { FC, PropsWithChildren, ReactNode, useEffect } from 'react';
+import React, { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
@@ -60,12 +60,14 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
   //
   // Check if cognito session is still valid (on every page)
   //
+  const [cognitoVerified, setCognitoVerified] = useState(false);
   useEffect(() => {
     async function verifyCognitoSession() {
-      // Check if waf-cognito frontend cookie present
-      if (document.cookie.includes('wafCognitoSession')) {
+      // Check if waf-cognito frontend cookie present and not yet checked by the app
+      if (!cognitoVerified && document.cookie.includes('wafCognitoSession')) {
         try {
           await apiClient.get('/api/auth/cognito/verify');
+          setCognitoVerified(true);
         } catch (error) {
           // If not, redirect/reload to main and let the WAF take care of the rest
           router.push('/');
@@ -77,7 +79,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
       verifyCognitoSession();
     }
 
-  }, [router]);
+  }, [cognitoVerified, setCognitoVerified, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
