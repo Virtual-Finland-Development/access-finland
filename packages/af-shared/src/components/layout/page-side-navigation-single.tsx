@@ -24,7 +24,7 @@ export default function PageSideNavigationSingle(props: Props) {
   return (
     <div className="lg:shrink-0 bg-white lg:border-r z-10">
       <div className="w-full lg:w-[300px]">
-        <div className="px-2 my-2 hidden lg:flex flex-row items-center gap-3">
+        <div className="px-[15px] my-2 hidden lg:flex flex-row items-center gap-3">
           {Icon ? (
             <Icon className="flex-shrink-0 h-10 w-10" />
           ) : (

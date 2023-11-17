@@ -100,7 +100,7 @@ export default function IncomeTaxPage() {
           <div className="flex flex-col gap-6 items-start">
             <div className="flex flex-row items-center">
               <CustomHeading variant="h2" suomiFiBlue="dark">
-                Your income tax in Finland
+                Income Tax
               </CustomHeading>
             </div>
             <Text>

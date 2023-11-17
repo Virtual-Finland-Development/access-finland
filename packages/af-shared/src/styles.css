@@ -41,3 +41,7 @@ body {
 .fi-link--router {
   border-radius: 4px !important;
 }
+.fi-side-navigation_list {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}

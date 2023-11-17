@@ -70,7 +70,7 @@ function renderIcon(status: boolean) {
 
 function PermitsInfo({ permits }: { permits: PersonWorkPermit[] | undefined }) {
   if (!permits || permits.length === 0) {
-    return <Text>No permits.</Text>;
+    return <Text>You currently have no pending permits.</Text>;
   }
 
   return (

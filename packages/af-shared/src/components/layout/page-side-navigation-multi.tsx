@@ -63,7 +63,7 @@ export default function PageSideNavigationMulti(props: Props) {
 
   return (
     <div className="lg:shrink-0 bg-white lg:border-r z-10">
-      <div className="w-full lg:w-[300px] lg:px-2">
+      <div className="w-full lg:w-[300px]">
         <SideNavigation
           heading={title}
           aria-label={`${title} navigation`}

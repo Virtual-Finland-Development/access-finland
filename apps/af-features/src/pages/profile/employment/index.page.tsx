@@ -31,7 +31,7 @@ export default function EmploymentPage() {
                 and income taxes.
               </Text>
             </div>
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="flex flex-col gap-3">
               <CustomLink href="employment/work-contracts" disableVisited>
                 View Your work contracts here
               </CustomLink>

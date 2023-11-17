@@ -140,7 +140,7 @@ function ContractsInfo(props: ContractsInfoProps) {
   const { contracts } = props;
 
   if (!contracts || contracts.length === 0) {
-    return <Text>No contracts found.</Text>;
+    return <Text>No work contracts found.</Text>;
   }
 
   return (
