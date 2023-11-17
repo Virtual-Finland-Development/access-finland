@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Text } from 'suomifi-ui-components';
 import { WorkContract } from '@shared/types';
-import { WORK_CONTRACT_LABELS } from '@shared/lib/constants';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
-import DetailsExpander from '@shared/components/ui/details-expander/details-expander';
 import Loading from '@shared/components/ui/loading';
 import PageSideNavLayout from '../components/profile-side-nav-layout';
+import WorkContractsDetails from '../components/work-contracts-details';
 
 const DATA: WorkContract[] = [
   {
@@ -132,38 +131,7 @@ async function MOCK_DATA() {
   return DATA;
 }
 
-interface ContractsInfoProps {
-  contracts: WorkContract[] | undefined;
-}
-
-function ContractsInfo(props: ContractsInfoProps) {
-  const { contracts } = props;
-
-  if (!contracts || contracts.length === 0) {
-    return <Text>No work contracts found.</Text>;
-  }
-
-  return (
-    <>
-      <CustomHeading variant="h3">Your work contracts</CustomHeading>
-      <div className="flex flex-col gap-4 w-full">
-        {contracts.map((contract, index) => (
-          <DetailsExpander<WorkContract>
-            key={index}
-            title={contract.employerInfo.name}
-            // values={jobApplicationProfileMapped || {}}
-            values={contract}
-            labels={WORK_CONTRACT_LABELS}
-            hasValues
-            showStatusIcons={false}
-          />
-        ))}
-      </div>
-    </>
-  );
-}
-
-export default function ContractsPage() {
+export default function WorkContractsPage() {
   const [data, setData] = useState<WorkContract[] | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -199,7 +167,11 @@ export default function ContractsPage() {
               ultricies, nunc nisl ultricies nunc, quis ultricies nisl nisl
               vitae nunc.
             </Text>
-            {isLoading ? <Loading /> : <ContractsInfo contracts={data} />}
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <WorkContractsDetails contracts={data} />
+            )}
           </div>
         </Page.Block>
       </PageSideNavLayout>
