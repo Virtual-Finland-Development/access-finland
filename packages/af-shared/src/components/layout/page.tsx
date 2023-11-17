@@ -4,7 +4,14 @@ import { Block, StaticIconProps } from 'suomifi-ui-components';
 import CustomHeading from '@/components/ui/custom-heading';
 import BackButton from './back-button';
 import Breadcrumbs from './breadcrumbs';
-import PageSideNavigation from './page-side-navigation';
+import PageSideNavigationMulti from './page-side-navigation-multi';
+import PageSideNavigationSingle from './page-side-navigation-single';
+
+export interface SideNavItem {
+  label: string;
+  href: string;
+  children?: SideNavItem[];
+}
 
 interface Props {
   title: string;
@@ -14,7 +21,8 @@ interface Props {
   showBackButton?: boolean;
   sideNavTitle?: string;
   sideNavIcon?: ComponentType<StaticIconProps>;
-  sideNavItems?: { label: string; href: string }[] | undefined;
+  sideNavItems?: SideNavItem[] | undefined;
+  sideNavVariant?: 'multi' | 'single';
 }
 
 function Page(props: Props) {
@@ -26,8 +34,14 @@ function Page(props: Props) {
     sideNavTitle = '',
     sideNavIcon,
     sideNavItems = undefined,
+    sideNavVariant = 'single',
     children,
   } = props;
+
+  const SideNav =
+    sideNavVariant === 'multi'
+      ? PageSideNavigationMulti
+      : PageSideNavigationSingle;
 
   return (
     <>
@@ -55,7 +69,7 @@ function Page(props: Props) {
         >
           {sideNavItems ? (
             <div className="flex flex-col lg:flex-row overflow-hidden">
-              <PageSideNavigation
+              <SideNav
                 title={sideNavTitle}
                 icon={sideNavIcon}
                 items={sideNavItems}

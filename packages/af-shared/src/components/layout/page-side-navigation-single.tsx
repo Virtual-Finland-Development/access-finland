@@ -16,7 +16,7 @@ interface Props {
   items: { label: string; href: string }[];
 }
 
-export default function PageSideNavigation(props: Props) {
+export default function PageSideNavigationSingle(props: Props) {
   const { title, icon: Icon, items } = props;
   const router = useRouter();
   const { width } = useDimensions();

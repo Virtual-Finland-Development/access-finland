@@ -35,3 +35,9 @@ body {
   background-color: #bee3be !important;
   border-color: rgb(21 128 61) !important;
 }
+.fi-side-navigation-item_content-wrapper svg {
+  width: auto !important;
+}
+.fi-link--router {
+  border-radius: 4px !important;
+}

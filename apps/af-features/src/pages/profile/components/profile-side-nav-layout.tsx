@@ -5,16 +5,16 @@ import Page from '@shared/components/layout/page';
 const SIDE_NAV_ITEMS = [
   { label: 'Your profile', href: '/profile' },
   {
-    label: 'Residence permits',
-    href: '/profile/residence-permits',
+    label: 'Permits',
+    href: '/profile/permits',
   },
   {
-    label: 'Taxation',
-    href: '/profile/taxation',
-  },
-  {
-    label: 'Employment contracts',
-    href: '/profile/employment-contracts',
+    label: 'Employment',
+    href: '/profile/employment',
+    children: [
+      { label: 'Work contracts', href: '/profile/employment/work-contracts' },
+      { label: 'Income tax', href: '/profile/employment/income-tax' },
+    ],
   },
 ];
 
@@ -33,6 +33,7 @@ export default function ProfileSideNavLayout(props: Props) {
       sideNavTitle="Profile"
       sideNavIcon={IconUserProfile}
       sideNavItems={SIDE_NAV_ITEMS}
+      sideNavVariant="multi"
     >
       {children}
     </Page>
