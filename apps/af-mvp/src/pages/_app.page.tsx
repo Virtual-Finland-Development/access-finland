@@ -1,6 +1,6 @@
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import apiClient from '@shared/lib/api/api-client';
-import { isExportedApplication } from '@shared/lib/utils';
+import { isExportedApplication, isWafProtected } from '@shared/lib/utils';
 import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import '@shared/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -64,7 +64,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
   useEffect(() => {
     async function verifyCognitoSession() {
       // Check if waf-cognito frontend cookie present and not yet checked by the app
-      if (!cognitoVerified && document.cookie.includes('wafCognitoSession')) {
+      if (!cognitoVerified && isWafProtected()) {
         try {
           await apiClient.get('/api/auth/cognito/verify');
           setCognitoVerified(true);

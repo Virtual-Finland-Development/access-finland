@@ -200,7 +200,7 @@ export function createWebAppFirewallProtection() {
                 cookies: {
                   matchPatterns: [
                     {
-                      includedCookies: ['cognito-identity.amazonaws.com'],
+                      includedCookies: ['wafCognitoSession'],
                     },
                   ],
                   oversizeHandling: 'NO_MATCH',

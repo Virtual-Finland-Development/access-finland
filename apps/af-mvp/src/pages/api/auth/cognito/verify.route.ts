@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { decryptUsingBackendSecret } from '@mvp/lib/backend/secrets-and-tokens';
-import { validateCognitoAccessToken } from '@mvp/lib/backend/services/aws/cognito';
-import cookie from 'cookie';
+import { cognitoVerifyMiddleware } from '@mvp/lib/backend/middleware/cognitoVerifyMiddleware';
 
 /**
  * Verify the cognito access token
@@ -9,41 +7,8 @@ import cookie from 'cookie';
  * @param req
  * @param res
  */
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  try {
-    // Parse and validate
-    if (!req.cookies.cognitoVerifyToken) {
-      throw new Error('Missing cognitoVerifyToken cookie');
-    }
-    const verifyTokenPayload = decryptUsingBackendSecret(
-      req.cookies.cognitoVerifyToken
-    );
-
-    await validateCognitoAccessToken(verifyTokenPayload.idToken);
-
-    // Success
-    res.json({ message: 'Verified' });
-  } catch (error) {
-    // Clear the cognito session cookies
-    res
-      .setHeader('Set-Cookie', [
-        cookie.serialize('cognito-identity.amazonaws.com', '', {
-          path: '/',
-          expires: new Date(0),
-        }),
-        cookie.serialize('cognitoVerifyToken', '', {
-          path: '/api',
-          expires: new Date(0),
-        }),
-        cookie.serialize('wafCognitoSession', '', {
-          path: '/',
-          expires: new Date(0),
-        }),
-      ])
-      .status(401)
-      .json({ message: 'Unverified' });
-  }
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.json({ message: 'Verified' });
 }
+
+export default cognitoVerifyMiddleware(handler);

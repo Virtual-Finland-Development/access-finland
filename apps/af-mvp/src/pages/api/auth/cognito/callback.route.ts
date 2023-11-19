@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { Logger } from '@mvp/lib/backend/Logger';
+import { requestLoggingMiddleware } from '@mvp/lib/backend/middleware/requestLogging';
 import { encryptUsingBackendSecret } from '@mvp/lib/backend/secrets-and-tokens';
 import { validateCognitoAccessToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
@@ -31,9 +33,10 @@ function ifNotObjectOrEmptyObject(value: any): boolean {
  * @returns
  */
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  logger: Logger
 ) {
   const queryParams = req.query;
 
@@ -72,7 +75,7 @@ export default async function handler(
     res
       .setHeader('Set-Cookie', [
         cookie.serialize(
-          'cognito-identity.amazonaws.com', // Cookie for the AWS WAF
+          'wafCognitoSession', // Cookie for the AWS WAF
           sharedCookieSecret!,
           {
             path: '/',
@@ -91,20 +94,12 @@ export default async function handler(
             expires: new Date(expirity),
           }
         ),
-        cookie.serialize(
-          'wafCognitoSession', // Cookie for the frontend hooks
-          'true',
-          {
-            path: '/',
-            httpOnly: false, // Accessible by frontend javascript
-            sameSite: 'strict',
-            expires: new Date(expirity),
-          }
-        ),
       ])
       .redirect(303, '/');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(401).json({ error: error.message, trace: error.stack });
   }
 }
+
+export default requestLoggingMiddleware(handler);

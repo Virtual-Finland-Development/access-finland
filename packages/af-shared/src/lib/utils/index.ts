@@ -1,6 +1,6 @@
+import { AppContextObj, Nace } from '@/types';
 import { format } from 'date-fns';
 import lodash_groupby from 'lodash.groupby';
-import { AppContextObj, Nace } from '@/types';
 import { baseAppContextObj } from '../constants';
 import firstNames from '../fake-data/first-names.json';
 import lastNames from '../fake-data/last-names.json';
@@ -138,4 +138,8 @@ export function isExportedApplication() {
  */
 export function getRuntimeStage() {
   return process.env.NEXT_PUBLIC_STAGE || 'local';
+}
+
+export function isWafProtected() {
+  return process.env.NEXT_PUBLIC_IS_WAF_PROTECTED === 'true';
 }
