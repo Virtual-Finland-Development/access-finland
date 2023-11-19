@@ -16,11 +16,11 @@ export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
 
     try {
       // Parse and validate
-      if (!req.cookies.cognitoVerifyToken) {
-        throw new Error('Missing cognitoVerifyToken cookie');
+      if (!req.cookies.cognitoVerify) {
+        throw new Error('Missing cognitoVerify cookie');
       }
       const verifyTokenPayload = decryptUsingBackendSecret(
-        req.cookies.cognitoVerifyToken
+        req.cookies.cognitoVerify
       );
 
       await validateCognitoAccessToken(verifyTokenPayload.idToken);
@@ -30,7 +30,7 @@ export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
       // Clear the cognito session cookies
       res
         .setHeader('Set-Cookie', [
-          cookie.serialize('cognitoVerifyToken', '', {
+          cookie.serialize('cognitoVerify', '', {
             path: '/api',
             expires: new Date(0),
           }),

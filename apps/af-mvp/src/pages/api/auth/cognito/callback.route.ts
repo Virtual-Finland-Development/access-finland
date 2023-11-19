@@ -85,7 +85,7 @@ async function handler(
           }
         ),
         cookie.serialize(
-          'cognitoVerifyToken', // Cookie for the backend verification
+          'cognitoVerify', // Cookie for the backend verification
           encryptedCookie,
           {
             path: '/api',
