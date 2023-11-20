@@ -1,20 +1,35 @@
 import * as aws from '@pulumi/aws';
-import { generateKeyPair } from '../utils/rsa';
-import setup from '../utils/setup';
+import * as tls from '@pulumi/tls';
+import setup, { nameResource } from '../utils/setup';
 
 const { tags, envOverride } = setup;
 
 export function generateBackendSecretKeyPair() {
-  const keyPair = generateKeyPair(); // Now re-generates on every deployment: fixme
-  createStagedParameterStoreSecret(
-    'BACKEND_SECRET_PUBLIC_KEY',
-    keyPair.publicKey,
-    'Public key for backend'
-  );
-  createStagedParameterStoreSecret(
-    'BACKEND_SECRET_PRIVATE_KEY',
-    keyPair.privateKey,
-    'Private key for backend'
+  // Generate a private key
+  const privateKey = new tls.PrivateKey(nameResource('backend-private-key'), {
+    algorithm: 'RSA',
+    rsaBits: 2048,
+  });
+
+  // Extract public key from private key
+  const publicKey = tls.getPublicKeyOutput({
+    privateKeyPem: privateKey.privateKeyPem,
+  });
+
+  publicKey.apply(publicKey => {
+    createStagedParameterStoreSecret(
+      'BACKEND_SECRET_PUBLIC_KEY',
+      publicKey.publicKeyPem,
+      'Public key for backend'
+    );
+  });
+
+  privateKey.privateKeyPem.apply(privateKey =>
+    createStagedParameterStoreSecret(
+      'BACKEND_SECRET_PRIVATE_KEY',
+      privateKey,
+      'Private key for backend'
+    )
   );
 }
 
