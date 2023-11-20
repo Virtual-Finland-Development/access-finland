@@ -61,14 +61,16 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
   // Check if cognito session is still valid (on every page)
   //
   const [cognitoVerified, setCognitoVerified] = useState(false);
+  const [cognitoFailed, setCognitoFailed] = useState(false);
   useEffect(() => {
     async function verifyCognitoSession() {
       // Check if waf-cognito frontend cookie present and not yet checked by the app
-      if (!cognitoVerified && isWafProtected()) {
+      if (!cognitoVerified && !cognitoFailed && isWafProtected()) {
         try {
           await apiClient.get('/api/auth/cognito/verify');
           setCognitoVerified(true);
         } catch (error) {
+          setCognitoFailed(true);
           // If not, redirect/reload to main and let the WAF take care of the rest
           router.push('/');
         }
@@ -79,7 +81,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
       verifyCognitoSession();
     }
 
-  }, [cognitoVerified, setCognitoVerified, router]);
+  }, [cognitoVerified, setCognitoVerified, cognitoFailed, setCognitoFailed, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
