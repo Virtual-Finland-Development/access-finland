@@ -65,12 +65,9 @@ async function handler(
     // Success, redirect to the root page with the access cookies
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
     const expirity = payload.exp * 1000;
-    const encryptedCookie = encryptUsingBackendSecret(
-      {
-        idToken: cognitoLoginResponse.id_token,
-      },
-      expirity
-    );
+    const encryptedCookie = await encryptUsingBackendSecret({
+      idToken: cognitoLoginResponse.id_token,
+    });
 
     res
       .setHeader('Set-Cookie', [

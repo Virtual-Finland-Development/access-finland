@@ -13,7 +13,9 @@ export function loggedInAuthMiddleware(handler: NextApiHandlerWithLogger) {
         return res.status(401).json({ error: 'Unauthorized.' });
       }
 
-      const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+      const apiAuthPackage = await decryptApiAuthPackage(
+        req.cookies.apiAuthPackage
+      );
 
       if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
         return res.status(403).json({ error: 'Forbidden.' });
