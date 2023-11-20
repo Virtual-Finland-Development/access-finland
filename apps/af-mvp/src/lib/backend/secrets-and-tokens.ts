@@ -10,15 +10,13 @@ export async function encryptUsingBackendSecret(obj: object): Promise<string> {
     .final();
 }
 
-export async function decryptUsingBackendSecret<T = any>(
-  encryptedData: string
-) {
+export async function decryptUsingBackendSecret(encryptedData: string) {
   const privateKey = await getStagedSecretParameter(
     'BACKEND_SECRET_PRIVATE_KEY'
   );
   const key = await jose.JWK.asKey(privateKey, 'pem');
   const result = await jose.JWE.createDecrypt(key).decrypt(encryptedData);
-  return JSON.parse(result.payload.toString()) as T;
+  return JSON.parse(result.payload.toString());
 }
 
 /**
