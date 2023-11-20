@@ -1,26 +1,22 @@
 import { randomBytes } from 'crypto';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { BACKEND_SECRET_SIGN_KEY } from './api-constants';
+import * as jose from 'node-jose';
+import { getStagedSecretParameter } from './services/aws/ParameterStore';
 
-/**
- * Resolve (not super secret, safe to keep in runtime env) secret sign key
- */
-function resolveSecretSignKey() {
-  return BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
+export async function encryptUsingBackendSecret(obj: object): Promise<string> {
+  const publicKey = await getStagedSecretParameter('BACKEND_SECRET_PUBLIC_KEY');
+  const key = await jose.JWK.asKey(publicKey, 'pem');
+  return jose.JWE.createEncrypt({ format: 'compact', zip: true }, key)
+    .update(JSON.stringify(obj))
+    .final();
 }
 
-export function decryptUsingBackendSecret<T = JwtPayload>(
-  encryptedData: string
-) {
-  // Decrypt using secret
-  return jwt.verify(encryptedData, resolveSecretSignKey()) as T;
-}
-
-export function encryptUsingBackendSecret(obj: object, expiresIn: number) {
-  // Encrypt using secret
-  return jwt.sign(obj, resolveSecretSignKey(), {
-    expiresIn: expiresIn,
-  }); // HMAC SHA256
+export async function decryptUsingBackendSecret(encryptedData: string) {
+  const privateKey = await getStagedSecretParameter(
+    'BACKEND_SECRET_PRIVATE_KEY'
+  );
+  const key = await jose.JWK.asKey(privateKey, 'pem');
+  const result = await jose.JWE.createDecrypt(key).decrypt(encryptedData);
+  return JSON.parse(result.payload.toString());
 }
 
 /**

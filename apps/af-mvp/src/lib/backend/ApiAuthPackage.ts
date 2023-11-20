@@ -6,7 +6,7 @@ import {
   generateCSRFToken,
 } from './secrets-and-tokens';
 
-export function createApiAuthPackage(loggedInState: LoggedInState) {
+export async function createApiAuthPackage(loggedInState: LoggedInState) {
   const csrfToken = generateCSRFToken();
 
   try {
@@ -23,11 +23,8 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
   };
 
   // Encrypt using secret
-  const encryptedApiAuthPackage = encryptUsingBackendSecret(
-    apiAuthPackage,
-    Math.floor(
-      new Date(loggedInState.expiresAt).getTime() / 1000 - Date.now() / 1000 // seconds to the expiresAt date
-    )
+  const encryptedApiAuthPackage = await encryptUsingBackendSecret(
+    apiAuthPackage
   );
 
   return {

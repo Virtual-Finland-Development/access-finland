@@ -19,7 +19,7 @@ export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
       if (!req.cookies.cognitoVerify) {
         throw new Error('Missing cognitoVerify cookie');
       }
-      const verifyTokenPayload = decryptUsingBackendSecret(
+      const verifyTokenPayload = await decryptUsingBackendSecret(
         req.cookies.cognitoVerify
       );
 
