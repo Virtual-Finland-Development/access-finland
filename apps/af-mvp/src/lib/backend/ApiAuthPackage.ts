@@ -27,12 +27,6 @@ export async function createApiAuthPackage(loggedInState: LoggedInState) {
     apiAuthPackage
   );
 
-  console.log(
-    'encryptedApiAuthPackage bytes: ',
-    Buffer.byteLength(encryptedApiAuthPackage, 'utf8'),
-    ' bytes'
-  );
-
   return {
     data: apiAuthPackage,
     encrypted: encryptedApiAuthPackage,
