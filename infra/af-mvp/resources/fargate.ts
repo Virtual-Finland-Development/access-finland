@@ -117,6 +117,16 @@ export function createFargateService(
               'awslogs-stream-prefix': 'service',
             },
           },
+          healthCheck: {
+            command: [
+              'CMD-SHELL',
+              'wget --no-verbose --tries=1 --spider http://localhost:3001/api/health-check || exit 1',
+            ],
+            interval: 30,
+            retries: 3,
+            startPeriod: 60,
+            timeout: 5,
+          },
         },
       },
       taskRole: {
