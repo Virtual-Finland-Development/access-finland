@@ -120,11 +120,11 @@ export function createFargateService(
           healthCheck: {
             command: [
               'CMD-SHELL',
-              'wget --no-verbose --tries=1 --spider http://localhost:3001/api/health-check || exit 1',
+              'wget --no-verbose --tries=1 --spider http://$(hostname):3000/api/health-check || exit 1',
             ],
             interval: 30,
             retries: 3,
-            startPeriod: 60,
+            startPeriod: 10,
             timeout: 5,
           },
         },
