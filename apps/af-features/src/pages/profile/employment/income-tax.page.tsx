@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Text } from 'suomifi-ui-components';
-import { IncomeTax } from '@shared/types';
+import { usePersonIncomeTax } from '@shared/lib/hooks/employment';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -8,40 +7,11 @@ import Loading from '@shared/components/ui/loading';
 import PageSideNavLayout from '../components/profile-side-nav-layout';
 import TaxDetails from '../components/tax-details';
 
-const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
-
-const DATA = {
-  taxPayerType: 'resident' as IncomeTax['taxPayerType'],
-  withholdingPercentage: 15.5,
-  additionalPercentage: 40.2,
-  incomeLimit: 30000,
-  validityDate: '2023-12-31',
-};
-
-async function MOCK_DATA() {
-  await sleep();
-  return DATA;
-}
-
 export default function IncomeTaxPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<IncomeTax | undefined>();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await MOCK_DATA();
-        setData(response);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  /**
+   * TODO: implement consent check before fetching data
+   */
+  const { data: incomeTax, isLoading } = usePersonIncomeTax();
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -60,7 +30,7 @@ export default function IncomeTaxPage() {
               vitae nunc.
             </Text>
 
-            {isLoading ? <Loading /> : <TaxDetails data={data} />}
+            {isLoading ? <Loading /> : <TaxDetails data={incomeTax} />}
           </div>
         </Page.Block>
       </PageSideNavLayout>

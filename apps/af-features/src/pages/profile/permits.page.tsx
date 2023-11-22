@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import migriLogo from '@shared/images/MIGRI_logo.svg';
 import { Text } from 'suomifi-ui-components';
-import { PersonWorkPermit } from '@shared/types';
+import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -10,53 +9,11 @@ import Loading from '@shared/components/ui/loading';
 import PermitsDetails from './components/permits-details';
 import PageSideNavLayout from './components/profile-side-nav-layout';
 
-const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
-
-const DATA: PersonWorkPermit[] = [
-  {
-    permitName: 'Seasonal work certificate',
-    permitAccepted: true,
-    permitType: 'A',
-    validityStart: '2023-11-07',
-    validityEnd: '2024-02-19',
-    industries: ['79.1', '79.9'],
-    employerName: 'Staffpoint Oy',
-  },
-  {
-    permitName: 'First residence permit',
-    permitAccepted: false,
-    permitType: 'B',
-    validityStart: '',
-    validityEnd: '',
-    industries: ['89.1', '89.9'],
-    employerName: 'Staffpoint Oy',
-  },
-];
-
-async function MOCK_DATA(): Promise<PersonWorkPermit[]> {
-  await sleep();
-  return DATA;
-}
-
 export default function ResidencePermitsPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [permits, setPermits] = useState<PersonWorkPermit[] | undefined>();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await MOCK_DATA();
-        setPermits(response);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  /**
+   * TODO: implement consent check before fetching data
+   */
+  const { data: permits, isLoading } = usePersonWorkPermits();
 
   return (
     <AuthSentry redirectPath="/profile">
