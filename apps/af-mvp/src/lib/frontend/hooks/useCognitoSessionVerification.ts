@@ -16,8 +16,8 @@ export default function useCognitoSessionVerification() {
           // Check if waf-cognito frontend cookie present and valid
           await apiClient.get('/api/auth/cognito/verify');
         } catch (error) {
-          // If not, redirect/reload to main and let the WAF take care of the rest
-          router.push('/');
+          // If not, reload and let the WAF take care of the rest
+          router.reload();
         }
       }
     }
