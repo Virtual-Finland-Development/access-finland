@@ -6,7 +6,6 @@ import {
   nullable,
   number,
   object,
-  optional,
   string,
 } from 'valibot';
 
@@ -37,11 +36,11 @@ export type ProfileTosAgreementWrite = Output<
  * Person/BasicInformation
  */
 export const PersonBasicInformationSchema = object({
-  givenName: optional(string()),
-  lastName: optional(string()),
+  givenName: nullable(string()),
+  lastName: nullable(string()),
   email: string(),
-  phoneNumber: optional(string()),
-  residency: optional(string()),
+  phoneNumber: nullable(string()),
+  residency: nullable(string()),
 });
 export type PersonBasicInformation = Output<
   typeof PersonBasicInformationSchema
