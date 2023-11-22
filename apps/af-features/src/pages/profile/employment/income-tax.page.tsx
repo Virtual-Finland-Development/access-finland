@@ -30,7 +30,7 @@ export default function IncomeTaxPage() {
               vitae nunc.
             </Text>
 
-            {isLoading ? <Loading /> : <TaxDetails data={incomeTax} />}
+            {isLoading ? <Loading /> : <TaxDetails incomeTax={incomeTax} />}
           </div>
         </Page.Block>
       </PageSideNavLayout>

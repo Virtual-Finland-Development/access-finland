@@ -16,40 +16,39 @@ function capitalizeFirstLetter(string) {
 }
 
 interface Props {
-  data: IncomeTax | undefined;
+  incomeTax: IncomeTax | undefined;
 }
 
 export default function TaxDetails(props: Props) {
-  const { data } = props;
+  const { incomeTax } = props;
 
-  if (!data) {
+  if (!incomeTax) {
     return <Text>No tax information found.</Text>;
   }
+
+  const { taxPayerType, withholdingPercentage, incomeLimit, validityDate } =
+    incomeTax;
 
   return (
     <div className="flex flex-col gap-4">
       <Text>
         Tax payer type:{' '}
         <span className="block font-semibold">
-          {capitalizeFirstLetter(data.taxPayerType)}
+          {capitalizeFirstLetter(taxPayerType)}
         </span>
       </Text>
       <Text>
         Tax rate:{' '}
-        <span className="block font-semibold">
-          {data.withholdingPercentage} %
-        </span>
+        <span className="block font-semibold">{withholdingPercentage} %</span>
       </Text>
       <Text>
-        Income limit for the year {getYear(new Date(data.validityDate))}:{' '}
-        <span className="block font-semibold">
-          {formatEuro(data.incomeLimit)}
-        </span>
+        Income limit for the year {getYear(new Date(validityDate))}:{' '}
+        <span className="block font-semibold">{formatEuro(incomeLimit)}</span>
       </Text>
       <Text>
         Validity:{' '}
         <span className="block font-semibold">
-          {format(parseISO(data.validityDate), 'dd.MM.yyyy')}
+          {format(parseISO(validityDate), 'dd.MM.yyyy')}
         </span>
       </Text>
       <Text>Issued by Vero</Text>
