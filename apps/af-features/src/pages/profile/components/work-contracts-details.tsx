@@ -14,6 +14,7 @@ function mapContractDetails(contract: WorkContract) {
     termsOfWork: { employmentStart, employmentEnd, ...termsOfWork },
     compensation,
     benefits,
+    holidays,
   } = contract;
 
   const mapped = {
@@ -29,7 +30,7 @@ function mapContractDetails(contract: WorkContract) {
     termsOfWork: {
       ...termsOfWork,
       employmentStart: formatDate(employmentStart),
-      employmentEnd: formatDate(employmentEnd),
+      employmentEnd: employmentEnd ? formatDate(employmentEnd) : '-',
     },
     compensation: {
       ...compensation,
@@ -39,11 +40,13 @@ function mapContractDetails(contract: WorkContract) {
       benefits: benefits.map(benefit => ({
         ...benefit,
         taxableValue: `${benefit.taxableValue} €`,
-        benefitType:
-          benefit.benefitType === 'partOfSalary'
-            ? 'part of salary'
-            : 'addition to salary',
       })),
+    }),
+    ...(holidays && {
+      holidays: {
+        ...holidays,
+        paidHoliday: holidays.paidHoliday ? 'Yes' : 'No',
+      },
     }),
   };
 

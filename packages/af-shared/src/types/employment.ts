@@ -21,12 +21,12 @@ interface EmployeeInfo {
 
 interface TermsOfWork {
   employmentStart: string;
-  employmentEnd: string;
+  employmentEnd?: string;
   groundsForFixedTerm?: string;
   workDuties: string;
   workConditions?: string;
   industry?: string;
-  locations: string[];
+  locations?: string[];
   workingHours: number;
   collectiveAgreement?: string;
   overtimeRules: string;
@@ -42,18 +42,18 @@ interface Compensation {
 
 interface Benefit {
   benefit?: string;
-  benefitType?: 'partOfSalary' | 'additionToSalary';
+  benefitType?: string;
   taxableValue?: number;
 }
 
 interface Holidays {
-  paidHolidayIncluded: boolean;
+  paidHoliday: boolean;
   numberOfHolidays?: number;
-  determinationOfHoliday?: 'annual holiday act' | 'collective agreement';
+  determinationOfHoliday?: string;
 }
 
-interface Term {
-  termDescription?: string;
+interface OtherTerm {
+  termDescription: string;
 }
 
 export interface WorkContract {
@@ -64,7 +64,7 @@ export interface WorkContract {
   holidays: Holidays;
   benefits?: Benefit[];
   termination: string;
-  otherTerms?: Term[];
+  otherTerms?: OtherTerm[];
 }
 
 /**

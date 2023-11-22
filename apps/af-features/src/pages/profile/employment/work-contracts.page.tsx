@@ -27,7 +27,7 @@ const DATA: WorkContract[] = [
     },
     termsOfWork: {
       employmentStart: '2022-01-01',
-      employmentEnd: '2023-01-01',
+      // employmentEnd: '2023-01-01',
       groundsForFixedTerm: 'Temporary replacement',
       workDuties: 'Software development',
       workConditions: 'Remote work',
@@ -45,7 +45,7 @@ const DATA: WorkContract[] = [
       paymentTime: 'End of month',
     },
     holidays: {
-      paidHolidayIncluded: true,
+      paidHoliday: true,
       numberOfHolidays: 25,
       determinationOfHoliday: 'annual holiday act',
     },
@@ -104,7 +104,7 @@ const DATA: WorkContract[] = [
       paymentTime: 'End of month',
     },
     holidays: {
-      paidHolidayIncluded: true,
+      paidHoliday: true,
       numberOfHolidays: 25,
       determinationOfHoliday: 'annual holiday act',
     },

@@ -197,7 +197,7 @@ export const WORK_CONTRACT_LABELS: Record<string, any> = {
   salary: 'Salary',
   bonuses: 'Bonuses',
   paymentTime: 'Payment time',
-  paidHolidayIncluded: 'Paid holiday included',
+  paidHoliday: 'Paid holiday',
   numberOfHolidays: 'Number of holidays',
   determinationOfHoliday: 'Determination of holiday',
   benefit: 'Benefit',

@@ -1,9 +1,9 @@
 export interface PersonWorkPermit {
   permitName: string;
   permitAccepted: boolean;
-  permitType?: 'A' | 'B';
+  permitType?: string;
   validityStart?: string;
   validityEnd?: string;
-  industries?: string[];
+  industries: string[];
   employerName?: string;
 }

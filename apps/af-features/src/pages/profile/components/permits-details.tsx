@@ -84,14 +84,12 @@ export default function PermitsDetails(props: Props) {
                     {permit.employerName}
                   </span>
                 </Text>
-                {permit.industries && (
-                  <Text>
-                    Industries{' '}
-                    <span className="block font-semibold">
-                      {permit.industries!.join(', ')}
-                    </span>
-                  </Text>
-                )}
+                <Text>
+                  Industries{' '}
+                  <span className="block font-semibold">
+                    {permit.industries.join(', ')}
+                  </span>
+                </Text>
                 <InlineAlert labelText="Permit type">
                   <Text>
                     1. Permit type, or the grounds for issuing the permit:
