@@ -1,6 +1,5 @@
+import useCognitoSessionVerification from '@mvp/lib/frontend/hooks/useCognitoSessionVerification';
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
-import apiClient from '@shared/lib/api/api-client';
-import { isExportedApplication, isWafProtected } from '@shared/lib/utils';
 import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import '@shared/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -9,7 +8,7 @@ import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import React, { FC, PropsWithChildren, ReactNode } from 'react';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
@@ -57,30 +56,9 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
   const ComponentContextProvider = Component.provider || NoProvider;
   const router = useRouter();
   
-  //
   // Check if cognito session is still valid (on every page)
-  //
-  const [cognitoChecked, setCognitoChecked] = useState(false);
-  useEffect(() => {
-    async function verifyCognitoSession() {
-      // Check if waf-cognito frontend cookie present and not yet checked by the app
-      if (!cognitoChecked && isWafProtected()) {
-        setCognitoChecked(true);
-        
-        try {
-          await apiClient.get('/api/auth/cognito/verify');
-        } catch (error) {
-          // If not, redirect/reload to main and let the WAF take care of the rest
-          router.push('/');
-        }
-      }
-    }
-    
-    if (!isExportedApplication()) {
-      verifyCognitoSession();
-    }
-
-  }, [cognitoChecked, setCognitoChecked, router]);
+  // on failure, redirects to cognito login with WAF
+  useCognitoSessionVerification();
 
   return (
     <QueryClientProvider client={queryClient}>
