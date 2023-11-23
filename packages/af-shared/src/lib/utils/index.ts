@@ -11,7 +11,8 @@ export function generateAppContextHash(
   const appContext: AppContextObj = {
     ...baseAppContextObj,
     ...(applicationContextObj || {}),
-    redirectUrl: `${window.location.origin}/auth`,
+    redirectUrl:
+      applicationContextObj?.redirectUrl || `${window.location.origin}/auth`,
   };
   const appContextBase64 = Buffer.from(JSON.stringify(appContext)).toString(
     'base64'

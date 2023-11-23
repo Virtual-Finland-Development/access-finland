@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { getValidAuthState } from '../utils/auth';
-import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from './endpoints';
+import {
+  AUTH_GW_BASE_URL,
+  PRH_MOCK_BASE_URL,
+  TESTBED_API_BASE_URL,
+} from './endpoints';
 import { LoginState } from './services/auth';
 
 const apiClient = axios.create({});
@@ -17,6 +21,7 @@ const PROTECTED_URLS = [
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
   `${TESTBED_API_BASE_URL}/users-api/user`,
+  `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [

@@ -1,7 +1,7 @@
 import { AppContextObj } from '@/types';
 
 export const baseAppContextObj: AppContextObj = {
-  appName: 'living-in-finland',
+  appName: 'access-finland',
   redirectUrl: '',
 };
 

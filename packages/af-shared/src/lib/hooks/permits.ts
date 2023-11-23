@@ -64,6 +64,7 @@ function usePersonWorkPermits(enabled: boolean = true) {
 
   return {
     ...query,
+    isLoading: query.isLoading && query.fetchStatus !== 'idle',
     errorResponse,
   };
 }

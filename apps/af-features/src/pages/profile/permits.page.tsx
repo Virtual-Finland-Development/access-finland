@@ -1,19 +1,31 @@
 import migriLogo from '@shared/images/MIGRI_logo.svg';
 import { Text } from 'suomifi-ui-components';
+import { ConsentDataSource, ConsentStatus } from '@shared/types';
+import { useDataSourceConsent } from '@shared/lib/hooks/consent';
 import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
+import ConsentSentry from './components/consent-sentry';
 import PermitsDetails from './components/permits-details';
 import PageSideNavLayout from './components/profile-side-nav-layout';
 
-export default function ResidencePermitsPage() {
-  /**
-   * TODO: implement consent check before fetching data
-   */
-  const { data: permits, isLoading } = usePersonWorkPermits();
+export default function PermitsPage() {
+  // get consent situation for permits
+  const {
+    data: consentSituation,
+    giveConsent,
+    isLoading: consentLoading,
+  } = useDataSourceConsent(ConsentDataSource.WORK_PERMIT);
+
+  // get permits, if consent is granted
+  const { data: permits, isLoading: permitsLoading } = usePersonWorkPermits(
+    consentSituation?.consentStatus === ConsentStatus.GRANTED
+  );
+
+  const isLoading = consentLoading || permitsLoading;
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -36,7 +48,16 @@ export default function ResidencePermitsPage() {
               <Text></Text>
               <CustomImage src={migriLogo} alt="Migri" height={100} />
             </div>
-            {isLoading ? <Loading /> : <PermitsDetails permits={permits} />}
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <ConsentSentry
+                consentSituation={consentSituation}
+                giveConsent={giveConsent}
+              >
+                <PermitsDetails permits={permits} />
+              </ConsentSentry>
+            )}
           </div>
         </Page.Block>
       </PageSideNavLayout>
