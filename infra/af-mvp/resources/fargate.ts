@@ -119,6 +119,16 @@ export function createFargateService(
               'awslogs-stream-prefix': 'service',
             },
           },
+          healthCheck: {
+            command: [
+              'CMD-SHELL',
+              'wget --no-verbose --tries=1 --spider http://$(hostname):3000/api/health-check || exit 1',
+            ],
+            interval: 30,
+            retries: 3,
+            startPeriod: 10,
+            timeout: 5,
+          },
         },
       },
       taskRole: {
@@ -152,7 +162,7 @@ function createErrorMonitor(logGroup: aws.cloudwatch.LogGroup) {
     {
       logGroup: pulumi.interpolate`${logGroup.name}`,
       destinationArn: errorReportingFunctionArn,
-      filterPattern: 'ERROR',
+      filterPattern: '?"ERROR" ?"Error" ?"error"',
     }
   );
 }

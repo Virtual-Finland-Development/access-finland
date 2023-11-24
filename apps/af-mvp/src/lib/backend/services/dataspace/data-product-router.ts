@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import { ValiError } from 'valibot';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
 import { Logger } from '../../Logger';
@@ -15,9 +16,9 @@ async function execute(
     req.cookies.apiAuthPackage!
   );
   const endpoint = getDataProductEndpointInfo(dataProduct, dataSource);
-  const requestBody = parseDataProductRequestBody(dataProduct, req);
 
   try {
+    const requestBody = parseDataProductRequestBody(dataProduct, req);
     const response = await axios.post(endpoint.url.toString(), requestBody, {
       headers: {
         Authorization: `Bearer ${apiAuthPackage.idToken}`,
@@ -29,7 +30,8 @@ async function execute(
     res.status(response.status).json(response.data);
   } catch (error: any) {
     const errorContextPostfix = `${endpoint.dataProduct}:${endpoint.dataSource}:${endpoint.schemaVersion}`;
-    const statusCode = error.response?.status || 500;
+    const statusCode =
+      error.response?.status || (error instanceof ValiError ? 400 : 500);
     const responseData = error.response?.data?.type
       ? {
           message:
