@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { ConsentDataSource } from '@/types';
 import api from '../api';
 import { JSONSessionStorage } from '../utils/JSONStorage';
@@ -52,11 +51,8 @@ function useDataSourceConsent(dataSourceUri: ConsentDataSource) {
   );
 
   useErrorToast({
-    title: 'Could not fetch user data source consent',
-    error:
-      query.error && (query.error as AxiosError).response?.status !== 404
-        ? query.error
-        : undefined,
+    title: 'Could not fetch consent',
+    error: query.error,
   });
 
   const giveConsent = async () => {
@@ -67,11 +63,8 @@ function useDataSourceConsent(dataSourceUri: ConsentDataSource) {
     api.consent.directToConsentService(query.data);
   };
 
-  const errorResponse = query.error;
-
   return {
     ...query,
-    errorResponse,
     giveConsent,
   };
 }

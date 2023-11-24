@@ -1,17 +1,28 @@
 import { ReactNode } from 'react';
 import { Button, InlineAlert, Text } from 'suomifi-ui-components';
 import { ConsentSituation, ConsentStatus } from '@shared/types';
+import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomLink from '@shared/components/ui/custom-link';
 
 interface Props {
   consentSituation: ConsentSituation | undefined;
   giveConsent: () => void;
+  error?: any;
   children: ReactNode;
 }
 
 export default function ConsentSentry(props: Props) {
-  const { consentSituation, giveConsent, children } = props;
+  const { consentSituation, giveConsent, error, children } = props;
+
+  if (error) {
+    return (
+      <Alert status="error" labelText="Error">
+        Could not verify consent situation:{' '}
+        {error.message || 'something went wrong'}
+      </Alert>
+    );
+  }
 
   return (
     <>

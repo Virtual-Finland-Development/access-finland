@@ -5,6 +5,7 @@ import { useDataSourceConsent } from '@shared/lib/hooks/consent';
 import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
+import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
@@ -17,12 +18,16 @@ export default function PermitsPage() {
   const {
     data: consentSituation,
     giveConsent,
+    error: consentError,
     isLoading: consentLoading,
   } = useDataSourceConsent(ConsentDataSource.WORK_PERMIT);
 
   // get permits, if consent is granted
-  const { data, isLoading: permitsLoading } =
-    usePersonWorkPermits(consentSituation);
+  const {
+    data,
+    error: permitsError,
+    isLoading: permitsLoading,
+  } = usePersonWorkPermits(consentSituation);
 
   const isLoading = consentLoading || permitsLoading;
   return (
@@ -52,8 +57,12 @@ export default function PermitsPage() {
               <ConsentSentry
                 consentSituation={consentSituation}
                 giveConsent={giveConsent}
+                error={consentError}
               >
-                <WorkPermitsDetails permits={data?.permits} />
+                <WorkPermitsDetails
+                  permits={data?.permits}
+                  error={permitsError}
+                />
               </ConsentSentry>
             )}
           </div>

@@ -9,6 +9,7 @@ import {
   Text,
 } from 'suomifi-ui-components';
 import { PersonWorkPermit } from '@shared/types';
+import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
 
 function getStatusColor(status: boolean) {
@@ -35,10 +36,20 @@ function renderIcon(status: boolean) {
 
 interface Props {
   permits: PersonWorkPermit[] | undefined;
+  error: any;
 }
 
 export default function PermitsDetails(props: Props) {
-  const { permits } = props;
+  const { permits, error } = props;
+
+  if (error) {
+    return (
+      <Alert status="error" labelText="Error">
+        Could not fetch person permits:{' '}
+        {error.message || 'something went wrong'}
+      </Alert>
+    );
+  }
 
   if (!permits || permits.length === 0) {
     return <Text>You currently have no pending permits.</Text>;

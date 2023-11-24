@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { ConsentSituation } from '@/types';
 import { generateAppContextHash } from '@/lib/utils';
 import apiClient from '../api-client';
@@ -37,9 +38,10 @@ export async function checkConsent(
 
     return consentSituation;
   } catch (error) {
-    return {
-      consentStatus: 'error',
-    };
+    if (error instanceof AxiosError) {
+      throw error;
+    }
+    throw new AxiosError(error.message);
   }
 }
 

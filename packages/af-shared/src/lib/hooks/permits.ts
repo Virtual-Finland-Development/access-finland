@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 import { ConsentSituation, ConsentStatus } from '@/types';
 import api from '../api';
 import useErrorToast from './use-error-toast';
@@ -10,38 +9,6 @@ const QUERY_OPTIONS = {
   refetchOnWindowFocus: false,
   retry: false,
 };
-
-interface FormattedErrorResponse {
-  statusCode: number;
-  message: string;
-  shouldPrintError: boolean;
-}
-
-function formatErrorResponse(
-  error: unknown,
-  messagePrefix: string
-): FormattedErrorResponse | undefined {
-  if (!error || !(error instanceof AxiosError)) {
-    return undefined;
-  }
-
-  const errorResponse = error?.response;
-
-  if (!errorResponse) {
-    return undefined;
-  }
-
-  const statusCode = errorResponse.status;
-  const message = `${messagePrefix}: ${
-    errorResponse.statusText || 'something went wrong'
-  }`;
-
-  return {
-    statusCode,
-    message,
-    shouldPrintError: statusCode !== 404,
-  };
-}
 
 /**
  * Get user work permits
@@ -59,20 +26,13 @@ function usePersonWorkPermits(consentSituation: ConsentSituation | undefined) {
 
   useErrorToast({
     title: 'Could not fetch user work permits',
-    error:
-      query.error && (query.error as AxiosError).response?.status !== 404
-        ? query.error
-        : undefined,
+    error: query.error,
   });
-
-  const errorResponse = formatErrorResponse(query.error, 'Work permits');
 
   return {
     ...query,
     isLoading: query.isLoading && query.fetchStatus !== 'idle',
-    errorResponse,
   };
 }
 
-export type { FormattedErrorResponse };
 export { usePersonWorkPermits };
