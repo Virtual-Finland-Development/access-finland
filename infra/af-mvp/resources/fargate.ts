@@ -150,7 +150,7 @@ function createErrorMonitor(logGroup: aws.cloudwatch.LogGroup) {
     {
       logGroup: pulumi.interpolate`${logGroup.name}`,
       destinationArn: errorReportingFunctionArn,
-      filterPattern: 'ERROR',
+      filterPattern: '?"ERROR" ?"Error" ?"error"',
     }
   );
 }
