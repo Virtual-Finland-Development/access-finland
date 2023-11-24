@@ -1,6 +1,6 @@
 import migriLogo from '@shared/images/MIGRI_logo.svg';
 import { Text } from 'suomifi-ui-components';
-import { ConsentDataSource, ConsentStatus } from '@shared/types';
+import { ConsentDataSource } from '@shared/types';
 import { useDataSourceConsent } from '@shared/lib/hooks/consent';
 import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
@@ -9,7 +9,7 @@ import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
 import ConsentSentry from './components/consent-sentry';
-import PermitsDetails from './components/permits-details';
+import WorkPermitsDetails from './components/permits-details';
 import PageSideNavLayout from './components/profile-side-nav-layout';
 
 export default function PermitsPage() {
@@ -21,12 +21,10 @@ export default function PermitsPage() {
   } = useDataSourceConsent(ConsentDataSource.WORK_PERMIT);
 
   // get permits, if consent is granted
-  const { data: permits, isLoading: permitsLoading } = usePersonWorkPermits(
-    consentSituation?.consentStatus === ConsentStatus.GRANTED
-  );
+  const { data, isLoading: permitsLoading } =
+    usePersonWorkPermits(consentSituation);
 
   const isLoading = consentLoading || permitsLoading;
-
   return (
     <AuthSentry redirectPath="/profile">
       <PageSideNavLayout title="Permits">
@@ -55,7 +53,7 @@ export default function PermitsPage() {
                 consentSituation={consentSituation}
                 giveConsent={giveConsent}
               >
-                <PermitsDetails permits={permits} />
+                <WorkPermitsDetails permits={data?.permits} />
               </ConsentSentry>
             )}
           </div>

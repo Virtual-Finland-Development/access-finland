@@ -25,13 +25,17 @@ const MOCK_DATA: PersonWorkPermit[] = [
   },
 ];
 
-export async function getPersonWorkPermits(): Promise<PersonWorkPermit[]> {
-  // TODO: Wait for testbed-api implementation
-
-  /* const { data } = await apiClient.get(
-    `${TESTBED_API_BASE_URL}/testbed/productizer/permits/work-permits`
+export async function getPersonWorkPermits(
+  consentToken?: string
+): Promise<{ permits: PersonWorkPermit[] }> {
+  const { data } = await apiClient.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1?source=virtual_finland:development`,
+    {},
+    {
+      headers: {
+        'x-consent-token': consentToken,
+      },
+    }
   );
-  return data; */
-  await sleep();
-  return MOCK_DATA;
+  return data;
 }
