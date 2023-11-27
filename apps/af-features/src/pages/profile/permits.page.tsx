@@ -30,6 +30,7 @@ export default function PermitsPage() {
   } = usePersonWorkPermits(consentSituation);
 
   const isLoading = consentLoading || permitsLoading;
+
   return (
     <AuthSentry redirectPath="/profile">
       <PageSideNavLayout title="Permits">
