@@ -7,7 +7,6 @@ export enum ConsentDataSource {
 export enum ConsentStatus {
   VERIFY = 'verifyUserConsent',
   GRANTED = 'consentGranted',
-  NO_CONSENT = 'noConsent',
 }
 
 export type ConsentSituation = {

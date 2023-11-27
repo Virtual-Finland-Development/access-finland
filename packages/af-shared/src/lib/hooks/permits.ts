@@ -20,9 +20,7 @@ function usePersonWorkPermits(consentSituation: ConsentSituation | undefined) {
       await api.permits.getPersonWorkPermits(consentSituation?.consentToken),
     {
       ...QUERY_OPTIONS,
-      enabled: [ConsentStatus.NO_CONSENT, ConsentStatus.GRANTED].includes(
-        consentSituation?.consentStatus!
-      ),
+      enabled: consentSituation?.consentStatus === ConsentStatus.GRANTED,
     }
   );
 
