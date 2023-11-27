@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 import cognitoFrontMiddleware from './lib/frontend/edge-middlewares/cognitoFrontMiddleware';
 import infoPageMiddleware from './lib/frontend/edge-middlewares/infoPageMiddleware';
 
-export async function middleware(request: NextRequest) {
-  // The middlewares are executed in order, the first one to return a response will be used
-  const middlewares: Array<FrontendMiddlewareFunction> = [
-    cognitoFrontMiddleware,
-    infoPageMiddleware,
-  ];
+// The middlewares are executed in order, the first one to return a response will be used
+const middlewares: Array<FrontendMiddlewareFunction> = [
+  cognitoFrontMiddleware,
+  infoPageMiddleware,
+];
 
+export async function middleware(request: NextRequest) {
   for (const middlewareFunction of middlewares) {
     const response = await middlewareFunction(request);
     if (response) {
