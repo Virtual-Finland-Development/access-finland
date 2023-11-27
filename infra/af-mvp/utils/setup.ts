@@ -79,13 +79,6 @@ export function nameResource(
   return resourceNameExtended;
 }
 
-// Random value for secret sign key
-const backendSignKey = pulumi.interpolate`${
-  new random.RandomPassword(nameResource('backendSignKey'), {
-    length: 32,
-  }).result
-}`;
-
 // Random value for custom header (for restricted CloudFront -> ALB access)
 const customHeaderValue = pulumi.interpolate`${
   new random.RandomUuid(nameResource('uuid')).result
@@ -119,7 +112,6 @@ const setup = {
     codesetsEndpoint,
     usersApiEndpoint,
   },
-  backendSignKey,
   customHeaderValue,
   cdn: {
     domainConfig: {

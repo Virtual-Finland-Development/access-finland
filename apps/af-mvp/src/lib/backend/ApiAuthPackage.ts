@@ -1,9 +1,12 @@
-import { randomBytes } from 'crypto';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { LoggedInState } from '@shared/types';
-import { BACKEND_SECRET_SIGN_KEY } from './api-constants';
+import {
+  decryptUsingBackendSecret,
+  encryptUsingBackendSecret,
+  generateCSRFToken,
+} from './secrets-and-tokens';
 
-export function createApiAuthPackage(loggedInState: LoggedInState) {
+export async function createApiAuthPackage(loggedInState: LoggedInState) {
   const csrfToken = generateCSRFToken();
 
   try {
@@ -19,14 +22,10 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
     csrfToken: csrfToken,
   };
 
-  const secretSignKey = resolveSecretSignKey();
-
   // Encrypt using secret
-  const encryptedApiAuthPackage = jwt.sign(apiAuthPackage, secretSignKey, {
-    expiresIn: Math.floor(
-      new Date(loggedInState.expiresAt).getTime() / 1000 - Date.now() / 1000
-    ), // seconds to the expiresAt date
-  }); // HMAC SHA256
+  const encryptedApiAuthPackage = await encryptUsingBackendSecret(
+    apiAuthPackage
+  );
 
   return {
     data: apiAuthPackage,
@@ -35,28 +34,5 @@ export function createApiAuthPackage(loggedInState: LoggedInState) {
 }
 
 export function decryptApiAuthPackage(apiAuthPackageEncrypted: string) {
-  const secretSignKey = resolveSecretSignKey();
-
-  // Decrypt using secret
-  const decryptedApiAuthPackage = jwt.verify(
-    apiAuthPackageEncrypted,
-    secretSignKey
-  ) as JwtPayload;
-
-  return decryptedApiAuthPackage;
-}
-
-/**
- * Resolve (not super secret, safe to keep in runtime env) secret sign key
- */
-function resolveSecretSignKey() {
-  return BACKEND_SECRET_SIGN_KEY || 'local-secret-key';
-}
-
-/**
- *
- * @returns A random string of 100 bytes
- */
-export function generateCSRFToken() {
-  return randomBytes(100).toString('base64');
+  return decryptUsingBackendSecret(apiAuthPackageEncrypted);
 }

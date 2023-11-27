@@ -12,7 +12,9 @@ async function execute(
   res: NextApiResponse,
   logger: Logger
 ) {
-  const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
+  const apiAuthPackage = await decryptApiAuthPackage(
+    req.cookies.apiAuthPackage!
+  );
   const endpoint = getDataProductEndpointInfo(dataProduct, dataSource);
 
   try {

@@ -12,7 +12,9 @@ import { USERS_API_ACCESS_KEY } from '../../api-constants';
 const UsersApiRouter = {
   async execute(req: NextApiRequest, res: NextApiResponse, logger: Logger) {
     try {
-      const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage!);
+      const apiAuthPackage = await decryptApiAuthPackage(
+        req.cookies.apiAuthPackage!
+      );
       const usersApiRequestHeaders = {
         Authorization: `Bearer ${apiAuthPackage.idToken}`,
         'Content-Type': 'application/json',

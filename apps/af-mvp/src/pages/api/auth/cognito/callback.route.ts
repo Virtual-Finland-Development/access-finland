@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { Logger } from '@mvp/lib/backend/Logger';
+import { requestLoggingMiddleware } from '@mvp/lib/backend/middleware/requestLogging';
+import { encryptUsingBackendSecret } from '@mvp/lib/backend/secrets-and-tokens';
+import { validateCognitoAccessToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import { object, parse, string } from 'valibot';
 
@@ -30,9 +33,10 @@ function ifNotObjectOrEmptyObject(value: any): boolean {
  * @returns
  */
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  logger: Logger
 ) {
   const queryParams = req.query;
 
@@ -52,38 +56,47 @@ export default async function handler(
   }
 
   try {
+    // Parse and validate
     const cognitoLoginResponse = parse(CognitoLoginResponseSchema, queryParams);
+    const payload = await validateCognitoAccessToken(
+      cognitoLoginResponse.id_token
+    );
 
-    const userPoolId = process.env.WAF_USER_POOL_ID;
-    const userPoolClientId = process.env.WAF_USER_POOL_CLIENT_ID;
+    // Success, redirect to the root page with the access cookies
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
-
-    // AWS Cognito verifier that expects valid access tokens
-    const verifier = CognitoJwtVerifier.create({
-      userPoolId: userPoolId!,
-      tokenUse: 'id',
-      clientId: userPoolClientId!,
+    const expirity = payload.exp * 1000;
+    const encryptedCookie = await encryptUsingBackendSecret({
+      idToken: cognitoLoginResponse.id_token,
     });
 
-    const payload = await verifier.verify(cognitoLoginResponse.id_token);
-
-    // Success, redirect to the root page with the shared cookie
     res
       .setHeader('Set-Cookie', [
         cookie.serialize(
-          'cognito-identity.amazonaws.com',
+          'wafCognitoSession', // Cookie for the AWS WAF
           sharedCookieSecret!,
           {
             path: '/',
             httpOnly: true,
             sameSite: 'lax',
-            expires: new Date(payload.exp * 1000),
+            expires: new Date(expirity),
+          }
+        ),
+        cookie.serialize(
+          'cognitoVerify', // Cookie for the backend verification
+          encryptedCookie,
+          {
+            path: '/api',
+            httpOnly: true,
+            sameSite: 'strict',
+            expires: new Date(expirity),
           }
         ),
       ])
       .redirect(303, '/');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(401).json({ error: error.message, trace: error.stack });
   }
 }
+
+export default requestLoggingMiddleware(handler);

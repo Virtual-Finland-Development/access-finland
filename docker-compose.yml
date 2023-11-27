@@ -30,7 +30,6 @@ services:
     environment:
       - NEXT_PUBLIC_USERS_API_BASE_URL=${NEXT_PUBLIC_USERS_API_BASE_URL:-http://host.docker.internal:5001}
       - DATASPACE_PRODUCT_GATEWAY_BASE_URL=${DATASPACE_PRODUCT_GATEWAY_BASE_URL:-http://host.docker.internal:5001/productizer}
-      - BACKEND_SECRET_SIGN_KEY=${BACKEND_SECRET_SIGN_KEY:-secret}
       - AWS_PROFILE=${AWS_PROFILE:-default}
     labels:
       - traefik.enable=true

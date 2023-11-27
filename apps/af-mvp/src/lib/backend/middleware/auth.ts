@@ -3,17 +3,19 @@ import { decryptApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { AxiosError } from 'axios';
 import { ValiError } from 'valibot';
 import { Logger } from '../Logger';
-import { requestLoggingMiddleware } from './requestLogging';
+import { appRequestMiddleware } from './appRequestMiddleware';
 
 export function loggedInAuthMiddleware(handler: NextApiHandlerWithLogger) {
-  return requestLoggingMiddleware(
+  return appRequestMiddleware(
     async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
       // Logged in check
       if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
         return res.status(401).json({ error: 'Unauthorized.' });
       }
 
-      const apiAuthPackage = decryptApiAuthPackage(req.cookies.apiAuthPackage);
+      const apiAuthPackage = await decryptApiAuthPackage(
+        req.cookies.apiAuthPackage
+      );
 
       if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
         return res.status(403).json({ error: 'Forbidden.' });
@@ -30,7 +32,7 @@ export function loggedInAuthMiddleware(handler: NextApiHandlerWithLogger) {
 }
 
 export function loggedOutAuthMiddleware(handler: NextApiHandlerWithLogger) {
-  return requestLoggingMiddleware(
+  return appRequestMiddleware(
     async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
       try {
         return await handler(req, res, logger);
