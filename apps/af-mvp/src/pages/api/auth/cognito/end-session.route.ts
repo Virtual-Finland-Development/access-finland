@@ -9,7 +9,7 @@ import cookie from 'cookie';
  * @param res
  */
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const cleanupCookies = [
+  res.setHeader('Set-Cookie', [
     cookie.serialize('cognitoVerify', '', {
       path: '/api',
       expires: new Date(0),
@@ -18,18 +18,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       path: '/',
       expires: new Date(0),
     }),
-  ];
+  ]);
 
   const isJsonRequest = req.headers.accept?.includes('application/json');
   if (!isJsonRequest) {
-    return res.status(302).setHeader('Set-Cookie', [
-      'Location=/', // Redirect to the root page
-      ...cleanupCookies,
-    ]);
+    return res.redirect(303, '/');
   }
-  return res
-    .setHeader('Set-Cookie', cleanupCookies)
-    .json({ message: 'Session cleared' });
+  return res.json({ message: 'Session cleared' });
 }
 
 export default handler;
