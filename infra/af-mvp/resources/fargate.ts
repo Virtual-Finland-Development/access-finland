@@ -30,8 +30,8 @@ export function createFargateService(
     }),
   });
 
-  const sinunaAccessPolicy = new aws.iam.Policy(
-    nameResource('fargate-task-role-sinuna-policy'),
+  const ssmPolicy = new aws.iam.Policy(
+    nameResource('fargate-task-role-ssm-policy'),
     {
       tags,
       policy: {
@@ -43,6 +43,8 @@ export function createFargateService(
             Resource: [
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_ID`, // Access to stage-prefixed sinuna variables
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
+              pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PUBLIC_KEY`,
+              pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PRIVATE_KEY`,
             ],
           },
         ],
@@ -52,10 +54,10 @@ export function createFargateService(
 
   // Attach a policy to grant access to Parameter Store
   new aws.iam.RolePolicyAttachment(
-    nameResource('fargate-task-role-sinuna-policy-attachment'),
+    nameResource('fargate-task-role-ssm-policy-attachment'),
     {
       role: taskRole.name,
-      policyArn: sinunaAccessPolicy.arn,
+      policyArn: ssmPolicy.arn,
     }
   );
 
@@ -117,6 +119,16 @@ export function createFargateService(
               'awslogs-stream-prefix': 'service',
             },
           },
+          healthCheck: {
+            command: [
+              'CMD-SHELL',
+              'wget --no-verbose --tries=1 --spider http://$(hostname):3000/api/health-check || exit 1',
+            ],
+            interval: 30,
+            retries: 3,
+            startPeriod: 10,
+            timeout: 5,
+          },
         },
       },
       taskRole: {
@@ -150,7 +162,7 @@ function createErrorMonitor(logGroup: aws.cloudwatch.LogGroup) {
     {
       logGroup: pulumi.interpolate`${logGroup.name}`,
       destinationArn: errorReportingFunctionArn,
-      filterPattern: 'ERROR',
+      filterPattern: '?"ERROR" ?"Error" ?"error"',
     }
   );
 }

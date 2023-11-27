@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { generateCSRFToken } from '@mvp/lib/backend/ApiAuthPackage';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
+import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import { retrieveSinunaLoginUrl } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
 

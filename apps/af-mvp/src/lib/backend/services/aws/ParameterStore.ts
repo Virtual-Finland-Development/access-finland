@@ -1,4 +1,5 @@
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
+import { getRuntimeStage } from '@shared/lib/utils';
 
 const parameterStoreClient = new SSMClient({});
 
@@ -18,4 +19,9 @@ export async function getSecretParameter(name: string) {
     }
     throw error;
   }
+}
+
+export async function getStagedSecretParameter(name: string) {
+  const stage = getRuntimeStage();
+  return getSecretParameter(`${stage}_${name}`);
 }

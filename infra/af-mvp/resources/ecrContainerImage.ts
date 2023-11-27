@@ -2,12 +2,13 @@ import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
+import { generateBackendSecretKeyPair } from './systemsManager';
 
 const {
   tags,
   envOverride,
   externalApis: { codesetsEndpoint, usersApiEndpoint },
-  backendSignKey,
+  cdn: { waf },
 } = setup;
 
 export function createContainerImage(cdnSetup: {
@@ -15,6 +16,9 @@ export function createContainerImage(cdnSetup: {
   domainName: pulumi.Output<string>;
 }) {
   const dataspaceConfig = new pulumi.Config('dataspace');
+
+  // Dependencies
+  generateBackendSecretKeyPair();
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
@@ -31,7 +35,6 @@ export function createContainerImage(cdnSetup: {
     args: {
       NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
       NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
-      BACKEND_SECRET_SIGN_KEY: backendSignKey,
       NEXT_PUBLIC_STAGE: envOverride,
       DATASPACE_PRODUCT_GATEWAY_BASE_URL: dataspaceConfig.require('gatewayUrl'),
       DATASPACE_DEFAULT_DATA_SOURCE:

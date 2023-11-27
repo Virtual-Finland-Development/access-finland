@@ -1,19 +1,18 @@
+import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
+import reportAccessibility from '@shared/lib/utils/reportAccessibility';
+import '@shared/styles.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { NextComponentType } from 'next';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React from 'react';
-import { FC, PropsWithChildren, ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import styled from 'styled-components';
-import reportAccessibility from '@shared/lib/utils/reportAccessibility';
-import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
-import '@shared/styles.css';
-import '../styles/globals.css';
-import 'suomifi-ui-components/dist/main.css';
+import React, { FC, PropsWithChildren, ReactNode } from 'react';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
+import styled from 'styled-components';
+import 'suomifi-ui-components/dist/main.css';
+import '../styles/globals.css';
 
 // axe-core a11y reporting
 reportAccessibility(React);

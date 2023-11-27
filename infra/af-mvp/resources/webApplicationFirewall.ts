@@ -32,7 +32,6 @@ export function createWebAppFirewallProtection() {
     }).result
   }`;
 
-
   const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
   const { userPool, userPoolClient, cognitoDomain } =
     createCognitoUserPool(callbackUri);
@@ -114,8 +113,35 @@ export function createWebAppFirewallProtection() {
           },
         },
         {
-          name: 'PassThroughAssets',
+          name: 'VerifyAccess',
           priority: 2,
+          action: {
+            allow: {},
+          },
+          statement: {
+            byteMatchStatement: {
+              searchString: '/api/auth/cognito/verify',
+              fieldToMatch: {
+                uriPath: {},
+              },
+              textTransformations: [
+                {
+                  priority: 0,
+                  type: 'NONE',
+                },
+              ],
+              positionalConstraint: 'EXACTLY',
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: true,
+            sampledRequestsEnabled: true,
+            metricName: 'VerifyAccess',
+          },
+        },
+        {
+          name: 'PassThroughAssets',
+          priority: 3,
           action: {
             allow: {},
           },
@@ -174,7 +200,7 @@ export function createWebAppFirewallProtection() {
                 cookies: {
                   matchPatterns: [
                     {
-                      includedCookies: ['cognito-identity.amazonaws.com'],
+                      includedCookies: ['wafCognitoSession'],
                     },
                   ],
                   oversizeHandling: 'NO_MATCH',

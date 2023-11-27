@@ -11,6 +11,15 @@ services:
       - $HOME/.aws:/home/node/.aws:ro
     stdin_open: true
     tty: true
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'wget --no-verbose --tries=1 --spider http://localhost:3001/api/health-check || exit 1',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
     ports:
       - 3006:3001
     networks:
@@ -20,7 +29,6 @@ services:
     environment:
       - NEXT_PUBLIC_USERS_API_BASE_URL=${NEXT_PUBLIC_USERS_API_BASE_URL:-http://host.docker.internal:5001}
       - DATASPACE_PRODUCT_GATEWAY_BASE_URL=${DATASPACE_PRODUCT_GATEWAY_BASE_URL:-http://host.docker.internal:5001/productizer}
-      - BACKEND_SECRET_SIGN_KEY=${BACKEND_SECRET_SIGN_KEY:-secret}
       - AWS_PROFILE=${AWS_PROFILE:-default}
     labels:
       - traefik.enable=true
