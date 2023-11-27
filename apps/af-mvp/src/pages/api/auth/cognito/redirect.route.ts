@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 /**
- * Redirect to app root, if the waf-protection is enabled and the cognito session is not valid the WAF will redirect to the cognito login page
+ * If the waf-protection is enabled and the cognito session *is not valid* the WAF will redirect to the cognito login page instead,
+ * otherwise this route is just a redirect to the root of the app.
  *
  * @param req
  * @param res
