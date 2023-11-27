@@ -8,7 +8,7 @@ async function middleware(request: NextRequest) {
     } catch (error) {
       // Redirect to cognito login page (with WAF)
       const url = request.nextUrl.clone();
-      url.pathname = '/api/auth/cognito/redirect';
+      url.pathname = '/api/auth/cognito/end-session';
       return NextResponse.redirect(url);
     }
   }
