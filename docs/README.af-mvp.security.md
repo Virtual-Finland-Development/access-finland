@@ -55,7 +55,9 @@ The application is not published to public internet, but is only accessible with
 
 ### AWS WAF
 
-The application is deployed using cloudfront distribution that is protected by a WAF. The WAF is configured to only allow access if the request has a valid cognito session cookie. The invalid requests are redirected to the cognito login page. The WAF configuration is defined in the [../infra/af-mvp/resources/webApplicationFirewall.ts](../infra/af-mvp/resources/webApplicationFirewall.ts) file.
+The application is deployed using cloudfront distribution that is protected by a WAF. The WAF is configured to only allow access if the request has a valid cognito session cookie. The invalid requests are redirected to the cognito login page. The WAF configuration is defined in the [../infra/af-mvp/resources/webApplicationFirewall.ts](../infra/af-mvp/resources/webApplicationFirewall.ts) file. 
+
+A quick setting for enabling or disabling the WAF is defined in the stage specific pulumi configuration files eg: [../infra/af-mvp/Pulumi.mvp-staging.yaml](../infra/af-mvp/Pulumi.mvp-staging.yaml) in the `waf:enabled` field.
 
 ### AWS Cognito
 
