@@ -5,7 +5,6 @@ import { useDataSourceConsent } from '@shared/lib/hooks/consent';
 import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
-import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
