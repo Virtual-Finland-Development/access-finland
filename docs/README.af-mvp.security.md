@@ -101,7 +101,7 @@ The login flow is as follows:
 6. The WAF allows the request to the frontend app because the frontend app access key is present
 7. The frontend app then:
     - verifies the congito session with a request to the backend app
-    - the verification is redone on every page reload, but not on every page navigation
+    - the verification is re-checked on every page load
     - on a verification failure:
       - the backend app clears the session cookies
       - the frontend app reloads the page
