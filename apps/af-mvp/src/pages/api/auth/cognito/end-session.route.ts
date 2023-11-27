@@ -9,19 +9,27 @@ import cookie from 'cookie';
  * @param res
  */
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  res
-    .setHeader('Set-Cookie', [
+  const cleanupCookies = [
+    cookie.serialize('cognitoVerify', '', {
+      path: '/api',
+      expires: new Date(0),
+    }),
+    cookie.serialize('wafCognitoSession', '', {
+      path: '/',
+      expires: new Date(0),
+    }),
+  ];
+
+  const isJsonRequest = req.headers.accept?.includes('application/json');
+  if (!isJsonRequest) {
+    return res.status(302).setHeader('Set-Cookie', [
       'Location=/', // Redirect to the root page
-      cookie.serialize('cognitoVerify', '', {
-        path: '/api',
-        expires: new Date(0),
-      }),
-      cookie.serialize('wafCognitoSession', '', {
-        path: '/',
-        expires: new Date(0),
-      }),
-    ])
-    .json({ message: 'Redirecting..' });
+      ...cleanupCookies,
+    ]);
+  }
+  return res
+    .setHeader('Set-Cookie', cleanupCookies)
+    .json({ message: 'Session cleared' });
 }
 
 export default handler;
