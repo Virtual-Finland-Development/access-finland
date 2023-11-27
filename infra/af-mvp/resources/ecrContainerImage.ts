@@ -43,7 +43,6 @@ export function createContainerImage(cdnSetup: {
         'defaultSchemaVersion'
       ),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
-      NEXT_PUBLIC_IS_WAF_PROTECTED: waf.enabled ? 'true' : 'false',
     },
   });
 

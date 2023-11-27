@@ -1,4 +1,3 @@
-import useCognitoSessionVerification from '@mvp/lib/frontend/hooks/useCognitoSessionVerification';
 import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import reportAccessibility from '@shared/lib/utils/reportAccessibility';
 import '@shared/styles.css';
@@ -55,10 +54,6 @@ const NoProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
 export default function App({ Component, pageProps }: ExtendedAppProps) {
   const ComponentContextProvider = Component.provider || NoProvider;
   const router = useRouter();
-  
-  // Check if cognito session is still valid (on every page)
-  // on failure, redirects to cognito login with WAF
-  useCognitoSessionVerification();
 
   return (
     <QueryClientProvider client={queryClient}>

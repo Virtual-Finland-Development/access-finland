@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import cookie from 'cookie';
-import { isWafProtected } from '@shared/lib/utils';
 import { Logger } from '../Logger';
 import { decryptUsingBackendSecret } from '../secrets-and-tokens';
 import { validateCognitoAccessToken } from '../services/aws/cognito';
@@ -10,7 +9,8 @@ import { validateCognitoAccessToken } from '../services/aws/cognito';
  */
 export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
   return async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
-    if (!isWafProtected()) {
+    if (!req.cookies.wafCognitoSession) {
+      // pass through if waf is not enabled
       return await handler(req, res, logger);
     }
 

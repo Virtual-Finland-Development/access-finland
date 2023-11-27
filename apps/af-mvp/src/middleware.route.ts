@@ -1,16 +1,33 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import cognitoFrontMiddleware from './lib/frontend/edge-middlewares/cognitoFrontMiddleware';
+import infoPageMiddleware from './lib/frontend/edge-middlewares/infoPageMiddleware';
 
-/**
- * Match /info route and redirect to /info/about-the-service
- * /info root page does not contain anything
- */
-export function middleware(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  url.pathname = '/info/terms-of-use';
-  return NextResponse.redirect(url);
+export async function middleware(request: NextRequest) {
+  // The middlewares are executed in order, the first one to return a response will be used
+  const middlewares: Array<FrontendMiddlewareFunction> = [
+    cognitoFrontMiddleware,
+    infoPageMiddleware,
+  ];
+
+  for (const middlewareFunction of middlewares) {
+    const response = await middlewareFunction(request);
+    if (response) {
+      return response;
+    }
+  }
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/info',
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 };
