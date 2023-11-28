@@ -139,8 +139,8 @@ function PermitExpander(props: PermitExpanderProps) {
         >
           <Text>
             {permit.permitAccepted
-              ? 'The residence permit application has been accepted.'
-              : 'The residence permit application has been rejected. Reason: lorem ipsum dolor sit amet.'}
+              ? 'Work permit application has been accepted.'
+              : 'Work permit application has been rejected. Reason: lorem ipsum dolor sit amet.'}
           </Text>
         </InlineAlert>
       </ExpanderContent>
