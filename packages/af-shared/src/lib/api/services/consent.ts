@@ -6,20 +6,18 @@ import { AUTH_GW_BASE_URL } from '../endpoints';
 
 /**
  *
- * @param dataSourceUri
- * @param consentToken, if provided the consent token is verified, otherwise a new consent token is requested from the testbed consent api
- * @returns
+ * @param dataSources, list of data sources to check consent for
+ * consentToken, if provided the consent token is verified, otherwise a new consent token is requested from the testbed consent api
  */
 export async function checkConsent(
-  dataSourceUri: string,
-  consentToken?: string | null
-): Promise<ConsentSituation> {
+  dataSources: { uri: string; consentToken?: string | null }[]
+): Promise<ConsentSituation[]> {
   try {
     const response = await apiClient.post(
       `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
       JSON.stringify({
         appContext: generateAppContextHash(),
-        dataSources: [{ uri: dataSourceUri, consentToken: consentToken }],
+        dataSources: dataSources,
       })
     );
 
@@ -27,16 +25,18 @@ export async function checkConsent(
       throw new Error('Invalid consent data response');
     }
 
-    const consentSituation = response.data.find(
+    const consentSituations = response.data;
+
+    const invalidResponse = consentSituations.some(
       (situation: { dataSource: string }) =>
-        situation.dataSource === dataSourceUri
+        !dataSources.some(dataSource => dataSource.uri === situation.dataSource)
     );
 
-    if (!consentSituation) {
+    if (invalidResponse) {
       throw new Error('Invalid consent data response');
     }
 
-    return consentSituation;
+    return consentSituations;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw error;

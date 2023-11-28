@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ConsentDataSource } from '@/types';
+import { ConsentDataSource, ConsentSituation } from '@/types';
 import api from '../api';
 import { JSONSessionStorage } from '../utils/JSONStorage';
 import useErrorToast from './use-error-toast';
@@ -12,25 +12,37 @@ function getEnumKeyFromValue<T extends object>(
   return Object.keys(myEnum)[index];
 }
 
-async function getConsentSituation(dataSource: ConsentDataSource) {
-  const consentStoreKey = `consent-${getEnumKeyFromValue(
-    ConsentDataSource,
-    dataSource
-  )}`;
-  const storedConsentToken = JSONSessionStorage.get(consentStoreKey);
+function getConsentStoreKey(dataSource: ConsentDataSource) {
+  return `consent-${getEnumKeyFromValue(ConsentDataSource, dataSource)}`;
+}
 
-  const response = await api.consent.checkConsent(
-    dataSource,
-    storedConsentToken
+function getStoredConsentToken(dataSource: ConsentDataSource) {
+  return JSONSessionStorage.get(getConsentStoreKey(dataSource));
+}
+
+async function getConsentSituations(dataSources: ConsentDataSource[]) {
+  const situations = await api.consent.checkConsent(
+    dataSources.map(dataSource => ({
+      uri: dataSource,
+      consentToken: getStoredConsentToken(dataSource),
+    }))
   );
 
-  if (response.consentToken) {
-    JSONSessionStorage.set(consentStoreKey, response.consentToken);
-  } else if (storedConsentToken) {
-    JSONSessionStorage.remove(consentStoreKey);
+  if (situations.length > 0) {
+    situations.forEach((consentSituation, index) => {
+      const consentToken = consentSituation.consentToken;
+      const consentStoreKey = getConsentStoreKey(dataSources[index]);
+      const storedConsentToken = getStoredConsentToken(dataSources[index]);
+
+      if (consentToken) {
+        JSONSessionStorage.set(consentStoreKey, consentToken);
+      } else if (storedConsentToken) {
+        JSONSessionStorage.remove(consentStoreKey);
+      }
+    });
   }
 
-  return response;
+  return situations;
 }
 
 const CONSENT_CHECK_QUERY_KEYS = ['consent-check'];
@@ -41,12 +53,15 @@ const QUERY_OPTIONS = {
 };
 
 /**
- * Get user consent situation for a given data source
+ * Get consent situation for a single data source
  */
-function useDataSourceConsent(dataSourceUri: ConsentDataSource) {
+function useDataSourceConsent(dataSource: ConsentDataSource) {
   const query = useQuery(
-    [...CONSENT_CHECK_QUERY_KEYS, dataSourceUri],
-    () => getConsentSituation(dataSourceUri),
+    [...CONSENT_CHECK_QUERY_KEYS, dataSource],
+    async () => {
+      const situations = await getConsentSituations([dataSource]);
+      return situations[0];
+    },
     { ...QUERY_OPTIONS, enabled: true }
   );
 
@@ -69,4 +84,29 @@ function useDataSourceConsent(dataSourceUri: ConsentDataSource) {
   };
 }
 
-export { useDataSourceConsent };
+/**
+ * Get consent situations for multiple data sources
+ */
+function useMultipleDataSourceConsents(dataSources: ConsentDataSource[]) {
+  const query = useQuery(
+    [...CONSENT_CHECK_QUERY_KEYS, ...dataSources],
+    () => getConsentSituations(dataSources),
+    { ...QUERY_OPTIONS, enabled: true }
+  );
+
+  useErrorToast({
+    title: 'Could not fetch consents',
+    error: query.error,
+  });
+
+  const giveConsent = async (consentSituation: ConsentSituation) => {
+    api.consent.directToConsentService(consentSituation);
+  };
+
+  return {
+    ...query,
+    giveConsent,
+  };
+}
+
+export { useDataSourceConsent, useMultipleDataSourceConsents };
