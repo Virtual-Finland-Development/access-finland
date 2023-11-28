@@ -6,6 +6,7 @@ import { AUTH_GW_BASE_URL } from '@shared/lib/api/endpoints';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import server from '@shared/lib/testing/mocks/server';
 import {
+  queryByAttribute,
   renderWithProviders,
   screen,
   waitFor,
@@ -55,8 +56,10 @@ describe('Permits page', () => {
   it('shows work permits, if consent is given', async () => {
     interceptConsentCheck(ConsentStatus.GRANTED);
 
+    let dom;
+
     await act(async () => {
-      renderWithProviders(<PermitsPage />);
+      dom = renderWithProviders(<PermitsPage />);
     });
 
     // expect that consent sentry is not present
@@ -74,5 +77,9 @@ describe('Permits page', () => {
     // expect that mocked permit is present (mocked in handlers)
     const mockPermitTitle = screen.queryByText(/seasonal work certificate/i);
     expect(mockPermitTitle).toBeInTheDocument();
+
+    // expect two permit expanders to be present (2 mocked permits)
+    const permitsExpanders = dom.container.querySelectorAll('.fi-expander');
+    expect(permitsExpanders.length).toBe(2);
   });
 });

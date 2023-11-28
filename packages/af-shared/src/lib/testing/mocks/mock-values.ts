@@ -198,5 +198,14 @@ export const MOCK_WORK_PERMITS = {
       validityEnd: '2024-02-19T00:00:00',
       validityStart: '2023-11-07T00:00:00',
     },
+    {
+      employerName: 'Stuffpoint Oy',
+      industries: ['79.1', '79.9'],
+      permitAccepted: false,
+      permitName: 'Permanent work certificate',
+      permitType: 'B',
+      validityEnd: '2024-02-19T00:00:00',
+      validityStart: '2023-11-07T00:00:00',
+    },
   ],
 };
