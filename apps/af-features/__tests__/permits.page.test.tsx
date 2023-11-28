@@ -6,7 +6,6 @@ import { AUTH_GW_BASE_URL } from '@shared/lib/api/endpoints';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import server from '@shared/lib/testing/mocks/server';
 import {
-  queryByAttribute,
   renderWithProviders,
   screen,
   waitFor,
