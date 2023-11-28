@@ -1,7 +1,7 @@
 import { act } from 'react-dom/test-utils';
 import PermitsPage from '@pages/profile/permits.page';
 import { rest } from 'msw';
-import { ConsentStatus } from '@shared/types';
+import { ConsentDataSource, ConsentStatus } from '@shared/types';
 import { AUTH_GW_BASE_URL } from '@shared/lib/api/endpoints';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import server from '@shared/lib/testing/mocks/server';
@@ -21,8 +21,7 @@ function interceptConsentCheck(consentStatus: ConsentStatus) {
           ctx.json([
             {
               consentStatus,
-              dataSource:
-                'dpp://virtual_finland:development@testbed.fi/Permits/WorkPermit_v0.1',
+              dataSource: ConsentDataSource.WORK_PERMIT,
               redirectUrl: '',
             },
           ])
