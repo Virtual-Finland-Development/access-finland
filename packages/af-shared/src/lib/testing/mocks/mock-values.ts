@@ -185,3 +185,18 @@ export const MOCK_ISO_COUNTRIES = [
     threeLetterISORegionName: 'AFG',
   },
 ];
+
+// work permits
+export const MOCK_WORK_PERMITS = {
+  permits: [
+    {
+      employerName: 'Staffpoint Oy',
+      industries: ['79.1', '79.9'],
+      permitAccepted: true,
+      permitName: 'Seasonal work certificate',
+      permitType: 'A',
+      validityEnd: '2024-02-19T00:00:00',
+      validityStart: '2023-11-07T00:00:00',
+    },
+  ],
+};

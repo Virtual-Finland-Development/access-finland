@@ -11,6 +11,7 @@ import {
   MOCK_PERSON_BASIC_INFO,
   MOCK_TOS_AGREEMENT,
   MOCK_USER_COMPANIES,
+  MOCK_WORK_PERMITS,
 } from './mock-values';
 
 const userId = MOCK_AUTH_STATE.storedAuthState.profileData.userId;
@@ -40,6 +41,11 @@ export const handlers = [
   rest.post(
     'http://localhost/api/dataspace/Person/JobApplicantProfile',
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
+  ),
+  // work permits
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1`,
+    (_, res, ctx) => res(ctx.json(MOCK_WORK_PERMITS))
   ),
   // codesets, add values as needed for tests
   rest.get(

@@ -13,6 +13,7 @@ const customJestConfig = {
     '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^@shared/components/(.*)$': 'af-shared/src/components/$1',
     '^@shared/types/(.*)$': 'af-shared/src/types/$1',
+    '^@shared/types': 'af-shared/src/types',
     '^@shared/lib/(.*)$': 'af-shared/src/lib/$1',
     '^@shared/context/(.*)$': 'af-shared/src/context/$1',
     '^@/components/(.*)$': 'af-shared/src/components/$1',
