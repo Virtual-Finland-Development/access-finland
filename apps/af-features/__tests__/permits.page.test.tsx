@@ -1,4 +1,3 @@
-import { act } from 'react-dom/test-utils';
 import PermitsPage from '@pages/profile/permits.page';
 import { rest } from 'msw';
 import { ConsentDataSource, ConsentStatus } from '@shared/types';
@@ -6,6 +5,7 @@ import { AUTH_GW_BASE_URL } from '@shared/lib/api/endpoints';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import server from '@shared/lib/testing/mocks/server';
 import {
+  act,
   renderWithProviders,
   screen,
   waitFor,
@@ -64,20 +64,20 @@ describe('Permits page', () => {
     await waitFor(() => {
       const consentSentryHeading = screen.queryByText(/consent required/i);
       expect(consentSentryHeading).not.toBeInTheDocument();
+
+      // expect that permits header is present
+      const permitsHeader = screen.getByRole('heading', {
+        name: /your permits/i,
+      });
+      expect(permitsHeader).toBeInTheDocument();
+
+      // expect that mocked permit is present (mocked in handlers)
+      const mockPermitTitle = screen.queryByText(/seasonal work certificate/i);
+      expect(mockPermitTitle).toBeInTheDocument();
+
+      // expect two permit expanders to be present (2 mocked permits)
+      const permitsExpanders = dom.container.querySelectorAll('.fi-expander');
+      expect(permitsExpanders.length).toBe(2);
     });
-
-    // expect that permits header is present
-    const permitsHeader = screen.getByRole('heading', {
-      name: /your permits/i,
-    });
-    expect(permitsHeader).toBeInTheDocument();
-
-    // expect that mocked permit is present (mocked in handlers)
-    const mockPermitTitle = screen.queryByText(/seasonal work certificate/i);
-    expect(mockPermitTitle).toBeInTheDocument();
-
-    // expect two permit expanders to be present (2 mocked permits)
-    const permitsExpanders = dom.container.querySelectorAll('.fi-expander');
-    expect(permitsExpanders.length).toBe(2);
   });
 });

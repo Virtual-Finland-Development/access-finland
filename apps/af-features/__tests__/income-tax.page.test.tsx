@@ -1,10 +1,10 @@
-import { act } from 'react-dom/test-utils';
 import IncomeTaxPage from '@pages/profile/employment/income-tax.page';
 import {
   MOCK_AUTH_STATE,
   MOCK_TAX_INCOME,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
+  act,
   renderWithProviders,
   screen,
   waitFor,
@@ -18,7 +18,7 @@ describe('Income tax page', () => {
       .mockImplementation(async () => MOCK_AUTH_STATE);
   });
 
-  // TODO: implemeent consent check test
+  // TODO: implement consent check test
 
   it('shows tax income info, if consent is given', async () => {
     // TODO: mock consent check api call, consent accepted
