@@ -17,7 +17,7 @@ export async function checkConsent(
       `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
       JSON.stringify({
         appContext: generateAppContextHash(),
-        dataSources: dataSources,
+        dataSources,
       })
     );
 
