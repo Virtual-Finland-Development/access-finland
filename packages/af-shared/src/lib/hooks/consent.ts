@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ConsentDataSource, ConsentSituation } from '@/types';
+import { ConsentDataSource, ConsentSituation, ConsentStatus } from '@/types';
 import api from '../api';
 import { JSONSessionStorage } from '../utils/JSONStorage';
 import useErrorToast from './use-error-toast';
@@ -47,22 +48,29 @@ async function getConsentSituations(dataSources: ConsentDataSource[]) {
 
 const CONSENT_CHECK_QUERY_KEYS = ['consent-check'];
 
-const QUERY_OPTIONS = {
-  refetchOnWindowFocus: false,
-  retry: false,
-};
-
 /**
  * Get consent situation for a single data source
  */
 function useDataSourceConsent(dataSource: ConsentDataSource) {
+  const refetchOnWindowFocus = useRef(false);
+
   const query = useQuery(
     [...CONSENT_CHECK_QUERY_KEYS, dataSource],
     async () => {
       const situations = await getConsentSituations([dataSource]);
       return situations[0];
     },
-    { ...QUERY_OPTIONS, enabled: true }
+    {
+      retry: false,
+      enabled: true,
+      refetchOnWindowFocus: refetchOnWindowFocus.current,
+      onSuccess: consentSituation => {
+        // apply refetchOnWindowFocus if consent granted, using react ref
+        // this way if user revokes consent and comes back to the page from consent portal, no need for manual refresh
+        refetchOnWindowFocus.current =
+          consentSituation.consentStatus === ConsentStatus.GRANTED;
+      },
+    }
   );
 
   useErrorToast({
@@ -91,7 +99,7 @@ function useMultipleDataSourceConsents(dataSources: ConsentDataSource[]) {
   const query = useQuery(
     [...CONSENT_CHECK_QUERY_KEYS, ...dataSources],
     () => getConsentSituations(dataSources),
-    { ...QUERY_OPTIONS, enabled: true }
+    { refetchOnWindowFocus: false, retry: false, enabled: true }
   );
 
   useErrorToast({

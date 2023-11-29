@@ -41,7 +41,7 @@ export default function ConsentSentry(props: Props) {
               </CustomLink>
             </Text>
             <Text className="!text-base">
-              Note that after revoking, you will need to reload this page to see
+              Note that after revoking, you may need to reload this page to see
               the effect.
             </Text>
           </div>
