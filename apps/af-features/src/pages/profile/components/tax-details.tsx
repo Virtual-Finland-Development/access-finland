@@ -26,8 +26,13 @@ export default function TaxDetails(props: Props) {
     return <Text>No tax information found.</Text>;
   }
 
-  const { taxPayerType, withholdingPercentage, incomeLimit, validityDate } =
-    incomeTax;
+  const {
+    taxPayerType,
+    withholdingPercentage,
+    additionalPercentage,
+    incomeLimit,
+    validityDate,
+  } = incomeTax;
 
   return (
     <div className="flex flex-col gap-4">
@@ -42,11 +47,16 @@ export default function TaxDetails(props: Props) {
         <span className="block font-semibold">{withholdingPercentage} %</span>
       </Text>
       <Text>
-        Income limit for the year {getYear(new Date(validityDate))}:{' '}
-        <span className="block font-semibold">{formatEuro(incomeLimit)}</span>
+        Additional withholding percentage:{' '}
+        <span className="block font-semibold">{additionalPercentage} %</span>
       </Text>
       <Text>
-        Validity:{' '}
+        Income ceiling for the entire year {getYear(new Date(validityDate))}:{' '}
+        <span className="block font-semibold">{formatEuro(incomeLimit)}</span>
+      </Text>
+
+      <Text>
+        Validity start date:{' '}
         <span className="block font-semibold">
           {format(parseISO(validityDate), 'dd.MM.yyyy')}
         </span>

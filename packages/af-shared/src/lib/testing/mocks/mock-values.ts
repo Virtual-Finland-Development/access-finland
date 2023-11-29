@@ -209,3 +209,12 @@ export const MOCK_WORK_PERMITS = {
     },
   ],
 };
+
+// employment / tax
+export const MOCK_TAX_INCOME = {
+  taxPayerType: 'resident',
+  withholdingPercentage: 15.5,
+  additionalPercentage: 40.2,
+  incomeLimit: 30000,
+  validityDate: '2023-12-31',
+};

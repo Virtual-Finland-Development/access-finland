@@ -1,4 +1,5 @@
 import { IncomeTax, WorkContract } from '@/types';
+import { MOCK_TAX_INCOME } from '@/lib/testing/mocks/mock-values';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
 
@@ -117,14 +118,6 @@ const CONTRACTS_MOCK_DATA: WorkContract[] = [
   },
 ];
 
-const TAX_MOCK_DATA = {
-  taxPayerType: 'resident' as IncomeTax['taxPayerType'],
-  withholdingPercentage: 15.5,
-  additionalPercentage: 40.2,
-  incomeLimit: 30000,
-  validityDate: '2023-12-31',
-};
-
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
 export async function getPersonWorkContracts(): Promise<WorkContract[]> {
@@ -146,5 +139,5 @@ export async function getPersonIncomeTax(): Promise<IncomeTax> {
   );
   return data; */
   await sleep();
-  return TAX_MOCK_DATA;
+  return MOCK_TAX_INCOME as IncomeTax;
 }
