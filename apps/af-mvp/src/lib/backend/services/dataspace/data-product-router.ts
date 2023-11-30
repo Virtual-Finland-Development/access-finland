@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { ValiError } from 'valibot';
 import { DataProductShemas, type DataProduct } from '@shared/types';
 import { decryptApiAuthPackage } from '../../ApiAuthPackage';
@@ -32,15 +32,9 @@ async function execute(
     const errorContextPostfix = `${endpoint.dataProduct}:${endpoint.dataSource}:${endpoint.schemaVersion}`;
     const statusCode =
       error.response?.status || (error instanceof ValiError ? 400 : 500);
-    const responseData = error.response?.data?.type
-      ? {
-          message:
-            (error.response?.data?.message
-              ? `${error.response?.data.type}: ${error.response?.data?.message}`
-              : null) ||
-            `Data source returned error type: ${error.response?.data?.type}`,
-          context: `DataProductSource:${errorContextPostfix}`,
-        }
+
+    const responseData = isDataspaceErrorResponseData(error)
+      ? mapDataspaceErrorResponseData(errorContextPostfix, error)
       : { message: error.message, context: `ApiRouter:${errorContextPostfix}` };
 
     const logLevel = resolveErrorLoggingLevel(
@@ -56,6 +50,83 @@ async function execute(
 
     res.status(statusCode).json(responseData);
   }
+}
+
+/**
+ * Maps the dataspace error response to the error response data.
+ *
+ * @param errorContextPostfix
+ * @param error
+ * @returns
+ */
+function mapDataspaceErrorResponseData(
+  errorContextPostfix: string,
+  error: any
+) {
+  let errorMessage = '';
+
+  if (
+    error.response?.status === 422 &&
+    error.response?.data?.detail instanceof Array
+  ) {
+    errorMessage = parseDataspaceErrorMessage(
+      error.response?.data.detail.map((detail: any) => {
+        return { message: detail.msg, type: detail.type };
+      })[0],
+      error.response?.status
+    );
+  } else {
+    errorMessage = parseDataspaceErrorMessage(
+      error.response?.data,
+      error.response?.status
+    );
+  }
+
+  return {
+    message: errorMessage,
+    context: `DataProductSource:${errorContextPostfix}`,
+  };
+}
+
+/**
+ * Resolves the error message from the dataspace error response.
+ *
+ * @param messageObject
+ * @param statusCode
+ * @returns
+ */
+function parseDataspaceErrorMessage(messageObject?: any, statusCode?: number) {
+  let errorMessage =
+    messageObject?.message && messageObject?.type
+      ? `${messageObject.type}: ${messageObject?.message}`
+      : null;
+
+  if (!errorMessage && messageObject?.message) {
+    errorMessage = `Data source returned error message: ${messageObject?.message}`;
+  } else if (!errorMessage && messageObject?.type) {
+    errorMessage = `Data source returned error type: ${messageObject?.type}`;
+  } else if (!errorMessage && statusCode) {
+    errorMessage = `Data source returned error code: ${statusCode}`;
+  } else if (!errorMessage) {
+    errorMessage = 'Data source returned error';
+  }
+  return errorMessage;
+}
+
+/**
+ * Regognizes if the error is a type of dataspace error response.
+ *
+ * @param error
+ * @returns
+ */
+function isDataspaceErrorResponseData(error: any) {
+  if (!(error instanceof AxiosError)) return false;
+
+  return (
+    typeof error.response?.data?.type === 'string' ||
+    (error.response?.status === 422 &&
+      error.response?.data?.detail instanceof Array)
+  );
 }
 
 function getDataProductEndpointInfo(
