@@ -114,7 +114,7 @@ function parseDataspaceErrorMessage(messageObject?: any, statusCode?: number) {
 }
 
 /**
- * Regognizes if the error is a type of dataspace error response.
+ * Recognizes if the error is a type of dataspace error response.
  *
  * @param error
  * @returns
