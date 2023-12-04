@@ -6,10 +6,10 @@ import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 
 const { tags, customHeaderValue } = setup;
 
-export function createContentDeliveryNetwork(
+export function updateContentDeliveryNetwork(
+  cdn: aws.cloudfront.Distribution,
   loadBalancerSetup: LoadBalancerSetup,
-  domainSetup: DomainSetup,
-  webApplicationFirewall?: aws.wafv2.WebAcl
+  domainSetup: DomainSetup
 ) {
   // CloudFront domain name
   const domainNames = domainSetup?.domainName
@@ -27,8 +27,62 @@ export function createContentDeliveryNetwork(
     originProtocolPolicy = 'https-only';
   }
 
-  // Load-balancer domain name
-  const loadBalancerDomainName = loadBalancerSetup.domainName;
+  return cdn.id.apply(cdnId => {
+    const updatedCdn = aws.cloudfront.Distribution.get(
+      nameResource('cdn-with-domain'),
+      cdnId,
+      {
+        aliases: domainNames,
+        origins: [
+          {
+            originId: loadBalancerSetup.appLoadBalancer.arn,
+            domainName: loadBalancerSetup.domainName,
+            customOriginConfig: {
+              originProtocolPolicy: originProtocolPolicy,
+              originSslProtocols: ['TLSv1.2'],
+              httpPort: 80,
+              httpsPort: 443,
+            },
+            customHeaders: [
+              {
+                name: 'X-Custom-Header',
+                value: customHeaderValue,
+              },
+            ],
+          },
+        ],
+      }
+    );
+
+    return {
+      cdn: updatedCdn,
+      domainName: pulumi.interpolate`${
+        domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
+      }`,
+    };
+  });
+}
+
+export function createContentDeliveryNetwork(
+  loadBalancerSetup: LoadBalancerSetup,
+  webApplicationFirewall?: aws.wafv2.WebAcl,
+  domainSetup?: DomainSetup
+) {
+  // CloudFront domain name
+  const domainNames = domainSetup?.domainName
+    ? [domainSetup.domainName]
+    : undefined;
+
+  // CloudFront viewer certificate setup
+  const viewerCertificate: DistributionArgs['viewerCertificate'] = {
+    cloudfrontDefaultCertificate: true,
+  };
+  let originProtocolPolicy = 'http-only';
+  if (domainSetup?.certificate) {
+    viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
+    viewerCertificate.sslSupportMethod = 'sni-only';
+    originProtocolPolicy = 'https-only';
+  }
 
   // Firewall config
   const webAclId = webApplicationFirewall
@@ -49,7 +103,7 @@ export function createContentDeliveryNetwork(
       origins: [
         {
           originId: loadBalancerSetup.appLoadBalancer.arn,
-          domainName: loadBalancerDomainName,
+          domainName: loadBalancerSetup.domainName,
           customOriginConfig: {
             originProtocolPolicy: originProtocolPolicy,
             originSslProtocols: ['TLSv1.2'],

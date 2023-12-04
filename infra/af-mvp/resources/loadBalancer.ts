@@ -3,10 +3,7 @@ import { ListenerArgs } from '@pulumi/aws/alb';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
-import {
-  defaultSubnetIds,
-  defaultVpcId,
-} from './defaultVpc';
+import { defaultSubnetIds, defaultVpcId } from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
 const {
@@ -17,43 +14,57 @@ const {
   },
 } = setup;
 
-export function createLoadBalancer(
+export function updateLoadBalancer(
+  lbSetup: LoadBalancerSetup,
   domainSetup: DomainSetup
-): LoadBalancerSetup {
+) {
+  return pulumi
+    .all([
+      lbSetup.appLoadBalancer.id,
+      lbSetup.loadBalancerSecurityGroup.id,
+      lbSetup.listener.arn,
+    ])
+    .apply(([albId, securityGroupId, listenerArn]) => {
+      const { ingress, egress } = createSecurityGroupRules(domainSetup);
+      const loadBalancerSecurityGroup = aws.ec2.SecurityGroup.get(
+        nameResource('alb-sg-with-domain'),
+        securityGroupId,
+        {
+          ingress: ingress,
+          egress: egress,
+        }
+      );
 
-  // Inbound load balancer security rules
-  const ingress = [
-    {
-      protocol: 'tcp',
-      fromPort: 80,
-      toPort: 80,
-      cidrBlocks: ['0.0.0.0/0'],
-      ipv6CidrBlocks: ['::/0'],
-    },
-  ];
+      const appLoadBalancer = aws.lb.LoadBalancer.get(
+        nameResource('alb-with-domain', 32),
+        albId
+      );
 
-  // If we have a domain (SSL)
-  if (domainSetup?.loadBalancerDomainName) {
-    ingress.push({
-      protocol: 'tcp',
-      fromPort: 443,
-      toPort: 443,
-      cidrBlocks: ['0.0.0.0/0'],
-      ipv6CidrBlocks: ['::/0'],
+      const listenerArgs = createListenerArgs(appLoadBalancer, domainSetup);
+      const listener = aws.lb.Listener.get(
+        nameResource('alb-listener-with-domain'),
+        listenerArn,
+        listenerArgs
+      );
+
+      const { domainName, url } = createAlbUris(appLoadBalancer, domainSetup);
+
+      return {
+        appLoadBalancer,
+        targetGroup: lbSetup.targetGroup,
+        loadBalancerSecurityGroup,
+        listener,
+        domainName,
+        url,
+      };
     });
-  }
+}
 
-  // Outbound rules
-  const egress = [
-    {
-      protocol: '-1',
-      fromPort: 0,
-      toPort: 0,
-      cidrBlocks: ['0.0.0.0/0'],
-      ipv6CidrBlocks: ['::/0'],
-    },
-  ];
-  
+export function createLoadBalancer(
+  domainSetup?: DomainSetup
+): LoadBalancerSetup {
+  const { ingress, egress } = createSecurityGroupRules(domainSetup);
+
   // Security group
   const loadBalancerSecurityGroup = new aws.ec2.SecurityGroup(
     nameResource('alb-sg'),
@@ -95,26 +106,7 @@ export function createLoadBalancer(
   });
 
   // Listener
-  let listenerArgs: Partial<ListenerArgs> = {
-    port: 80,
-    protocol: 'HTTP',
-  };
-
-  if (domainSetup?.loadBalancerDomainName) {
-    // Setup loadbalancer HTTPS listener for the custom domain
-    const { certificate } = createDomainRecordAndCertificate(
-      domainSetup.zone,
-      domainSetup?.loadBalancerDomainName,
-      appLoadBalancer.dnsName,
-      awsLocalCertsProvider
-    );
-    listenerArgs = {
-      port: 443,
-      protocol: 'HTTPS',
-      certificateArn: certificate.arn,
-    };
-  }
-
+  const listenerArgs = createListenerArgs(appLoadBalancer, domainSetup);
   const listener = new aws.lb.Listener(nameResource('alb-listener'), {
     loadBalancerArn: appLoadBalancer.arn,
     ...listenerArgs,
@@ -148,6 +140,90 @@ export function createLoadBalancer(
     ],
   });
 
+  const { domainName, url } = createAlbUris(appLoadBalancer, domainSetup);
+
+  return {
+    appLoadBalancer,
+    targetGroup,
+    loadBalancerSecurityGroup,
+    listener,
+    domainName,
+    url,
+  };
+}
+
+function createSecurityGroupRules(domainSetup?: DomainSetup) {
+  // Inbound load balancer security rules
+  const ingress = [
+    {
+      protocol: 'tcp',
+      fromPort: 80,
+      toPort: 80,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    },
+  ];
+
+  // If we have a domain (SSL)
+  if (domainSetup?.loadBalancerDomainName) {
+    ingress.push({
+      protocol: 'tcp',
+      fromPort: 443,
+      toPort: 443,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    });
+  }
+
+  // Outbound rules
+  const egress = [
+    {
+      protocol: '-1',
+      fromPort: 0,
+      toPort: 0,
+      cidrBlocks: ['0.0.0.0/0'],
+      ipv6CidrBlocks: ['::/0'],
+    },
+  ];
+
+  return {
+    ingress,
+    egress,
+  };
+}
+
+function createListenerArgs(
+  appLoadBalancer: aws.lb.LoadBalancer,
+  domainSetup?: DomainSetup
+) {
+  // Listener
+  let listenerArgs: Partial<ListenerArgs> = {
+    port: 80,
+    protocol: 'HTTP',
+  };
+
+  if (domainSetup?.loadBalancerDomainName) {
+    // Setup loadbalancer HTTPS listener for the custom domain
+    const { certificate } = createDomainRecordAndCertificate(
+      domainSetup.zone,
+      domainSetup?.loadBalancerDomainName,
+      appLoadBalancer.dnsName,
+      awsLocalCertsProvider
+    );
+    listenerArgs = {
+      port: 443,
+      protocol: 'HTTPS',
+      certificateArn: certificate.arn,
+    };
+  }
+
+  return listenerArgs;
+}
+
+function createAlbUris(
+  appLoadBalancer: aws.lb.LoadBalancer,
+  domainSetup?: DomainSetup
+) {
   const domainName = domainSetup?.loadBalancerDomainName
     ? pulumi.interpolate`${domainSetup.loadBalancerDomainName}`
     : appLoadBalancer.dnsName;
@@ -156,9 +232,7 @@ export function createLoadBalancer(
     : pulumi.interpolate`http://${appLoadBalancer.dnsName}`;
 
   return {
-    appLoadBalancer,
-    targetGroup,
-    domainName: domainName,
-    url: url,
+    domainName,
+    url,
   };
 }

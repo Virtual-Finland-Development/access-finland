@@ -5,29 +5,13 @@ import setup, { nameResource } from '../utils/setup';
 const {
   tags,
   cdn: { domainConfig },
-  currentStackReference,
 } = setup;
 
-function parseDomainNameFromURL(url: string) {
-  const urlObject = new URL(url);
-  return urlObject.hostname;
-}
-
-export function createDomainSetup() {
+export function createDomainZone() {
   if (domainConfig.enabled) {
     if (!domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
     }
-
-    const cdnURL = currentStackReference.getOutput('cdnURL');
-    if (!cdnURL) {
-      console.log(
-        "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
-      );
-      return;
-    }
-
-    const cdnDomainName = cdnURL.apply(url => parseDomainNameFromURL(url));
 
     const zone = new aws.route53.Zone(
       nameResource('domainZone'),
@@ -38,10 +22,27 @@ export function createDomainSetup() {
       { protect: true } // Keep the zone from being destroyed
     );
 
+    return zone;
+  }
+  return;
+}
+
+export function createDomainSetup(
+  cloudfront: aws.cloudfront.Distribution,
+  zone?: aws.route53.Zone
+) {
+  if (domainConfig.enabled) {
+    if (!domainConfig.domainName) {
+      throw new Error('Domain name is required when CDN is enabled');
+    }
+    if (!zone) {
+      throw new Error('Zone is required when CDN is enabled');
+    }
+
     const { certificate } = createDomainRecordAndCertificate(
       zone,
       domainConfig.domainName,
-      cdnDomainName
+      cloudfront.domainName
     );
 
     return {

@@ -11,8 +11,10 @@ export type DomainSetup =
   | undefined;
 
 export type LoadBalancerSetup = {
-  appLoadBalancer: aws.lb.LoadBalancer,
-  targetGroup: aws.lb.TargetGroup,
-  domainName: pulumi.Output<string>,
-  url: pulumi.Output<string>,
-}
+  appLoadBalancer: aws.lb.LoadBalancer;
+  targetGroup: aws.lb.TargetGroup;
+  loadBalancerSecurityGroup: aws.ec2.SecurityGroup;
+  listener: aws.lb.Listener;
+  domainName: pulumi.Output<string>;
+  url: pulumi.Output<string>;
+};
