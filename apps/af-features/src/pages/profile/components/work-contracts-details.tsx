@@ -11,7 +11,7 @@ function mapContractDetails(contract: WorkContract) {
   const {
     employerInfo: { signatureDate, ...employerInfo },
     employeeInfo: { signaruteDate, ...employeeInfo },
-    termsOfWork: { employmentStart, employmentEnd, ...termsOfWork },
+    termsOfWork: { employmentStart, employmentEnd, locations, ...termsOfWork },
     compensation,
     benefits,
     holidays,
@@ -31,6 +31,7 @@ function mapContractDetails(contract: WorkContract) {
       ...termsOfWork,
       employmentStart: formatDate(employmentStart),
       employmentEnd: employmentEnd ? formatDate(employmentEnd) : '-',
+      locations: locations ? locations.join(', ') : '',
     },
     compensation: {
       ...compensation,

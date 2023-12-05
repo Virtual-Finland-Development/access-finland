@@ -42,7 +42,7 @@ interface Compensation {
 
 interface Benefit {
   benefit?: string;
-  benefitType?: string;
+  benefitType?: 'part of salary' | 'addition to salary';
   taxableValue?: number;
 }
 

@@ -254,12 +254,12 @@ export const MOCK_WORK_CONTRACTS = [
     benefits: [
       {
         benefit: 'Lunch benefit',
-        benefitType: 'partOfSalary',
+        benefitType: 'part of salary',
         taxableValue: 100,
       },
       {
         benefit: 'Healthcare',
-        benefitType: 'additionToSalary',
+        benefitType: 'addition to salary',
         taxableValue: 50,
       },
     ],
@@ -313,7 +313,7 @@ export const MOCK_WORK_CONTRACTS = [
     benefits: [
       {
         benefit: 'Lunch benefit',
-        benefitType: 'partOfSalary',
+        benefitType: 'part of salary',
         taxableValue: 100,
       },
     ],
