@@ -15,14 +15,11 @@ import { createWebAppFirewallProtection } from './resources/webApplicationFirewa
 // ECS Cluster
 const cluster = createECSCluster();
 // Application load balancer
-let loadBalancerSetup = createLoadBalancer();
-// Web application firewall
-const wafSetup = createWebAppFirewallProtection();
+const loadBalancerSetup = createLoadBalancer();
 // Cloudfront CDN
-const cdnSetup = createContentDeliveryNetwork(
-  loadBalancerSetup,
-  wafSetup?.webApplicationFirewall
-);
+const cdnSetup = createContentDeliveryNetwork(loadBalancerSetup);
+// Web application firewall
+const wafSetup = createWebAppFirewallProtection(cdnSetup.cdn);
 
 // Setup domain and update alb and cdn
 const domainSetup = createDomainSetup(cdnSetup.cdn);
@@ -30,7 +27,8 @@ const updatedLb = updateLoadBalancer(loadBalancerSetup, domainSetup);
 const updatedCdn = updateContentDeliveryNetwork(
   cdnSetup.cdn,
   loadBalancerSetup,
-  domainSetup
+  domainSetup,
+  wafSetup?.webApplicationFirewall
 );
 
 // ECS Fargate service

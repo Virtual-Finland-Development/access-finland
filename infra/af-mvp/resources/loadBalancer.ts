@@ -27,7 +27,7 @@ export function updateLoadBalancer(
     .apply(([albId, securityGroupId, listenerArn]) => {
       const { ingress, egress } = createSecurityGroupRules(domainSetup);
       const loadBalancerSecurityGroup = aws.ec2.SecurityGroup.get(
-        nameResource('alb-sg-with-domain'),
+        nameResource('alb-sg-update'),
         securityGroupId,
         {
           ingress: ingress,
@@ -36,13 +36,13 @@ export function updateLoadBalancer(
       );
 
       const appLoadBalancer = aws.lb.LoadBalancer.get(
-        nameResource('alb-with-domain', 32),
+        nameResource('alb-update', 32),
         albId
       );
 
       const listenerArgs = createListenerArgs(appLoadBalancer, domainSetup);
       const listener = aws.lb.Listener.get(
-        nameResource('alb-listener-with-domain'),
+        nameResource('alb-listener-update'),
         listenerArn,
         listenerArgs
       );

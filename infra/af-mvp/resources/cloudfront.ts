@@ -9,64 +9,8 @@ const { tags, customHeaderValue } = setup;
 export function updateContentDeliveryNetwork(
   cdn: aws.cloudfront.Distribution,
   loadBalancerSetup: LoadBalancerSetup,
-  domainSetup: DomainSetup
-) {
-  // CloudFront domain name
-  const domainNames = domainSetup?.domainName
-    ? [domainSetup.domainName]
-    : undefined;
-
-  // CloudFront viewer certificate setup
-  const viewerCertificate: DistributionArgs['viewerCertificate'] = {
-    cloudfrontDefaultCertificate: true,
-  };
-  let originProtocolPolicy = 'http-only';
-  if (domainSetup?.certificate) {
-    viewerCertificate.acmCertificateArn = domainSetup.certificate.arn;
-    viewerCertificate.sslSupportMethod = 'sni-only';
-    originProtocolPolicy = 'https-only';
-  }
-
-  return cdn.id.apply(cdnId => {
-    const updatedCdn = aws.cloudfront.Distribution.get(
-      nameResource('cdn-with-domain'),
-      cdnId,
-      {
-        aliases: domainNames,
-        origins: [
-          {
-            originId: loadBalancerSetup.appLoadBalancer.arn,
-            domainName: loadBalancerSetup.domainName,
-            customOriginConfig: {
-              originProtocolPolicy: originProtocolPolicy,
-              originSslProtocols: ['TLSv1.2'],
-              httpPort: 80,
-              httpsPort: 443,
-            },
-            customHeaders: [
-              {
-                name: 'X-Custom-Header',
-                value: customHeaderValue,
-              },
-            ],
-          },
-        ],
-      }
-    );
-
-    return {
-      cdn: updatedCdn,
-      domainName: pulumi.interpolate`${
-        domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
-      }`,
-    };
-  });
-}
-
-export function createContentDeliveryNetwork(
-  loadBalancerSetup: LoadBalancerSetup,
-  webApplicationFirewall?: aws.wafv2.WebAcl,
-  domainSetup?: DomainSetup
+  domainSetup: DomainSetup,
+  webApplicationFirewall?: aws.wafv2.WebAcl
 ) {
   // CloudFront domain name
   const domainNames = domainSetup?.domainName
@@ -89,7 +33,46 @@ export function createContentDeliveryNetwork(
     ? webApplicationFirewall.arn
     : undefined;
 
-  // CloudFront
+  return cdn.id.apply(cdnId => {
+    const updatedCdn = aws.cloudfront.Distribution.get(
+      nameResource('cdn-update'),
+      cdnId,
+      {
+        aliases: domainNames,
+        origins: [
+          {
+            originId: loadBalancerSetup.appLoadBalancer.arn,
+            domainName: loadBalancerSetup.domainName,
+            customOriginConfig: {
+              originProtocolPolicy: originProtocolPolicy,
+              originSslProtocols: ['TLSv1.2'],
+              httpPort: 80,
+              httpsPort: 443,
+            },
+            customHeaders: [
+              {
+                name: 'X-Custom-Header',
+                value: customHeaderValue,
+              },
+            ],
+          },
+        ],
+        webAclId: webAclId,
+      }
+    );
+
+    return {
+      cdn: updatedCdn,
+      domainName: pulumi.interpolate`${
+        domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
+      }`,
+    };
+  });
+}
+
+export function createContentDeliveryNetwork(
+  loadBalancerSetup: LoadBalancerSetup
+) {
   const cdn = new aws.cloudfront.Distribution(
     nameResource('cdn'),
     {
@@ -99,13 +82,12 @@ export function createContentDeliveryNetwork(
       priceClass: 'PriceClass_All',
       waitForDeployment: true,
       retainOnDelete: false,
-      aliases: domainNames,
       origins: [
         {
           originId: loadBalancerSetup.appLoadBalancer.arn,
           domainName: loadBalancerSetup.domainName,
           customOriginConfig: {
-            originProtocolPolicy: originProtocolPolicy,
+            originProtocolPolicy: 'http-only',
             originSslProtocols: ['TLSv1.2'],
             httpPort: 80,
             httpsPort: 443,
@@ -164,8 +146,9 @@ export function createContentDeliveryNetwork(
           restrictionType: 'none',
         },
       },
-      viewerCertificate: viewerCertificate,
-      webAclId: webAclId,
+      viewerCertificate: {
+        cloudfrontDefaultCertificate: true,
+      },
       tags,
     },
     {
@@ -175,8 +158,6 @@ export function createContentDeliveryNetwork(
 
   return {
     cdn,
-    domainName: pulumi.interpolate`${
-      domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
-    }`,
+    domainName: cdn.domainName,
   };
 }
