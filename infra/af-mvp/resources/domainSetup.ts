@@ -7,7 +7,7 @@ const {
   cdn: { domainConfig },
 } = setup;
 
-export function createDomainZone() {
+export function createDomainSetup(cloudfront: aws.cloudfront.Distribution) {
   if (domainConfig.enabled) {
     if (!domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
@@ -21,23 +21,6 @@ export function createDomainZone() {
       },
       { protect: true } // Keep the zone from being destroyed
     );
-
-    return zone;
-  }
-  return;
-}
-
-export function createDomainSetup(
-  cloudfront: aws.cloudfront.Distribution,
-  zone?: aws.route53.Zone
-) {
-  if (domainConfig.enabled) {
-    if (!domainConfig.domainName) {
-      throw new Error('Domain name is required when CDN is enabled');
-    }
-    if (!zone) {
-      throw new Error('Zone is required when CDN is enabled');
-    }
 
     const { certificate } = createDomainRecordAndCertificate(
       zone,

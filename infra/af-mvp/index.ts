@@ -3,7 +3,7 @@ import {
   createContentDeliveryNetwork,
   updateContentDeliveryNetwork,
 } from './resources/cloudfront';
-import { createDomainSetup, createDomainZone } from './resources/domainSetup';
+import { createDomainSetup } from './resources/domainSetup';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
 import { createFargateService } from './resources/fargate';
 import {
@@ -12,8 +12,6 @@ import {
 } from './resources/loadBalancer';
 import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';
 
-// Domain zone
-const domainZone = createDomainZone();
 // ECS Cluster
 const cluster = createECSCluster();
 // Application load balancer
@@ -27,7 +25,7 @@ const cdnSetup = createContentDeliveryNetwork(
 );
 
 // Setup domain and update alb and cdn
-const domainSetup = createDomainSetup(cdnSetup.cdn, domainZone);
+const domainSetup = createDomainSetup(cdnSetup.cdn);
 const updatedLb = updateLoadBalancer(loadBalancerSetup, domainSetup);
 const updatedCdn = updateContentDeliveryNetwork(
   cdnSetup.cdn,
