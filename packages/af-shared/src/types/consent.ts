@@ -13,4 +13,5 @@ export type ConsentSituation = {
   consentStatus: ConsentStatus;
   consentToken?: string;
   redirectUrl?: string;
+  dataSource?: string;
 };

@@ -5,7 +5,7 @@ import { IncomeTax } from '@shared/types';
 import CustomImage from '@shared/components/ui/custom-image';
 
 function formatEuro(num) {
-  return new Intl.NumberFormat('de-DE', {
+  return new Intl.NumberFormat('fi-FI', {
     style: 'currency',
     currency: 'EUR',
   }).format(num);
