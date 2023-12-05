@@ -25,7 +25,7 @@ export function createWebAppFirewallProtection(
     }).result
   }`;
 
-  const callbackUri = pulumi.interpolate`${cloudfront.domainName}/api/auth/cognito/callback`;
+  const callbackUri = pulumi.interpolate`https://${cloudfront.domainName}/api/auth/cognito/callback`;
   const { userPool, userPoolClient, cognitoDomain } =
     createCognitoUserPool(callbackUri);
 
