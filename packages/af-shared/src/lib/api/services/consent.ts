@@ -18,7 +18,12 @@ export async function checkConsent(
       JSON.stringify({
         appContext: generateAppContextHash(),
         dataSources,
-      })
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
 
     if (response.status !== 200 || !(response.data instanceof Array)) {
