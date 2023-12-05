@@ -27,8 +27,8 @@ export default function EmploymentPage() {
                 great work-life balance for those seeking new horizons.
               </Text>
               <Text>
-                Here’s where you’ll find information about your work contracts
-                and income taxes.
+                Here’s where you’ll find information about your work contracts,
+                and details of your taxation in Finland.
               </Text>
             </div>
             <div className="flex flex-col gap-3">

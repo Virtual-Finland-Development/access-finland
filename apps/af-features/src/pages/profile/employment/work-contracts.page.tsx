@@ -24,10 +24,10 @@ export default function WorkContractsPage() {
               </CustomHeading>
             </div>
             <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a
-              diam eget felis aliquam dignissim. Sed euismod, nisl eget aliquam
-              ultricies, nunc nisl ultricies nunc, quis ultricies nisl nisl
-              vitae nunc.
+              This is your place to check out your work contracts in Finland.
+              Everything you need to know about your work arrangements in one
+              easy spot. Get the details on your terms, conditions, and work
+              specifics here.
             </Text>
             {isLoading ? (
               <Loading />

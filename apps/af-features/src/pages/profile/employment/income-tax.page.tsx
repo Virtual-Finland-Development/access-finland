@@ -24,10 +24,11 @@ export default function IncomeTaxPage() {
               </CustomHeading>
             </div>
             <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a
-              diam eget felis aliquam dignissim. Sed euismod, nisl eget aliquam
-              ultricies, nunc nisl ultricies nunc, quis ultricies nisl nisl
-              vitae nunc.
+              Here you’ll find a comprehensive overview of your tax details.
+              This aims to provide clear insights into your tax contributions,
+              deductions, and related specifics, ensuring transparency and ease
+              of understanding regarding your financial obligations while
+              working in Finland.
             </Text>
 
             {isLoading ? <Loading /> : <TaxDetails incomeTax={incomeTax} />}

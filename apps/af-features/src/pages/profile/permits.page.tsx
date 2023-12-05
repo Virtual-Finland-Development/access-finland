@@ -46,7 +46,7 @@ export default function PermitsPage() {
                 charge of managing immigration, asylum, residency permits, and
                 citizenship processes in Finland, helping people navigate legal
                 requirements and settle into life in the country. Here you can
-                find information about your residence permits issued by Migri.
+                find information about your work permits issued by Migri.
               </Text>
               <Text></Text>
               <CustomImage src={migriLogo} alt="Migri" height={100} />
@@ -55,6 +55,7 @@ export default function PermitsPage() {
               <Loading />
             ) : (
               <ConsentSentry
+                consentDataSource={ConsentDataSource.WORK_PERMIT}
                 consentSituation={consentSituation}
                 giveConsent={giveConsent}
                 error={consentError}
