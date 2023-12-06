@@ -1,4 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
+//import * as automation from "@pulumi/pulumi/x/automation";
+
 import { createContentDeliveryNetwork } from './resources/cloudfront';
 import { createDomainSetup } from './resources/domainSetup';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
@@ -14,7 +16,7 @@ export = async () => {
   // Application load balancer
   const loadBalancerSetup = createLoadBalancer(domainSetup);
   // Web application firewall
-  const wafSetup = createWebAppFirewallProtection();
+  const wafSetup = await createWebAppFirewallProtection();
   // Cloudfront CDN
   const cdnSetup = createContentDeliveryNetwork(
     loadBalancerSetup,

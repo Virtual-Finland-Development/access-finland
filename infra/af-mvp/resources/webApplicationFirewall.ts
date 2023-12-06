@@ -11,15 +11,15 @@ const {
   currentStackReference,
 } = setup;
 
-export function createWebAppFirewallProtection() {
+export async function createWebAppFirewallProtection() {
   if (!waf.enabled) {
     return;
   }
 
-  const appUrl = currentStackReference.getOutput('url');
+  const appUrl = await currentStackReference.getOutputValue('url');
   if (!appUrl) {
     console.log(
-      "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
+      "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created."
     );
     return;
   }
