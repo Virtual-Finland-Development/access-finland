@@ -1,37 +1,31 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import setup, { nameResource } from '../utils/setup';
-
-const {
-  tags,
-  cdn: { domainConfig },
-  currentStackReference,
-} = setup;
+import { ISetup } from '../utils/types';
 
 function parseDomainNameFromURL(url: string) {
   const urlObject = new URL(url);
   return urlObject.hostname;
 }
 
-export async function createDomainSetup() {
-  if (domainConfig.enabled) {
-    if (!domainConfig.domainName) {
+export async function createDomainSetup(setup: ISetup) {
+  if (setup.cdn.domainConfig.enabled) {
+    if (!setup.cdn.domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
     }
 
     const zone = new aws.route53.Zone(
-      nameResource('domainZone'),
+      setup.nameResource('domainZone'),
       {
-        name: domainConfig.domainRootName,
-        tags,
+        name: setup.cdn.domainConfig.domainRootName,
+        tags: setup.tags,
       },
       { protect: true } // Keep the zone from being destroyed
     );
 
-    const cdnURL = await currentStackReference.getOutputValue('cdnURL');
+    const cdnURL = await setup.currentStackReference.getOutputValue('cdnURL');
     if (!cdnURL) {
       console.log(
-        "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created."
+        "For now, skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created."
       );
       return;
     }
@@ -39,14 +33,15 @@ export async function createDomainSetup() {
     const cdnDomainName = parseDomainNameFromURL(cdnURL);
 
     const { certificate } = createDomainRecordAndCertificate(
+      setup,
       zone,
-      domainConfig.domainName,
+      setup.cdn.domainConfig.domainName,
       pulumi.output(cdnDomainName)
     );
 
     return {
-      domainName: domainConfig.domainName,
-      loadBalancerDomainName: `loadbalancer.${domainConfig.domainName}`,
+      domainName: setup.cdn.domainConfig.domainName,
+      loadBalancerDomainName: `loadbalancer.${setup.cdn.domainConfig.domainName}`,
       certificate,
       zone,
     };
@@ -55,26 +50,28 @@ export async function createDomainSetup() {
 }
 
 export function createDomainRecordAndCertificate(
+  setup: ISetup,
   zone: aws.route53.Zone,
   domainName: string,
   destinationDomainName: pulumi.Output<string>,
-  certRegionProvider: aws.Provider = domainConfig.awsCertsRegionProvider
+  certRegionProvider: aws.Provider = setup.cdn.domainConfig
+    .awsCertsRegionProvider
 ) {
   const domainNameResourceIdent = domainName.replace(/\./g, '-');
 
   const certificate = new aws.acm.Certificate(
-    nameResource(`${domainNameResourceIdent}-domain-certificate`),
+    setup.nameResource(`${domainNameResourceIdent}-domain-certificate`),
     {
       domainName: domainName,
       validationMethod: 'DNS',
-      tags,
+      tags: setup.tags,
     },
     { provider: certRegionProvider }
   );
 
   // The main dns record
   const record = new aws.route53.Record(
-    nameResource(`${domainNameResourceIdent}-cname-record`),
+    setup.nameResource(`${domainNameResourceIdent}-cname-record`),
     {
       name: domainName,
       type: 'CNAME',
