@@ -1,10 +1,10 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
-import { ISetup } from '../utils/types';
+import Setup from '../utils/Setup';
 
 export function createCognitoUserPool(
-  setup: ISetup,
+  setup: Setup,
   callbackUri: pulumi.Output<string>
 ) {
   const userPool = new aws.cognito.UserPool(
@@ -24,7 +24,7 @@ export function createCognitoUserPool(
       },
       tags: setup.tags,
     },
-    { protect: true }
+    { protect: setup.protect.cognito }
   ); // Delete only by overriding the resource protection manually
 
   // Create cognito domain for hosted UI login

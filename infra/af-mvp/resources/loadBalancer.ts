@@ -1,12 +1,13 @@
 import * as aws from '@pulumi/aws';
 import { ListenerArgs } from '@pulumi/aws/alb';
 import * as pulumi from '@pulumi/pulumi';
-import { DomainSetup, ISetup, LoadBalancerSetup } from '../utils/types';
+import Setup from '../utils/Setup';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 import { defaultSubnetIds, defaultVpcId } from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
 export function createLoadBalancer(
-  setup: ISetup,
+  setup: Setup,
   domainSetup: DomainSetup
 ): LoadBalancerSetup {
   // Inbound load balancer security rules

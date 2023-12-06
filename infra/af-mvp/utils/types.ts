@@ -1,6 +1,5 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import setup from './setup';
 
 export type DomainSetup =
   | {
@@ -17,5 +16,3 @@ export type LoadBalancerSetup = {
   domainName: pulumi.Output<string>;
   url: pulumi.Output<string>;
 };
-
-export type ISetup = typeof setup;

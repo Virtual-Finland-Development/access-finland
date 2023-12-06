@@ -1,10 +1,11 @@
 import * as aws from '@pulumi/aws';
 import { DistributionArgs } from '@pulumi/aws/cloudfront';
 import * as pulumi from '@pulumi/pulumi';
-import { DomainSetup, ISetup, LoadBalancerSetup } from '../utils/types';
+import Setup from '../utils/Setup';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
 
 export function createContentDeliveryNetwork(
-  setup: ISetup,
+  setup: Setup,
   loadBalancerSetup: LoadBalancerSetup,
   domainSetup: DomainSetup,
   webApplicationFirewall?: aws.wafv2.WebAcl
