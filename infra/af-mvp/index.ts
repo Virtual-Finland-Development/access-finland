@@ -6,41 +6,41 @@ import { createFargateService } from './resources/fargate';
 import { createLoadBalancer } from './resources/loadBalancer';
 import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';
 
-// Domain setup
-const domainSetup = createDomainSetup();
-// ECS Cluster
-const cluster = createECSCluster();
-// Application load balancer
-const loadBalancerSetup = createLoadBalancer(domainSetup);
-// Web application firewall
-const wafSetup = createWebAppFirewallProtection();
-// Cloudfront CDN
-const cdnSetup = createContentDeliveryNetwork(
-  loadBalancerSetup,
-  domainSetup,
-  wafSetup?.webApplicationFirewall
-);
-// ECS Fargate service
-const fargateService = createFargateService(
-  loadBalancerSetup,
-  cluster,
-  cdnSetup,
-  wafSetup
-);
-// Auto-scaling policies
-createECSAutoScaling(cluster, fargateService);
+export = async () => {
+  // Domain setup
+  const domainSetup = await createDomainSetup();
+  // ECS Cluster
+  const cluster = createECSCluster();
+  // Application load balancer
+  const loadBalancerSetup = createLoadBalancer(domainSetup);
+  // Web application firewall
+  const wafSetup = createWebAppFirewallProtection();
+  // Cloudfront CDN
+  const cdnSetup = createContentDeliveryNetwork(
+    loadBalancerSetup,
+    domainSetup,
+    wafSetup?.webApplicationFirewall
+  );
+  // ECS Fargate service
+  const fargateService = createFargateService(
+    loadBalancerSetup,
+    cluster,
+    cdnSetup,
+    wafSetup
+  );
+  // Auto-scaling policies
+  createECSAutoScaling(cluster, fargateService);
 
-// Export url actually used by the application
-export const url = pulumi.interpolate`https://${cdnSetup.domainName}`;
-// Export load balancer url.
-export const lbUrl = loadBalancerSetup.url;
-// Export the CloudFront url.
-export const cdnURL = pulumi.interpolate`https://${cdnSetup.cdn.domainName}`;
-
-// Outputs for the monitoring dashboard
-export const CloudFrontDistributionId = cdnSetup.cdn.id;
-export const FargateServiceName = fargateService.service.name;
-export const EcsClusterName = cluster.name;
-export const AppLoadBalancerArn = loadBalancerSetup.appLoadBalancer.arn;
-export const CognitoUserPoolId = wafSetup?.userPool.id;
-export const CongitoUserPoolClientId = wafSetup?.userPoolClient.id;
+  return {
+    url: pulumi.interpolate`https://${cdnSetup.domainName}`, // url actually used by the application
+    lbUrl: loadBalancerSetup.url, // load balancer url
+    cdnURL: pulumi.interpolate`https://${cdnSetup.cdn.domainName}`, // CloudFront url
+    // Outputs for the monitoring dashboard
+    CloudFrontDistributionId: cdnSetup.cdn.id,
+    FargateServiceName: fargateService.service.name,
+    EcsClusterName: cluster.name,
+    AppLoadBalancerArn: loadBalancerSetup.appLoadBalancer.arn,
+    CognitoUserPoolId: wafSetup?.userPool.id,
+    CongitoUserPoolClientId: wafSetup?.userPoolClient.id,
+  };
+};

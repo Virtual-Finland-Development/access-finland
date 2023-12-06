@@ -13,21 +13,11 @@ function parseDomainNameFromURL(url: string) {
   return urlObject.hostname;
 }
 
-export function createDomainSetup() {
+export async function createDomainSetup() {
   if (domainConfig.enabled) {
     if (!domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
     }
-
-    const cdnURL = currentStackReference.getOutput('cdnURL');
-    if (!cdnURL) {
-      console.log(
-        "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created: you must run `pulumi up` again after the CDN is created."
-      );
-      return;
-    }
-
-    const cdnDomainName = cdnURL.apply(url => parseDomainNameFromURL(url));
 
     const zone = new aws.route53.Zone(
       nameResource('domainZone'),
@@ -38,10 +28,20 @@ export function createDomainSetup() {
       { protect: true } // Keep the zone from being destroyed
     );
 
+    const cdnURL = await currentStackReference.getOutputValue('cdnURL');
+    if (!cdnURL) {
+      console.log(
+        "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created."
+      );
+      return;
+    }
+
+    const cdnDomainName = parseDomainNameFromURL(cdnURL);
+
     const { certificate } = createDomainRecordAndCertificate(
       zone,
       domainConfig.domainName,
-      cdnDomainName
+      pulumi.output(cdnDomainName)
     );
 
     return {
