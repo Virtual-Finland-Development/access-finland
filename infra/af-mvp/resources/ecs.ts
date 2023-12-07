@@ -1,9 +1,9 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
-import Setup from '../utils/Setup';
+import { ISetup } from '../utils/types';
 
-export function createECSCluster(setup: Setup) {
+export function createECSCluster(setup: ISetup) {
   // ECS cluster
   return new aws.ecs.Cluster(setup.nameResource('ecs-cluster'), {
     tags: setup.tags,
@@ -11,7 +11,7 @@ export function createECSCluster(setup: Setup) {
 }
 
 export function createECSAutoScaling(
-  setup: Setup,
+  setup: ISetup,
   cluster: aws.ecs.Cluster,
   fargateService: awsx.ecs.FargateService
 ) {

@@ -1,8 +1,8 @@
 import * as aws from '@pulumi/aws';
 import * as tls from '@pulumi/tls';
-import Setup from '../utils/Setup';
+import { ISetup } from '../utils/types';
 
-export function generateBackendSecretKeyPair(setup: Setup) {
+export function generateBackendSecretKeyPair(setup: ISetup) {
   // Generate a private key
   const privateKey = new tls.PrivateKey(
     setup.nameResource('backend-private-key'),
@@ -37,7 +37,7 @@ export function generateBackendSecretKeyPair(setup: Setup) {
 }
 
 function createStagedParameterStoreSecret(
-  setup: Setup,
+  setup: ISetup,
   name: string,
   value: string,
   description: string
@@ -51,7 +51,7 @@ function createStagedParameterStoreSecret(
 }
 
 function createParameterStoreSecret(
-  setup: Setup,
+  setup: ISetup,
   name: string,
   value: string,
   description: string

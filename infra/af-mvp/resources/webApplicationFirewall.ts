@@ -1,10 +1,10 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
-import Setup from '../utils/Setup';
+import { ISetup } from '../utils/types';
 import { createCognitoUserPool } from './cognito';
 
-export async function createWebAppFirewallProtection(setup: Setup) {
+export async function createWebAppFirewallProtection(setup: ISetup) {
   if (!setup.cdn.waf.enabled) {
     return;
   }

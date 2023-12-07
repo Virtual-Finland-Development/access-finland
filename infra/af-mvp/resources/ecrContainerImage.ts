@@ -1,11 +1,11 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
-import Setup from '../utils/Setup';
+import { ISetup } from '../utils/types';
 import { generateBackendSecretKeyPair } from './systemsManager';
 
 export function createContainerImage(
-  setup: Setup,
+  setup: ISetup,
   cdnSetup: {
     cdn: aws.cloudfront.Distribution;
     domainName: pulumi.Output<string>;

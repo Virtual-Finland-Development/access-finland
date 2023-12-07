@@ -1,12 +1,11 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
-import Setup from '../utils/Setup';
-import { LoadBalancerSetup } from '../utils/types';
+import { ISetup, LoadBalancerSetup } from '../utils/types';
 import { createContainerImage } from './ecrContainerImage';
 
 export function createFargateService(
-  setup: Setup,
+  setup: ISetup,
   loadBalancerSetup: LoadBalancerSetup,
   cluster: aws.ecs.Cluster,
   cdnSetup: {
@@ -145,7 +144,7 @@ export function createFargateService(
   return service;
 }
 
-function createErrorMonitor(setup: Setup, logGroup: aws.cloudwatch.LogGroup) {
+function createErrorMonitor(setup: ISetup, logGroup: aws.cloudwatch.LogGroup) {
   const stackReference = new pulumi.StackReference(setup.monitoringStackName);
   const errorReportingFunctionArn = stackReference.requireOutput(
     'errorSubLambdaFunctionArn'

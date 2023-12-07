@@ -1,13 +1,13 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import Setup from '../utils/Setup';
+import { ISetup } from '../utils/types';
 
 function parseDomainNameFromURL(url: string) {
   const urlObject = new URL(url);
   return urlObject.hostname;
 }
 
-export async function createDomainSetup(setup: Setup) {
+export async function createDomainSetup(setup: ISetup) {
   if (setup.cdn.domainConfig.enabled) {
     if (!setup.cdn.domainConfig.domainName) {
       throw new Error('Domain name is required when CDN is enabled');
@@ -19,7 +19,7 @@ export async function createDomainSetup(setup: Setup) {
         name: setup.cdn.domainConfig.domainRootName,
         tags: setup.tags,
       },
-      { protect: setup.protect.domainZone }
+      { protect: true } // Keep the zone from being destroyed
     );
 
     const cdnURL = await setup.currentStackReference.getOutputValue('cdnURL');
@@ -50,7 +50,7 @@ export async function createDomainSetup(setup: Setup) {
 }
 
 export function createDomainRecordAndCertificate(
-  setup: Setup,
+  setup: ISetup,
   zone: aws.route53.Zone,
   domainName: string,
   destinationDomainName: pulumi.Output<string>,
