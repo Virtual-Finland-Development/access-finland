@@ -51,10 +51,4 @@ jobs:
           command: up
           stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.environment }}
           upsert: true # create stack if no exists
-      - name: Initial deployment on
-        if: steps.pulumi.outputs.initial
-        uses: pulumi/actions@v4
-        with:
-          work-dir: ./infra/af-mvp
-          command: up
-          stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.environment }}
+
