@@ -1,47 +1,49 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
-import { ISetup } from '../utils/types';
+import setup, { nameResource } from '../utils/setup';
 import { createCognitoUserPool } from './cognito';
 
-export async function createWebAppFirewallProtection(setup: ISetup) {
-  if (!setup.cdn.waf.enabled) {
+const {
+  tags,
+  cdn: { waf },
+  awsSetup: { region },
+  currentStackReference,
+} = setup;
+
+export async function createWebAppFirewallProtection() {
+  if (!waf.enabled) {
     return;
   }
 
-  const appUrl = await setup.currentStackReference.getOutputValue('url');
+  const appUrl = await currentStackReference.getOutputValue('url');
   if (!appUrl) {
     console.log(
-      "For now, skipped creating WAF as there's a circular dependency to the CDN which is not yet created."
+      "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created."
     );
     return;
   }
 
   // Random value for shared cookie secret
   const sharedCookieSecret = pulumi.interpolate`${
-    new random.RandomPassword(setup.nameResource('wafCookieHash'), {
+    new random.RandomPassword(nameResource('wafCookieHash'), {
       length: 32,
       special: false,
     }).result
   }`;
 
   const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
-  const { userPool, userPoolClient, cognitoDomain } = createCognitoUserPool(
-    setup,
-    callbackUri
-  );
+  const { userPool, userPoolClient, cognitoDomain } =
+    createCognitoUserPool(callbackUri);
 
-  const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${setup.awsSetup.region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
+  const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
 
   // Create a firewall
-  const firewallRegion = new aws.Provider(
-    setup.nameResource('aws-waf-region'),
-    {
-      region: 'us-east-1',
-    }
-  );
+  const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), {
+    region: 'us-east-1',
+  });
   const webApplicationFirewall = new aws.wafv2.WebAcl(
-    setup.nameResource('webApplicationFirewall'),
+    nameResource('webApplicationFirewall'),
     {
       defaultAction: {
         block: {
@@ -216,16 +218,16 @@ export async function createWebAppFirewallProtection(setup: ISetup) {
           },
           visibilityConfig: {
             cloudwatchMetricsEnabled: true,
-            metricName: setup.nameResource('webApplicationFirewallGrantAccess'),
+            metricName: nameResource('webApplicationFirewallGrantAccess'),
             sampledRequestsEnabled: true,
           },
         },
       ],
       scope: 'CLOUDFRONT',
-      tags: setup.tags,
+      tags,
       visibilityConfig: {
         cloudwatchMetricsEnabled: true,
-        metricName: setup.nameResource('webApplicationFirewall'),
+        metricName: nameResource('webApplicationFirewall'),
         sampledRequestsEnabled: true,
       },
     },

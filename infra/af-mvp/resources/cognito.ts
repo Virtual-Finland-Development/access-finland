@@ -1,36 +1,34 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
-import { ISetup } from '../utils/types';
+import setup, { nameResource } from '../utils/setup';
 
-export function createCognitoUserPool(
-  setup: ISetup,
-  callbackUri: pulumi.Output<string>
-) {
-  const userPool = new aws.cognito.UserPool(
-    setup.nameResource('wafUserPool'),
-    {
-      adminCreateUserConfig: {
-        allowAdminCreateUserOnly: true,
-      },
-      accountRecoverySetting: {
-        // Required to have at least one recovery mechanism, not actually in use
-        recoveryMechanisms: [
-          {
-            name: 'verified_email',
-            priority: 1,
-          },
-        ],
-      },
-      tags: setup.tags,
+const {
+  tags,
+  cdn: { waf },
+} = setup;
+
+export function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
+  const userPool = new aws.cognito.UserPool(nameResource('wafUserPool'), {
+    adminCreateUserConfig: {
+      allowAdminCreateUserOnly: true,
     },
-    { protect: true }
-  ); // Delete only by overriding the resource protection manually
+    accountRecoverySetting: {
+      // Required to have at least one recovery mechanism, not actually in use
+      recoveryMechanisms: [
+        {
+          name: 'verified_email',
+          priority: 1,
+        },
+      ],
+    },
+    tags,
+  }, { protect: true }); // Delete only by overriding the resource protection manually
 
   // Create cognito domain for hosted UI login
   const loginDomainIdent = `${setup.projectName}-${setup.environment}`;
   const cognitoDomain = new aws.cognito.UserPoolDomain(
-    setup.nameResource('wafUserPoolDomain'),
+    nameResource('wafUserPoolDomain'),
     {
       domain: loginDomainIdent,
       userPoolId: userPool.id,
@@ -38,7 +36,7 @@ export function createCognitoUserPool(
   );
 
   const userPoolClient = new aws.cognito.UserPoolClient(
-    setup.nameResource('wafUserPoolClient'),
+    nameResource('wafUserPoolClient'),
     {
       userPoolId: userPool.id,
       generateSecret: true,
@@ -54,7 +52,7 @@ export function createCognitoUserPool(
   );
 
   new aws.cognito.UserPoolUICustomization(
-    setup.nameResource('wafUserPoolUICustomization'),
+    nameResource('wafUserPoolUICustomization'),
     {
       clientId: userPoolClient.id,
       css: '.label-customizable {font-weight: 400;}',
@@ -63,12 +61,12 @@ export function createCognitoUserPool(
     }
   );
 
-  if (setup.cdn.waf.username && setup.cdn.waf.password) {
+  if (waf.username && waf.password) {
     // Create a static user
-    new aws.cognito.User(setup.nameResource('wafUser'), {
+    new aws.cognito.User(nameResource('wafUser'), {
       userPoolId: userPool.id,
-      username: setup.cdn.waf.username,
-      password: setup.cdn.waf.password,
+      username: waf.username,
+      password: waf.password,
       messageAction: 'SUPPRESS',
     });
   }

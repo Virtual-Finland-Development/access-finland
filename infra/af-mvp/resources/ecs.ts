@@ -1,23 +1,24 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
-import { ISetup } from '../utils/types';
+import setup, { nameResource } from '../utils/setup';
 
-export function createECSCluster(setup: ISetup) {
+const { tags } = setup;
+
+export function createECSCluster() {
   // ECS cluster
-  return new aws.ecs.Cluster(setup.nameResource('ecs-cluster'), {
-    tags: setup.tags,
+  return new aws.ecs.Cluster(nameResource('ecs-cluster'), {
+    tags,
   });
 }
 
 export function createECSAutoScaling(
-  setup: ISetup,
   cluster: aws.ecs.Cluster,
   fargateService: awsx.ecs.FargateService
 ) {
   // ECS Auto-scaling
   const ecsTarget = new aws.appautoscaling.Target(
-    setup.nameResource('ecs-autoscaling-target'),
+    nameResource('ecs-autoscaling-target'),
     {
       maxCapacity: 4,
       minCapacity: 1,
@@ -26,7 +27,7 @@ export function createECSAutoScaling(
       serviceNamespace: 'ecs',
     }
   );
-  new aws.appautoscaling.Policy(setup.nameResource('ecs-scaling-policy'), {
+  new aws.appautoscaling.Policy(nameResource('ecs-scaling-policy'), {
     policyType: 'TargetTrackingScaling',
     resourceId: ecsTarget.resourceId,
     scalableDimension: ecsTarget.scalableDimension,

@@ -3,8 +3,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 
-const projectConfig = new pulumi.Config();
-const organizationName = projectConfig.require('organizationName');
+const organizationName = pulumi.getOrganization();
 const environment = pulumi.getStack();
 const projectName = pulumi.getProject();
 const tags = {
@@ -16,7 +15,9 @@ const tags = {
 const awsSetup = new pulumi.Config('aws');
 
 // Env/stage override for specific systems --->
-const envOverride = ['mvp-dev'].includes(environment) ? 'dev' : environment;
+const envOverride = ['test', 'mvp-dev'].includes(environment)
+  ? 'dev'
+  : environment;
 // <---
 
 const currentStackReference = new pulumi.StackReference(
@@ -49,7 +50,7 @@ function getShortResourceName(name: string): string {
  * @param pulumiNameHashIncludedInMaxLength - If true, the hash added by pulumi to the resource name is not included to the max length argument calcs
  * @returns
  */
-function nameResource(
+export function nameResource(
   resourceName: string,
   maxLength: number = 0,
   pulumiNameHashIncludedInMaxLength: boolean = false
@@ -132,7 +133,6 @@ const setup = {
   },
   infrastructureStackName: `${organizationName}/infrastructure/${envOverride}`,
   monitoringStackName: `${organizationName}/cloudwatch-logs-alerts/${envOverride}`,
-  nameResource,
 };
 
 export default setup;

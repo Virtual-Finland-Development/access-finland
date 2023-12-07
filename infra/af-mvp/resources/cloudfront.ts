@@ -1,10 +1,12 @@
 import * as aws from '@pulumi/aws';
 import { DistributionArgs } from '@pulumi/aws/cloudfront';
 import * as pulumi from '@pulumi/pulumi';
-import { DomainSetup, ISetup, LoadBalancerSetup } from '../utils/types';
+import setup, { nameResource } from '../utils/setup';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
+
+const { tags, customHeaderValue } = setup;
 
 export function createContentDeliveryNetwork(
-  setup: ISetup,
   loadBalancerSetup: LoadBalancerSetup,
   domainSetup: DomainSetup,
   webApplicationFirewall?: aws.wafv2.WebAcl
@@ -35,7 +37,7 @@ export function createContentDeliveryNetwork(
 
   // CloudFront
   const cdn = new aws.cloudfront.Distribution(
-    setup.nameResource('cdn'),
+    nameResource('cdn'),
     {
       enabled: true,
       httpVersion: 'http2',
@@ -57,7 +59,7 @@ export function createContentDeliveryNetwork(
           customHeaders: [
             {
               name: 'X-Custom-Header',
-              value: setup.customHeaderValue,
+              value: customHeaderValue,
             },
           ],
         },
@@ -110,7 +112,7 @@ export function createContentDeliveryNetwork(
       },
       viewerCertificate: viewerCertificate,
       webAclId: webAclId,
-      tags: setup.tags,
+      tags,
     },
     {
       protect: false,

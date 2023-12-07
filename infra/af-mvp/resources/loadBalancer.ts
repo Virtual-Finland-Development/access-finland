@@ -1,14 +1,26 @@
 import * as aws from '@pulumi/aws';
 import { ListenerArgs } from '@pulumi/aws/alb';
 import * as pulumi from '@pulumi/pulumi';
-import { DomainSetup, ISetup, LoadBalancerSetup } from '../utils/types';
-import { defaultSubnetIds, defaultVpcId } from './defaultVpc';
+import setup, { nameResource } from '../utils/setup';
+import { DomainSetup, LoadBalancerSetup } from '../utils/types';
+import {
+  defaultSubnetIds,
+  defaultVpcId,
+} from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
+const {
+  tags,
+  customHeaderValue,
+  cdn: {
+    domainConfig: { awsLocalCertsProvider },
+  },
+} = setup;
+
 export function createLoadBalancer(
-  setup: ISetup,
   domainSetup: DomainSetup
 ): LoadBalancerSetup {
+
   // Inbound load balancer security rules
   const ingress = [
     {
@@ -41,10 +53,10 @@ export function createLoadBalancer(
       ipv6CidrBlocks: ['::/0'],
     },
   ];
-
+  
   // Security group
   const loadBalancerSecurityGroup = new aws.ec2.SecurityGroup(
-    setup.nameResource('alb-sg'),
+    nameResource('alb-sg'),
     {
       vpcId: defaultVpcId,
       ingress: ingress,
@@ -53,20 +65,17 @@ export function createLoadBalancer(
   );
 
   // Loadbalancer name can't exceed 32 characters
-  const appLoadBalancer = new aws.lb.LoadBalancer(
-    setup.nameResource('alb', 32),
-    {
-      internal: false,
-      loadBalancerType: 'application',
-      enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and the end-user traffic is handled by cloudfront
-      subnets: defaultSubnetIds,
-      securityGroups: [loadBalancerSecurityGroup.id],
-      tags: setup.tags,
-    }
-  );
+  const appLoadBalancer = new aws.lb.LoadBalancer(nameResource('alb', 32), {
+    internal: false,
+    loadBalancerType: 'application',
+    enableHttp2: false, // HTTP2 implementation of AWS lb is buggy and the end-user traffic is handled by cloudfront
+    subnets: defaultSubnetIds,
+    securityGroups: [loadBalancerSecurityGroup.id],
+    tags,
+  });
 
   // Target group
-  const targetGroup = new aws.lb.TargetGroup(setup.nameResource('alb-tg', 32), {
+  const targetGroup = new aws.lb.TargetGroup(nameResource('alb-tg', 32), {
     port: 3000, // Nextjs app port
     protocol: 'HTTP',
     targetType: 'ip',
@@ -94,11 +103,10 @@ export function createLoadBalancer(
   if (domainSetup?.loadBalancerDomainName) {
     // Setup loadbalancer HTTPS listener for the custom domain
     const { certificate } = createDomainRecordAndCertificate(
-      setup,
       domainSetup.zone,
       domainSetup?.loadBalancerDomainName,
       appLoadBalancer.dnsName,
-      setup.cdn.domainConfig.awsLocalCertsProvider
+      awsLocalCertsProvider
     );
     listenerArgs = {
       port: 443,
@@ -107,7 +115,7 @@ export function createLoadBalancer(
     };
   }
 
-  const listener = new aws.lb.Listener(setup.nameResource('alb-listener'), {
+  const listener = new aws.lb.Listener(nameResource('alb-listener'), {
     loadBalancerArn: appLoadBalancer.arn,
     ...listenerArgs,
     defaultActions: [
@@ -122,7 +130,7 @@ export function createLoadBalancer(
     ],
   });
 
-  new aws.lb.ListenerRule(setup.nameResource('alb-listener-rule'), {
+  new aws.lb.ListenerRule(nameResource('alb-listener-rule'), {
     listenerArn: listener.arn,
     actions: [
       {
@@ -134,7 +142,7 @@ export function createLoadBalancer(
       {
         httpHeader: {
           httpHeaderName: 'X-Custom-Header',
-          values: [setup.customHeaderValue],
+          values: [customHeaderValue],
         },
       },
     ],
