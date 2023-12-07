@@ -21,3 +21,6 @@ So in summary the initial deployment with custom domain name enabled requires th
 
 After the initial deployments, the following deployments can be done normally.
 
+## AWS Cognito credentials after initial deployment
+
+With default settings, the initial deployment will create a new AWS Cognito user and identity pool but no users. To add new users, with [AWS Cognito Console](https://eu-north-1.console.aws.amazon.com/cognito/v2/idp/user-pools), navigate to the Cognito user pools, select the pool with the name that contains the word `wafUserPool` and create users from there.
