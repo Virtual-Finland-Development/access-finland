@@ -1,14 +1,15 @@
 import * as pulumi from '@pulumi/pulumi';
-//import * as automation from "@pulumi/pulumi/x/automation";
-
 import { createContentDeliveryNetwork } from './resources/cloudfront';
 import { createDomainSetup } from './resources/domainSetup';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
 import { createFargateService } from './resources/fargate';
 import { createLoadBalancer } from './resources/loadBalancer';
 import { createWebAppFirewallProtection } from './resources/webApplicationFirewall';
+import { isInitialDeployment } from './utils/setup';
 
 export = async () => {
+  const initialDeployment = await isInitialDeployment();
+
   // Domain setup
   const domainSetup = await createDomainSetup();
   // ECS Cluster
@@ -44,5 +45,6 @@ export = async () => {
     AppLoadBalancerArn: loadBalancerSetup.appLoadBalancer.arn,
     CognitoUserPoolId: wafSetup?.userPool.id,
     CongitoUserPoolClientId: wafSetup?.userPoolClient.id,
+    initial: initialDeployment,
   };
 };
