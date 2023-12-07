@@ -14,8 +14,10 @@ If the initial deployments are ran with CI/CD pipeline, the second deployment is
 
 So in summary the initial deployment with custom domain name enabled requires three deployments:
 - Initial deployment without custom domain name
-- Initial deployment with custom domain name (will fail)
-- Initial deployment with custom domain name (should succeed)
+- Initial deployment with custom domain name (will fail):
+  - Creates the SSL certificates and domain names
+- Initial deployment with custom domain name (should succeed):
+  - Installs the SSL certificates and domain names to the resources that require them
 
 After the initial deployments, the following deployments can be done normally.
 
