@@ -3,10 +3,7 @@ import { ListenerArgs } from '@pulumi/aws/alb';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { DomainSetup, LoadBalancerSetup } from '../utils/types';
-import {
-  defaultSubnetIds,
-  defaultVpcId,
-} from './defaultVpc';
+import { defaultSubnetIds, defaultVpcId } from './defaultVpc';
 import { createDomainRecordAndCertificate } from './domainSetup';
 
 const {
@@ -20,7 +17,6 @@ const {
 export function createLoadBalancer(
   domainSetup: DomainSetup
 ): LoadBalancerSetup {
-
   // Inbound load balancer security rules
   const ingress = [
     {
@@ -53,7 +49,7 @@ export function createLoadBalancer(
       ipv6CidrBlocks: ['::/0'],
     },
   ];
-  
+
   // Security group
   const loadBalancerSecurityGroup = new aws.ec2.SecurityGroup(
     nameResource('alb-sg'),
