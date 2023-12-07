@@ -8,7 +8,9 @@ The pulumi project for the af-mvp app is located at [../infra/af-mvp/](../infra/
 
 The custom domain name configuration involves a circular dependency between the domain name references to the resources that require the domain name (eg. Cloudfront requires a certificate that requires a domain name that requires a Cloudfront distribution origin name which is not created until the initial deployment). This is solved by doing the initial deployment without the domain name and then doing a second deployment with the domain name enabled.
 
-The second initial deployment will fail until the created SSL certificates are validated by AWS. This can take some time (should be below 30 minutes). After the certificates are validated, the deployment can be run again (the third initial deployment) and it should succeed.
+The second initial deployment will fail until the created SSL certificates are validated by AWS. This can take some time (should be below 30 minutes). After the certificates are validated, the deployment can be run again (the third initial deployment) and it should then finally succeed.
+
+If the initial deployments are ran with CI/CD pipeline, the second deployment is done automatically after the first one and should fail in the step named "Initial deployment domain check". The third deployment is not done automatically and needs to be done manually after the certificates are validated.
 
 So in summary the initial deployment with custom domain name enabled requires three deployments:
 - Initial deployment without custom domain name
