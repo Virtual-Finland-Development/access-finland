@@ -19,7 +19,7 @@ So in summary the initial deployment with custom domain name enabled requires th
 - Initial deployment with custom domain name (should succeed):
   - Installs the SSL certificates and domain names to the resources that require them
 
-After the initial deployments, any futute deployments can be done normally.
+After the initial deployments, any future deployments can be done normally.
 
 ## AWS Cognito credentials after initial deployment
 
