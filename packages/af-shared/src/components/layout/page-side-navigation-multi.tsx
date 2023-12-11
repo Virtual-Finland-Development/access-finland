@@ -62,7 +62,7 @@ export default function PageSideNavigationMulti(props: Props) {
   const { width } = useDimensions();
 
   return (
-    <div className="lg:shrink-0 bg-white lg:border-r z-10">
+    <div className="lg:shrink-0 bg-white lg:border-r">
       <div className="w-full lg:w-[300px]">
         <SideNavigation
           heading={title}

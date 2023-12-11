@@ -45,6 +45,3 @@ body {
   padding-left: 0.5rem !important;
   padding-right: 0.5rem !important;
 }
-.fi-modal_overlay {
-  z-index: 30;
-}

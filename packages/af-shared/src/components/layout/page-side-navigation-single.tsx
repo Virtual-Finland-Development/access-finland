@@ -23,7 +23,7 @@ export default function PageSideNavigationSingle(props: Props) {
   const { width } = useDimensions();
 
   return (
-    <div className="lg:shrink-0 bg-white lg:border-r z-10">
+    <div className="lg:shrink-0 bg-white lg:border-r">
       <div className="w-full lg:w-[300px]">
         <div className="px-[15px] my-2 hidden lg:flex flex-row items-center gap-3">
           {Icon ? (

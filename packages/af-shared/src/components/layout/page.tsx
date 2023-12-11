@@ -25,6 +25,10 @@ interface Props {
   sideNavVariant?: 'multi' | 'single';
 }
 
+// Outer variable to keep track of whether the page has a side navigation or not.
+// Taken into account in PageBlock component.
+let pageHasSideNav = false;
+
 function Page(props: Props) {
   const {
     title,
@@ -37,6 +41,8 @@ function Page(props: Props) {
     sideNavVariant = 'single',
     children,
   } = props;
+
+  pageHasSideNav = Boolean(sideNavItems);
 
   const SideNav =
     sideNavVariant === 'multi'
@@ -74,7 +80,7 @@ function Page(props: Props) {
                 icon={sideNavIcon}
                 items={sideNavItems}
               />
-              <div className="flex flex-col w-full lg:-mx-8">{children}</div>
+              <div className="flex flex-col w-full">{children}</div>
             </div>
           ) : (
             <>{children}</>
@@ -92,7 +98,8 @@ interface PageBlockProps {
 
 function PageBlock(props: PageBlockProps) {
   const { className: propsClassName = '', children } = props;
-  const className = `px-4 lg:px-14 py-5 grow ${propsClassName}`;
+  const largeSceenPadding = pageHasSideNav ? 'lg:px-6' : 'lg:px-14';
+  const className = `px-4 ${largeSceenPadding} py-5 grow ${propsClassName}`;
 
   return (
     <Block variant="section" className={className}>
