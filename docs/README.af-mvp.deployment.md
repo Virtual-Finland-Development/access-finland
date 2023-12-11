@@ -10,7 +10,7 @@ The custom domain name configuration involves a circular dependency between the 
 
 The second initial deployment will fail until the created SSL certificates are validated by AWS. This can take some time (should be below 30 minutes). After the certificates are validated, the deployment can be run again (the third initial deployment) and it should then finally succeed.
 
-If the initial deployments are ran with CI/CD pipeline (for example with the deployments orcestration tool: [projects](https://github.com/Virtual-Finland-Development/projects)) the second deployment is done automatically after the first one and should fail in the step named `Initial deployment domain check`. The third deployment is not done automatically and needs to be done manually after the certificates are validated.
+If the initial deployments are ran with CI/CD pipeline (for example with the deployments orchestration tool: [projects](https://github.com/Virtual-Finland-Development/projects)) the second deployment is done automatically after the first one and should fail in the step named `Initial deployment domain check`. The third deployment is not done automatically and needs to be done manually after the certificates are validated.
 
 So in summary the initial deployment with custom domain name enabled requires three deployments:
 - Initial deployment without custom domain name
