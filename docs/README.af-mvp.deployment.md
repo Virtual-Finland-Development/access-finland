@@ -4,7 +4,7 @@ The Access Finland MVP is a web application created with nextjs and react. It is
 
 The pulumi project for the af-mvp app is located at [../infra/af-mvp/](../infra/af-mvp/).
 
-## Initial deployment with custom domain name
+## Initial Deployment With Custom Domain Name
 
 The custom domain name configuration involves a circular dependency between the domain name references to the resources that require the domain name (eg. Cloudfront requires a certificate, that requires a domain name, that requires a Cloudfront distribution origin name, which is not created until the initial deployment). This is solved by doing the initial deployment three times:
 
@@ -21,7 +21,7 @@ If the initial deployments are ran with CI/CD pipeline (for example with the dep
 
 After the initial deployments, any future deployments can be done normally.
 
-### SSL-certificate validation status inspection
+### SSL-Certificate Validation Status Inspection
 
 To inspect the validation status of the certificates, navigate to [AWS Certificate Manager](https://console.aws.amazon.com/acm/home) and select the correct certificate by domain name in the correct region depending on the use-case:
 
@@ -36,6 +36,6 @@ To inspect the validation status of the certificates, navigate to [AWS Certifica
 
 The certificate validation status is shown in the `Status` column. When the status is `Issued` the certificate is ready to be installed to the resources that require it.
 
-## AWS Cognito credentials after initial deployment
+## AWS Cognito Credentials After Initial Deployment
 
 With default settings, the initial deployment will create a new AWS Cognito user and identity pool but no users. To add new users, with [AWS Cognito Console](https://eu-north-1.console.aws.amazon.com/cognito/v2/idp/user-pools), navigate to the Cognito user pools, select the pool with the name that contains the word `wafUserPool` and create users from there.
