@@ -39,9 +39,11 @@ export async function createDomainSetup() {
     const cdnDomainName = parseDomainNameFromURL(cdnURL);
     let domainCertificate: aws.acm.Certificate;
 
+    // If the domain is the root domain, we need to create an ALIAS record instead of a CNAME
+    // The reasoning is that the root domain cannot be a CNAME as it conflicts with the apex records, e.g. NS, SOA, MX, etc.
+    // With AWS we use an ALIAS record instead, which is a special type of record that points to another AWS resource like cloudfront
+    // The root domain is the domain without a subdomain, e.g. example.com, not www.example.com
     if (domainConfig.domainName === domainConfig.domainRootName) {
-      // If the domain name is the same as the zone name, we cant' create a CNAME record for as it would conflict with the zone apex record.
-      // We create ALIAS record instead.
       new aws.route53.Record(nameResource('domainAliasRecord'), {
         name: domainConfig.domainName,
         type: 'A',
