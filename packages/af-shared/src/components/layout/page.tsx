@@ -98,8 +98,8 @@ interface PageBlockProps {
 
 function PageBlock(props: PageBlockProps) {
   const { className: propsClassName = '', children } = props;
-  const largeSceenPadding = pageHasSideNav ? 'lg:px-6' : 'lg:px-14';
-  const className = `px-4 ${largeSceenPadding} py-5 grow ${propsClassName}`;
+  const largeSceenHorizontalPadding = pageHasSideNav ? 'lg:px-6' : 'lg:px-14';
+  const className = `px-4 ${largeSceenHorizontalPadding} py-5 grow ${propsClassName}`;
 
   return (
     <Block variant="section" className={className}>
