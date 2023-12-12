@@ -87,7 +87,7 @@ async function handler(
           {
             path: '/api',
             httpOnly: true,
-            sameSite: 'strict',
+            sameSite: 'lax', // Must be lax for the redirect (from sinuna, back to the app) to work
             expires: new Date(expirity),
           }
         ),
