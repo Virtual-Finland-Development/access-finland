@@ -1,33 +1,39 @@
+import { IconUserBadge, Text } from 'suomifi-ui-components';
+import {
+  useJobApplicantProfile,
+  useProfileTosAgreement,
+} from '@shared/lib/hooks/profile';
+import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import ProfileDataSentry from '@shared/components/pages/profile/profile-data-sentry';
 import WorkingProfileForm from '@shared/components/pages/profile/working-profile-form';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
-import { useAuth } from '@shared/context/auth-context';
-import {
-  useJobApplicantProfile,
-  useProfileTosAgreement,
-} from '@shared/lib/hooks/profile';
-import { IconUserBadge, Text } from 'suomifi-ui-components';
 
 export default function WorkingProfilePage() {
   const { isAuthenticated } = useAuth();
   const {
     data: agreement,
     isFetching: agreementFetching,
-    errorResponse: agreementErrorResponse,
+    formattedError: agreementError,
   } = useProfileTosAgreement(isAuthenticated);
 
-  const shouldFetchProfileData = !agreementFetching && agreement?.hasAcceptedLatest;
+  const shouldFetchProfileData = Boolean(
+    !agreementFetching && agreement?.hasAcceptedLatest
+  );
 
   const {
-    data: jobApplicationProfile,
-    isLoading: jobApplicationProfileLoading,
-    errorResponse: jobApplicationProfileErrorResponse,
+    data: jobApplicantProfile,
+    isLoading: jobApplicantProfileLoading,
+    formattedError: jobApplicantProfileError,
   } = useJobApplicantProfile(shouldFetchProfileData);
 
-  const isLoading = agreementFetching || jobApplicationProfileLoading;
+  const isLoading = agreementFetching || jobApplicantProfileLoading;
+
+  const profileErrors = [agreementError, jobApplicantProfileError].flatMap(
+    error => error || []
+  );
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -52,16 +58,8 @@ export default function WorkingProfilePage() {
           {isLoading ? (
             <Loading />
           ) : (
-            <ProfileDataSentry
-              agreement={agreement}
-              errorResponses={[
-                agreementErrorResponse,
-                jobApplicationProfileErrorResponse,
-              ]}
-            >
-              <WorkingProfileForm
-                jobApplicationProfile={jobApplicationProfile}
-              />
+            <ProfileDataSentry agreement={agreement} errors={profileErrors}>
+              <WorkingProfileForm jobApplicantProfile={jobApplicantProfile} />
             </ProfileDataSentry>
           )}
         </Page.Block>

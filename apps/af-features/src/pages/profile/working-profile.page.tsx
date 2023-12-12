@@ -13,9 +13,9 @@ import Loading from '@shared/components/ui/loading';
 export default function WorkingProfilePage() {
   const { isAuthenticated } = useAuth();
   const {
-    data: jobApplicationProfile,
+    data: jobApplicantProfile,
     isLoading,
-    errorResponse,
+    formattedError,
   } = useJobApplicantProfile(isAuthenticated);
 
   return (
@@ -41,12 +41,10 @@ export default function WorkingProfilePage() {
             <Loading />
           ) : (
             <Fragment>
-              {errorResponse?.shouldPrintError ? (
-                <ProfileErrors errorMessages={[errorResponse.message]} />
+              {formattedError?.shouldPrintError ? (
+                <ProfileErrors errorMessages={[formattedError.message]} />
               ) : (
-                <WorkingProfileForm
-                  jobApplicationProfile={jobApplicationProfile}
-                />
+                <WorkingProfileForm jobApplicantProfile={jobApplicantProfile} />
               )}
             </Fragment>
           )}
