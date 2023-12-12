@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import api from '../api';
 import useErrorToast from './use-error-toast';
+import { formatErrorResponse } from './utils';
 
 const CONTRACTS_QUERY_KEYS = ['work-contacts'];
 const TAX_QUERY_KEYS = ['income-tax'];
@@ -10,38 +11,6 @@ const QUERY_OPTIONS = {
   refetchOnWindowFocus: false,
   retry: false,
 };
-
-interface FormattedErrorResponse {
-  statusCode: number;
-  message: string;
-  shouldPrintError: boolean;
-}
-
-function formatErrorResponse(
-  error: unknown,
-  messagePrefix: string
-): FormattedErrorResponse | undefined {
-  if (!error || !(error instanceof AxiosError)) {
-    return undefined;
-  }
-
-  const errorResponse = error?.response;
-
-  if (!errorResponse) {
-    return undefined;
-  }
-
-  const statusCode = errorResponse.status;
-  const message = `${messagePrefix}: ${
-    errorResponse.statusText || 'something went wrong'
-  }`;
-
-  return {
-    statusCode,
-    message,
-    shouldPrintError: statusCode !== 404,
-  };
-}
 
 /**
  * Get user work contracts
@@ -61,11 +30,11 @@ function usePersonWorkContracts(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = formatErrorResponse(query.error, 'Work contacts');
+  const formattedError = formatErrorResponse(query.error, 'Work contacts');
 
   return {
     ...query,
-    errorResponse,
+    formattedError,
   };
 }
 
@@ -87,13 +56,12 @@ function usePersonIncomeTax(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = formatErrorResponse(query.error, 'Income tax');
+  const formattedError = formatErrorResponse(query.error, 'Income tax');
 
   return {
     ...query,
-    errorResponse,
+    formattedError,
   };
 }
 
-export type { FormattedErrorResponse };
 export { usePersonWorkContracts, usePersonIncomeTax };
