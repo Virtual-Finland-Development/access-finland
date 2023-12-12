@@ -13,6 +13,34 @@ export interface SideNavItem {
   children?: SideNavItem[];
 }
 
+// shared util function for side navigations
+export function getSideNavSmallScreenHeading(
+  title: string,
+  items: SideNavItem[],
+  route: string
+) {
+  let post = '';
+
+  for (const item of items) {
+    if (item.href === route && !item.children) {
+      post = item.label;
+      break;
+    }
+
+    if (item.children) {
+      post = item.label;
+      const childMatch = item.children.find(child => child.href === route);
+
+      if (childMatch) {
+        post = `${post} / ${childMatch.label}`;
+        break;
+      }
+    }
+  }
+
+  return post ? `${title} / ${post}` : title;
+}
+
 interface Props {
   title: string;
   withBorder?: boolean;

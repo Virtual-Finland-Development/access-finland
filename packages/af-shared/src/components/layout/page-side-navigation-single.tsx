@@ -9,7 +9,7 @@ import {
 import { IconCatalog } from 'suomifi-ui-components';
 import useDimensions from '@/lib/hooks/use-dimensions';
 import CustomRouterLink from '@/components/ui/custom-router-link';
-import { SideNavItem } from './page';
+import { SideNavItem, getSideNavSmallScreenHeading } from './page';
 
 interface Props {
   title: string;
@@ -36,9 +36,11 @@ export default function PageSideNavigationSingle(props: Props) {
         <ServiceNavigation
           aria-label={`${title} navigation`}
           variant={width > 1024 ? 'default' : 'smallScreen'}
-          smallScreenExpandButtonText={`${title} / ${
-            items.find(item => item.href === router.route)?.label
-          }`}
+          smallScreenExpandButtonText={getSideNavSmallScreenHeading(
+            title,
+            items,
+            router.route
+          )}
           initiallyExpanded={false}
         >
           {items.map(item => (

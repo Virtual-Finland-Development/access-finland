@@ -8,7 +8,7 @@ import {
 import { IconCatalog } from 'suomifi-ui-components';
 import useDimensions from '@/lib/hooks/use-dimensions';
 import CustomRouterLink from '@/components/ui/custom-router-link';
-import { SideNavItem } from './page';
+import { SideNavItem, getSideNavSmallScreenHeading } from './page';
 
 interface NavItemsProps {
   items: SideNavItem[];
@@ -59,16 +59,22 @@ interface Props {
 
 export default function PageSideNavigationMulti(props: Props) {
   const { title, icon: Icon, items } = props;
+  const router = useRouter();
   const { width } = useDimensions();
+  const smallScreen = width <= 1024;
 
   return (
     <div className="lg:shrink-0 bg-white lg:border-r">
       <div className="w-full lg:w-[300px]">
         <SideNavigation
-          heading={title}
+          heading={
+            smallScreen
+              ? getSideNavSmallScreenHeading(title, items, router.route)
+              : title
+          }
           aria-label={`${title} navigation`}
           icon={Icon ? <Icon /> : <IconCatalog />}
-          variant={width > 1024 ? 'default' : 'smallScreen'}
+          variant={smallScreen ? 'smallScreen' : 'default'}
           initiallyExpanded={false}
         >
           <NavItems items={items} />
