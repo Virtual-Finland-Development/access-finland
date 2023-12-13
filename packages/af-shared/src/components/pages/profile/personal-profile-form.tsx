@@ -26,7 +26,7 @@ const DEFAULT_VALUES: PersonBasicInformation = {
   lastName: isExportedApp ? pickRandomName('lastName') : '',
   email: '',
   phoneNumber: isExportedApp ? '+1 231 231 2312' : '',
-  residency: '',
+  residency: null,
 };
 
 export default function PersonalProfileForm(props: Props) {
