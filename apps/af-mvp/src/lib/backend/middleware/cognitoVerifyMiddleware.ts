@@ -27,6 +27,7 @@ export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
       // Success
       return await handler(req, res, logger);
     } catch (error) {
+      logger.debug(error);
       // Clear the cognito session cookies
       res
         .setHeader('Set-Cookie', [
