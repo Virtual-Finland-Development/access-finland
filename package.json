@@ -63,6 +63,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/testing-library__jest-dom": "^5.14.7",
+    "@types/uuid": "^9.0.7",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-transform-dynamic-import": "^2.1.0",
     "duplicate-package-checker-webpack-plugin": "^3.0.0",
@@ -77,8 +78,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.11",
     "serve": "^14.2.0",
-    "turbo": "^1.10.16",
-    "@types/uuid": "^9.0.7"
+    "turbo": "^1.11.2"
   },
   "packageManager": "npm@8.19.3",
   "workspaces": [
