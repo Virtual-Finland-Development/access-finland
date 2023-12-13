@@ -15,6 +15,7 @@ on:
         options:
           - mvp-dev
           - mvp-staging
+          - mvp-production
 env:
   pulumi_stack_organization: virtualfinland
   PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -42,9 +43,17 @@ jobs:
         working-directory: ./infra/af-mvp
         run: npm ci
       - name: Deploy with Pulumi
+        id: pulumi
         uses: pulumi/actions@v4
         with:
           work-dir: ./infra/af-mvp
           command: up
           stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.environment }}
           upsert: true # create stack if no exists
+      - name: Initial deployment domain check
+        if: ${{ fromJSON(toJSON(steps.pulumi.outputs)).initialDomainCheckRequired == 'true' }} # check if previous step output contains initialDomainCheckRequired = true
+        uses: pulumi/actions@v4
+        with:
+          work-dir: ./infra/af-mvp
+          command: up
+          stack-name: ${{ env.pulumi_stack_organization }}/${{ inputs.environment }}

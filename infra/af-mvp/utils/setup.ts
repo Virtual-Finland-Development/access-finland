@@ -6,6 +6,7 @@ import * as random from '@pulumi/random';
 const organizationName = pulumi.getOrganization();
 const environment = pulumi.getStack();
 const projectName = pulumi.getProject();
+
 const tags = {
   'vfd:project': projectName,
   'vfd:stack': environment,
@@ -15,9 +16,7 @@ const tags = {
 const awsSetup = new pulumi.Config('aws');
 
 // Env/stage override for specific systems --->
-const envOverride = ['test', 'mvp-dev'].includes(environment)
-  ? 'dev'
-  : environment;
+const envOverride = ['mvp-dev'].includes(environment) ? 'dev' : environment;
 // <---
 
 const currentStackReference = new pulumi.StackReference(
@@ -77,6 +76,10 @@ export function nameResource(
     }
   }
   return resourceNameExtended;
+}
+
+export async function isInitialDeployment() {
+  return !Boolean(await currentStackReference.getOutputValue('cdnURL'));
 }
 
 // Random value for custom header (for restricted CloudFront -> ALB access)
