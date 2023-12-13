@@ -2,6 +2,7 @@ import {
   Output,
   array,
   boolean,
+  length,
   nativeEnum,
   nullable,
   number,
@@ -40,7 +41,7 @@ export const PersonBasicInformationSchema = object({
   lastName: nullable(string()),
   email: string(),
   phoneNumber: nullable(string()),
-  residency: nullable(string()),
+  residency: nullable(string([length(3)])), // ISO 3166-1 alpha-3
 });
 export type PersonBasicInformation = Output<
   typeof PersonBasicInformationSchema
