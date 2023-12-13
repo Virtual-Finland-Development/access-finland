@@ -31,9 +31,9 @@ export function formatErrorResponse(
     return undefined;
   }
 
-  const statusCode = errorResponse?.status || 500;
+  const statusCode = errorResponse.status;
   const message = `${messagePrefix}: ${
-    errorResponse?.statusText || 'something went wrong'
+    errorResponse.statusText || 'something went wrong'
   }`;
 
   return {
