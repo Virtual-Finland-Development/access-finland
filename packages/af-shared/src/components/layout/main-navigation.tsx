@@ -127,7 +127,7 @@ function MobileMenuPopover({ navigationItems }: { navigationItems: NavItems }) {
   const router = useRouter();
 
   return (
-    <Popover className="md:hidden">
+    <Popover className="md:hidden z-10">
       {({ open, close }) => {
         // scroll to top when opening the menu, disable scrolling (popover has no scroll disabling behavior)
         window.scrollTo(0, 0);

@@ -211,120 +211,64 @@ export const MOCK_WORK_PERMITS = {
 };
 
 // employment / wock contracts
-export const MOCK_WORK_CONTRACTS = [
-  {
-    employerInfo: {
-      name: 'ABC Inc.',
-      businessID: '1234567-8',
-      streetName: 'Main Street 1',
-      postalCode: '00100',
-      city: 'Helsinki',
-      signatureDate: '2022-01-01',
-    },
-    employeeInfo: {
-      name: 'John Doe',
-      streetAddress: 'Second Street 2',
-      postalCode: '00200',
-      city: 'Helsinki',
-      signaruteDate: '2022-01-01',
-    },
-    termsOfWork: {
-      employmentStart: '2022-01-01',
-      groundsForFixedTerm: 'Temporary replacement',
-      workDuties: 'Software development',
-      workConditions: 'Remote work',
-      industry: 'IT',
-      locations: ['Helsinki', 'Tampere'],
-      workingHours: 37.5,
-      collectiveAgreement: 'IT',
-      overtimeRules: 'As agreed',
-      probation: '6 months',
-    },
-    compensation: {
-      paymentGrounds: 'monthly',
-      salary: 5000,
-      bonuses: 'Performance-based',
-      paymentTime: 'End of month',
-    },
-    holidays: {
-      paidHoliday: true,
-      numberOfHolidays: 25,
-      determinationOfHoliday: 'annual holiday act',
-    },
-    benefits: [
-      {
-        benefit: 'Lunch benefit',
-        benefitType: 'part of salary',
-        taxableValue: 100,
-      },
-      {
-        benefit: 'Healthcare',
-        benefitType: 'addition to salary',
-        taxableValue: 50,
-      },
-    ],
-    termination: 'Notice period of 3 months',
-    otherTerms: [
-      {
-        termDescription: 'Confidentiality agreement',
-      },
-    ],
+export const MOCK_WORK_CONTRACT = {
+  employerInfo: {
+    name: 'ABC Inc.',
+    businessID: '1234567-8',
+    streetName: 'Main Street 1',
+    postalCode: '00100',
+    city: 'Helsinki',
+    signatureDate: '2022-01-01',
   },
-  {
-    employerInfo: {
-      name: 'XYZ Ltd.',
-      businessID: '9876543-2',
-      streetName: 'Third Street 3',
-      postalCode: '00300',
-      city: 'Helsinki',
-      signatureDate: '2022-01-01',
-    },
-    employeeInfo: {
-      name: 'Jane Doe',
-      streetAddress: 'Fourth Street 4',
-      postalCode: '00400',
-      city: 'Helsinki',
-      signaruteDate: '2022-01-01',
-    },
-    termsOfWork: {
-      employmentStart: '2022-01-01',
-      employmentEnd: '2023-01-01',
-      groundsForFixedTerm: 'Temporary replacement',
-      workDuties: 'Marketing',
-      workConditions: 'Office work',
-      industry: 'Marketing',
-      locations: ['Helsinki'],
-      workingHours: 37.5,
-      collectiveAgreement: 'Marketing',
-      overtimeRules: 'As agreed',
-      probation: '6 months',
-    },
-    compensation: {
-      paymentGrounds: 'monthly',
-      salary: 4000,
-      bonuses: 'Performance-based',
-      paymentTime: 'End of month',
-    },
-    holidays: {
-      paidHoliday: true,
-      numberOfHolidays: 25,
-      determinationOfHoliday: 'annual holiday act',
-    },
-    benefits: [
-      {
-        benefit: 'Lunch benefit',
-        benefitType: 'part of salary',
-        taxableValue: 100,
-      },
-    ],
-    termination: 'Notice period of 3 months',
-    otherTerms: [
-      {
-        termDescription: 'Confidentiality agreement',
-      },
-    ],
+  employeeInfo: {
+    name: 'John Doe',
+    streetAddress: 'Second Street 2',
+    postalCode: '00200',
+    city: 'Helsinki',
+    signaruteDate: '2022-01-01',
   },
-];
+  termsOfWork: {
+    employmentStart: '2022-01-01',
+    groundsForFixedTerm: 'Temporary replacement',
+    workDuties: 'Software development',
+    workConditions: 'Remote work',
+    industry: 'IT',
+    locations: ['Helsinki', 'Tampere'],
+    workingHours: 37.5,
+    collectiveAgreement: 'IT',
+    overtimeRules: 'As agreed',
+    probation: '6 months',
+  },
+  compensation: {
+    paymentGrounds: 'monthly',
+    salary: 5000,
+    bonuses: 'Performance-based',
+    paymentTime: 'End of month',
+  },
+  holidays: {
+    paidHoliday: true,
+    numberOfHolidays: 25,
+    determinationOfHoliday: 'annual holiday act',
+  },
+  benefits: [
+    {
+      benefit: 'Lunch benefit',
+      benefitType: 'part of salary',
+      taxableValue: 100,
+    },
+    {
+      benefit: 'Healthcare',
+      benefitType: 'addition to salary',
+      taxableValue: 50,
+    },
+  ],
+  termination: 'Notice period of 3 months',
+  otherTerms: [
+    {
+      termDescription: 'Confidentiality agreement',
+    },
+  ],
+};
 
 // employment / tax
 export const MOCK_TAX_INCOME = {

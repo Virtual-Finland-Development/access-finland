@@ -20,10 +20,8 @@ describe('Work contracts page', () => {
   it('shows work contracts, if consent is given', async () => {
     // TODO: mock consent check api call, consent accepted
 
-    let dom;
-
     await act(async () => {
-      dom = renderWithProviders(<WorkContractsPage />);
+      renderWithProviders(<WorkContractsPage />);
     });
 
     // expect that consent sentry is not present
@@ -37,9 +35,9 @@ describe('Work contracts page', () => {
       });
       expect(contractsHeader).toBeInTheDocument();
 
-      // expect two contract expanders to be present (2 mocked permits)
-      const permitsExpanders = dom.container.querySelectorAll('.fi-expander');
-      expect(permitsExpanders.length).toBe(2);
+      // expect that mocked contract is present (mocked in handlers)
+      const mockContractTitle = screen.queryAllByText(/abc inc./i)[0];
+      expect(mockContractTitle).toBeInTheDocument();
     });
   });
 });

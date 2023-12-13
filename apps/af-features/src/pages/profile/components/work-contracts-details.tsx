@@ -55,13 +55,13 @@ function mapContractDetails(contract: WorkContract) {
 }
 
 interface Props {
-  contracts: WorkContract[] | undefined;
+  contract: WorkContract | undefined;
 }
 
 export default function WorkContractsDetails(props: Props) {
-  const { contracts } = props;
+  const { contract } = props;
 
-  if (!contracts || contracts.length === 0) {
+  if (!contract) {
     return <Text>You currently have no work contracts.</Text>;
   }
 
@@ -69,16 +69,13 @@ export default function WorkContractsDetails(props: Props) {
     <>
       <CustomHeading variant="h3">Your work contracts</CustomHeading>
       <div className="flex flex-col gap-4 w-full">
-        {contracts.map((contract, index) => (
-          <DetailsExpander<WorkContract>
-            key={index}
-            title={contract.employerInfo.name}
-            values={mapContractDetails(contract)}
-            labels={WORK_CONTRACT_LABELS}
-            hasValues
-            showStatusIcons={false}
-          />
-        ))}
+        <DetailsExpander<WorkContract>
+          title={contract.employerInfo.name}
+          values={mapContractDetails(contract)}
+          labels={WORK_CONTRACT_LABELS}
+          hasValues
+          showStatusIcons={false}
+        />
       </div>
     </>
   );

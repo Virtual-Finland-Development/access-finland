@@ -11,7 +11,7 @@ export default function WorkContractsPage() {
   /**
    * TODO: implement consent check before fetching data
    */
-  const { data: contracts, isLoading } = usePersonWorkContracts();
+  const { data: contract, isLoading } = usePersonWorkContracts();
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -32,7 +32,7 @@ export default function WorkContractsPage() {
             {isLoading ? (
               <Loading />
             ) : (
-              <WorkContractsDetails contracts={contracts} />
+              <WorkContractsDetails contract={contract} />
             )}
           </div>
         </Page.Block>
