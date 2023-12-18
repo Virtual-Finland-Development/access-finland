@@ -5,7 +5,15 @@ import { IncomeTax } from '@shared/types';
 import Alert from '@shared/components/ui/alert';
 import CustomImage from '@shared/components/ui/custom-image';
 
-function formatEuro(num) {
+function formatPercentage(num: number) {
+  return new Intl.NumberFormat('fi-FI', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(num);
+}
+
+function formatEuro(num: number) {
   return new Intl.NumberFormat('fi-FI', {
     style: 'currency',
     currency: 'EUR',
@@ -55,11 +63,15 @@ export default function TaxDetails(props: Props) {
       </Text>
       <Text>
         Tax rate:{' '}
-        <span className="block font-semibold">{withholdingPercentage} %</span>
+        <span className="block font-semibold">
+          {formatPercentage(withholdingPercentage)}
+        </span>
       </Text>
       <Text>
         Additional withholding percentage:{' '}
-        <span className="block font-semibold">{additionalPercentage} %</span>
+        <span className="block font-semibold">
+          {formatPercentage(additionalPercentage)}
+        </span>
       </Text>
       <Text>
         Income ceiling for the entire year {getYear(new Date(validityDate))}:{' '}
