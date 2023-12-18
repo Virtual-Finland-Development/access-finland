@@ -1,8 +1,5 @@
 import { IncomeTax, WorkContract } from '@/types';
-import {
-  MOCK_TAX_INCOME,
-  MOCK_WORK_CONTRACT,
-} from '@/lib/testing/mocks/mock-values';
+import { MOCK_WORK_CONTRACT } from '@/lib/testing/mocks/mock-values';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
 
