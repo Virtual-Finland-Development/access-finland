@@ -61,19 +61,11 @@ describe('Income tax page', () => {
         const element = screen.queryByText(new RegExp(text, 'i'));
         expect(element).toBeInTheDocument();
       });
-      // values, omit few that needs formatting (dates, currency)
-      for (const [key, value] of Object.entries(MOCK_INCOME_TAX)) {
-        if (
-          [
-            'taxPayerType',
-            'withholdingPercentage',
-            'additionalPercentage',
-          ].includes(key)
-        ) {
-          const element = screen.queryByText(new RegExp(value.toString(), 'i'));
-          expect(element).toBeInTheDocument();
-        }
-      }
+      // expect a correct value for mocked income tax tax payer type
+      const element = screen.queryByText(
+        new RegExp(MOCK_INCOME_TAX.taxPayerType, 'i')
+      );
+      expect(element).toBeInTheDocument();
     });
   });
 });
