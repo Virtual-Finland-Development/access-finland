@@ -1,4 +1,5 @@
 import { MdCancel, MdDone, MdOutlineInfo } from 'react-icons/md';
+import migriLogo from '@shared/images/MIGRI_logo.svg';
 import { format, parseISO } from 'date-fns';
 import {
   Expander,
@@ -12,6 +13,7 @@ import { Nace, PersonWorkPermit } from '@shared/types';
 import { useNaceCodes } from '@shared/lib/hooks/codesets';
 import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
+import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
 
 function getStatusColor(status: boolean) {
@@ -188,6 +190,8 @@ export default function PermitsDetails(props: Props) {
             naceCodes={naceCodes || []}
           />
         ))}
+        <Text>Issued by Migri</Text>
+        <CustomImage src={migriLogo} alt="Migri" height={100} />
       </div>
     </>
   );

@@ -31,10 +31,8 @@ export async function getPersonWorkContracts(
 export async function getPersonIncomeTax(
   consentToken?: string
 ): Promise<IncomeTax> {
-  // TODO: Wait for testbed-api implementation
-
-  /* const { data } = await apiClient.post(
-    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=`,
+  const { data } = await apiClient.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=vero_demo`,
     {},
     {
       headers: {
@@ -42,7 +40,5 @@ export async function getPersonIncomeTax(
       },
     }
   );
-  return data; */
-  await sleep();
-  return MOCK_TAX_INCOME as IncomeTax;
+  return data;
 }

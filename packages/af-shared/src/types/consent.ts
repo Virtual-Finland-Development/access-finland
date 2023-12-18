@@ -1,7 +1,7 @@
 export enum ConsentDataSource {
   WORK_PERMIT = 'dpp://virtual_finland:development@testbed.fi/Permits/WorkPermit_v0.1',
   WORK_CONTRACT = '',
-  INCOME_TAX = '',
+  INCOME_TAX = 'dpp://vero_demo@testbed.fi/Employment/IncomeTax_v0.2',
 }
 
 export enum ConsentStatus {

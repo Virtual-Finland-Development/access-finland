@@ -2,6 +2,7 @@ import veroLogo from '@shared/images/logo-vero.svg';
 import { format, getYear, parseISO } from 'date-fns';
 import { Text } from 'suomifi-ui-components';
 import { IncomeTax } from '@shared/types';
+import Alert from '@shared/components/ui/alert';
 import CustomImage from '@shared/components/ui/custom-image';
 
 function formatEuro(num) {
@@ -17,10 +18,20 @@ function capitalizeFirstLetter(string) {
 
 interface Props {
   incomeTax: IncomeTax | undefined;
+  error: any;
 }
 
 export default function TaxDetails(props: Props) {
-  const { incomeTax } = props;
+  const { incomeTax, error } = props;
+
+  if (error) {
+    return (
+      <Alert status="error" labelText="Error">
+        Could not fetch person income tax information:{' '}
+        {error.message || 'something went wrong'}
+      </Alert>
+    );
+  }
 
   if (!incomeTax) {
     return <Text>No tax information found.</Text>;

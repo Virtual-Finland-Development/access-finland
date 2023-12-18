@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ConsentSituation, ConsentStatus } from '@/types';
 import api from '../api';
 import useErrorToast from './use-error-toast';
 import { formatErrorResponse } from './utils';
@@ -39,13 +40,17 @@ function usePersonWorkContracts(enabled: boolean = true) {
 }
 
 /**
- * Get user income tax
+ * Get person income tax
  */
-function usePersonIncomeTax(enabled: boolean = true) {
+function usePersonIncomeTax(consentSituation: ConsentSituation | undefined) {
   const query = useQuery(
     TAX_QUERY_KEYS,
-    async () => await api.employment.getPersonIncomeTax(),
-    { ...QUERY_OPTIONS, enabled }
+    async () =>
+      await api.employment.getPersonIncomeTax(consentSituation?.consentToken),
+    {
+      ...QUERY_OPTIONS,
+      enabled: consentSituation?.consentStatus === ConsentStatus.GRANTED,
+    }
   );
 
   useErrorToast({
@@ -61,6 +66,7 @@ function usePersonIncomeTax(enabled: boolean = true) {
   return {
     ...query,
     formattedError,
+    isLoading: query.isLoading && query.fetchStatus !== 'idle',
   };
 }
 

@@ -1,4 +1,3 @@
-import migriLogo from '@shared/images/MIGRI_logo.svg';
 import { Text } from 'suomifi-ui-components';
 import { ConsentDataSource } from '@shared/types';
 import { useDataSourceConsent } from '@shared/lib/hooks/consent';
@@ -6,7 +5,6 @@ import { usePersonWorkPermits } from '@shared/lib/hooks/permits';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
-import CustomImage from '@shared/components/ui/custom-image';
 import Loading from '@shared/components/ui/loading';
 import ConsentSentry from './components/consent-sentry';
 import WorkPermitsDetails from './components/permits-details';
@@ -46,10 +44,8 @@ export default function PermitsPage() {
                 charge of managing immigration, asylum, residency permits, and
                 citizenship processes in Finland, helping people navigate legal
                 requirements and settle into life in the country. Here you can
-                find information about your work permits issued by Migri.
+                find information about your work permits in Finland.
               </Text>
-              <Text></Text>
-              <CustomImage src={migriLogo} alt="Migri" height={100} />
             </div>
             {isLoading ? (
               <Loading />
