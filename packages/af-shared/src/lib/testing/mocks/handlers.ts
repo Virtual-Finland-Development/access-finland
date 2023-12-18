@@ -6,6 +6,7 @@ import {
 } from '@/lib/api/endpoints';
 import {
   MOCK_AUTH_STATE,
+  MOCK_INCOME_TAX,
   MOCK_ISO_COUNTRIES,
   MOCK_JOB_APPLICANT_INFO,
   MOCK_PERSON_BASIC_INFO,
@@ -46,6 +47,11 @@ export const handlers = [
   rest.post(
     `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1`,
     (_, res, ctx) => res(ctx.json(MOCK_WORK_PERMITS))
+  ),
+  // income tax
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2`,
+    (_, res, ctx) => res(ctx.json(MOCK_INCOME_TAX))
   ),
   // codesets, add values as needed for tests
   rest.get(

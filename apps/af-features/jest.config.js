@@ -22,6 +22,8 @@ const customJestConfig = {
     '^@/lib/(.*)$': 'af-shared/src/lib/$1',
     '^@/context/(.*)$': 'af-shared/src/context/$1',
   },
+  testPathIgnorePatterns: ['__tests__/utils.ts'],
+  coveragePathIgnorePatterns: ['__tests__/utils.ts'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx|mjs)$': [
       'babel-jest',

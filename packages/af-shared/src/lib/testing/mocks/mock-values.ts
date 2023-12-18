@@ -271,7 +271,7 @@ export const MOCK_WORK_CONTRACT = {
 };
 
 // employment / tax
-export const MOCK_TAX_INCOME = {
+export const MOCK_INCOME_TAX = {
   taxPayerType: 'resident',
   withholdingPercentage: 15.5,
   additionalPercentage: 40.2,

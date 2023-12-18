@@ -1,7 +1,8 @@
 import IncomeTaxPage from '@pages/profile/employment/income-tax.page';
+import { ConsentDataSource, ConsentStatus } from '@shared/types';
 import {
   MOCK_AUTH_STATE,
-  MOCK_TAX_INCOME,
+  MOCK_INCOME_TAX,
 } from '@shared/lib/testing/mocks/mock-values';
 import {
   act,
@@ -10,6 +11,7 @@ import {
   waitFor,
 } from '@shared/lib/testing/utils/testing-library-utils';
 import * as UtilsExports from '@shared/lib/utils/auth';
+import { interceptConsentCheck } from './utils';
 
 describe('Income tax page', () => {
   beforeEach(async () => {
@@ -18,10 +20,22 @@ describe('Income tax page', () => {
       .mockImplementation(async () => MOCK_AUTH_STATE);
   });
 
-  // TODO: implement consent check test
+  it('asks for consent for person income tax, if not given', async () => {
+    interceptConsentCheck(ConsentStatus.VERIFY, ConsentDataSource.INCOME_TAX);
+
+    await act(async () => {
+      renderWithProviders(<IncomeTaxPage />);
+    });
+
+    // expect that consent sentry is present
+    const consentSentryHeading = screen.getByRole('heading', {
+      name: /consent required/i,
+    });
+    expect(consentSentryHeading).toBeInTheDocument();
+  });
 
   it('shows tax income info, if consent is given', async () => {
-    // TODO: mock consent check api call, consent accepted
+    interceptConsentCheck(ConsentStatus.GRANTED, ConsentDataSource.INCOME_TAX);
 
     await act(async () => {
       renderWithProviders(<IncomeTaxPage />);
@@ -48,7 +62,7 @@ describe('Income tax page', () => {
         expect(element).toBeInTheDocument();
       });
       // values, omit few that needs formatting (dates, currency)
-      for (const [key, value] of Object.entries(MOCK_TAX_INCOME)) {
+      for (const [key, value] of Object.entries(MOCK_INCOME_TAX)) {
         if (
           [
             'taxPayerType',

@@ -1,9 +1,6 @@
 import PermitsPage from '@pages/profile/permits.page';
-import { rest } from 'msw';
 import { ConsentDataSource, ConsentStatus } from '@shared/types';
-import { AUTH_GW_BASE_URL } from '@shared/lib/api/endpoints';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
-import server from '@shared/lib/testing/mocks/server';
 import {
   act,
   renderWithProviders,
@@ -11,24 +8,7 @@ import {
   waitFor,
 } from '@shared/lib/testing/utils/testing-library-utils';
 import * as UtilsExports from '@shared/lib/utils/auth';
-
-function interceptConsentCheck(consentStatus: ConsentStatus) {
-  server.use(
-    rest.post(
-      `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
-      async (_, res, ctx) =>
-        res(
-          ctx.json([
-            {
-              consentStatus,
-              dataSource: ConsentDataSource.WORK_PERMIT,
-              redirectUrl: '',
-            },
-          ])
-        )
-    )
-  );
-}
+import { interceptConsentCheck } from './utils';
 
 describe('Permits page', () => {
   beforeEach(async () => {
@@ -38,7 +18,7 @@ describe('Permits page', () => {
   });
 
   it('asks for consent for work permits, if not given', async () => {
-    interceptConsentCheck(ConsentStatus.VERIFY);
+    interceptConsentCheck(ConsentStatus.VERIFY, ConsentDataSource.WORK_PERMIT);
 
     await act(async () => {
       renderWithProviders(<PermitsPage />);
@@ -52,7 +32,7 @@ describe('Permits page', () => {
   });
 
   it('shows work permits, if consent is given', async () => {
-    interceptConsentCheck(ConsentStatus.GRANTED);
+    interceptConsentCheck(ConsentStatus.GRANTED, ConsentDataSource.WORK_PERMIT);
 
     let dom;
 
