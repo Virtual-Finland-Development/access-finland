@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
 import { Button, Checkbox, Text } from 'suomifi-ui-components';
@@ -12,6 +13,7 @@ const isExport = isExportedApplication();
 
 export default function ProfileNotAuthenticated() {
   const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
 
   const loginHandler = () => {
     setLoading(true);
@@ -41,12 +43,18 @@ export default function ProfileNotAuthenticated() {
           it is for you. {infoTextPost}
         </Text>
         {!isExport ? (
-          <CustomImage
-            src={SinunaLogo}
-            alt="Sinuna logo"
-            width={250}
-            priority
-          />
+          <div className="flex flex-col gap-6">
+            <CustomImage
+              src={SinunaLogo}
+              alt="Sinuna logo"
+              width={250}
+              priority
+            />
+            <Text>
+              Alternatively, you can sign in using your email address. A
+              verification code will be sent to you.
+            </Text>
+          </div>
         ) : (
           <Fragment>
             <CustomLink href="/profile">How is my data used?</CustomLink>
@@ -58,6 +66,10 @@ export default function ProfileNotAuthenticated() {
         <Text>Let’s sign in to Access Finland</Text>
         <Button onClick={loginHandler} disabled={isLoading} className="!w-auto">
           {isLoading ? 'Redirecting...' : `Sign in with ${authMethod}`}
+        </Button>
+
+        <Button onClick={() => router.push('/auth/sign-in')}>
+          Sign in with email
         </Button>
       </div>
     </Page.Block>
