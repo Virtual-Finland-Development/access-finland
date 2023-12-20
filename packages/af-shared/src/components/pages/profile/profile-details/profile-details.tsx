@@ -1,6 +1,7 @@
-import DangerButton from '@/components/ui/danger-button';
-import DetailsExpander from '@/components/ui/details-expander/details-expander';
-import { useModal } from '@/context/modal-context';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
+import { Button } from 'suomifi-ui-components';
+import type { JobApplicantProfile, PersonBasicInformation } from '@/types';
 import { PROFILE_DATA_LABELS } from '@/lib/constants';
 import {
   useCountries,
@@ -16,10 +17,9 @@ import {
   useRegions,
   useWorkPermits,
 } from '@/lib/hooks/codesets';
-import type { JobApplicantProfile, PersonBasicInformation } from '@/types';
-import { useRouter } from 'next/router';
-import { useMemo } from 'react';
-import { Button } from 'suomifi-ui-components';
+import { useModal } from '@/context/modal-context';
+import DangerButton from '@/components/ui/danger-button';
+import DetailsExpander from '@/components/ui/details-expander/details-expander';
 import ProfileDeleteConfirmation from './profile-delete-confirmation';
 import {
   mapReadableJobApplicationProfile,
@@ -139,7 +139,7 @@ export default function ProfileDetails(props: Props) {
 
   return (
     <>
-      <div className="flex flex-col gap-4 w-full"> 
+      <div className="flex flex-col gap-4 w-full">
         <DetailsExpander<{ personalProfile: PersonBasicInformation }>
           title="Personal profile"
           values={personBasicInfoMapped || {}}

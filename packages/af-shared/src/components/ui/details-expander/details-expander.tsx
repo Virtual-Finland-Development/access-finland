@@ -1,4 +1,3 @@
-import CustomHeading from '@/components/ui/custom-heading';
 import { ReactNode } from 'react';
 import { MdDone, MdOutlineInfo } from 'react-icons/md';
 import {
@@ -6,6 +5,7 @@ import {
   ExpanderContent,
   ExpanderTitleButton,
 } from 'suomifi-ui-components';
+import CustomHeading from '@/components/ui/custom-heading';
 import Loading from '../loading';
 import MultiValue from './multi-value';
 import SingleValue from './single-value';
@@ -35,8 +35,17 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
     <Expander>
       <ExpanderTitleButton>
         <div className="flex flex-row gap-2 items-center">
-          {isLoading && (<Loading variant="small" />)}
-          <span>{title}</span>{' '}
+          <div className="flex flex-row items-center gap-2 items-start relative">
+            <span>{title}</span>
+            {isLoading && (
+              <div className="w-[24px]">
+                <div className="absolute bottom-[-10px]">
+                  <Loading variant="small" />
+                </div>
+              </div>
+            )}
+          </div>
+
           {!isLoading && typeof hasValues === 'boolean' && showStatusIcons && (
             <>
               {hasValues ? (
@@ -49,85 +58,96 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
         </div>
       </ExpanderTitleButton>
       <ExpanderContent className="!text-base">
-        <div className="flex flex-col gap-4 mt-4">
-          {!isLoading && typeof hasValues === 'boolean' && !hasValues && (
-            <CustomHeading variant="h3" className="!text-lg">
-              No information provided.
-            </CustomHeading>
-          )}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-2">
+            <Loading
+              text={`Loading ${title.toLowerCase()}...`}
+              textAlign="right"
+            />
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-4 mt-4">
+              {typeof hasValues === 'boolean' && !hasValues && (
+                <CustomHeading variant="h3" className="!text-lg">
+                  No information provided.
+                </CustomHeading>
+              )}
 
-          {values !== undefined &&
-            Object.keys(values).map(dataKey => {
-              const value: any = values[dataKey as keyof typeof values];
-              const isArray = Array.isArray(value);
-              const isArrayOfObjects =
-                isArray && value.every(i => typeof i === 'object');
-              const isString =
-                typeof value === 'string' || value instanceof String;
+              {values !== undefined &&
+                Object.keys(values).map(dataKey => {
+                  const value: any = values[dataKey as keyof typeof values];
+                  const isArray = Array.isArray(value);
+                  const isArrayOfObjects =
+                    isArray && value.every(i => typeof i === 'object');
+                  const isString =
+                    typeof value === 'string' || value instanceof String;
 
-              return (
-                <div key={dataKey}>
-                  {labels[dataKey] && (
-                    <CustomHeading variant="h3" className="!text-lg">
-                      {labels[dataKey]}
-                    </CustomHeading>
-                  )}
+                  return (
+                    <div key={dataKey}>
+                      {labels[dataKey] && (
+                        <CustomHeading variant="h3" className="!text-lg">
+                          {labels[dataKey]}
+                        </CustomHeading>
+                      )}
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-4">
-                    {isArray && value.length < 1 && <span>-</span>}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-4">
+                        {isArray && value.length < 1 && <span>-</span>}
 
-                    {isArrayOfObjects &&
-                      value.map((_, index: number) => (
-                        <MultiValue
-                          key={`${dataKey}-${index}`}
-                          index={index}
-                          valueObj={value[index]}
-                          labels={labels}
-                        />
-                      ))}
+                        {isArrayOfObjects &&
+                          value.map((_, index: number) => (
+                            <MultiValue
+                              key={`${dataKey}-${index}`}
+                              index={index}
+                              valueObj={value[index]}
+                              labels={labels}
+                            />
+                          ))}
 
-                    {!isArrayOfObjects && !isString && (
-                      <div>
-                        {value &&
-                          Object.keys(value).map((key, i) => {
-                            const nestedValue =
-                              value[key as keyof typeof value];
-                            const isArrayOfObjects =
-                              Array.isArray(nestedValue) &&
-                              nestedValue.every(i => typeof i === 'object');
+                        {!isArrayOfObjects && !isString && (
+                          <div>
+                            {value &&
+                              Object.keys(value).map((key, i) => {
+                                const nestedValue =
+                                  value[key as keyof typeof value];
+                                const isArrayOfObjects =
+                                  Array.isArray(nestedValue) &&
+                                  nestedValue.every(i => typeof i === 'object');
 
-                            return !isArrayOfObjects ? (
-                              <SingleValue
-                                key={i}
-                                label={labels[key] || ''}
-                                value={nestedValue as string}
-                              />
-                            ) : (
-                              <MultiValue
-                                key={i}
-                                index={i}
-                                valueObj={nestedValue}
-                                labels={labels}
-                              />
-                            );
-                          })}
+                                return !isArrayOfObjects ? (
+                                  <SingleValue
+                                    key={i}
+                                    label={labels[key] || ''}
+                                    value={nestedValue as string}
+                                  />
+                                ) : (
+                                  <MultiValue
+                                    key={i}
+                                    index={i}
+                                    valueObj={nestedValue}
+                                    labels={labels}
+                                  />
+                                );
+                              })}
+                          </div>
+                        )}
+
+                        {isString && (
+                          <SingleValue
+                            label={labels[dataKey] || ''}
+                            value={value as string}
+                          />
+                        )}
                       </div>
-                    )}
+                    </div>
+                  );
+                })}
+            </div>
 
-                    {isString && (
-                      <SingleValue
-                        label={labels[dataKey] || ''}
-                        value={value as string}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-
-        {/* render any optional children content */}
-        {children && <>{children}</>}
+            {/* render any optional children content */}
+            {children && <>{children}</>}
+          </>
+        )}
       </ExpanderContent>
     </Expander>
   );
