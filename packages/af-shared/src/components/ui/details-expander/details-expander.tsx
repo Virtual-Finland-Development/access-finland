@@ -1,3 +1,4 @@
+import CustomHeading from '@/components/ui/custom-heading';
 import { ReactNode } from 'react';
 import { MdDone, MdOutlineInfo } from 'react-icons/md';
 import {
@@ -5,7 +6,7 @@ import {
   ExpanderContent,
   ExpanderTitleButton,
 } from 'suomifi-ui-components';
-import CustomHeading from '@/components/ui/custom-heading';
+import Loading from '../loading';
 import MultiValue from './multi-value';
 import SingleValue from './single-value';
 
@@ -16,6 +17,7 @@ interface DetailsExpanderProps<T> {
   values: Partial<Record<keyof T, any>> | undefined;
   labels: Record<string, any>;
   children?: ReactNode;
+  isLoading?: boolean;
 }
 
 export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
@@ -26,14 +28,16 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
     values,
     labels,
     children,
+    isLoading = false,
   } = props;
 
   return (
     <Expander>
       <ExpanderTitleButton>
         <div className="flex flex-row gap-2 items-center">
+          {isLoading && (<Loading variant="small" />)}
           <span>{title}</span>{' '}
-          {typeof hasValues === 'boolean' && showStatusIcons && (
+          {!isLoading && typeof hasValues === 'boolean' && showStatusIcons && (
             <>
               {hasValues ? (
                 <MdDone size={22} color="green" />
@@ -46,7 +50,7 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
       </ExpanderTitleButton>
       <ExpanderContent className="!text-base">
         <div className="flex flex-col gap-4 mt-4">
-          {typeof hasValues === 'boolean' && !hasValues && (
+          {!isLoading && typeof hasValues === 'boolean' && !hasValues && (
             <CustomHeading variant="h3" className="!text-lg">
               No information provided.
             </CustomHeading>
