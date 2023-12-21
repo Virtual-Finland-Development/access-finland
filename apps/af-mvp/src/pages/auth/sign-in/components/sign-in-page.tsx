@@ -12,7 +12,7 @@ export default function SingInPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  if (signInStatus == 'SIGNED_IN') {
+  if (signInStatus === 'SIGNED_IN') {
     return (
       <div className="flex flex-col items-center justify-center mt-8 gap-6">
         Kill your cognito session

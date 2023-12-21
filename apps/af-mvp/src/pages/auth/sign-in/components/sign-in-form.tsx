@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { usePasswordless } from 'amazon-cognito-passwordless-auth/react';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -11,7 +12,7 @@ interface SubmitProps {
 }
 
 interface FormProps {
-  handleFormSubmit: (value: string) => void;
+  handleFormSubmit: (value: string) => Promise<void>;
 }
 
 type EmailForm = { email: string };
@@ -100,10 +101,17 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
 export default function SignIn() {
+  const { requestSignInLink } = usePasswordless();
+
   const [isCodeSent, setCodeSent] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
-    await sleep();
+    const { signInLinkRequested } = requestSignInLink({
+      username: email,
+      redirectUri: `${window.location.origin}/auth/sign-in`,
+    });
+    const link = await signInLinkRequested;
+    console.log(link);
     setCodeSent(true);
   };
 

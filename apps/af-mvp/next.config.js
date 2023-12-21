@@ -21,6 +21,7 @@ const nextSafeConfig = {
       "'self'",
       CODESETS_BASE_URL,
       'https://fonts.googleapis.com/',
+      'https://cognito-idp.eu-north-1.amazonaws.com/'
     ],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
