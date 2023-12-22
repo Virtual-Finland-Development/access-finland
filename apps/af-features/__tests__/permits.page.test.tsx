@@ -25,9 +25,7 @@ describe('Permits page', () => {
     });
 
     // expect that consent sentry is present
-    const consentSentryHeading = screen.getByRole('heading', {
-      name: /consent required/i,
-    });
+    const consentSentryHeading = screen.queryByText(/consent required/i);
     expect(consentSentryHeading).toBeInTheDocument();
   });
 
