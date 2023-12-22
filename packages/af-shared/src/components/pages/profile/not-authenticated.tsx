@@ -1,12 +1,11 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
-import { Button, Checkbox, Text } from 'suomifi-ui-components';
+import { Button, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
 import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomImage from '@/components/ui/custom-image';
-import CustomLink from '@/components/ui/custom-link';
 
 const isExport = isExportedApplication();
 
