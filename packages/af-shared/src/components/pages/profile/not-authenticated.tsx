@@ -21,10 +21,9 @@ export default function ProfileNotAuthenticated() {
   // Resolve the auth method text
   const authMethod = isExport ? 'Testbed' : 'Sinuna';
   const infoTextPost = isExport
-    ? `Granting permission for this account will help you
-  to provide information only once and use it afterwords whenever
-  needed.`
-    : `Log in with Sinuna login service to create and manage Your personal
+    ? `Sign in with Testbed login service to create and manage Your personal
+    profile and job applicant profile.`
+    : `Sign in with Sinuna login service to create and manage Your personal
   profile and job applicant profile.`;
 
   return (
@@ -47,12 +46,7 @@ export default function ProfileNotAuthenticated() {
             width={250}
             priority
           />
-        ) : (
-          <Fragment>
-            <CustomLink href="/profile">How is my data used?</CustomLink>
-            <Checkbox variant="large">Grant permissions</Checkbox>
-          </Fragment>
-        )}
+        ) : null}
       </div>
       <div className="flex flex-col items-start gap-4 mt-6">
         <Text>Let’s sign in to Access Finland</Text>

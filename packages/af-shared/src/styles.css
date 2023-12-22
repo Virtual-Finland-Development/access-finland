@@ -45,3 +45,8 @@ body {
   padding-left: 0.5rem !important;
   padding-right: 0.5rem !important;
 }
+.fi-inline-alert--custom {
+  background-color: #f7f7f8 !important;
+  border-width: 1px !important;
+  border-color: #e5e7eb !important;
+}
