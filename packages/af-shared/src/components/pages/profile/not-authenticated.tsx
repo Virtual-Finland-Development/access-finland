@@ -39,14 +39,14 @@ export default function ProfileNotAuthenticated() {
           Sign in to Your digital profile. Any data we will ask is not for us -
           it is for you. {infoTextPost}
         </Text>
-        {!isExport ? (
+        {!isExport && (
           <CustomImage
             src={SinunaLogo}
             alt="Sinuna logo"
             width={250}
             priority
           />
-        ) : null}
+        )}
       </div>
       <div className="flex flex-col items-start gap-4 mt-6">
         <Text>Let’s sign in to Access Finland</Text>
