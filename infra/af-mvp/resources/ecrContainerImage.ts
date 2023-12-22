@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import { UserPool, UserPoolClient } from '@pulumi/aws/cognito';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
@@ -8,13 +9,18 @@ const {
   tags,
   envOverride,
   externalApis: { codesetsEndpoint, usersApiEndpoint },
-  cdn: { waf },
 } = setup;
 
-export function createContainerImage(cdnSetup: {
-  cdn: aws.cloudfront.Distribution;
-  domainName: pulumi.Output<string>;
-}) {
+export function createContainerImage(
+  cdnSetup: {
+    cdn: aws.cloudfront.Distribution;
+    domainName: pulumi.Output<string>;
+  },
+  loginSystem: {
+    userPool: UserPool;
+    userPoolClient: UserPoolClient;
+  }
+) {
   const dataspaceConfig = new pulumi.Config('dataspace');
 
   // Dependencies
@@ -43,6 +49,8 @@ export function createContainerImage(cdnSetup: {
         'defaultSchemaVersion'
       ),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
+      LOGIN_SYSTEM_COGNITO_USER_POOL_ID: loginSystem.userPool.id,
+      LOGIN_SYSTEM_COGNITO_CLIENT_ID: loginSystem.userPoolClient.id,
     },
   });
 

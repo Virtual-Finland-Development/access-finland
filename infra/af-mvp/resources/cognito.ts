@@ -2,28 +2,37 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
 import setup, { nameResource } from '../utils/setup';
+import {
+  createCreateAuthChallengeLambda,
+  createDefineAuthChallengeLambda,
+  createVerifyAuthChallengeResponseLambda,
+} from './lambdaFunctions';
 
 const {
   tags,
   cdn: { waf },
 } = setup;
 
-export function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
-  const userPool = new aws.cognito.UserPool(nameResource('wafUserPool'), {
-    adminCreateUserConfig: {
-      allowAdminCreateUserOnly: true,
+export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
+  const userPool = new aws.cognito.UserPool(
+    nameResource('wafUserPool'),
+    {
+      adminCreateUserConfig: {
+        allowAdminCreateUserOnly: true,
+      },
+      accountRecoverySetting: {
+        // Required to have at least one recovery mechanism, not actually in use
+        recoveryMechanisms: [
+          {
+            name: 'verified_email',
+            priority: 1,
+          },
+        ],
+      },
+      tags,
     },
-    accountRecoverySetting: {
-      // Required to have at least one recovery mechanism, not actually in use
-      recoveryMechanisms: [
-        {
-          name: 'verified_email',
-          priority: 1,
-        },
-      ],
-    },
-    tags,
-  }, { protect: true }); // Delete only by overriding the resource protection manually
+    { protect: true }
+  ); // Delete only by overriding the resource protection manually
 
   // Create cognito domain for hosted UI login
   const loginDomainIdent = `${setup.projectName}-${setup.environment}`;
@@ -73,6 +82,56 @@ export function createCognitoUserPool(callbackUri: pulumi.Output<string>) {
 
   return {
     cognitoDomain,
+    userPool,
+    userPoolClient,
+  };
+}
+
+/**
+ * Sinuna replacement login system
+ *
+ * @returns
+ */
+export function createLoginSystemCognitoUserPool() {
+  const defineAuthChallengeLambda = createDefineAuthChallengeLambda();
+  const verifyAuthChallengeResponseLambda =
+    createVerifyAuthChallengeResponseLambda();
+  const createAuthChallengeLambda = createCreateAuthChallengeLambda();
+
+  const userPool = new aws.cognito.UserPool(
+    nameResource('loginSystemUserPool'),
+    {
+      aliasAttributes: ['email'],
+      lambdaConfig: {
+        defineAuthChallenge: defineAuthChallengeLambda.arn,
+        createAuthChallenge: createAuthChallengeLambda.arn,
+        verifyAuthChallengeResponse: verifyAuthChallengeResponseLambda.arn,
+      },
+      accountRecoverySetting: {
+        // Required to have at least one recovery mechanism, not actually in use
+        recoveryMechanisms: [
+          {
+            name: 'verified_email',
+            priority: 1,
+          },
+        ],
+      },
+      tags,
+    },
+    { protect: false }
+  ); // Delete only by overriding the resource protection manually
+
+  const userPoolClient = new aws.cognito.UserPoolClient(
+    nameResource('loginSystemUserPoolClient'),
+    {
+      userPoolId: userPool.id,
+      generateSecret: false,
+      explicitAuthFlows: ['CUSTOM_AUTH_FLOW_ONLY'],
+      preventUserExistenceErrors: 'ENABLED',
+    }
+  );
+
+  return {
     userPool,
     userPoolClient,
   };

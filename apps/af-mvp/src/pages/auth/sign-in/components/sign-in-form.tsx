@@ -101,17 +101,15 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
 export default function SignIn() {
-  const { requestSignInLink } = usePasswordless();
+  const { requestSignInLink, authenticateWithSRP } = usePasswordless();
 
   const [isCodeSent, setCodeSent] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
-    const { signInLinkRequested } = requestSignInLink({
+    const { signedIn } = authenticateWithSRP({
       username: email,
-      redirectUri: `${window.location.origin}/auth/sign-in`,
+      password: '',
     });
-    const link = await signInLinkRequested;
-    console.log(link);
     setCodeSent(true);
   };
 
