@@ -1,6 +1,10 @@
 import * as aws from '@pulumi/aws';
-import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
+import createAuthChallenge from './lambda-functions/createAuthChallenge';
+import defineAuthChallenge from './lambda-functions/defineAuthChallenge';
+import postAuthentication from './lambda-functions/postAuthentication';
+import preSignUp from './lambda-functions/preSignUp';
+import verifyAuthChallenge from './lambda-functions/verifyAuthChallenge';
 
 const { tags } = setup;
 
@@ -12,13 +16,8 @@ export function createDefineAuthChallengeLambda() {
     tags,
   });
 
-  return new aws.lambda.Function(nameResource('defineAuthChallenge'), {
-    code: new pulumi.asset.AssetArchive({
-      './': new pulumi.asset.FileArchive(
-        './node_modules/amazon-cognito-passwordless-auth/dist/cdk/custom-auth'
-      ),
-    }),
-    handler: 'define-auth-challenge.handler',
+  return new aws.lambda.CallbackFunction(nameResource('defineAuthChallenge'), {
+    callback: createAuthChallenge,
     role: execRole.arn,
     runtime: 'nodejs18.x',
     timeout: 5,
@@ -33,20 +32,68 @@ export function createDefineAuthChallengeLambda() {
 }
 
 export function createVerifyAuthChallengeResponseLambda() {
-  const execRole = new aws.iam.Role(nameResource('verifyAuthChallengeRole'), {
+  const execRole = new aws.iam.Role(
+    nameResource('verifyAuthChallengeResponseRole'),
+    {
+      assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+        Service: 'lambda.amazonaws.com',
+      }),
+      tags,
+    }
+  );
+
+  return new aws.lambda.CallbackFunction(
+    nameResource('verifyAuthChallengeResponse'),
+    {
+      callback: verifyAuthChallenge,
+      role: execRole.arn,
+      runtime: 'nodejs18.x',
+      timeout: 5,
+      memorySize: 128,
+      environment: {
+        variables: {
+          LOG_LEVEL: 'INFO',
+        },
+      },
+      tags,
+    }
+  );
+}
+
+export function createCreateAuthChallengeLambda() {
+  const execRole = new aws.iam.Role(nameResource('createAuthChallengeRole'), {
     assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
       Service: 'lambda.amazonaws.com',
     }),
     tags,
   });
 
-  return new aws.lambda.Function(nameResource('verifyAuthChallengeResponse'), {
-    code: new pulumi.asset.AssetArchive({
-      './': new pulumi.asset.FileArchive(
-        './node_modules/amazon-cognito-passwordless-auth/dist/cdk/custom-auth'
-      ),
+  return new aws.lambda.CallbackFunction(nameResource('createAuthChallenge'), {
+    callback: createAuthChallenge,
+    role: execRole.arn,
+    runtime: 'nodejs18.x',
+    timeout: 5,
+    memorySize: 128,
+    environment: {
+      variables: {
+        LOG_LEVEL: 'INFO',
+        SES_FROM_ADDRESS: 'no-reply@accessfinland.com', // @TODO
+      },
+    },
+    tags,
+  });
+}
+
+export function createPreSignUpLambda() {
+  const execRole = new aws.iam.Role(nameResource('preSignUpRole'), {
+    assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+      Service: 'lambda.amazonaws.com',
     }),
-    handler: 'verify-auth-challenge-response.handler',
+    tags,
+  });
+
+  return new aws.lambda.CallbackFunction(nameResource('preSignUp'), {
+    callback: preSignUp,
     role: execRole.arn,
     runtime: 'nodejs18.x',
     timeout: 5,
@@ -60,21 +107,16 @@ export function createVerifyAuthChallengeResponseLambda() {
   });
 }
 
-export function createCreateAuthChallengeLambda() {
-  const execRole = new aws.iam.Role(nameResource('createAuthChallengeRole'), {
+export function createPostAuthenticationLambda() {
+  const execRole = new aws.iam.Role(nameResource('postAuthenticationRole'), {
     assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
       Service: 'lambda.amazonaws.com',
     }),
     tags,
   });
 
-  return new aws.lambda.Function(nameResource('createAuthChallenge'), {
-    code: new pulumi.asset.AssetArchive({
-      './': new pulumi.asset.FileArchive(
-        './node_modules/amazon-cognito-passwordless-auth/dist/cdk/custom-auth'
-      ),
-    }),
-    handler: 'create-auth-challenge.handler',
+  return new aws.lambda.CallbackFunction(nameResource('postAuthentication'), {
+    callback: postAuthentication,
     role: execRole.arn,
     runtime: 'nodejs18.x',
     timeout: 5,

@@ -1,22 +1,25 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { usePasswordless } from 'amazon-cognito-passwordless-auth/react';
+import { useState } from 'react';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { Button, Text } from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
-import Loading from '@shared/components/ui/loading';
 import SignInForm from './sign-in-form';
 
 export default function SingInPage() {
-  const { signInStatus } = usePasswordless();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { signOut, authStatus } = useAuthenticator(context => [
+    context.user,
+    context.signOut,
+    context.authStatus,
+  ]);
 
-  if (signInStatus === 'SIGNED_IN') {
+  if (authStatus === 'authenticated') {
     return (
       <div className="flex flex-col items-center justify-center mt-8 gap-6">
         Kill your cognito session
-        <Button onClick={() => alert('no can do')}>Kill it</Button>
+        <Button onClick={signOut}>Kill it</Button>
       </div>
     );
   }

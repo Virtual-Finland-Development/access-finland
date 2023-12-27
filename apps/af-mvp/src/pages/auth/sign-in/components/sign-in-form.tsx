@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { usePasswordless } from 'amazon-cognito-passwordless-auth/react';
+import { confirmSignUp, signIn } from 'aws-amplify/auth';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -101,21 +101,30 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
 export default function SignIn() {
-  const { requestSignInLink, authenticateWithSRP } = usePasswordless();
-
+  const [email, setEmail] = useState('');
   const [isCodeSent, setCodeSent] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
-    const { signedIn } = authenticateWithSRP({
-      username: email,
-      password: '',
-    });
+    setEmail(email);
+    const { isSignedIn, nextStep } = await signIn({ username: email });
+    console.log('isSignedIn', isSignedIn);
+    console.log('nextStep', nextStep);
     setCodeSent(true);
   };
 
   const handleCodeSubmit = async (code: string) => {
-    await sleep();
-    console.log(code);
+    // Send the answer to the User Pool
+    // This will throw an error if it’s the 3rd wrong answer
+    try {
+      const { isSignUpComplete, nextStep } = await confirmSignUp({
+        username: email,
+        confirmationCode: code,
+      });
+      console.log('isSignUpComplete', isSignUpComplete);
+      console.log('nextStep', nextStep);
+    } catch (error) {
+      console.log('error confirming sign up', error);
+    }
   };
 
   return (

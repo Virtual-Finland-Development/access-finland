@@ -5,6 +5,8 @@ import setup, { nameResource } from '../utils/setup';
 import {
   createCreateAuthChallengeLambda,
   createDefineAuthChallengeLambda,
+  createPostAuthenticationLambda,
+  createPreSignUpLambda,
   createVerifyAuthChallengeResponseLambda,
 } from './lambdaFunctions';
 
@@ -97,18 +99,22 @@ export function createLoginSystemCognitoUserPool() {
   const verifyAuthChallengeResponseLambda =
     createVerifyAuthChallengeResponseLambda();
   const createAuthChallengeLambda = createCreateAuthChallengeLambda();
+  const preSignUpLambda = createPreSignUpLambda();
+  const postAuthenticationLambda = createPostAuthenticationLambda();
 
   const userPool = new aws.cognito.UserPool(
-    nameResource('loginSystemUserPool'),
+    nameResource('loginSystemsUserPool'),
     {
       aliasAttributes: ['email'],
       lambdaConfig: {
         defineAuthChallenge: defineAuthChallengeLambda.arn,
         createAuthChallenge: createAuthChallengeLambda.arn,
         verifyAuthChallengeResponse: verifyAuthChallengeResponseLambda.arn,
+        preSignUp: preSignUpLambda.arn,
+        postAuthentication: postAuthenticationLambda.arn,
       },
       accountRecoverySetting: {
-        // Required to have at least one recovery mechanism, not actually in use
+        // Note: not actually in use, required to have at least one recovery mechanism
         recoveryMechanisms: [
           {
             name: 'verified_email',
@@ -118,11 +124,11 @@ export function createLoginSystemCognitoUserPool() {
       },
       tags,
     },
-    { protect: false }
-  ); // Delete only by overriding the resource protection manually
+    { protect: false } // @TODO  // Delete only by overriding the resource protection manually
+  );
 
   const userPoolClient = new aws.cognito.UserPoolClient(
-    nameResource('loginSystemUserPoolClient'),
+    nameResource('loginSystemsUserPoolClient'),
     {
       userPoolId: userPool.id,
       generateSecret: false,
