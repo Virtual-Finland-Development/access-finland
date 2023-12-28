@@ -6,8 +6,6 @@ import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import SignInForm from './components/sign-in-form';
 
-require('../../../lib/frontend/aws-cognito');
-
 export default function SingInPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
