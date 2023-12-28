@@ -51,7 +51,7 @@ export function createContainerImage(
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
       LOGIN_SYSTEM_COGNITO_USER_POOL_ID: loginSystem.userPool.id,
       LOGIN_SYSTEM_COGNITO_CLIENT_ID: loginSystem.userPoolClient.id,
-      LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT: loginSystem.userPool.endpoint,
+      LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT: pulumi.interpolate`https://${loginSystem.userPool.endpoint}`,
     },
   });
 

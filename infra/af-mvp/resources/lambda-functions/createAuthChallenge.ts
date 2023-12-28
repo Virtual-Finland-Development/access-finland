@@ -1,10 +1,12 @@
 // @see: https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/
 // @see: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth
+import {
+  SESv2Client,
+  SendEmailCommand,
+  SendEmailRequest,
+} from '@aws-sdk/client-sesv2';
 import { CreateAuthChallengeTriggerEvent } from 'aws-lambda';
-import { SES } from 'aws-sdk';
 import { randomDigits } from 'crypto-secure-random-digit';
-
-const ses = new SES();
 
 export default async (event: CreateAuthChallengeTriggerEvent) => {
   let secretLoginCode: string;
@@ -39,27 +41,53 @@ export default async (event: CreateAuthChallengeTriggerEvent) => {
   return event;
 };
 
+/**
+ * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/sesv2/command/SendEmailCommand/
+ * @param emailAddress
+ * @param secretLoginCode
+ */
 async function sendEmail(emailAddress: string, secretLoginCode: string) {
-  const params: SES.SendEmailRequest = {
-    Destination: { ToAddresses: [emailAddress] },
-    Message: {
-      Body: {
-        Html: {
+  const client = new SESv2Client();
+  const input: SendEmailRequest = {
+    FromEmailAddress: process.env.SES_FROM_ADDRESS!,
+    Destination: {
+      // Destination
+      ToAddresses: [
+        // EmailAddressList
+        emailAddress,
+      ],
+    },
+    Content: {
+      // EmailContent
+      Simple: {
+        // Message
+        Subject: {
+          // Content
           Charset: 'UTF-8',
-          Data: `<html><body><p>This is your secret login code:</p>
-                           <h3>${secretLoginCode}</h3></body></html>`,
+          Data: 'Your secret login code',
         },
-        Text: {
-          Charset: 'UTF-8',
-          Data: `Your secret login code: ${secretLoginCode}`,
+        Body: {
+          // Body
+          Html: {
+            Charset: 'UTF-8',
+            Data: `<html><body><p>This is your secret login code:</p>
+                             <h3>${secretLoginCode}</h3></body></html>`,
+          },
+          Text: {
+            Charset: 'UTF-8',
+            Data: `Your secret login code: ${secretLoginCode}`,
+          },
         },
-      },
-      Subject: {
-        Charset: 'UTF-8',
-        Data: 'Your secret login code',
       },
     },
-    Source: process.env.SES_FROM_ADDRESS!,
+    EmailTags: [
+      // MessageTagList
+      {
+        // MessageTag
+        Name: 'name', // required
+        Value: 'createAuthChallenge', // required
+      },
+    ],
   };
-  await ses.sendEmail(params).promise();
+  await client.send(new SendEmailCommand(input));
 }

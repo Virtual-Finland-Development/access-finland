@@ -1,25 +1,26 @@
 // @see: https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/
 // @see: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth
 
+import {
+  AdminUpdateUserAttributesCommand,
+  CognitoIdentityProviderClient,
+} from '@aws-sdk/client-cognito-identity-provider';
 import { PostAuthenticationTriggerEvent } from 'aws-lambda';
-import { CognitoIdentityServiceProvider } from 'aws-sdk';
-
-const cup = new CognitoIdentityServiceProvider();
 
 export default async (event: PostAuthenticationTriggerEvent) => {
   if (event.request.userAttributes.email_verified !== 'true') {
-    const params: CognitoIdentityServiceProvider.AdminUpdateUserAttributesRequest =
-      {
-        UserPoolId: event.userPoolId,
-        UserAttributes: [
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-        ],
-        Username: event.userName!,
-      };
-    await cup.adminUpdateUserAttributes(params).promise();
+    const client = new CognitoIdentityProviderClient();
+    const params = {
+      UserPoolId: event.userPoolId,
+      UserAttributes: [
+        {
+          Name: 'email_verified',
+          Value: 'true',
+        },
+      ],
+      Username: event.userName!,
+    };
+    await client.send(new AdminUpdateUserAttributesCommand(params));
   }
   return event;
 };

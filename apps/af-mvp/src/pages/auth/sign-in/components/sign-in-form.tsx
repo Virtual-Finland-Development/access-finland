@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { confirmSignUp, signIn } from 'aws-amplify/auth';
+import {
+  confirmSignIn,
+  fetchUserAttributes,
+  forgetDevice,
+  rememberDevice,
+  signIn,
+  signOut,
+  signUp,
+} from 'aws-amplify/auth';
+import { randomBytes } from 'crypto';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -100,15 +109,53 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
+function getRandomString(bytes: number) {
+  return randomBytes(bytes).toString('base64');
+}
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [isCodeSent, setCodeSent] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
     setEmail(email);
-    const { isSignedIn, nextStep } = await signIn({ username: email });
-    console.log('isSignedIn', isSignedIn);
-    console.log('nextStep', nextStep);
+
+    const signInAct = async () => {
+      const { isSignedIn, nextStep } = await signIn({
+        username: email,
+        options: {
+          authFlowType: 'CUSTOM_WITHOUT_SRP',
+        },
+      });
+
+      console.log(isSignedIn, nextStep);
+    };
+
+    const signUpAct = async () => {
+      const { isSignUpComplete, userId, nextStep } = await signUp({
+        username: email,
+        password: getRandomString(30), // This is not used but require a value
+        options: {
+          userAttributes: {
+            email,
+          },
+          autoSignIn: { authFlowType: 'CUSTOM_WITHOUT_SRP' },
+        },
+      });
+      console.log(isSignUpComplete, userId, nextStep);
+    };
+
+    try {
+      // TODO: Check if user exists before signing up
+      await signUpAct();
+    } catch (error) {
+      if (!String(error).startsWith('UsernameExistsException')) {
+        throw error;
+      }
+    }
+
+    await signInAct();
+
     setCodeSent(true);
   };
 
@@ -116,15 +163,18 @@ export default function SignIn() {
     // Send the answer to the User Pool
     // This will throw an error if it’s the 3rd wrong answer
     try {
-      const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username: email,
-        confirmationCode: code,
+      const { isSignedIn, nextStep } = await confirmSignIn({
+        challengeResponse: code,
       });
-      console.log('isSignUpComplete', isSignUpComplete);
+      console.log('isSignedIn', isSignedIn);
       console.log('nextStep', nextStep);
     } catch (error) {
       console.log('error confirming sign up', error);
     }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
   };
 
   return (

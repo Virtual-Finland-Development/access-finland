@@ -16,8 +16,17 @@ export function createDefineAuthChallengeLambda() {
     tags,
   });
 
+  // Attach basic execution policy
+  new aws.iam.RolePolicyAttachment(
+    nameResource('defineAuthChallengePolicyAttachment'),
+    {
+      role: execRole,
+      policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
+    }
+  );
+
   return new aws.lambda.CallbackFunction(nameResource('defineAuthChallenge'), {
-    callback: createAuthChallenge,
+    callback: defineAuthChallenge,
     role: execRole.arn,
     runtime: 'nodejs18.x',
     timeout: 5,
@@ -39,6 +48,15 @@ export function createVerifyAuthChallengeResponseLambda() {
         Service: 'lambda.amazonaws.com',
       }),
       tags,
+    }
+  );
+
+  // Attach basic execution policy
+  new aws.iam.RolePolicyAttachment(
+    nameResource('verifyAuthChallengeResponsePolicyAttachment'),
+    {
+      role: execRole,
+      policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
     }
   );
 
@@ -68,6 +86,24 @@ export function createCreateAuthChallengeLambda() {
     tags,
   });
 
+  // Attach basic execution policy
+  new aws.iam.RolePolicyAttachment(
+    nameResource('createAuthChallengePolicyAttachment'),
+    {
+      role: execRole,
+      policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
+    }
+  );
+
+  // Allow sending emails
+  new aws.iam.RolePolicyAttachment(
+    nameResource('createAuthChallengeSesPolicyAttachment'),
+    {
+      role: execRole,
+      policyArn: aws.iam.ManagedPolicies.AmazonSESFullAccess,
+    }
+  );
+
   return new aws.lambda.CallbackFunction(nameResource('createAuthChallenge'), {
     callback: createAuthChallenge,
     role: execRole.arn,
@@ -77,7 +113,7 @@ export function createCreateAuthChallengeLambda() {
     environment: {
       variables: {
         LOG_LEVEL: 'INFO',
-        SES_FROM_ADDRESS: 'no-reply@accessfinland.com', // @TODO
+        SES_FROM_ADDRESS: 'no-reply@dev.accessfinland.dev', // @TODO
       },
     },
     tags,
@@ -90,6 +126,12 @@ export function createPreSignUpLambda() {
       Service: 'lambda.amazonaws.com',
     }),
     tags,
+  });
+
+  // Attach basic execution policy
+  new aws.iam.RolePolicyAttachment(nameResource('preSignUpPolicyAttachment'), {
+    role: execRole,
+    policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
   });
 
   return new aws.lambda.CallbackFunction(nameResource('preSignUp'), {
@@ -114,6 +156,15 @@ export function createPostAuthenticationLambda() {
     }),
     tags,
   });
+
+  // Attach basic execution policy
+  new aws.iam.RolePolicyAttachment(
+    nameResource('postAuthenticationPolicyAttachment'),
+    {
+      role: execRole,
+      policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
+    }
+  );
 
   return new aws.lambda.CallbackFunction(nameResource('postAuthentication'), {
     callback: postAuthentication,
