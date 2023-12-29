@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import cookie from 'cookie';
 import { Logger } from '../Logger';
 import { decryptUsingBackendSecret } from '../secrets-and-tokens';
-import { validateCognitoAccessToken } from '../services/aws/cognito';
+import { validateCognitoIdToken } from '../services/aws/cognito';
 
 /**
  * Middleware to verify the cognito session
@@ -23,7 +23,7 @@ export function cognitoVerifyMiddleware(handler: NextApiHandlerWithLogger) {
         req.cookies.cognitoVerify
       );
 
-      await validateCognitoAccessToken(verifyTokenPayload.idToken);
+      await validateCognitoIdToken(verifyTokenPayload.idToken);
       // Success
       return await handler(req, res, logger);
     } catch (error) {

@@ -1,12 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  confirmSignIn,
-  fetchUser,
-  signIn,
-  signUp,
-} from '@mvp/lib/frontend/aws-cognito';
+import { confirmSignIn, signIn, signUp } from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -108,14 +103,11 @@ const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
 export default function SignIn() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
   const [isCodeSent, setCodeSent] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
-    setEmail(email);
-
     try {
-      // TODO: Check if user exists before signing up
+      // TODO: Check if user exists before signing up, if possible, or make the flow more user controlled
       await signUp(email);
     } catch (error) {
       if (!String(error).startsWith('UsernameExistsException')) {

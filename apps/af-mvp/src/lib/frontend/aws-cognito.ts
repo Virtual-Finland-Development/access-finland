@@ -1,9 +1,8 @@
+// @see: https://docs.amplify.aws/javascript/build-a-backend/auth/advanced-workflows/
 import { Amplify } from 'aws-amplify';
 import {
   confirmSignIn as confirmSignInWithCognito,
-  fetchUserAttributes,
-  forgetDevice,
-  rememberDevice,
+  fetchAuthSession as fetchAuthSessionFromCognito,
   signIn as signInWithCognito,
   signOut as signOutWithCognito,
   signUp as signUpWithCognito,
@@ -24,11 +23,13 @@ Amplify.configure({
   },
 });
 
-export async function fetchUser() {
+export async function fetchAuthIdToken(): Promise<string | null> {
   try {
-    const user = await fetchUserAttributes();
-    console.log(user);
-    return user;
+    const session = await fetchAuthSessionFromCognito(); // Note, also refreshes the cognito login if expired there
+    if (!session.userSub) {
+      throw new Error('Not logged in');
+    }
+    return session.tokens?.idToken?.toString() ?? null;
   } catch (error) {
     return null;
   }

@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { fetchUser, signOut } from '@mvp/lib/frontend/aws-cognito';
+import { fetchAuthIdToken, signOut } from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
+import apiClient from '@shared/lib/api/api-client';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
@@ -14,15 +15,27 @@ export default function SingInPage() {
 
   const checkAuthStatus = useCallback(async () => {
     if (!isAuthenticated) {
-      const user = await fetchUser();
-      setIsAuthenticated(user !== null);
+      const idToken = await fetchAuthIdToken();
+      if (idToken !== null) {
+        /// Login to the actual application
+        // As we are in the same app context we can login directly without the need for redirect flows etc
+        try {
+          await apiClient.post('/api/auth/system/login', { idToken });
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error(error);
+          await signOut();
+        }
+      }
     }
     setIsLoading(false);
-  }, [isAuthenticated, setIsLoading]);
+  }, [isAuthenticated, setIsLoading, setIsAuthenticated]);
 
   useEffect(() => {
-    checkAuthStatus();
-  }, [checkAuthStatus]);
+    if (isLoading) {
+      checkAuthStatus();
+    }
+  }, [checkAuthStatus, isLoading]);
 
   const handleCodeLogout = async () => {
     await signOut();
@@ -36,8 +49,14 @@ export default function SingInPage() {
   if (isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center mt-8 gap-6">
-        Kill your cognito session
-        <Button onClick={handleCodeLogout}>Kill it</Button>
+        Finish login to the Access Finland
+        <Button onClick={() => router.push('/auth')}>
+          Login to the Access Finland
+        </Button>
+        Logout from your cognito session
+        <Button variant="secondary" onClick={handleCodeLogout}>
+          Log out from Cognito
+        </Button>
       </div>
     );
   }
