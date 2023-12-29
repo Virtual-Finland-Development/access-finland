@@ -13,15 +13,26 @@ import { randomBytes } from 'crypto';
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolClientId: process.env.LOGIN_SYSTEM_COGNITO_CLIENT_ID!,
-      userPoolId: process.env.LOGIN_SYSTEM_COGNITO_USER_POOL_ID!,
-      userPoolEndpoint: process.env.LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT!,
+      userPoolClientId: process.env.NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_CLIENT_ID!,
+      userPoolId: process.env.NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ID!,
+      userPoolEndpoint:
+        process.env.NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT!,
       loginWith: {
         email: true,
       },
     },
   },
 });
+
+export async function fetchUser() {
+  try {
+    const user = await fetchUserAttributes();
+    console.log(user);
+    return user;
+  } catch (error) {
+    return null;
+  }
+}
 
 export async function signIn(email: string) {
   const { isSignedIn, nextStep } = await signInWithCognito({
@@ -57,8 +68,10 @@ export async function confirmSignIn(code: string) {
     });
     console.log('isSignedIn', isSignedIn);
     console.log('nextStep', nextStep);
+    return isSignedIn;
   } catch (error) {
     console.log('error confirming sign up', error);
+    return false;
   }
 }
 

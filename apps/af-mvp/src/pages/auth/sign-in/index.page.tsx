@@ -1,21 +1,39 @@
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { signOut } from '@mvp/lib/frontend/aws-cognito';
+import { useCallback, useEffect, useState } from 'react';
+import { fetchUser, signOut } from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
+import Loading from '@shared/components/ui/loading';
 import SignInForm from './components/sign-in-form';
 
 export default function SingInPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [authStatus, setAuthStatus] = useState('loading');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthStatus = useCallback(async () => {
+    if (!isAuthenticated) {
+      const user = await fetchUser();
+      setIsAuthenticated(user !== null);
+    }
+    setIsLoading(false);
+  }, [isAuthenticated, setIsLoading]);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const handleCodeLogout = async () => {
     await signOut();
+    router.reload();
   };
 
-  if (authStatus === 'authenticated') {
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center mt-8 gap-6">
         Kill your cognito session

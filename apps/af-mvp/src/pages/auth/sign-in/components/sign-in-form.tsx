@@ -1,6 +1,12 @@
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { confirmSignIn, signIn, signUp } from '@mvp/lib/frontend/aws-cognito';
+import {
+  confirmSignIn,
+  fetchUser,
+  signIn,
+  signUp,
+} from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -101,6 +107,7 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [isCodeSent, setCodeSent] = useState(false);
 
@@ -122,7 +129,10 @@ export default function SignIn() {
   };
 
   const handleCodeSubmit = async (code: string) => {
-    await confirmSignIn(code);
+    const isSignedIn = await confirmSignIn(code);
+    if (isSignedIn) {
+      router.reload();
+    }
   };
 
   return (
