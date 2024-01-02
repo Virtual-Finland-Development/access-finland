@@ -5,31 +5,26 @@ import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
 import { validateCognitoIdToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
-import { Output, object, safeParse, string } from 'valibot';
+import { object, parse, string } from 'valibot';
 
 const GoodLoginInput = object({
   idToken: string(),
 });
 
-/**
- * Handle a good login response.
- *
- * @param queryParams
- * @param req
- * @param res
- */
-async function handleGoodLoginResponse(
-  loginInput: Output<typeof GoodLoginInput>,
+export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Parse request payload
+  const loginInput = parse(GoodLoginInput, req.body);
+
   // Validate the id token
   await validateCognitoIdToken(loginInput.idToken, {
     userPoolClientId: process.env.NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_CLIENT_ID!,
     userPoolId: process.env.NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ID!,
   });
 
-  // Get user info
+  // Decode user info
   const decoded = jwt.decode(loginInput.idToken) as jwt.JwtPayload;
   const userInfo = { email: decoded.email!, userId: decoded.sub! };
 
@@ -41,7 +36,7 @@ async function handleGoodLoginResponse(
   });
 
   //
-  // Setup the login session and redirect to the frontend
+  // Respond with the login session
   //
   res
     .setHeader('Set-Cookie', [
@@ -60,16 +55,4 @@ async function handleGoodLoginResponse(
       }),
     ])
     .json({ message: 'Login successful' });
-}
-
-export default loggedOutAuthMiddleware(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const goodEvent = safeParse(GoodLoginInput, req.body);
-  if (goodEvent.success) {
-    return await handleGoodLoginResponse(goodEvent.data, req, res);
-  }
-
-  throw new Error('Invalid login');
 });
