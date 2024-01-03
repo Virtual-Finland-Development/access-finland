@@ -192,7 +192,7 @@ export default function SignIn() {
               : 'Already have an account?'}
           </Text>
           <button
-            className="text-blue-600 hover:text-blue-800 visited:text-purple-600 !text-base underline"
+            className="text-[14px] font-semibold text-blue-600 hover:text-blue-800 visited:text-purple-600 underline"
             onClick={() => setShowRegisterForm(!showRegisterForm)}
           >
             {!showRegisterForm ? 'Register' : 'Login'} here

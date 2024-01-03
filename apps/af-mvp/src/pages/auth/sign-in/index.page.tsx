@@ -13,7 +13,7 @@ import apiClient from '@shared/lib/api/api-client';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
-import SignInForm from './components/sign-in-form';
+import SignIn from './components/sign-in';
 
 export default function SingInPage() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function SingInPage() {
   return (
     <div className="max-w-[900px]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 bg-white p-6 border-2 shadow-xl min-h-[600px]">
-        <div className="bg-suomifi-blue-bg-dark flex flex-col gap-4 items-center justify-center p-2 md:p-8 rounded">
+        <div className="bg-suomifi-blue-bg-dark flex flex-col gap-4 items-center justify-center p-4 md:p-8 rounded">
           <CustomImage
             src={VFLogo}
             alt="VF Logo"
@@ -73,7 +73,7 @@ export default function SingInPage() {
         <div className="col-span-2 flex items-center justify-center relative">
           <div className="max-w-[400px] h-full">
             {!isAuthenticated ? (
-              <SignInForm />
+              <SignIn />
             ) : (
               <div className="flex flex-col gap-6 h-full justify-center">
                 Finish login to the Access Finland
