@@ -1,7 +1,14 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { confirmSignIn, signIn, signUp } from '@mvp/lib/frontend/aws-cognito';
+import {
+  CognitoError,
+  CognitoErrorType,
+  confirmSignIn,
+  parseCognitoError,
+  signIn,
+  signUp,
+} from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
 import FormInput from '@shared/components/form/form-input';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -14,6 +21,7 @@ interface SubmitProps {
 
 interface FormProps {
   handleFormSubmit: (value: string) => Promise<void>;
+  title?: string;
 }
 
 type EmailForm = { email: string };
@@ -32,7 +40,7 @@ function Submit({ text, isSubmitting }: SubmitProps) {
   );
 }
 
-function EmailForm({ handleFormSubmit }: FormProps) {
+function EmailForm({ handleFormSubmit, title }: FormProps) {
   const {
     handleSubmit,
     control,
@@ -46,7 +54,7 @@ function EmailForm({ handleFormSubmit }: FormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 items-start">
-        <CustomHeading variant="h4">Log in</CustomHeading>
+        <CustomHeading variant="h4">{title ?? 'Log in'}</CustomHeading>
         <Text>
           Enter your email address you use in Access Finland. We will send you a
           verification code to your email address.
@@ -104,33 +112,79 @@ const sleep = () => new Promise(resolve => setTimeout(resolve, 1500));
 export default function SignIn() {
   const router = useRouter();
   const [isCodeSent, setCodeSent] = useState(false);
+  const [authError, setAuthError] = useState<CognitoError | null>(null);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
 
-  const handleEmailSubmit = async (email: string) => {
+  const handleSignUpSubmit = async (email: string) => {
     try {
-      // TODO: Check if user exists before signing up, if possible, or make the flow more user controlled
       await signUp(email);
+      await handleSignInSubmit(email);
     } catch (error) {
-      if (!String(error).startsWith('UsernameExistsException')) {
-        throw error;
-      }
+      handleError(error);
     }
+  };
 
-    await signIn(email);
-
-    setCodeSent(true);
+  const handleSignInSubmit = async (email: string) => {
+    try {
+      await signIn(email);
+      setCodeSent(true);
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleCodeSubmit = async (code: string) => {
-    const isSignedIn = await confirmSignIn(code);
-    if (isSignedIn) {
-      router.reload();
+    try {
+      const isSignedIn = await confirmSignIn(code);
+      if (isSignedIn) {
+        router.reload();
+      }
+    } catch (error) {
+      handleError(error);
     }
+  };
+
+  const handleError = (error: Error) => {
+    const cognitoError = parseCognitoError(error);
+    setAuthError(cognitoError);
   };
 
   return (
     <div className="flex flex-col gap-4 items-start">
       {!isCodeSent ? (
-        <EmailForm handleFormSubmit={handleEmailSubmit} />
+        <>
+          {!showRegisterForm && (
+            <>
+              <EmailForm title="Login" handleFormSubmit={handleSignInSubmit} />
+              <div className="bg-suomifi-blue-bg-light p-4 flex flex-row gap-6">
+                <Text>Don&apos;t have an account yet?</Text>
+                <button
+                  className="text-blue-600 hover:text-blue-800 visited:text-purple-600 !text-base"
+                  onClick={() => setShowRegisterForm(true)}
+                >
+                  Register here
+                </button>
+              </div>
+            </>
+          )}
+          {showRegisterForm && (
+            <>
+              <EmailForm
+                title="Register"
+                handleFormSubmit={handleSignUpSubmit}
+              />
+              <div className="bg-suomifi-blue-bg-light p-4 flex flex-row gap-6">
+                <Text>Already have an account?</Text>
+                <button
+                  className="text-blue-600 hover:text-blue-800 visited:text-purple-600 !text-base"
+                  onClick={() => setShowRegisterForm(false)}
+                >
+                  Login here
+                </button>
+              </div>
+            </>
+          )}
+        </>
       ) : (
         <CodeForm handleFormSubmit={handleCodeSubmit} />
       )}
@@ -140,6 +194,17 @@ export default function SignIn() {
       >
         {isCodeSent ? 'I need a new code' : 'I already have a code'}
       </button>
+
+      {authError && (
+        <div className="flex flex-col gap-3">
+          <Text variant="bold">{authError.message}</Text>
+          {authError.type === CognitoErrorType.UsernameExistsException && (
+            <Text>
+              You already have an account. Please sign in with your email.
+            </Text>
+          )}
+        </div>
+      )}
     </div>
   );
 }
