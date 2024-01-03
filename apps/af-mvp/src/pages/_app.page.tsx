@@ -1,13 +1,13 @@
-import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import reportAccessibility from '@shared/lib/utils/reportAccessibility';
+import { AuthConsumer, AuthProvider } from '@shared/context/auth-context';
 import '@shared/styles.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { NextComponentType } from 'next';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { FC, PropsWithChildren, ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
@@ -31,6 +31,8 @@ const MainLayout = dynamic(
 type ExtendedAppProps = AppProps & {
   Component: NextComponentType & { provider?: FC<PropsWithChildren> };
 };
+
+const AUTH_ROUTES = ['/auth', '/auth/sign-in'];
 
 const NAV_ITEMS = [
   { name: 'Home', href: '/', description: 'Your journey begins here' },
@@ -78,7 +80,7 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
               );
             }
 
-            if (router.pathname === '/auth') {
+            if (AUTH_ROUTES.includes(router.pathname)) {
               return (
                 <Container>
                   <Component {...pageProps} />
