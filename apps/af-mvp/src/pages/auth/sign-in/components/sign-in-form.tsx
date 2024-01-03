@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   CognitoError,
-  CognitoErrorType,
+  CognitoErrorTypes,
   confirmSignIn,
   parseCognitoError,
   signIn,
@@ -198,9 +198,9 @@ export default function SignIn() {
       {authError && (
         <div className="flex flex-col gap-3">
           <Text variant="bold">{authError.message}</Text>
-          {authError.type === CognitoErrorType.UsernameExistsException && (
+          {authError.type === CognitoErrorTypes.UsernameExistsException && (
             <Text>
-              You already have an account. Please sign in with your email.
+              You already have an account. Please login with your email.
             </Text>
           )}
         </div>

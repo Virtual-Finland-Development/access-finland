@@ -11,54 +11,55 @@ import { randomBytes } from 'crypto';
 // @see: https://docs.amplify.aws/javascript/build-a-backend/auth/advanced-workflows/
 
 // https://github.com/aws-amplify/amplify-js/blob/main/packages/auth/src/providers/cognito/types/errors.ts
-enum GetUserException {
-  ForbiddenException = 'ForbiddenException',
-  InternalErrorException = 'InternalErrorException',
-  InvalidParameterException = 'InvalidParameterException',
-  NotAuthorizedException = 'NotAuthorizedException',
-  PasswordResetRequiredException = 'PasswordResetRequiredException',
-  ResourceNotFoundException = 'ResourceNotFoundException',
-  TooManyRequestsException = 'TooManyRequestsException',
-  UserNotConfirmedException = 'UserNotConfirmedException',
-  UserNotFoundException = 'UserNotFoundException',
-}
+const GetUserException = {
+  ForbiddenException: 'ForbiddenException',
+  InternalErrorException: 'InternalErrorException',
+  InvalidParameterException: 'InvalidParameterException',
+  NotAuthorizedException: 'NotAuthorizedException',
+  PasswordResetRequiredException: 'PasswordResetRequiredException',
+  ResourceNotFoundException: 'ResourceNotFoundException',
+  TooManyRequestsException: 'TooManyRequestsException',
+  UserNotConfirmedException: 'UserNotConfirmedException',
+  UserNotFoundException: 'UserNotFoundException',
+};
 
 // https://github.com/aws-amplify/amplify-js/blob/main/packages/auth/src/providers/cognito/types/errors.ts
-enum SignUpException {
-  CodeDeliveryFailureException = 'CodeDeliveryFailureException',
-  InternalErrorException = 'InternalErrorException',
-  InvalidEmailRoleAccessPolicyException = 'InvalidEmailRoleAccessPolicyException',
-  InvalidLambdaResponseException = 'InvalidLambdaResponseException',
-  InvalidParameterException = 'InvalidParameterException',
-  InvalidPasswordException = 'InvalidPasswordException',
-  InvalidSmsRoleAccessPolicyException = 'InvalidSmsRoleAccessPolicyException',
-  InvalidSmsRoleTrustRelationshipException = 'InvalidSmsRoleTrustRelationshipException',
-  NotAuthorizedException = 'NotAuthorizedException',
-  ResourceNotFoundException = 'ResourceNotFoundException',
-  TooManyRequestsException = 'TooManyRequestsException',
-  UnexpectedLambdaException = 'UnexpectedLambdaException',
-  UserLambdaValidationException = 'UserLambdaValidationException',
-  UsernameExistsException = 'UsernameExistsException',
-}
-
-function transformEnumToObject(enumObject: any) {
-  const object: any = {};
-  Object.keys(enumObject).forEach(key => {
-    object[key] = key;
-  });
-  return object;
-}
-
-export const CognitoErrorType = {
-  ...transformEnumToObject(SignUpException),
-  ...transformEnumToObject(GetUserException),
-  Unknown: 'Unknown',
+const SignUpException = {
+  CodeDeliveryFailureException: 'CodeDeliveryFailureException',
+  InternalErrorException: 'InternalErrorException',
+  InvalidEmailRoleAccessPolicyException:
+    'InvalidEmailRoleAccessPolicyException',
+  InvalidLambdaResponseException: 'InvalidLambdaResponseException',
+  InvalidParameterException: 'InvalidParameterException',
+  InvalidPasswordException: 'InvalidPasswordException',
+  InvalidSmsRoleAccessPolicyException: 'InvalidSmsRoleAccessPolicyException',
+  InvalidSmsRoleTrustRelationshipException:
+    'InvalidSmsRoleTrustRelationshipException',
+  NotAuthorizedException: 'NotAuthorizedException',
+  ResourceNotFoundException: 'ResourceNotFoundException',
+  TooManyRequestsException: 'TooManyRequestsException',
+  UnexpectedLambdaException: 'UnexpectedLambdaException',
+  UserLambdaValidationException: 'UserLambdaValidationException',
+  UsernameExistsException: 'UsernameExistsException',
 };
+
+export const CognitoErrorTypes = {
+  ...SignUpException,
+  ...GetUserException,
+  Unknown: 'Unknown',
+} as const;
+
+export type CognitoErrorType =
+  (typeof CognitoErrorTypes)[keyof typeof CognitoErrorTypes];
 
 export type CognitoError = {
   message: string;
-  type: typeof CognitoErrorType;
+  type: CognitoErrorType;
 };
+
+function getRandomString(bytes: number) {
+  return randomBytes(bytes).toString('base64');
+}
 
 Amplify.configure({
   Auth: {
@@ -133,25 +134,25 @@ export async function signOut() {
 
 export function parseCognitoError(error: any): CognitoError {
   const errorName = error.name || String(error).split(':')[0];
-  const errorType = CognitoErrorType[errorName] || CognitoErrorType.Unknown;
+  const errorType = CognitoErrorTypes[errorName] || CognitoErrorTypes.Unknown;
 
   switch (errorType) {
-    case CognitoErrorType.UserNotConfirmedException:
+    case CognitoErrorTypes.UserNotConfirmedException:
       return {
         message: 'User not confirmed',
         type: errorType,
       };
-    case CognitoErrorType.UserNotFoundException:
+    case CognitoErrorTypes.UserNotFoundException:
       return {
         message: 'User not found',
         type: errorType,
       };
-    case CognitoErrorType.NotAuthorizedException:
+    case CognitoErrorTypes.NotAuthorizedException:
       return {
         message: 'Wrong password',
         type: errorType,
       };
-    case CognitoErrorType.UsernameExistsException:
+    case CognitoErrorTypes.UsernameExistsException:
       return {
         message: 'User already exists',
         type: errorType,
@@ -162,8 +163,4 @@ export function parseCognitoError(error: any): CognitoError {
         type: errorType,
       };
   }
-}
-
-function getRandomString(bytes: number) {
-  return randomBytes(bytes).toString('base64');
 }
