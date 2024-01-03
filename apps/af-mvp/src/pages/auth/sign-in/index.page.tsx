@@ -59,9 +59,9 @@ export default function SingInPage() {
             height={150}
           />
           <Text className="!text-base !text-white !leading-tight">
-            Your privacy is important to us. We will only use your email
-            addres1s for the purpose of sending the verification code and
-            managing your account security.
+            Your privacy is important to us. We will only use your email address
+            for the purpose of sending the verification code and managing your
+            account security.
           </Text>
         </div>
         <div className="col-span-2 flex items-center justify-center relative">
