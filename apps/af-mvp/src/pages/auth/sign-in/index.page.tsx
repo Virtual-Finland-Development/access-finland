@@ -2,7 +2,13 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchAuthIdToken, signOut } from '@mvp/lib/frontend/aws-cognito';
 import VFLogo from '@shared/images/virtualfinland_logo_small.png';
-import { Button, IconHome, Text } from 'suomifi-ui-components';
+import {
+  Button,
+  IconHome,
+  IconLogin,
+  IconLogout,
+  Text,
+} from 'suomifi-ui-components';
 import apiClient from '@shared/lib/api/api-client';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
@@ -65,17 +71,24 @@ export default function SingInPage() {
           </Text>
         </div>
         <div className="col-span-2 flex items-center justify-center relative">
-          <div className="max-w-[400px]">
+          <div className="max-w-[400px] h-full">
             {!isAuthenticated ? (
               <SignInForm />
             ) : (
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 h-full justify-center">
                 Finish login to the Access Finland
-                <Button onClick={() => router.push('/auth')}>
+                <Button
+                  onClick={() => router.push('/auth')}
+                  icon={<IconLogin />}
+                >
                   Login to Access Finland
                 </Button>
                 Logout from your cognito session
-                <Button variant="secondary" onClick={handleCodeLogout}>
+                <Button
+                  variant="secondary"
+                  onClick={handleCodeLogout}
+                  icon={<IconLogout />}
+                >
                   Log out from Cognito
                 </Button>
               </div>
