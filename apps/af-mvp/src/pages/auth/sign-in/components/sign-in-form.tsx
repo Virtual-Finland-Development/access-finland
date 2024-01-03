@@ -37,7 +37,11 @@ function Submit({ text }: SubmitProps) {
   );
 }
 
-function EmailForm({ handleFormSubmit, title }: FormProps) {
+function EmailForm({
+  handleFormSubmit,
+  title,
+  type,
+}: FormProps & { type: 'register' | 'login' }) {
   const { handleSubmit, control } = useForm<EmailForm>();
 
   const onSubmit: SubmitHandler<EmailForm> = async ({ email }) => {
@@ -49,8 +53,9 @@ function EmailForm({ handleFormSubmit, title }: FormProps) {
       <div className="flex flex-col gap-4">
         <CustomHeading variant="h3">{title ?? 'Log in'}</CustomHeading>
         <Text>
-          Enter your email address you use in Access Finland. We will send you a
-          verification code to your email address.
+          {type === 'register'
+            ? "To register, all you need is an email address - we don't collect any other personal information about you."
+            : 'Enter your email address you use in Access Finland. We will send you a verification code to your email address.'}
         </Text>
         <FormInput
           name="email"
@@ -60,7 +65,13 @@ function EmailForm({ handleFormSubmit, title }: FormProps) {
           rules={{ required: 'Email is required' }}
           fullWidth
         />
-        <Submit text="Send me a code" />
+        <Submit
+          text={
+            type === 'register'
+              ? 'Register and send me a code'
+              : 'Send me a code'
+          }
+        />
       </div>
     </form>
   );
@@ -165,6 +176,7 @@ export default function SignIn() {
       <div className="flex flex-col gap-4 items-start">
         {!isCodeSent ? (
           <EmailForm
+            type={showRegisterForm ? 'register' : 'login'}
             title={showRegisterForm ? 'Register' : 'Login'}
             handleFormSubmit={
               showRegisterForm ? handleSignUpSubmit : handleSignInSubmit
