@@ -157,10 +157,17 @@ export function parseCognitoError(error: any): CognitoError {
         message: 'User already exists',
         type: errorType,
       };
-    default:
-      return {
-        message: 'Unknown error',
-        type: errorType,
-      };
+    case CognitoErrorTypes.UserLambdaValidationException:
+      if (error.message.includes('UserNotFoundException')) {
+        return {
+          message: 'User not found',
+          type: CognitoErrorTypes.UserNotFoundException,
+        };
+      }
   }
+
+  return {
+    message: 'Unknown error',
+    type: errorType,
+  };
 }
