@@ -20,7 +20,6 @@ import {
 import { useModal } from '@/context/modal-context';
 import DangerButton from '@/components/ui/danger-button';
 import DetailsExpander from '@/components/ui/details-expander/details-expander';
-import Loading from '@/components/ui/loading';
 import ProfileDeleteConfirmation from './profile-delete-confirmation';
 import {
   mapReadableJobApplicationProfile,
@@ -67,8 +66,8 @@ export default function ProfileDetails(props: Props) {
   const { data: languageSkillLevels, isLoading: languageSkillLevelsLoading } =
     useLanguageSkillLevels(shouldFetchCodeSets);
 
-  const isLoading =
-    countriesLoading ||
+  const personBasicInfoCodeSetsLoading = countriesLoading;
+  const jobApplicationProfileCodeSetsLoading =
     occupationsLoading ||
     languagesLoading ||
     permitsLoading ||
@@ -83,7 +82,7 @@ export default function ProfileDetails(props: Props) {
 
   // map all personBasicInfo values to readable form
   const personBasicInfoMapped = useMemo(() => {
-    if (isLoading) return undefined;
+    if (personBasicInfoCodeSetsLoading) return undefined;
 
     if (personBasicInformation) {
       return mapReadablePersonBasicInfo(
@@ -91,11 +90,11 @@ export default function ProfileDetails(props: Props) {
         countries || []
       );
     }
-  }, [countries, isLoading, personBasicInformation]);
+  }, [countries, personBasicInfoCodeSetsLoading, personBasicInformation]);
 
   // map all jobApplicationProfile values to readable form
   const jobApplicationProfileMapped = useMemo(() => {
-    if (isLoading) return undefined;
+    if (jobApplicationProfileCodeSetsLoading) return undefined;
 
     if (jobApplicationProfile) {
       return mapReadableJobApplicationProfile({
@@ -118,7 +117,7 @@ export default function ProfileDetails(props: Props) {
     educationLevels,
     escoLanguages,
     escoSkills,
-    isLoading,
+    jobApplicationProfileCodeSetsLoading,
     jobApplicationProfile,
     languageSkillLevels,
     languages,
@@ -138,10 +137,6 @@ export default function ProfileDetails(props: Props) {
       closeOnEsc: false,
     });
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
@@ -151,6 +146,7 @@ export default function ProfileDetails(props: Props) {
           labels={PROFILE_DATA_LABELS}
           hasValues={Boolean(personBasicInformation)}
           showStatusIcons={false}
+          isLoading={personBasicInfoCodeSetsLoading}
         >
           <div className="mt-8">
             <Button onClick={() => router.push('/profile/personal-profile')}>
@@ -165,6 +161,7 @@ export default function ProfileDetails(props: Props) {
           labels={PROFILE_DATA_LABELS}
           hasValues={Boolean(jobApplicationProfile)}
           showStatusIcons={false}
+          isLoading={jobApplicationProfileCodeSetsLoading}
         >
           <div className="mt-8">
             <Button onClick={() => router.push('/profile/working-profile')}>

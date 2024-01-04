@@ -1,16 +1,19 @@
 {
   "name": "af-mvp-infra",
   "devDependencies": {
-    "@types/node": "^16"
+    "@types/aws-lambda": "^8.10.130",
+    "@types/node": "^18"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity": "^3.391.0",
-    "@aws-sdk/client-cognito-identity-provider": "^3.391.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.481.0",
+    "@aws-sdk/client-sesv2": "^3.481.0",
     "@pulumi/aws": "^5.23.0",
     "@pulumi/awsx": "^1.0.2",
     "@pulumi/pulumi": "^3.94.2",
     "@pulumi/random": "^4.13.2",
     "@pulumi/tls": "^4.11.1",
+    "crypto-secure-random-digit": "^1.0.10",
     "typescript": "^5.2.2"
   }
 }

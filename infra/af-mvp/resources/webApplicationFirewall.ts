@@ -2,7 +2,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import setup, { nameResource } from '../utils/setup';
-import { createCognitoUserPool } from './cognito';
+import { createWafCognitoUserPool } from './cognito';
 
 const {
   tags,
@@ -34,7 +34,7 @@ export async function createWebAppFirewallProtection() {
 
   const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
   const { userPool, userPoolClient, cognitoDomain } =
-    createCognitoUserPool(callbackUri);
+    createWafCognitoUserPool(callbackUri);
 
   const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
 

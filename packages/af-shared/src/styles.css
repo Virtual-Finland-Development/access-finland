@@ -26,3 +26,30 @@ body {
 .Toastify__toast-body {
   padding: 0 !important;
 }
+
+.otp-input {
+  border: 1px solid hsl(202, 7%, 80%);
+  border-color: hsl(201, 7%, 58%);
+  border-radius: 2px;
+  color: hsl(0, 0%, 13%);
+  font-family: 'Source Sans Pro', 'Helvetica Neue', 'Arial', sans-serif;
+  height: 40px;
+  font-weight: 400;
+  font-size: 32px;
+  margin: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.otp-input:focus {
+  outline-color: hsl(196, 77%, 44%);
+  outline-width: 2px;
+  outline-offset: 2px;
+  outline-style: solid;
+}
+
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}

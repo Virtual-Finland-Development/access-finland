@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Logger } from '@mvp/lib/backend/Logger';
 import { requestLoggingMiddleware } from '@mvp/lib/backend/middleware/requestLogging';
 import { encryptUsingBackendSecret } from '@mvp/lib/backend/secrets-and-tokens';
-import { validateCognitoAccessToken } from '@mvp/lib/backend/services/aws/cognito';
+import { validateCognitoIdToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import { object, parse, string } from 'valibot';
 
@@ -58,9 +58,7 @@ async function handler(
   try {
     // Parse and validate
     const cognitoLoginResponse = parse(CognitoLoginResponseSchema, queryParams);
-    const payload = await validateCognitoAccessToken(
-      cognitoLoginResponse.id_token
-    );
+    const payload = await validateCognitoIdToken(cognitoLoginResponse.id_token);
 
     // Success, redirect to the root page with the access cookies
     const sharedCookieSecret = process.env.WAF_SHARED_COOKIE_SECRET;
