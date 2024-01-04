@@ -10,6 +10,7 @@ import {
   Text,
 } from 'suomifi-ui-components';
 import apiClient from '@shared/lib/api/api-client';
+import { useToast } from '@shared/context/toast-context';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
@@ -17,6 +18,7 @@ import SignIn from './components/sign-in';
 
 export default function SingInPage() {
   const router = useRouter();
+  const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -31,7 +33,12 @@ export default function SingInPage() {
           setIsAuthenticated(true);
         } catch (error) {
           console.error(error);
-          await signOut();
+          toast({
+            title: 'Error',
+            content: error?.message || 'Something went wrong.',
+            status: 'error',
+          });
+          await signOut(); // Clear the cognito session as we failed to login to the app
         }
       }
     }
