@@ -43,7 +43,7 @@ export default function SingInPage() {
       }
     }
     setIsLoading(false);
-  }, [isAuthenticated, setIsLoading, setIsAuthenticated]);
+  }, [isAuthenticated, setIsLoading, setIsAuthenticated, toast]);
 
   useEffect(() => {
     if (isLoading) {
