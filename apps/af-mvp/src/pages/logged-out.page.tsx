@@ -1,3 +1,4 @@
+import { ImageProps } from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
@@ -16,6 +17,39 @@ function getSinunaServiceUrl() {
     return 'https://frontend.sunbackend.qa.sinuna.fi';
   }
   return 'https://itsepalvelu.tunnus.sinuna.fi';
+}
+
+function AuthProviderInfo(props: {
+  logo?: ImageProps['src'];
+  link: string;
+  name: string;
+}) {
+  const { logo, link, name } = props;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <Text>
+        You have logged out successfully from Access Finland. Note that the{' '}
+        {name} login session might still be active.
+      </Text>
+      <div className="flex items-start flex-wrap gap-6">
+        <div className="flex flex-col items-start gap-3">
+          <Text>
+            Manage your {name} login session in {name} Service.
+          </Text>
+          <Button
+            className="!w-auto"
+            onClick={() => window.open(link, '_blank')}
+          >
+            {name} Service
+          </Button>
+        </div>
+        {logo && (
+          <CustomImage src={logo} alt="{name} logo" width={250} priority />
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function LoggedOutPage() {
@@ -50,57 +84,17 @@ export default function LoggedOutPage() {
               Logged out from Access Finland!
             </CustomHeading>
             {provider === AuthProvider.SINUNA && (
-              <div className="flex flex-col gap-6">
-                <Text>
-                  You have logged out successfully from Access Finland. Note
-                  that the Sinuna login session might still be active.
-                </Text>
-                <div className="flex items-start flex-wrap gap-6">
-                  <div className="flex flex-col items-start gap-3">
-                    <Text>
-                      Manage your Sinuna login session in Sinuna Service.
-                    </Text>
-                    <Button
-                      className="!w-auto"
-                      onClick={() =>
-                        window.open(sinunaLoginServiceLink, '_blank')
-                      }
-                    >
-                      Sinuna service
-                    </Button>
-                  </div>
-                  <CustomImage
-                    src={SinunaLogo}
-                    alt="Sinuna logo"
-                    width={250}
-                    priority
-                  />
-                </div>
-              </div>
+              <AuthProviderInfo
+                logo={SinunaLogo}
+                link={sinunaLoginServiceLink}
+                name="Sinuna"
+              />
             )}
             {provider === AuthProvider.VIRTUALFINLAND && (
-              <div className="flex flex-col gap-6">
-                <Text>
-                  You have logged out successfully from Access Finland. Note
-                  that the Virtual Finland login session might still be active.
-                </Text>
-                <div className="flex items-start flex-wrap gap-6">
-                  <div className="flex flex-col items-start gap-3">
-                    <Text>
-                      Manage your Virtual Finland login session in the Virtual
-                      Finland sign in page.
-                    </Text>
-                    <Button
-                      className="!w-auto"
-                      onClick={() =>
-                        window.open(virtualFinlandLoginServiceLink, '_blank')
-                      }
-                    >
-                      Virtual Finland sign in page
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <AuthProviderInfo
+                link={virtualFinlandLoginServiceLink}
+                name="Virtual Finland"
+              />
             )}
           </div>
           <div className="mt-6">
