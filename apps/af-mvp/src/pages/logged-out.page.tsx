@@ -45,7 +45,7 @@ function AuthProviderInfo(props: {
           </Button>
         </div>
         {logo && (
-          <CustomImage src={logo} alt="{name} logo" width={250} priority />
+          <CustomImage src={logo} alt={`${name} logo`} width={250} priority />
         )}
       </div>
     </div>
