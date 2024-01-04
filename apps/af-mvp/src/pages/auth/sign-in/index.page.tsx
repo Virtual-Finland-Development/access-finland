@@ -90,13 +90,13 @@ export default function SingInPage() {
                 >
                   Login to Access Finland
                 </Button>
-                Logout from your cognito session
+                Logout from your Virtual Finland login session
                 <Button
                   variant="secondary"
                   onClick={handleCodeLogout}
                   icon={<IconLogout />}
                 >
-                  Log out from Cognito
+                  Log out from Virtual Finland
                 </Button>
               </div>
             )}
