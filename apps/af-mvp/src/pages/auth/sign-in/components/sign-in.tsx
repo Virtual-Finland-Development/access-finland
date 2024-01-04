@@ -10,6 +10,7 @@ import {
   signUp,
 } from '@mvp/lib/frontend/aws-cognito';
 import { Button, Text } from 'suomifi-ui-components';
+import FormCodeInput from '@shared/components/form/form-code-input';
 import FormInput from '@shared/components/form/form-input';
 import Alert from '@shared/components/ui/alert';
 import CustomHeading from '@shared/components/ui/custom-heading';
@@ -93,12 +94,11 @@ function CodeForm({ handleFormSubmit }: FormProps) {
           your spam folder. Also make sure you entered the same email address
           you used to sign in to Access Finland.
         </Text>
-        <FormInput
+        <FormCodeInput
           name="code"
-          type="text"
           labelText="Your code"
           control={control}
-          rules={{ required: 'Code is required' }}
+          numInputs={6}
           fullWidth
         />
         <Submit text="Sign in with code" />
