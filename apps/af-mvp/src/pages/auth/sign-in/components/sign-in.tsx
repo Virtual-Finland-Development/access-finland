@@ -9,6 +9,7 @@ import {
   signIn,
   signUp,
 } from '@mvp/lib/frontend/aws-cognito';
+import { set } from 'date-fns';
 import { Button, Text } from 'suomifi-ui-components';
 import FormCodeInput from '@shared/components/form/form-code-input';
 import FormInput from '@shared/components/form/form-input';
@@ -193,7 +194,10 @@ export default function SignIn() {
           </Text>
           <button
             className="text-[14px] font-semibold text-blue-600 hover:text-blue-800 visited:text-purple-600 underline"
-            onClick={() => setShowRegisterForm(!showRegisterForm)}
+            onClick={() => {
+              setAuthError(null);
+              setShowRegisterForm(!showRegisterForm);
+            }}
           >
             {!showRegisterForm ? 'Register' : 'Login'} here
           </button>
