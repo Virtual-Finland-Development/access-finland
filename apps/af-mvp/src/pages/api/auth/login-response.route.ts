@@ -8,6 +8,7 @@ import {
 } from '@mvp/lib/backend/services/sinuna/sinuna-requests';
 import cookie from 'cookie';
 import { Output, object, safeParse, string } from 'valibot';
+import { AuthProvider } from '@shared/types';
 
 const GoodLoginResponseSchema = object({
   code: string(),
@@ -40,6 +41,7 @@ async function handleGoodLoginResponse(
   // Create the api auth package
   const apiAuthPackage = await createApiAuthPackage({
     idToken: tokens.idToken,
+    provider: AuthProvider.SINUNA,
     expiresAt: resolveIdTokenExpiresAt(tokens.idToken),
     profileData: userInfo,
   });

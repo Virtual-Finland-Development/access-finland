@@ -6,6 +6,7 @@ import { validateCognitoIdToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import { object, parse, string } from 'valibot';
+import { AuthProvider } from '@shared/types';
 
 const GoodLoginInput = object({
   idToken: string(),
@@ -31,6 +32,7 @@ export default loggedOutAuthMiddleware(async function handler(
   // Create the api auth package
   const apiAuthPackage = await createApiAuthPackage({
     idToken: loginInput.idToken,
+    provider: AuthProvider.VIRTUALFINLAND,
     expiresAt: resolveIdTokenExpiresAt(loginInput.idToken),
     profileData: userInfo,
   });
