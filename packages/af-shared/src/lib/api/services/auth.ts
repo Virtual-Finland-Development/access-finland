@@ -33,8 +33,11 @@ export async function directToAuthLogout() {
       `${AUTH_GW_BASE_URL}/auth/openid/testbed/logout-request?appContext=${generateAppContextHash()}&idToken=${idToken}`
     );
   } else {
+    const provider = (await LoginState.getLoggedInState())?.provider;
     await logOut();
-    window.location.assign('/logged-out?initiator=auth-service'); // Update views with force, show a sinuna related message on a separate logout page
+    window.location.assign(
+      `/logged-out?initiator=auth-service&provider=${provider}`
+    ); // Update views with force, show a auth provider related message on a separate logout page
   }
 }
 

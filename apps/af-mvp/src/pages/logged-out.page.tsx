@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
 import CustomHeading from 'af-shared/src/components/ui/custom-heading';
 import { Button, Text } from 'suomifi-ui-components';
+import { AuthProvider } from '@shared/types';
 import { getRuntimeStage } from '@shared/lib/utils';
 import Page from '@shared/components/layout/page';
 import Alert from '@shared/components/ui/alert';
@@ -21,7 +22,8 @@ export default function LoggedOutPage() {
   const [isLoading, setLoading] = useState(true);
   const router = useRouter();
   const sinunaLoginServiceLink = getSinunaServiceUrl();
-  const { initiator } = router.query;
+  const virtualFinlandLoginServiceLink = '/auth/sign-in';
+  const { initiator, provider } = router.query;
 
   useEffect(() => {
     if (router.isReady) {
@@ -47,33 +49,59 @@ export default function LoggedOutPage() {
             <CustomHeading variant="h2">
               Logged out from Access Finland!
             </CustomHeading>
-            <div className="flex flex-col gap-6">
-              <Text>
-                You have logged out successfully from Access Finland. Note that
-                the Sinuna login session might still be active.
-              </Text>
-              <div className="flex items-start flex-wrap gap-6">
-                <div className="flex flex-col items-start gap-3">
-                  <Text>
-                    Manage your Sinuna login session in Sinuna Service.
-                  </Text>
-                  <Button
-                    className="!w-auto"
-                    onClick={() =>
-                      window.open(sinunaLoginServiceLink, '_blank')
-                    }
-                  >
-                    Sinuna service
-                  </Button>
+            {provider === AuthProvider.SINUNA && (
+              <div className="flex flex-col gap-6">
+                <Text>
+                  You have logged out successfully from Access Finland. Note
+                  that the Sinuna login session might still be active.
+                </Text>
+                <div className="flex items-start flex-wrap gap-6">
+                  <div className="flex flex-col items-start gap-3">
+                    <Text>
+                      Manage your Sinuna login session in Sinuna Service.
+                    </Text>
+                    <Button
+                      className="!w-auto"
+                      onClick={() =>
+                        window.open(sinunaLoginServiceLink, '_blank')
+                      }
+                    >
+                      Sinuna service
+                    </Button>
+                  </div>
+                  <CustomImage
+                    src={SinunaLogo}
+                    alt="Sinuna logo"
+                    width={250}
+                    priority
+                  />
                 </div>
-                <CustomImage
-                  src={SinunaLogo}
-                  alt="Sinuna logo"
-                  width={250}
-                  priority
-                />
               </div>
-            </div>
+            )}
+            {provider === AuthProvider.VIRTUALFINLAND && (
+              <div className="flex flex-col gap-6">
+                <Text>
+                  You have logged out successfully from Access Finland. Note
+                  that the Virtual Finland login session might still be active.
+                </Text>
+                <div className="flex items-start flex-wrap gap-6">
+                  <div className="flex flex-col items-start gap-3">
+                    <Text>
+                      Manage your Virtual Finland login session in the Virtual
+                      Finland sign in page.
+                    </Text>
+                    <Button
+                      className="!w-auto"
+                      onClick={() =>
+                        window.open(virtualFinlandLoginServiceLink, '_blank')
+                      }
+                    >
+                      Virtual Finland sign in page
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="mt-6">
             <CustomLink disableVisited href="/">
