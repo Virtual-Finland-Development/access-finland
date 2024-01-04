@@ -131,7 +131,7 @@ export function createLoginSystemCognitoUserPool() {
       },
       tags,
     },
-    { protect: false } // @TODO  // Delete only by overriding the resource protection manually
+    { protect: true } // Delete only by overriding the resource protection manually
   );
 
   // Setup lambda invoking permissions
