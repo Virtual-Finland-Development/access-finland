@@ -12,6 +12,12 @@ export default async (event: CreateAuthChallengeTriggerEvent) => {
   let secretLoginCode: string;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
+
+    // Fail auth if no email was provided (happens when signin before signup)
+    if (!event.request.userAttributes.email) {
+      throw new Error('UserNotFoundException: Not provided.');
+    }
+
     // Generate a new secret login code and mail it to the user
     secretLoginCode = randomDigits(6).join('');
     await sendEmail(event.request.userAttributes.email, secretLoginCode);
@@ -63,18 +69,18 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         // Message
         Subject: {
           // Content
-          Charset: 'UTF-8',
+          //Charset: 'UTF-8',
           Data: 'Your secret login code',
         },
         Body: {
           // Body
           Html: {
-            Charset: 'UTF-8',
+            //Charset: 'UTF-8',
             Data: `<html><body><p>This is your secret login code:</p>
                              <h3>${secretLoginCode}</h3></body></html>`,
           },
           Text: {
-            Charset: 'UTF-8',
+            //Charset: 'UTF-8',
             Data: `Your secret login code: ${secretLoginCode}`,
           },
         },
@@ -88,6 +94,7 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         Value: 'createAuthChallenge', // required
       },
     ],
+    ConfigurationSetName: 'my-first-configuration-set',
   };
   await client.send(new SendEmailCommand(input));
 }
