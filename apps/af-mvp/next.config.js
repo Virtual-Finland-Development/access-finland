@@ -67,7 +67,7 @@ const nextConfig = {
     config.plugins.push(
       new DuplicatePackageCheckerPlugin({
         exclude(instance) {
-          return instance.name === 'react-is';
+          return ['react-is', 'tslib', '@aws-crypto/util', '@aws-crypto/sha256-js'].includes(instance.name);
         },
       })
     );
