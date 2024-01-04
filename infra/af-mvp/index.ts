@@ -56,5 +56,6 @@ export = async () => {
     CongitoUserPoolClientId: wafSetup?.userPoolClient.id,
     initialDomainCheckRequired: initialDeployment && domainConfig.enabled,
     VirtualFinlandAuthCognitoUserPoolId: loginSystem.userPool.id,
+    VirtualFinlandAuthCognitoPoolClientId: loginSystem.userPoolClient.id,
   };
 };
