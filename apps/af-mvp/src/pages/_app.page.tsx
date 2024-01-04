@@ -82,9 +82,11 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
 
             if (AUTH_ROUTES.includes(router.pathname)) {
               return (
-                <Container>
-                  <Component {...pageProps} />
-                </Container>
+                <ToastProvider>
+                  <Container>
+                    <Component {...pageProps} />
+                  </Container>
+                </ToastProvider>
               );
             }
 
