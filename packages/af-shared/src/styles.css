@@ -37,6 +37,9 @@ body {
   font-weight: 400;
   font-size: 32px;
   margin: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
 
 .otp-input:focus {
@@ -44,4 +47,9 @@ body {
   outline-width: 2px;
   outline-offset: 2px;
   outline-style: solid;
+}
+
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }

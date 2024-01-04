@@ -24,6 +24,7 @@ interface Props<T extends FieldValues> extends CodeInputControllerProps<T> {
   autoFocus?: boolean;
   fullWidth?: boolean;
   numInputs: number;
+  type?: 'number' | 'text';
 }
 
 const inputErrorStyles = {
@@ -44,6 +45,7 @@ export default function FormCodeInput<T extends FieldValues>(props: Props<T>) {
     autoFocus,
     fullWidth,
     numInputs,
+    type = 'number',
   } = props;
 
   return (
@@ -66,6 +68,7 @@ export default function FormCodeInput<T extends FieldValues>(props: Props<T>) {
               onChange={onChange}
               numInputs={numInputs}
               shouldAutoFocus={autoFocus}
+              inputType={type}
               renderInput={({ className, ...rest }) => (
                 <input className="otp-input" {...rest} readOnly={readOnly} />
               )}
