@@ -9,7 +9,6 @@ import {
   signIn,
   signUp,
 } from '@mvp/lib/frontend/aws-cognito';
-import { set } from 'date-fns';
 import { Button, Text } from 'suomifi-ui-components';
 import FormCodeInput from '@shared/components/form/form-code-input';
 import FormInput from '@shared/components/form/form-input';
@@ -186,7 +185,7 @@ export default function SignIn() {
         ) : (
           <CodeForm handleFormSubmit={handleCodeSubmit} />
         )}
-        <div className="flex flex-row gap-2 !text-base bottom-0">
+        <div className="flex flex-row gap-2">
           <Text className="!text-base">
             {!showRegisterForm
               ? "Don't have an account yet?"
