@@ -126,7 +126,7 @@ function CodeForm({
 export default function SignIn() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isCodeSent, setIsCodeSent] = useState(true);
+  const [isCodeSent, setIsCodeSent] = useState(false);
   const [authError, setAuthError] = useState<CognitoError | null>(null);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [codeSubmitTries, setCodeSubmitTries] = useState(0);
