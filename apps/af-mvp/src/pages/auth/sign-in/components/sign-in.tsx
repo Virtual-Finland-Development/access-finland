@@ -114,7 +114,7 @@ function CodeForm({ handleFormSubmit }: FormProps) {
 export default function SignIn() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isCodeSent, setCodeSent] = useState(true);
+  const [isCodeSent, setIsCodeSent] = useState(true);
   const [authError, setAuthError] = useState<CognitoError | null>(null);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
 
@@ -143,7 +143,7 @@ export default function SignIn() {
 
     try {
       await signIn(email);
-      setCodeSent(true);
+      setIsCodeSent(true);
     } catch (error) {
       handleError(error);
     } finally {
@@ -199,7 +199,7 @@ export default function SignIn() {
             className="text-[14px] font-semibold text-blue-600 hover:text-blue-800 visited:text-purple-600 underline"
             onClick={() => {
               setAuthError(null);
-              setCodeSent(false);
+              setIsCodeSent(false);
               setShowRegisterForm(!showRegisterForm);
             }}
           >
