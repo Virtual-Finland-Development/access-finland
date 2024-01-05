@@ -53,43 +53,46 @@ export default function FormCodeInput<T extends FieldValues>(props: Props<T>) {
       name={name}
       control={control as unknown as Control<FieldValues>}
       rules={rules}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <>
-          <div className="flex flex-row gap-1">
-            <Label>{labelText}</Label>
-            {optionalText && <HintText>({optionalText})</HintText>}
-          </div>
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
+        console.log(error);
+        return (
+          <>
+            <div className="flex flex-row gap-1">
+              <Label>{labelText}</Label>
+              {optionalText && <HintText>({optionalText})</HintText>}
+            </div>
 
-          {hintText && <HintText className="!-mt-2">{hintText}</HintText>}
+            {hintText && <HintText className="!-mt-2">{hintText}</HintText>}
 
-          <div className="-mt-3">
-            <OtpInput
-              value={value}
-              onChange={onChange}
-              numInputs={numInputs}
-              shouldAutoFocus={autoFocus}
-              inputType={type}
-              renderInput={({ className, ...rest }) => (
-                <input className="otp-input" {...rest} readOnly={readOnly} />
+            <div className="-mt-3">
+              <OtpInput
+                value={value}
+                onChange={onChange}
+                numInputs={numInputs}
+                shouldAutoFocus={autoFocus}
+                inputType={type}
+                renderInput={({ className, ...rest }) => (
+                  <input className="otp-input" {...rest} readOnly={readOnly} />
+                )}
+                containerStyle={{
+                  width: fullWidth ? 'calc(100% + 8px)' : '298px',
+                  marginLeft: '-4px',
+                  marginRight: '-4px',
+                }}
+                inputStyle={{
+                  width: `calc(100% / ${numInputs})`,
+                  ...(error && inputErrorStyles),
+                }}
+              />
+              {error && showStatusText && (
+                <StatusText className="!text-[hsl(3,59%,48%)]">
+                  {error.message}
+                </StatusText>
               )}
-              containerStyle={{
-                width: fullWidth ? 'calc(100% + 8px)' : '298px',
-                marginLeft: '-4px',
-                marginRight: '-4px',
-              }}
-              inputStyle={{
-                width: `calc(100% / ${numInputs})`,
-                ...(error && inputErrorStyles),
-              }}
-            />
-            {error && showStatusText && (
-              <StatusText className="!text-[hsl(3,59%,48%)]">
-                {error.message}
-              </StatusText>
-            )}
-          </div>
-        </>
-      )}
+            </div>
+          </>
+        );
+      }}
     />
   );
 }
