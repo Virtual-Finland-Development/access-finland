@@ -104,6 +104,9 @@ const awsLocalCertsProvider = new aws.Provider(nameResource('cert-local'), {
   region: awsRegion as aws.Region,
 });
 
+// Email setup
+const sesConfig = new pulumi.Config('ses');
+
 const setup = {
   currentStackReference,
   organizationName,
@@ -136,6 +139,9 @@ const setup = {
   },
   infrastructureStackName: `${organizationName}/infrastructure/${envOverride}`,
   monitoringStackName: `${organizationName}/cloudwatch-logs-alerts/${envOverride}`,
+  ses: {
+    fromAddress: sesConfig.require('fromAddress'),
+  },
 };
 
 export default setup;

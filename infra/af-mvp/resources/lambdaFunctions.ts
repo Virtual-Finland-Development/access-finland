@@ -113,7 +113,7 @@ export function createCreateAuthChallengeLambda() {
     environment: {
       variables: {
         LOG_LEVEL: 'INFO',
-        SES_FROM_ADDRESS: 'no-reply@dev.accessfinland.dev', // @TODO
+        SES_FROM_ADDRESS: setup.ses.fromAddress,
       },
     },
     tags,
