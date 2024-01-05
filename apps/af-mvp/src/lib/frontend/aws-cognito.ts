@@ -128,8 +128,9 @@ export async function confirmSignIn(code: string) {
       throw new CodeMismatchException();
     }
   } catch (error) {
-    // Transform the not authorized exception to a more user friendly message
+    // Transform the not authorized exception (3rd failed code input try) to a more user friendly message
     if (
+      !(error instanceof CodeMismatchException) &&
       parseCognitoError(error).type === CognitoErrorTypes.NotAuthorizedException
     ) {
       throw new MaxCodeAttemptsExceededException();
