@@ -18,6 +18,7 @@ import Loading from '@shared/components/ui/loading';
 
 interface SubmitProps {
   text: string;
+  disabled?: boolean;
 }
 
 interface FormProps {
@@ -25,13 +26,18 @@ interface FormProps {
   title?: string;
 }
 
+interface CodeSubmitFormProps extends FormProps {
+  tryCount: number;
+  maxTries: number;
+}
+
 type EmailForm = { email: string };
 type CodeForm = { code: string };
 
-function Submit({ text }: SubmitProps) {
+function Submit({ text, disabled }: SubmitProps) {
   return (
     <div className="flex flex-row gap-3 items-center relative">
-      <Button type="submit" className="!w-full">
+      <Button type="submit" className="!w-full" disabled={disabled}>
         {text}
       </Button>
     </div>
@@ -78,12 +84,18 @@ function EmailForm({
   );
 }
 
-function CodeForm({ handleFormSubmit }: FormProps) {
+function CodeForm({
+  handleFormSubmit,
+  tryCount,
+  maxTries,
+}: CodeSubmitFormProps) {
   const { handleSubmit, control } = useForm<CodeForm>();
 
   const onSubmit: SubmitHandler<CodeForm> = async ({ code }) => {
     await handleFormSubmit(code);
   };
+
+  const isDisabled = tryCount >= maxTries;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -101,7 +113,7 @@ function CodeForm({ handleFormSubmit }: FormProps) {
           numInputs={6}
           fullWidth
         />
-        <Submit text="Sign in with code" />
+        <Submit text="Sign in with code" disabled={isDisabled} />
       </div>
     </form>
   );
@@ -113,6 +125,8 @@ export default function SignIn() {
   const [isCodeSent, setCodeSent] = useState(false);
   const [authError, setAuthError] = useState<CognitoError | null>(null);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [codeSubmitTries, setCodeSubmitTries] = useState(0);
+  const codeSubmitMaxTries = 3;
 
   const handleError = (error: Error) => {
     const cognitoError = parseCognitoError(error);
@@ -150,15 +164,11 @@ export default function SignIn() {
   const handleCodeSubmit = async (code: string) => {
     setAuthError(null);
     setIsLoading(true);
+    setCodeSubmitTries(codeSubmitTries + 1);
 
     try {
-      const isSignedIn = await confirmSignIn(code);
-
-      if (isSignedIn) {
-        router.reload();
-      } else {
-        setIsLoading(false);
-      }
+      await confirmSignIn(code);
+      router.reload(); // Success, reload the page to login to the app
     } catch (error) {
       handleError(error);
       setIsLoading(false);
@@ -183,7 +193,11 @@ export default function SignIn() {
             }
           />
         ) : (
-          <CodeForm handleFormSubmit={handleCodeSubmit} />
+          <CodeForm
+            handleFormSubmit={handleCodeSubmit}
+            tryCount={codeSubmitTries}
+            maxTries={codeSubmitMaxTries}
+          />
         )}
         <div className="flex flex-row gap-2">
           <Text className="!text-base">
@@ -209,6 +223,26 @@ export default function SignIn() {
             {authError.type === CognitoErrorTypes.UsernameExistsException && (
               <Text className="!text-base">
                 You already have an account. Please sign in with your email.
+              </Text>
+            )}
+            {authError.type === CognitoErrorTypes.UserNotFoundException && (
+              <Text className="!text-base">
+                You don&apos;t have an account yet. Please register with your
+                email.
+              </Text>
+            )}
+            {authError.type === CognitoErrorTypes.CodeMismatchException && (
+              <Text className="!text-base">
+                The code you entered is incorrect. You have{' '}
+                {Math.max(codeSubmitMaxTries - codeSubmitTries, 0)} tries left
+                to enter the code. Please try again.
+              </Text>
+            )}
+            {authError.type ===
+              CognitoErrorTypes.MaxCodeAttemptsExceededException && (
+              <Text className="!text-base">
+                You have reached the maximum number of tries to enter the code.
+                Please try again later.
               </Text>
             )}
           </>
