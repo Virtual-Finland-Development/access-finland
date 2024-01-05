@@ -46,8 +46,17 @@ const SignUpException = {
 export const CognitoErrorTypes = {
   ...SignUpException,
   ...GetUserException,
+  CodeMismatchException: 'CodeMismatchException',
+  MaxCodeAttemptsExceededException: 'MaxCodeAttemptsExceededException',
   Unknown: 'Unknown',
 } as const;
+
+class CodeMismatchException extends Error {
+  name = 'CodeMismatchException';
+}
+class MaxCodeAttemptsExceededException extends Error {
+  name = 'MaxCodeAttemptsExceededException';
+}
 
 export type CognitoErrorType =
   (typeof CognitoErrorTypes)[keyof typeof CognitoErrorTypes];
@@ -88,18 +97,16 @@ export async function fetchAuthIdToken(): Promise<string | null> {
 }
 
 export async function signIn(email: string) {
-  const { isSignedIn, nextStep } = await signInWithCognito({
+  await signInWithCognito({
     username: email,
     options: {
       authFlowType: 'CUSTOM_WITHOUT_SRP',
     },
   });
-
-  console.log(isSignedIn, nextStep);
 }
 
 export async function signUp(email: string) {
-  const { isSignUpComplete, userId, nextStep } = await signUpWithCognito({
+  await signUpWithCognito({
     username: email,
     password: getRandomString(30), // This is not used but require a value
     options: {
@@ -109,22 +116,25 @@ export async function signUp(email: string) {
       autoSignIn: { authFlowType: 'CUSTOM_WITHOUT_SRP' },
     },
   });
-  console.log(isSignUpComplete, userId, nextStep);
 }
 
 export async function confirmSignIn(code: string) {
-  // Send the answer to the User Pool
-  // This will throw an error if it’s the 3rd wrong answer
   try {
-    const { isSignedIn, nextStep } = await confirmSignInWithCognito({
+    const { isSignedIn } = await confirmSignInWithCognito({
       challengeResponse: code,
     });
-    console.log('isSignedIn', isSignedIn);
-    console.log('nextStep', nextStep);
-    return isSignedIn;
+
+    if (!isSignedIn) {
+      throw new CodeMismatchException();
+    }
   } catch (error) {
-    console.log('error confirming sign up', error);
-    return false;
+    // Transform the not authorized exception to a more user friendly message
+    if (
+      parseCognitoError(error).type === CognitoErrorTypes.NotAuthorizedException
+    ) {
+      throw new MaxCodeAttemptsExceededException();
+    }
+    throw error;
   }
 }
 
@@ -149,7 +159,7 @@ export function parseCognitoError(error: any): CognitoError {
       };
     case CognitoErrorTypes.NotAuthorizedException:
       return {
-        message: 'Wrong password',
+        message: 'Unauthorized',
         type: errorType,
       };
     case CognitoErrorTypes.UsernameExistsException:
@@ -164,6 +174,16 @@ export function parseCognitoError(error: any): CognitoError {
           type: CognitoErrorTypes.UserNotFoundException,
         };
       }
+    case CognitoErrorTypes.CodeMismatchException:
+      return {
+        message: 'Incorrect code entered',
+        type: errorType,
+      };
+    case CognitoErrorTypes.MaxCodeAttemptsExceededException:
+      return {
+        message: 'Too many attempts, try again later',
+        type: errorType,
+      };
   }
 
   return {
