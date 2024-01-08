@@ -9,7 +9,7 @@ import {
   screen,
 } from '@shared/lib/testing/utils/testing-library-utils';
 
-function interceptGoodLoginRequest() {
+function interceptSystemLoginRequest() {
   server.use(
     rest.post('http://localhost/api/auth/system/login', (_, res, ctx) =>
       res(ctx.json({ message: 'Login successful' }))
@@ -41,7 +41,7 @@ jest.mock('@mvp/lib/frontend/aws-cognito', () => {
 
 describe('Sign-in page tests', () => {
   beforeEach(async () => {
-    interceptGoodLoginRequest();
+    interceptSystemLoginRequest();
 
     await act(async () => {
       renderWithProviders(<SignInPage />);
