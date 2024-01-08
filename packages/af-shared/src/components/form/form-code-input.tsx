@@ -62,7 +62,7 @@ export default function FormCodeInput<T extends FieldValues>(props: Props<T>) {
 
           {hintText && <HintText className="!-mt-2">{hintText}</HintText>}
 
-          <div className="-mt-3">
+          <div className="-mt-3" data-testid="otp-inputs-container">
             <OtpInput
               value={value}
               onChange={onChange}
