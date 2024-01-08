@@ -102,6 +102,7 @@ describe('Sign-in page tests', () => {
   });
 
   it('renders logged in sign-in page for authenticated user', async () => {
+    // user gets automatically logged in, see jest mock above for fetchAuthIdToken
     const text1 = screen.getByText(/Finish login to the Access Finland/i);
     const text2 = screen.getByText(
       /Logout from your Virtual Finland login session/i
