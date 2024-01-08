@@ -49,5 +49,6 @@ export = async () => {
     CognitoUserPoolId: wafSetup?.userPool.id,
     CongitoUserPoolClientId: wafSetup?.userPoolClient.id,
     initialDomainCheckRequired: initialDeployment && domainConfig.enabled,
+    domainZoneId: domainSetup?.zone.id,
   };
 };
