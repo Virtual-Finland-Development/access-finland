@@ -51,7 +51,7 @@ export default function SingInPage() {
     }
   }, [checkAuthStatus, isLoading]);
 
-  const handleCodeLogout = async () => {
+  const handleCognitoLogout = async () => {
     await signOut();
     router.reload();
   };
@@ -93,7 +93,7 @@ export default function SingInPage() {
                 Logout from your Virtual Finland login session
                 <Button
                   variant="secondary"
-                  onClick={handleCodeLogout}
+                  onClick={handleCognitoLogout}
                   icon={<IconLogout />}
                 >
                   Log out from Virtual Finland
