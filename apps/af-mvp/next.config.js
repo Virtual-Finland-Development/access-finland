@@ -61,7 +61,7 @@ const nextConfig = {
           ...nextSafe(nextSafeConfig),
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=3571000; includeSubDomains; preload',
+            value: 'max-age=31536000; includeSubDomains; preload',
           },
         ],
       },
