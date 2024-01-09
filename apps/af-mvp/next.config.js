@@ -40,7 +40,7 @@ const nextSafeConfig = {
     reportOnly: false,
   },
   frameOptions: 'DENY',
-  permissionsPolicy: false,
+  permissionsPolicy: !isDev ? 'none' : false,
   permissionsPolicyDirectiveSupport: ['proposed', 'standard'],
   referrerPolicy: 'no-referrer',
   xssProtection: '1; mode=block',
@@ -58,7 +58,13 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        headers: nextSafe(nextSafeConfig),
+        headers: [
+          ...nextSafe(nextSafeConfig),
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+        ],
       },
     ];
   },
