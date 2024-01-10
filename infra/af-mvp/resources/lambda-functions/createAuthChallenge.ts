@@ -94,7 +94,7 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         Value: 'createAuthChallenge', // required
       },
     ],
-    ConfigurationSetName: 'my-first-configuration-set',
+    ConfigurationSetName: 'af-ses-configuration-set',
   };
   await client.send(new SendEmailCommand(input));
 }
