@@ -61,7 +61,7 @@ export default function SingInPage() {
   }
 
   return (
-    <div className="max-w-[900px]">
+    <div className="max-w-[900px] py-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 bg-white p-6 border-2 shadow-xl min-h-[600px]">
         <div className="bg-suomifi-blue-bg-dark flex flex-col gap-4 items-center justify-center p-4 md:p-8 rounded">
           <CustomImage src={VFLogo} alt="VF Logo" priority width={300} />
@@ -97,7 +97,7 @@ export default function SingInPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center gap-2 mt-12">
+      <div className="flex flex-col justify-center items-center gap-2 mt-8">
         <IconHome className="flex-shrink-0 h-14 w-14" />
         <CustomLink href="/" disableVisited $bold>
           Go to Access Finland Home
