@@ -2,6 +2,7 @@ import { ImageProps } from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
+import VFLogoInverted from '@shared/images/virtualfinland_logo_small_inverted.png';
 import CustomHeading from 'af-shared/src/components/ui/custom-heading';
 import { Button, Text } from 'suomifi-ui-components';
 import { AuthProvider } from '@shared/types';
@@ -20,11 +21,14 @@ function getSinunaServiceUrl() {
 }
 
 function AuthProviderInfo(props: {
-  logo?: ImageProps['src'];
+  image?: ImageProps['src'];
+  imageWidth?: number;
   link: string;
+  isExternalLink?: boolean;
   name: string;
 }) {
-  const { logo, link, name } = props;
+  const { image, imageWidth = 200, link, isExternalLink = true, name } = props;
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-6">
@@ -39,13 +43,24 @@ function AuthProviderInfo(props: {
           </Text>
           <Button
             className="!w-auto"
-            onClick={() => window.open(link, '_blank')}
+            onClick={() => {
+              if (isExternalLink) {
+                window.open(link, '_blank');
+              } else {
+                router.push(link);
+              }
+            }}
           >
             {name} Service
           </Button>
         </div>
-        {logo && (
-          <CustomImage src={logo} alt={`${name} logo`} width={250} priority />
+        {image && (
+          <CustomImage
+            src={image}
+            alt={`${name} logo`}
+            width={imageWidth}
+            priority
+          />
         )}
       </div>
     </div>
@@ -85,14 +100,17 @@ export default function LoggedOutPage() {
             </CustomHeading>
             {provider === AuthProvider.SINUNA && (
               <AuthProviderInfo
-                logo={SinunaLogo}
+                image={SinunaLogo}
                 link={sinunaLoginServiceLink}
                 name="Sinuna"
               />
             )}
             {provider === AuthProvider.VIRTUALFINLAND && (
               <AuthProviderInfo
+                image={VFLogoInverted}
+                imageWidth={300}
                 link={virtualFinlandLoginServiceLink}
+                isExternalLink={false}
                 name="Virtual Finland"
               />
             )}
