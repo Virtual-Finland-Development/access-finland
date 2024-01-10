@@ -64,13 +64,7 @@ export default function SingInPage() {
     <div className="max-w-[900px]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 bg-white p-6 border-2 shadow-xl min-h-[600px]">
         <div className="bg-suomifi-blue-bg-dark flex flex-col gap-4 items-center justify-center p-4 md:p-8 rounded">
-          <CustomImage
-            src={VFLogo}
-            alt="VF Logo"
-            priority
-            width={300}
-            height={150}
-          />
+          <CustomImage src={VFLogo} alt="VF Logo" priority width={300} />
           <Text className="!text-base !text-white !leading-tight">
             Your privacy is important to us. We will only use your email address
             for the purpose of sending the verification code and managing your

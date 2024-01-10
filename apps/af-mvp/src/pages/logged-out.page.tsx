@@ -2,6 +2,7 @@ import { ImageProps } from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
+import VFLogoInverted from '@shared/images/virtualfinland_logo_small_inverted.png';
 import CustomHeading from 'af-shared/src/components/ui/custom-heading';
 import { Button, Text } from 'suomifi-ui-components';
 import { AuthProvider } from '@shared/types';
@@ -22,9 +23,11 @@ function getSinunaServiceUrl() {
 function AuthProviderInfo(props: {
   logo?: ImageProps['src'];
   link: string;
+  isExternalLink?: boolean;
   name: string;
 }) {
-  const { logo, link, name } = props;
+  const { logo, link, isExternalLink = true, name } = props;
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-6">
@@ -39,7 +42,13 @@ function AuthProviderInfo(props: {
           </Text>
           <Button
             className="!w-auto"
-            onClick={() => window.open(link, '_blank')}
+            onClick={() => {
+              if (isExternalLink) {
+                window.open(link, '_blank');
+              } else {
+                router.push(link);
+              }
+            }}
           >
             {name} Service
           </Button>
@@ -92,7 +101,9 @@ export default function LoggedOutPage() {
             )}
             {provider === AuthProvider.VIRTUALFINLAND && (
               <AuthProviderInfo
+                logo={VFLogoInverted}
                 link={virtualFinlandLoginServiceLink}
+                isExternalLink={false}
                 name="Virtual Finland"
               />
             )}
