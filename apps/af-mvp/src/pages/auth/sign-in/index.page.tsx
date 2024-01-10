@@ -56,6 +56,11 @@ export default function SingInPage() {
     await signOut();
     setIsAuthenticated(false);
     setIsLoading(false);
+    toast({
+      title: 'Logged out',
+      content: 'Logged out from Virtual Finland.',
+      status: 'neutral',
+    });
   };
 
   if (isLoading) {
