@@ -48,6 +48,24 @@ export default async (event: CreateAuthChallengeTriggerEvent) => {
 };
 
 /**
+ * Html template for the email
+ *
+ * @param secretLoginCode
+ * @returns
+ */
+function createEmailHtmlContent(secretLoginCode: string) {
+  return `<html>
+  <head>Confirm your login to Virtual Finland</head>
+  <body>
+    <h1>Confirm your login</h1>
+    <p>Confirm your login by entering the following code in the Virtual Finland service:</p>
+    <p><strong>${secretLoginCode}</strong></p>
+    <p>After entering the code, you can continue logging in to the Access Finland service.</p>
+  </body>
+</html>`;
+}
+
+/**
  * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/sesv2/command/SendEmailCommand/
  * @param emailAddress
  * @param secretLoginCode
@@ -69,19 +87,18 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         // Message
         Subject: {
           // Content
-          //Charset: 'UTF-8',
-          Data: 'Your secret login code',
+          Charset: 'UTF-8',
+          Data: `Virtual Finland login confirmation code: ${secretLoginCode}`,
         },
         Body: {
           // Body
           Html: {
-            //Charset: 'UTF-8',
-            Data: `<html><body><p>This is your secret login code:</p>
-                             <h3>${secretLoginCode}</h3></body></html>`,
+            Charset: 'UTF-8',
+            Data: createEmailHtmlContent(secretLoginCode),
           },
           Text: {
-            //Charset: 'UTF-8',
-            Data: `Your secret login code: ${secretLoginCode}`,
+            Charset: 'UTF-8',
+            Data: `Confirm your login by entering the following code in the Virtual Finland service: ${secretLoginCode}`,
           },
         },
       },
@@ -90,11 +107,11 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
       // MessageTagList
       {
         // MessageTag
-        Name: 'name', // required
-        Value: 'createAuthChallenge', // required
+        Name: 'name',
+        Value: 'createAuthChallenge',
       },
     ],
-    ConfigurationSetName: 'my-first-configuration-set',
+    ConfigurationSetName: 'af-ses-configuration-set',
   };
   await client.send(new SendEmailCommand(input));
 }
