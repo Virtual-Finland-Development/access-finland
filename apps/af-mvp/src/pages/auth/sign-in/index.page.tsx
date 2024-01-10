@@ -52,8 +52,15 @@ export default function SingInPage() {
   }, [checkAuthStatus, isLoading]);
 
   const handleCognitoLogout = async () => {
+    setIsLoading(true);
     await signOut();
-    router.reload();
+    setIsAuthenticated(false);
+    setIsLoading(false);
+    toast({
+      title: 'Logged out',
+      content: 'Logged out from Virtual Finland.',
+      status: 'neutral',
+    });
   };
 
   if (isLoading) {

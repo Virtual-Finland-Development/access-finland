@@ -6,7 +6,9 @@ import {
   signOut as signOutWithCognito,
   signUp as signUpWithCognito,
 } from 'aws-amplify/auth';
+import { cognitoUserPoolsTokenProvider } from 'aws-amplify/auth/cognito';
 import { randomBytes } from 'crypto';
+import { ApiStorage } from './ApiStorage';
 
 // @see: https://docs.amplify.aws/javascript/build-a-backend/auth/advanced-workflows/
 
@@ -83,6 +85,11 @@ Amplify.configure({
     },
   },
 });
+
+// @see: https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-session/
+cognitoUserPoolsTokenProvider.setKeyValueStorage(
+  new ApiStorage('/api/auth/system/session')
+);
 
 export async function fetchAuthIdToken(): Promise<string | null> {
   try {
