@@ -52,8 +52,10 @@ export default function SingInPage() {
   }, [checkAuthStatus, isLoading]);
 
   const handleCognitoLogout = async () => {
+    setIsLoading(true);
     await signOut();
-    router.reload();
+    setIsAuthenticated(false);
+    setIsLoading(false);
   };
 
   if (isLoading) {
