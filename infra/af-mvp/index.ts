@@ -1,6 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import { createContentDeliveryNetwork } from './resources/cloudfront';
+import { createLoginSystemCognitoUserPool } from './resources/cognito';
 import { createDomainSetup } from './resources/domainSetup';
+import { createContainerImage } from './resources/ecrContainerImage';
 import { createECSAutoScaling, createECSCluster } from './resources/ecs';
 import { createFargateService } from './resources/fargate';
 import { createLoadBalancer } from './resources/loadBalancer';
@@ -15,6 +17,8 @@ export = async () => {
   const initialDeployment = await isInitialDeployment();
   // Domain setup
   const domainSetup = await createDomainSetup();
+  // Login system
+  const loginSystem = createLoginSystemCognitoUserPool();
   // ECS Cluster
   const cluster = createECSCluster();
   // Application load balancer
@@ -27,11 +31,13 @@ export = async () => {
     domainSetup,
     wafSetup?.webApplicationFirewall
   );
+  // Container image
+  const image = createContainerImage(cdnSetup, loginSystem);
   // ECS Fargate service
   const fargateService = createFargateService(
+    image,
     loadBalancerSetup,
     cluster,
-    cdnSetup,
     wafSetup
   );
   // Auto-scaling policies
@@ -50,5 +56,7 @@ export = async () => {
     CongitoUserPoolClientId: wafSetup?.userPoolClient.id,
     initialDomainCheckRequired: initialDeployment && domainConfig.enabled,
     domainZoneId: domainSetup?.zone.id,
+    VirtualFinlandAuthCognitoUserPoolId: loginSystem.userPool.id,
+    VirtualFinlandAuthCognitoPoolClientId: loginSystem.userPoolClient.id,
   };
 };

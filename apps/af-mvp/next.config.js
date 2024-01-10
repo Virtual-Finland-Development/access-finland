@@ -21,6 +21,7 @@ const nextSafeConfig = {
       "'self'",
       CODESETS_BASE_URL,
       'https://fonts.googleapis.com/',
+      'https://cognito-idp.eu-north-1.amazonaws.com/'
     ],
     'default-src': "'self'",
     'font-src': ["'self'", 'https://fonts.gstatic.com/'],
@@ -39,7 +40,7 @@ const nextSafeConfig = {
     reportOnly: false,
   },
   frameOptions: 'DENY',
-  permissionsPolicy: false,
+  permissionsPolicy: !isDev ? 'none' : false,
   permissionsPolicyDirectiveSupport: ['proposed', 'standard'],
   referrerPolicy: 'no-referrer',
   xssProtection: '1; mode=block',
@@ -57,7 +58,13 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        headers: nextSafe(nextSafeConfig),
+        headers: [
+          ...nextSafe(nextSafeConfig),
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+        ],
       },
     ];
   },
@@ -66,7 +73,7 @@ const nextConfig = {
     config.plugins.push(
       new DuplicatePackageCheckerPlugin({
         exclude(instance) {
-          return instance.name === 'react-is';
+          return ['react-is', 'tslib', '@aws-crypto/util', '@aws-crypto/sha256-js'].includes(instance.name);
         },
       })
     );

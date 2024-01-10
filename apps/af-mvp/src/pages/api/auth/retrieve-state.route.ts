@@ -10,6 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json({
     message: 'Retrieved state successfully.',
     state: {
+      provider: apiAuthPackage.provider,
       expiresAt: apiAuthPackage.expiresAt,
       profileData: apiAuthPackage.profileData,
     },

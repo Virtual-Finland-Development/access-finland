@@ -2,6 +2,7 @@ export enum AuthProvider {
   TESTBED = 'testbed',
   SINUNA = 'sinuna',
   SUOMIFI = 'suomifi',
+  VIRTUALFINLAND = 'virtualfinland',
 }
 
 export type AppContextObj = {
@@ -15,6 +16,7 @@ export type AppContextObj = {
 export type LoggedInState = {
   idToken?: string; // For isExportedApplication
   expiresAt: string;
+  provider?: AuthProvider;
   profileData: {
     userId: string;
     email: string;
