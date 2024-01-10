@@ -21,12 +21,13 @@ function getSinunaServiceUrl() {
 }
 
 function AuthProviderInfo(props: {
-  logo?: ImageProps['src'];
+  image?: ImageProps['src'];
+  imageWidth?: number;
   link: string;
   isExternalLink?: boolean;
   name: string;
 }) {
-  const { logo, link, isExternalLink = true, name } = props;
+  const { image, imageWidth = 200, link, isExternalLink = true, name } = props;
   const router = useRouter();
 
   return (
@@ -53,8 +54,13 @@ function AuthProviderInfo(props: {
             {name} Service
           </Button>
         </div>
-        {logo && (
-          <CustomImage src={logo} alt={`${name} logo`} width={250} priority />
+        {image && (
+          <CustomImage
+            src={image}
+            alt={`${name} logo`}
+            width={imageWidth}
+            priority
+          />
         )}
       </div>
     </div>
@@ -94,14 +100,15 @@ export default function LoggedOutPage() {
             </CustomHeading>
             {provider === AuthProvider.SINUNA && (
               <AuthProviderInfo
-                logo={SinunaLogo}
+                image={SinunaLogo}
                 link={sinunaLoginServiceLink}
                 name="Sinuna"
               />
             )}
             {provider === AuthProvider.VIRTUALFINLAND && (
               <AuthProviderInfo
-                logo={VFLogoInverted}
+                image={VFLogoInverted}
+                imageWidth={300}
                 link={virtualFinlandLoginServiceLink}
                 isExternalLink={false}
                 name="Virtual Finland"

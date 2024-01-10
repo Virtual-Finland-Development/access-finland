@@ -47,7 +47,7 @@ export default function ProfileNotAuthenticated() {
           <CustomImage
             src={SinunaLogo}
             alt="Sinuna logo"
-            width={250}
+            width={200}
             priority
           />
         ) : (
