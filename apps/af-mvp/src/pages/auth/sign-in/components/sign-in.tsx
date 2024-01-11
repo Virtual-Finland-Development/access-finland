@@ -35,9 +35,6 @@ interface CodeFormProps extends FormProps {
   maxTries: number;
 }
 
-type EmailForm = { email: string };
-type CodeForm = { code: string };
-
 function Submit(props: SubmitProps) {
   const { text, disabled } = props;
 
@@ -52,9 +49,9 @@ function Submit(props: SubmitProps) {
 
 function EmailForm(props: EmailFormProps) {
   const { handleFormSubmit, title, type } = props;
-  const { handleSubmit, control } = useForm<EmailForm>();
+  const { handleSubmit, control } = useForm<{ email: string }>();
 
-  const onSubmit: SubmitHandler<EmailForm> = async ({ email }) => {
+  const onSubmit: SubmitHandler<{ email: string }> = async ({ email }) => {
     await handleFormSubmit(email);
   };
 
@@ -89,9 +86,9 @@ function EmailForm(props: EmailFormProps) {
 
 function CodeForm(props: CodeFormProps) {
   const { handleFormSubmit, tryCount, maxTries } = props;
-  const { handleSubmit, control } = useForm<CodeForm>();
+  const { handleSubmit, control } = useForm<{ code: string }>();
 
-  const onSubmit: SubmitHandler<CodeForm> = async ({ code }) => {
+  const onSubmit: SubmitHandler<{ code: string }> = async ({ code }) => {
     await handleFormSubmit(code);
   };
 
