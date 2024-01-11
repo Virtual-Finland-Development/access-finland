@@ -33,7 +33,7 @@ export default function Loading(props: Props) {
       );
     }
 
-    return spinner;
+    return <>{spinner}</>;
   };
 
   return renderLoadingSpinner(
