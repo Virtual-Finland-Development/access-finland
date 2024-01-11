@@ -39,7 +39,7 @@ function Submit(props: SubmitProps) {
   const { text, disabled } = props;
 
   return (
-    <div className="flex flex-row gap-3 items-center relative">
+    <div className="flex flex-row gap-3 items-center">
       <Button type="submit" className="!w-full" disabled={disabled}>
         {text}
       </Button>
