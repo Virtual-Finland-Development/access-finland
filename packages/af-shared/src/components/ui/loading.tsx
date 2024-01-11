@@ -6,7 +6,7 @@ interface Props {
   text?: string;
   textAlign?: 'bottom' | 'right';
   variant?: 'normal' | 'small';
-  /** Loading indicator will be absolute positioned and centered relative to first relative positioned container element. Add 'position: relative' to target container element when needed. */
+  /** Loading indicator will be 'absolute' positioned and centered relative to first 'relative' positioned container element. Add 'position: relative' to target container element when needed. */
   asOverlay?: boolean;
   /** Background color for the loading overlay (with see-through opacity). Defaults to '#fff'. Use valid CSS color value like HEX or RGB */
   overlayBgColor?: string;
