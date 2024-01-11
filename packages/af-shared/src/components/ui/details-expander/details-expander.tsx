@@ -35,15 +35,9 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
     <Expander>
       <ExpanderTitleButton>
         <div className="flex flex-row gap-2 items-center">
-          <div className="flex flex-row items-center gap-2 items-start relative">
+          <div className="flex flex-row items-center gap-2 items-start">
             <span>{title}</span>
-            {isLoading && (
-              <div className="w-[24px]">
-                <div className="absolute bottom-[-10px]">
-                  <Loading variant="small" />
-                </div>
-              </div>
-            )}
+            {isLoading && <Loading variant="small" />}
           </div>
 
           {!isLoading && typeof hasValues === 'boolean' && showStatusIcons && (
