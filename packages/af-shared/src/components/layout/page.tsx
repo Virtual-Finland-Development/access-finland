@@ -53,7 +53,7 @@ interface PageBlockProps {
 
 function PageBlock(props: PageBlockProps) {
   const { className: propsClassName = '', children } = props;
-  const className = `px-4 lg:px-16 py-5 ${propsClassName}`;
+  const className = `relative px-4 lg:px-16 py-5 ${propsClassName}`;
 
   return (
     <Block variant="section" className={className}>

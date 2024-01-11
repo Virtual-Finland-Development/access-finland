@@ -45,7 +45,7 @@ export default function ProfileDeleteConfirmation(props: Props) {
           Yes, Delete
         </DangerButton>
         {isLoading && (
-          <div className="mt-1 ml-1">
+          <div className="ml-1">
             <Loading variant="small" />
           </div>
         )}
