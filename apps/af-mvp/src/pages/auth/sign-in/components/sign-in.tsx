@@ -26,7 +26,11 @@ interface FormProps {
   title?: string;
 }
 
-interface CodeSubmitFormProps extends FormProps {
+interface EmailFormProps extends FormProps {
+  type: 'register' | 'login';
+}
+
+interface CodeFormProps extends FormProps {
   tryCount: number;
   maxTries: number;
 }
@@ -34,7 +38,9 @@ interface CodeSubmitFormProps extends FormProps {
 type EmailForm = { email: string };
 type CodeForm = { code: string };
 
-function Submit({ text, disabled }: SubmitProps) {
+function Submit(props: SubmitProps) {
+  const { text, disabled } = props;
+
   return (
     <div className="flex flex-row gap-3 items-center relative">
       <Button type="submit" className="!w-full" disabled={disabled}>
@@ -44,11 +50,8 @@ function Submit({ text, disabled }: SubmitProps) {
   );
 }
 
-function EmailForm({
-  handleFormSubmit,
-  title,
-  type,
-}: FormProps & { type: 'register' | 'login' }) {
+function EmailForm(props: EmailFormProps) {
+  const { handleFormSubmit, title, type } = props;
   const { handleSubmit, control } = useForm<EmailForm>();
 
   const onSubmit: SubmitHandler<EmailForm> = async ({ email }) => {
@@ -84,11 +87,8 @@ function EmailForm({
   );
 }
 
-function CodeForm({
-  handleFormSubmit,
-  tryCount,
-  maxTries,
-}: CodeSubmitFormProps) {
+function CodeForm(props: CodeFormProps) {
+  const { handleFormSubmit, tryCount, maxTries } = props;
   const { handleSubmit, control } = useForm<CodeForm>();
 
   const onSubmit: SubmitHandler<CodeForm> = async ({ code }) => {
