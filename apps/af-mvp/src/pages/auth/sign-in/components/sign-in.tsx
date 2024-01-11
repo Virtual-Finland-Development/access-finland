@@ -178,11 +178,7 @@ export default function SignIn() {
 
   return (
     <div className="relative h-full flex flex-col justify-center gap-3">
-      {isLoading && (
-        <div className="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
-          <Loading />
-        </div>
-      )}
+      {isLoading && <Loading asOverlay />}
 
       <div className="flex flex-col gap-4 items-start">
         {!isCodeSent ? (
