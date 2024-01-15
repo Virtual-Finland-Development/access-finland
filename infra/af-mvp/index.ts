@@ -17,8 +17,6 @@ export = async () => {
   const initialDeployment = await isInitialDeployment();
   // Domain setup
   const domainSetup = await createDomainSetup();
-  // Login system
-  const loginSystem = createLoginSystemCognitoUserPool();
   // ECS Cluster
   const cluster = createECSCluster();
   // Application load balancer
@@ -31,6 +29,8 @@ export = async () => {
     domainSetup,
     wafSetup?.webApplicationFirewall
   );
+  // Login system
+  const loginSystem = createLoginSystemCognitoUserPool(cdnSetup);
   // Container image
   const image = createContainerImage(cdnSetup, loginSystem);
   // ECS Fargate service
@@ -44,7 +44,7 @@ export = async () => {
   createECSAutoScaling(cluster, fargateService);
 
   return {
-    url: pulumi.interpolate`https://${cdnSetup.domainName}`, // url actually used by the application
+    url: cdnSetup.url, // url actually used by the application
     lbUrl: loadBalancerSetup.url, // load balancer url
     cdnURL: pulumi.interpolate`https://${cdnSetup.cdn.domainName}`, // CloudFront url
     // Outputs for the monitoring dashboard

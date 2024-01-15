@@ -2,6 +2,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
 import setup, { nameResource } from '../utils/setup';
+import { CdnSetup } from '../utils/types';
 import {
   createCreateAuthChallengeLambda,
   createDefineAuthChallengeLambda,
@@ -94,11 +95,11 @@ export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
  *
  * @returns
  */
-export function createLoginSystemCognitoUserPool() {
+export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
   const defineAuthChallengeLambda = createDefineAuthChallengeLambda();
   const verifyAuthChallengeResponseLambda =
     createVerifyAuthChallengeResponseLambda();
-  const createAuthChallengeLambda = createCreateAuthChallengeLambda();
+  const createAuthChallengeLambda = createCreateAuthChallengeLambda(cdnSetup);
   const preSignUpLambda = createPreSignUpLambda();
   const postAuthenticationLambda = createPostAuthenticationLambda();
 
