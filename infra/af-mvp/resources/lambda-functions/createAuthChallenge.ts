@@ -7,8 +7,45 @@ import {
 } from '@aws-sdk/client-sesv2';
 import { CreateAuthChallengeTriggerEvent } from 'aws-lambda';
 import { randomDigits } from 'crypto-secure-random-digit';
+import { createEmailContentForCodeConfirmation } from './utils/email';
 
-export default async (event: CreateAuthChallengeTriggerEvent) => {
+/**
+ * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/sesv2/command/SendEmailCommand/
+ * @param emailAddress
+ * @param secretLoginCode
+ */
+async function sendEmail(emailAddress: string, secretLoginCode: string) {
+  const client = new SESv2Client();
+  const input: SendEmailRequest = {
+    FromEmailAddress: process.env.SES_FROM_ADDRESS!,
+    Destination: {
+      // Destination
+      ToAddresses: [
+        // EmailAddressList
+        emailAddress,
+      ],
+    },
+    Content: createEmailContentForCodeConfirmation(secretLoginCode),
+    EmailTags: [
+      // MessageTagList
+      {
+        // MessageTag
+        Name: 'name',
+        Value: 'createAuthChallenge',
+      },
+    ],
+    ConfigurationSetName: 'af-ses-configuration-set',
+  };
+  await client.send(new SendEmailCommand(input));
+}
+
+/**
+ * The createAuthChallenge trigger is invoked when a user submits their email to sign in
+ *
+ * @param event
+ * @returns
+ */
+const createAuthChallenge = async (event: CreateAuthChallengeTriggerEvent) => {
   let secretLoginCode: string;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
@@ -47,87 +84,4 @@ export default async (event: CreateAuthChallengeTriggerEvent) => {
   return event;
 };
 
-/**
- * Html template for the email
- *
- * @param secretLoginCode
- * @returns
- */
-function createEmailHtmlContent(secretLoginCode: string) {
-  const siteUrl = process.env.SITE_URL!;
-  return `<html>
-  <head>
-    <title>Confirm your login to Virtual Finland></title>
-    <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-    .code-text {
-      font-weight: bold; 
-      font-size: 20px; 
-      line-height: 30px;
-    }
-    </style>
-  </head>
-  <body>
-    <h1>Confirm your login</h1>
-    <p>Confirm your login by entering the following code in the Virtual Finland service:</p>
-    <p class='code-text'>${secretLoginCode}</p>
-    <p>After entering the code, you can continue logging in to the <a href="${siteUrl}">Access Finland</a> service.</p>
-    <hr />
-    <p>This message cannot be replied to.</p>
-  </body>
-</html>`;
-}
-
-/**
- * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/sesv2/command/SendEmailCommand/
- * @param emailAddress
- * @param secretLoginCode
- */
-async function sendEmail(emailAddress: string, secretLoginCode: string) {
-  const client = new SESv2Client();
-  const input: SendEmailRequest = {
-    FromEmailAddress: process.env.SES_FROM_ADDRESS!,
-    Destination: {
-      // Destination
-      ToAddresses: [
-        // EmailAddressList
-        emailAddress,
-      ],
-    },
-    Content: {
-      // EmailContent
-      Simple: {
-        // Message
-        Subject: {
-          // Content
-          Charset: 'UTF-8',
-          Data: `Virtual Finland confirmation code: ${secretLoginCode}`,
-        },
-        Body: {
-          // Body
-          Html: {
-            Charset: 'UTF-8',
-            Data: createEmailHtmlContent(secretLoginCode),
-          },
-          Text: {
-            Charset: 'UTF-8',
-            Data: `Confirm your login by entering the following code in the Virtual Finland service: ${secretLoginCode}`,
-          },
-        },
-      },
-    },
-    EmailTags: [
-      // MessageTagList
-      {
-        // MessageTag
-        Name: 'name',
-        Value: 'createAuthChallenge',
-      },
-    ],
-    ConfigurationSetName: 'af-ses-configuration-set',
-  };
-  await client.send(new SendEmailCommand(input));
-}
+export default createAuthChallenge;
