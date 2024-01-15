@@ -3,6 +3,7 @@ import { UserPool, UserPoolClient } from '@pulumi/aws/cognito';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
+import { CdnSetup } from '../utils/types';
 import { generateBackendSecretKeyPair } from './systemsManager';
 
 const {
@@ -12,10 +13,7 @@ const {
 } = setup;
 
 export function createContainerImage(
-  cdnSetup: {
-    cdn: aws.cloudfront.Distribution;
-    domainName: pulumi.Output<string>;
-  },
+  cdnSetup: CdnSetup,
   loginSystem: {
     userPool: UserPool;
     userPoolClient: UserPoolClient;

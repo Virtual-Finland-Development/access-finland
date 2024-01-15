@@ -1,5 +1,6 @@
 import * as aws from '@pulumi/aws';
 import setup, { nameResource } from '../utils/setup';
+import { CdnSetup } from '../utils/types';
 import createAuthChallenge from './lambda-functions/createAuthChallenge';
 import defineAuthChallenge from './lambda-functions/defineAuthChallenge';
 import postAuthentication from './lambda-functions/postAuthentication';
@@ -78,7 +79,7 @@ export function createVerifyAuthChallengeResponseLambda() {
   );
 }
 
-export function createCreateAuthChallengeLambda() {
+export function createCreateAuthChallengeLambda(cdnSetup: CdnSetup) {
   const execRole = new aws.iam.Role(nameResource('createAuthChallengeRole'), {
     assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
       Service: 'lambda.amazonaws.com',
@@ -114,6 +115,7 @@ export function createCreateAuthChallengeLambda() {
       variables: {
         LOG_LEVEL: 'INFO',
         SES_FROM_ADDRESS: setup.ses.fromAddress,
+        SITE_URL: cdnSetup.url,
       },
     },
     tags,

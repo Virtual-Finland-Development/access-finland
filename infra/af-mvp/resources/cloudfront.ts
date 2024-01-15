@@ -124,5 +124,8 @@ export function createContentDeliveryNetwork(
     domainName: pulumi.interpolate`${
       domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
     }`,
+    url: pulumi.interpolate`https://${
+      domainSetup?.domainName ? domainSetup.domainName : cdn.domainName
+    }`,
   };
 }
