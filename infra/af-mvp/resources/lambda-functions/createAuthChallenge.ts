@@ -56,11 +56,24 @@ export default async (event: CreateAuthChallengeTriggerEvent) => {
 function createEmailHtmlContent(secretLoginCode: string) {
   const siteUrl = process.env.SITE_URL!;
   return `<html>
-  <head>Confirm your login to Virtual Finland</head>
+  <head>
+    <title>Confirm your login to Virtual Finland></title>
+    <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+    .code-text {
+      font-weight: bold; 
+      font-size: 20px; 
+      line-height: 30px;
+    }
+    </style>
+  </head>
   <body>
     <h1>Confirm your login</h1>
     <p>Confirm your login by entering the following code in the Virtual Finland service:</p>
-    <p style="font-weight: bold; font-size: 20px; line-height: 30px">${secretLoginCode}</p>
+    <p class='code-text'>${secretLoginCode}</p>
     <p>After entering the code, you can continue logging in to the <a href="${siteUrl}">Access Finland</a> service.</p>
     <hr />
     <p>This message cannot be replied to.</p>
