@@ -86,10 +86,10 @@ Amplify.configure({
   },
 });
 
-export const cognitoStorage = new ApiStorage('/api/auth/system/session');
+export const authStore = new ApiStorage('/api/auth/system/session');
 
 // @see: https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-session/
-cognitoUserPoolsTokenProvider.setKeyValueStorage(cognitoStorage);
+cognitoUserPoolsTokenProvider.setKeyValueStorage(authStore);
 
 export async function fetchAuthIdToken(): Promise<string | null> {
   try {

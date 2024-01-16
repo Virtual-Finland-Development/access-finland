@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import {
-  cognitoStorage,
+  authStore,
   fetchAuthIdToken,
   signOut,
 } from '@mvp/lib/frontend/aws-cognito';
@@ -15,7 +15,6 @@ import {
   IconLogout,
   Text,
 } from 'suomifi-ui-components';
-import apiClient from '@shared/lib/api/api-client';
 import { useToast } from '@shared/context/toast-context';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
@@ -44,16 +43,11 @@ export default function SingInPage({
         /// Login to the actual application
         // As we are in the same app context we can login directly without the need for redirect flows etc
         try {
-          await apiClient.post(
-            '/api/auth/system/login',
+          await authStore.request(
             {
               idToken,
             },
-            {
-              headers: {
-                'X-CSRF-Token': csrfToken,
-              },
-            }
+            '/api/auth/system/login'
           );
           setIsAuthenticated(true);
         } catch (error) {
@@ -68,11 +62,11 @@ export default function SingInPage({
       }
     }
     setIsLoading(false);
-  }, [isAuthenticated, setIsLoading, setIsAuthenticated, toast, csrfToken]);
+  }, [isAuthenticated, setIsLoading, setIsAuthenticated, toast]);
 
   useEffect(() => {
     if (isLoading) {
-      cognitoStorage.setCsrfToken(csrfToken);
+      authStore.setCsrfToken(csrfToken);
       checkAuthStatus();
     }
   }, [checkAuthStatus, isLoading, csrfToken]);
