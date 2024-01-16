@@ -1,4 +1,5 @@
-import { createHmac, randomBytes } from 'crypto';
+import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 import * as jose from 'node-jose';
 import { getCachingStagedSecretParameter } from './services/aws/ParameterStore';
 
@@ -21,21 +22,37 @@ export async function decryptUsingBackendSecret(encryptedData: string) {
   return JSON.parse(result.payload.toString());
 }
 
+/**
+ * Creates a CSRF token that can be used to verify that a request is coming from the frontend using a backend secret
+ *
+ * @returns
+ */
 export async function generateCSRFToken() {
   const key = await getCachingStagedSecretParameter('BACKEND_HASHGEN_KEY');
-  const salt = randomBytes(32).toString('base64');
-  const token = createHmac('sha256', key).update(salt).digest('hex');
-  return `${salt}.${token}`;
+  const plaintext = randomBytes(32).toString('hex');
+  const secret = `${plaintext}:${key}`;
+
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(secret, salt);
+  return `${plaintext}:${hash}`;
 }
 
+/**
+ * Verifies that a CSRF token is valid using a backend secret
+ *
+ * @param csrfToken
+ */
 export async function verifyCSRFToken(csrfToken: string) {
   if (typeof csrfToken !== 'string') {
     throw new Error('Invalid CSRF token');
   }
+
   const key = await getCachingStagedSecretParameter('BACKEND_HASHGEN_KEY');
-  const [salt, token] = csrfToken.split('.');
-  const expectedToken = createHmac('sha256', key).update(salt).digest('hex');
-  if (token !== expectedToken) {
+  const [plaintext, hash] = csrfToken.split(':');
+
+  const secret = `${plaintext}:${key}`;
+  const verified = await bcrypt.compare(secret, hash);
+  if (!verified) {
     throw new Error('Invalid CSRF token');
   }
 }
