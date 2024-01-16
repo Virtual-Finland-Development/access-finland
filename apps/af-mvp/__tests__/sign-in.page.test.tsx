@@ -26,6 +26,10 @@ const mockRouter = {
 };
 (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
+jest.mock('@mvp/lib/backend/secrets-and-tokens', () => ({
+  generateCSRFToken: jest.fn(async () => Promise.resolve('123456')),
+}));
+
 jest.mock('@mvp/lib/frontend/aws-cognito', () => {
   const fetchAuthIdToken = jest
     .fn()
@@ -36,6 +40,10 @@ jest.mock('@mvp/lib/frontend/aws-cognito', () => {
     fetchAuthIdToken,
     signIn: jest.fn(async () => Promise.resolve()),
     confirmSignIn: jest.fn(async () => Promise.resolve()),
+    authStore: {
+      setCsrfToken: jest.fn(),
+      request: jest.fn(async () => Promise.resolve()),
+    },
   };
 });
 
