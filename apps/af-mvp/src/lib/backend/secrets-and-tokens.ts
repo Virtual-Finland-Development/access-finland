@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { createHmac, randomBytes } from 'crypto';
 import * as jose from 'node-jose';
 import { getStagedSecretParameter } from './services/aws/ParameterStore';
 
@@ -19,10 +19,21 @@ export async function decryptUsingBackendSecret(encryptedData: string) {
   return JSON.parse(result.payload.toString());
 }
 
-/**
- *
- * @returns A random string of 100 bytes
- */
-export function generateCSRFToken() {
-  return randomBytes(100).toString('base64');
+export async function generateCSRFToken() {
+  const key = await getStagedSecretParameter('BACKEND_SECRET_PRIVATE_KEY');
+  const salt = randomBytes(32).toString('base64');
+  const token = createHmac('sha256', key).update(salt).digest('hex');
+  return `${salt}.${token}`;
+}
+
+export async function verifyCSRFToken(csrfToken: string) {
+  if (typeof csrfToken !== 'string') {
+    throw new Error('Invalid CSRF token');
+  }
+  const key = await getStagedSecretParameter('BACKEND_SECRET_PRIVATE_KEY');
+  const [salt, token] = csrfToken.split('.');
+  const expectedToken = createHmac('sha256', key).update(salt).digest('hex');
+  if (token !== expectedToken) {
+    throw new Error('Invalid CSRF token');
+  }
 }

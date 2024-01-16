@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { csrfVerifyMiddleware } from '@mvp/lib/backend/middleware/csrfVerifyMiddleware';
 import cookie from 'cookie';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Parse payload
   const { action, key, value } = req.body;
 
@@ -57,3 +55,5 @@ export default async function handler(
       break;
   }
 }
+
+export default csrfVerifyMiddleware(handler);
