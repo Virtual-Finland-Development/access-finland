@@ -4,7 +4,10 @@ import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { CdnSetup } from '../utils/types';
-import { generateBackendSecretKeyPair } from './systemsManager';
+import {
+  generateBackendHashGenKey,
+  generateBackendSecretKeyPair,
+} from './systemsManager';
 
 const {
   tags,
@@ -21,8 +24,9 @@ export function createContainerImage(
 ) {
   const dataspaceConfig = new pulumi.Config('dataspace');
 
-  // Dependencies
+  // Secret dependencies
   generateBackendSecretKeyPair();
+  generateBackendHashGenKey();
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
