@@ -47,7 +47,7 @@ export default function SingInPage({
             {
               idToken,
             },
-            '/api/auth/system/login'
+            '/api/auth/system/prepare-login'
           );
           setIsAuthenticated(true);
         } catch (error) {

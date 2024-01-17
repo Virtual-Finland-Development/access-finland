@@ -11,7 +11,7 @@ import {
 
 function interceptSystemLoginRequest() {
   server.use(
-    rest.post('http://localhost/api/auth/system/login', (_, res, ctx) =>
+    rest.post('http://localhost/api/auth/system/prepare-login', (_, res, ctx) =>
       res(ctx.json({ message: 'Login successful' }))
     )
   );
