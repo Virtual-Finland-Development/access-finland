@@ -42,19 +42,16 @@ export function createDefineAuthChallengeLambda() {
 }
 
 export function createVerifyAuthChallengeResponseLambda() {
-  const execRole = new aws.iam.Role(
-    nameResource('verifyAuthChallengeResponseRole'),
-    {
-      assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-        Service: 'lambda.amazonaws.com',
-      }),
-      tags,
-    }
-  );
+  const execRole = new aws.iam.Role(nameResource('verifyAuthChallengeRole'), {
+    assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+      Service: 'lambda.amazonaws.com',
+    }),
+    tags,
+  });
 
   // Attach basic execution policy
   new aws.iam.RolePolicyAttachment(
-    nameResource('verifyAuthChallengeResponsePolicyAttachment'),
+    nameResource('verifyAuthChallengePolicyAttachment'),
     {
       role: execRole,
       policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
