@@ -38,31 +38,11 @@ export default function SingInPage({
 
   const checkAuthStatus = useCallback(async () => {
     if (!isAuthenticated) {
-      const idToken = await fetchAuthIdToken();
-      if (idToken !== null) {
-        /// Login to the actual application
-        // As we are in the same app context we can login directly without the need for redirect flows etc
-        try {
-          await authStore.request(
-            {
-              idToken,
-            },
-            '/api/auth/system/prepare-login'
-          );
-          setIsAuthenticated(true);
-        } catch (error) {
-          console.error(error);
-          toast({
-            title: 'Error',
-            content: error?.message || 'Something went wrong.',
-            status: 'error',
-          });
-          await signOut(); // Clear the cognito session as we failed to login to the app
-        }
-      }
+      const isLoggedInCognito = (await fetchAuthIdToken()) !== null;
+      setIsAuthenticated(isLoggedInCognito);
     }
     setIsLoading(false);
-  }, [isAuthenticated, setIsLoading, setIsAuthenticated, toast]);
+  }, [isAuthenticated, setIsLoading, setIsAuthenticated]);
 
   useEffect(() => {
     if (isLoading) {
@@ -81,6 +61,39 @@ export default function SingInPage({
       content: 'Logged out from Virtual Finland.',
       status: 'neutral',
     });
+  };
+
+  const handleAccessFinlandLoginButtonClick = async () => {
+    setIsLoading(true);
+
+    // Login to the actual application
+    // As we are in the same app context we can login directly without the need for redirect flows etc
+    try {
+      const idToken = await fetchAuthIdToken();
+      if (idToken === null) {
+        throw new Error('Not logged in to Virtual Finland.');
+      }
+
+      // Prepare login flow
+      await authStore.request(
+        {
+          idToken,
+        },
+        '/api/auth/system/prepare-login'
+      );
+
+      // Redirect to the actual app
+      router.push('/auth');
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error',
+        content: error?.message || 'Something went wrong.',
+        status: 'error',
+      });
+      await signOut(); // Clear the cognito session as we failed to login to the app
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -106,7 +119,7 @@ export default function SingInPage({
               <div className="flex flex-col gap-6 h-full justify-center">
                 Finish login to the Access Finland
                 <Button
-                  onClick={() => router.push('/auth')}
+                  onClick={handleAccessFinlandLoginButtonClick}
                   icon={<IconLogin />}
                 >
                   Login to Access Finland
