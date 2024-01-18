@@ -1,6 +1,12 @@
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { fetchAuthIdToken, signOut } from '@mvp/lib/frontend/aws-cognito';
+import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
+import {
+  authStore,
+  fetchAuthIdToken,
+  signOut,
+} from '@mvp/lib/frontend/aws-cognito';
 import VFLogo from '@shared/images/virtualfinland_logo_small.png';
 import {
   Button,
@@ -9,14 +15,22 @@ import {
   IconLogout,
   Text,
 } from 'suomifi-ui-components';
-import apiClient from '@shared/lib/api/api-client';
 import { useToast } from '@shared/context/toast-context';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 import SignIn from './components/sign-in';
 
-export default function SingInPage() {
+// Create csrf token for the login form (as a ssr prop)
+export const getServerSideProps: GetServerSideProps<{
+  csrfToken: string | null;
+}> = async () => {
+  return { props: { csrfToken: await generateCSRFToken() } };
+};
+
+export default function SingInPage({
+  csrfToken,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +43,12 @@ export default function SingInPage() {
         /// Login to the actual application
         // As we are in the same app context we can login directly without the need for redirect flows etc
         try {
-          await apiClient.post('/api/auth/system/login', { idToken });
+          await authStore.request(
+            {
+              idToken,
+            },
+            '/api/auth/system/prepare-login'
+          );
           setIsAuthenticated(true);
         } catch (error) {
           console.error(error);
@@ -47,9 +66,10 @@ export default function SingInPage() {
 
   useEffect(() => {
     if (isLoading) {
+      authStore.setCsrfToken(csrfToken);
       checkAuthStatus();
     }
-  }, [checkAuthStatus, isLoading]);
+  }, [checkAuthStatus, isLoading, csrfToken]);
 
   const handleCognitoLogout = async () => {
     setIsLoading(true);

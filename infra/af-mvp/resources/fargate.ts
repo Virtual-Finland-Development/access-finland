@@ -42,6 +42,7 @@ export function createFargateService(
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PUBLIC_KEY`,
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PRIVATE_KEY`,
+              pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_HASHGEN_KEY`,
             ],
           },
         ],

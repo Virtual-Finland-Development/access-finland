@@ -8,7 +8,7 @@ export default loggedOutAuthMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const sinunaState = generateCSRFToken();
+  const sinunaState = await generateCSRFToken();
   const sinunaLoginUrl = await retrieveSinunaLoginUrl(req, sinunaState);
   res
     .setHeader(

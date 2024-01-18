@@ -11,7 +11,7 @@ import {
 
 function interceptSystemLoginRequest() {
   server.use(
-    rest.post('http://localhost/api/auth/system/login', (_, res, ctx) =>
+    rest.post('http://localhost/api/auth/system/prepare-login', (_, res, ctx) =>
       res(ctx.json({ message: 'Login successful' }))
     )
   );
@@ -26,6 +26,10 @@ const mockRouter = {
 };
 (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
+jest.mock('@mvp/lib/backend/secrets-and-tokens', () => ({
+  generateCSRFToken: jest.fn(async () => Promise.resolve('123456')),
+}));
+
 jest.mock('@mvp/lib/frontend/aws-cognito', () => {
   const fetchAuthIdToken = jest
     .fn()
@@ -36,6 +40,10 @@ jest.mock('@mvp/lib/frontend/aws-cognito', () => {
     fetchAuthIdToken,
     signIn: jest.fn(async () => Promise.resolve()),
     confirmSignIn: jest.fn(async () => Promise.resolve()),
+    authStore: {
+      setCsrfToken: jest.fn(),
+      request: jest.fn(async () => Promise.resolve()),
+    },
   };
 });
 

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createApiAuthPackage } from '@mvp/lib/backend/ApiAuthPackage';
 import { resolveIdTokenExpiresAt } from '@mvp/lib/backend/api-utils';
 import { loggedOutAuthMiddleware } from '@mvp/lib/backend/middleware/auth';
+import { csrfVerifyMiddleware } from '@mvp/lib/backend/middleware/csrfVerifyMiddleware';
 import { validateCognitoIdToken } from '@mvp/lib/backend/services/aws/cognito';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
@@ -12,10 +13,7 @@ const GoodLoginInput = object({
   idToken: string(),
 });
 
-export default loggedOutAuthMiddleware(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Parse request payload
   const loginInput = parse(GoodLoginInput, req.body);
 
@@ -57,4 +55,6 @@ export default loggedOutAuthMiddleware(async function handler(
       }),
     ])
     .json({ message: 'Login successful' });
-});
+}
+
+export default loggedOutAuthMiddleware(csrfVerifyMiddleware(handler));
