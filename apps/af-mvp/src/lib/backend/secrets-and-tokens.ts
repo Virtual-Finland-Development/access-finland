@@ -1,5 +1,4 @@
-import bcrypt from 'bcryptjs';
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import * as jose from 'node-jose';
 import { getCachingStagedSecretParameter } from './services/aws/ParameterStore';
 
@@ -29,12 +28,9 @@ export async function decryptUsingBackendSecret(encryptedData: string) {
  */
 export async function generateCSRFToken() {
   const key = await getCachingStagedSecretParameter('BACKEND_HASHGEN_KEY');
-  const plaintext = randomBytes(32).toString('hex');
-  const secret = `${plaintext}:${key}`;
-
-  const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(secret, salt);
-  return `${plaintext}:${hash}`;
+  const salt = randomBytes(32).toString('hex');
+  const hash = createHash('sha256').update(`${salt}:${key}`).digest('hex');
+  return `${salt}:${hash}`;
 }
 
 /**
@@ -48,11 +44,12 @@ export async function verifyCSRFToken(csrfToken: string) {
   }
 
   const key = await getCachingStagedSecretParameter('BACKEND_HASHGEN_KEY');
-  const [plaintext, hash] = csrfToken.split(':');
+  const [salt, hash] = csrfToken.split(':');
 
-  const secret = `${plaintext}:${key}`;
-  const verified = await bcrypt.compare(secret, hash);
-  if (!verified) {
+  const expectHash = createHash('sha256')
+    .update(`${salt}:${key}`)
+    .digest('hex');
+  if (hash !== expectHash) {
     throw new Error('Invalid CSRF token');
   }
 }
