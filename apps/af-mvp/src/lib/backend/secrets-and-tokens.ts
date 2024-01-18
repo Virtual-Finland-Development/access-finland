@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import * as jose from 'node-jose';
 import { getCachingStagedSecretParameter } from './services/aws/ParameterStore';
