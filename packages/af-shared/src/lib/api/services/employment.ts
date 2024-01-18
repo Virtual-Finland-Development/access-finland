@@ -22,7 +22,7 @@ export async function getPersonWorkContracts(
   return data; */
 
   await sleep();
-  return MOCK_WORK_CONTRACT as WorkContract;
+  return MOCK_WORK_CONTRACT;
 }
 
 export async function getPersonIncomeTax(

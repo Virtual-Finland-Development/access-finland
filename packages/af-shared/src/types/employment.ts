@@ -13,8 +13,8 @@ interface EmployerInfo {
 interface EmployeeInfo {
   name: string;
   streetAddress: string;
-  postalCode: string;
-  city: string;
+  postalCode?: string;
+  city?: string;
   country?: string;
   signaruteDate: string;
 }
@@ -23,21 +23,20 @@ interface TermsOfWork {
   employmentStart: string;
   employmentEnd?: string;
   groundsForFixedTerm?: string;
-  workDuties: string;
   workConditions?: string;
   industry?: string;
   locations?: string[];
   workingHours: number;
   collectiveAgreement?: string;
-  overtimeRules: string;
   probation: string;
+  jobTitle: string;
 }
 
 interface Compensation {
   paymentGrounds: 'hourly' | 'monthly';
   salary: number;
   bonuses?: string;
-  paymentTime: string;
+  paymentTime?: string;
 }
 
 interface Benefit {
@@ -49,7 +48,7 @@ interface Benefit {
 interface Holidays {
   paidHoliday: boolean;
   numberOfHolidays?: number;
-  determinationOfHoliday?: string;
+  determinationOfHoliday?: 'annual holiday act' | 'collective agreement';
 }
 
 interface OtherTerm {
@@ -61,10 +60,10 @@ export interface WorkContract {
   employeeInfo: EmployeeInfo;
   termsOfWork: TermsOfWork;
   compensation: Compensation;
-  holidays: Holidays;
-  benefits?: Benefit[];
-  termination: string;
-  otherTerms?: OtherTerm[];
+  holidays?: Holidays;
+  benefits: Benefit[];
+  termination?: string;
+  otherTerms: OtherTerm[];
 }
 
 /**

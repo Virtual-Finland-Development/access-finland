@@ -1,3 +1,5 @@
+import { IncomeTax, PersonWorkPermit, WorkContract } from '@/types';
+
 // auth
 export const MOCK_AUTH_STATE = {
   isValid: true,
@@ -187,7 +189,7 @@ export const MOCK_ISO_COUNTRIES = [
 ];
 
 // work permits
-export const MOCK_WORK_PERMITS = {
+export const MOCK_WORK_PERMITS: { permits: PersonWorkPermit[] } = {
   permits: [
     {
       employerName: 'Staffpoint Oy',
@@ -211,7 +213,7 @@ export const MOCK_WORK_PERMITS = {
 };
 
 // employment / wock contracts
-export const MOCK_WORK_CONTRACT = {
+export const MOCK_WORK_CONTRACT: WorkContract = {
   employerInfo: {
     name: 'ABC Inc.',
     businessID: '1234567-8',
@@ -230,14 +232,15 @@ export const MOCK_WORK_CONTRACT = {
   termsOfWork: {
     employmentStart: '2022-01-01',
     groundsForFixedTerm: 'Temporary replacement',
-    workDuties: 'Software development',
     workConditions: 'Remote work',
-    industry: 'IT',
+    industry: '79.1',
     locations: ['Helsinki', 'Tampere'],
     workingHours: 37.5,
-    collectiveAgreement: 'IT',
-    overtimeRules: 'As agreed',
-    probation: '6 months',
+    collectiveAgreement:
+      'The collective agreement for Employment industry (HELA)',
+    probation:
+      'The probationary period lasts 2 months from the employment start date',
+    jobTitle: 'Receptionist',
   },
   compensation: {
     paymentGrounds: 'monthly',
@@ -271,7 +274,7 @@ export const MOCK_WORK_CONTRACT = {
 };
 
 // employment / tax
-export const MOCK_INCOME_TAX = {
+export const MOCK_INCOME_TAX: IncomeTax = {
   taxPayerType: 'resident',
   withholdingPercentage: 15.5,
   additionalPercentage: 40.2,
