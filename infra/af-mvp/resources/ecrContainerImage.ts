@@ -1,24 +1,32 @@
 import * as aws from '@pulumi/aws';
+import { UserPool, UserPoolClient } from '@pulumi/aws/cognito';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
-import { generateBackendSecretKeyPair } from './systemsManager';
+import { CdnSetup } from '../utils/types';
+import {
+  generateBackendHashGenKey,
+  generateBackendSecretKeyPair,
+} from './systemsManager';
 
 const {
   tags,
   envOverride,
   externalApis: { codesetsEndpoint, usersApiEndpoint },
-  cdn: { waf },
 } = setup;
 
-export function createContainerImage(cdnSetup: {
-  cdn: aws.cloudfront.Distribution;
-  domainName: pulumi.Output<string>;
-}) {
+export function createContainerImage(
+  cdnSetup: CdnSetup,
+  loginSystem: {
+    userPool: UserPool;
+    userPoolClient: UserPoolClient;
+  }
+) {
   const dataspaceConfig = new pulumi.Config('dataspace');
 
-  // Dependencies
+  // Secret dependencies
   generateBackendSecretKeyPair();
+  generateBackendHashGenKey();
 
   // ECR repository
   const repository = new awsx.ecr.Repository(nameResource('ecr-repo'), {
@@ -43,6 +51,9 @@ export function createContainerImage(cdnSetup: {
         'defaultSchemaVersion'
       ),
       FRONTEND_ORIGIN_URI: pulumi.interpolate`https://${cdnSetup.domainName}`,
+      NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ID: loginSystem.userPool.id,
+      NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_CLIENT_ID: loginSystem.userPoolClient.id,
+      NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT: pulumi.interpolate`https://${loginSystem.userPool.endpoint}`,
     },
   });
 

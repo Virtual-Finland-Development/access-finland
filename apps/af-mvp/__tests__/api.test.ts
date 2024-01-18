@@ -2,11 +2,13 @@ import { jest } from '@jest/globals';
 import {
   decryptUsingBackendSecret,
   encryptUsingBackendSecret,
+  generateCSRFToken,
+  verifyCSRFToken,
 } from '@mvp/lib/backend/secrets-and-tokens';
 
-// Mock BACKEND_SECRET_PUBLIC_KEY and BACKEND_SECRET_PRIVATE_KEY
+// Mock BACKEND_SECRET_PUBLIC_KEY, BACKEND_SECRET_PRIVATE_KEY and BACKEND_HASHGEN_KEY
 jest.mock('@aws-sdk/client-ssm', () => {
-  const { generateKeyPairSync } = require('crypto');
+  const { generateKeyPairSync, randomBytes } = require('crypto');
 
   const keyPair = generateKeyPairSync('rsa', {
     modulusLength: 2048,
@@ -19,6 +21,7 @@ jest.mock('@aws-sdk/client-ssm', () => {
       format: 'pem',
     },
   });
+  const hashKey = randomBytes(64).toString('base64');
 
   return {
     SSMClient: jest.fn().mockImplementation(() => {
@@ -34,6 +37,12 @@ jest.mock('@aws-sdk/client-ssm', () => {
             return {
               Parameter: {
                 Value: keyPair.privateKey,
+              },
+            };
+          } else if (command.Name === 'local_BACKEND_HASHGEN_KEY') {
+            return {
+              Parameter: {
+                Value: hashKey,
               },
             };
           } else {
@@ -58,5 +67,12 @@ describe('API Tests', () => {
 
     const decrypted = await decryptUsingBackendSecret(encrypted);
     expect(decrypted?.name).toBe(data.name);
+  });
+
+  it('hashing', async () => {
+    const token = await generateCSRFToken();
+    expect(token).toBeTruthy();
+    await verifyCSRFToken(token); // should not throw
+    await expect(verifyCSRFToken('invalid')).rejects.toThrow();
   });
 });

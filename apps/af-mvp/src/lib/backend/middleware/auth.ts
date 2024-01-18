@@ -4,30 +4,33 @@ import { AxiosError } from 'axios';
 import { ValiError } from 'valibot';
 import { Logger } from '../Logger';
 import { appRequestMiddleware } from './appRequestMiddleware';
+import { csrfVerifyMiddleware } from './csrfVerifyMiddleware';
 
 export function loggedInAuthMiddleware(handler: NextApiHandlerWithLogger) {
   return appRequestMiddleware(
-    async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
-      // Logged in check
-      if (!req.cookies.apiAuthPackage || !req.headers['x-csrf-token']) {
-        return res.status(401).json({ error: 'Unauthorized.' });
-      }
+    csrfVerifyMiddleware(
+      async (req: NextApiRequest, res: NextApiResponse, logger: Logger) => {
+        // Logged in check
+        if (!req.cookies.apiAuthPackage) {
+          return res.status(401).json({ error: 'Unauthorized.' });
+        }
 
-      const apiAuthPackage = await decryptApiAuthPackage(
-        req.cookies.apiAuthPackage
-      );
+        const apiAuthPackage = await decryptApiAuthPackage(
+          req.cookies.apiAuthPackage
+        );
 
-      if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
-        return res.status(403).json({ error: 'Forbidden.' });
-      }
+        if (req.headers['x-csrf-token'] !== apiAuthPackage.csrfToken) {
+          return res.status(403).json({ error: 'Forbidden.' });
+        }
 
-      try {
-        return await handler(req, res, logger);
-      } catch (error) {
-        logError(logger, 'loggedInAuthMiddleware', error);
-        return res.status(500).json({ error: 'Internal server error.' });
+        try {
+          return await handler(req, res, logger);
+        } catch (error) {
+          logError(logger, 'loggedInAuthMiddleware', error);
+          return res.status(500).json({ error: 'Internal server error.' });
+        }
       }
-    }
+    )
   );
 }
 

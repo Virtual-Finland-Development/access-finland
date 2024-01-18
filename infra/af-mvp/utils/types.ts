@@ -11,8 +11,14 @@ export type DomainSetup =
   | undefined;
 
 export type LoadBalancerSetup = {
-  appLoadBalancer: aws.lb.LoadBalancer,
-  targetGroup: aws.lb.TargetGroup,
-  domainName: pulumi.Output<string>,
-  url: pulumi.Output<string>,
-}
+  appLoadBalancer: aws.lb.LoadBalancer;
+  targetGroup: aws.lb.TargetGroup;
+  domainName: pulumi.Output<string>;
+  url: pulumi.Output<string>;
+};
+
+export type CdnSetup = {
+  cdn: aws.cloudfront.Distribution;
+  domainName: pulumi.Output<string>;
+  url: pulumi.Output<string>;
+};

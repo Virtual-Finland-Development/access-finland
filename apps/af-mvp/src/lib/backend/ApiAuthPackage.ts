@@ -7,7 +7,7 @@ import {
 } from './secrets-and-tokens';
 
 export async function createApiAuthPackage(loggedInState: LoggedInState) {
-  const csrfToken = generateCSRFToken();
+  const csrfToken = await generateCSRFToken();
 
   try {
     // Dummy check the token decodes
