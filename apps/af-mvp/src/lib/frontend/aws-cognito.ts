@@ -200,7 +200,7 @@ export function parseCognitoError(error: any): CognitoError {
   }
 
   return {
-    message: 'Unknown error',
+    message: (error instanceof Error ? error.message : null) ?? 'Unknown error',
     type: errorType,
   };
 }
