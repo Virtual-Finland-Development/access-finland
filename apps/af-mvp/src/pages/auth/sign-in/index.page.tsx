@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import {
   authStore,
+  deleteUser,
   fetchAuthIdToken,
   signOut,
 } from '@mvp/lib/frontend/aws-cognito';
@@ -59,8 +60,15 @@ export default function SingInPage({
   };
 
   const handleCongnitoIdDelete = async () => {
-    console.log('Delete cognito id');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(true);
+    await deleteUser();
+    setIsAuthenticated(false);
+    setIsLoading(false);
+    toast({
+      title: 'Identity deleted',
+      content: 'The Virtual Finland identity deleted.',
+      status: 'neutral',
+    });
   };
 
   const handleAccessFinlandLogin = async () => {

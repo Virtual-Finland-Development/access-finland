@@ -1,6 +1,7 @@
 import { Amplify } from 'aws-amplify';
 import {
   confirmSignIn as confirmSignInWithCognito,
+  deleteUser as deleteCognitoUser,
   fetchAuthSession as fetchAuthSessionFromCognito,
   signIn as signInWithCognito,
   signOut as signOutWithCognito,
@@ -148,6 +149,10 @@ export async function confirmSignIn(code: string) {
 
 export async function signOut() {
   await signOutWithCognito();
+}
+
+export async function deleteUser() {
+  await deleteCognitoUser();
 }
 
 export function parseCognitoError(error: any): CognitoError {
