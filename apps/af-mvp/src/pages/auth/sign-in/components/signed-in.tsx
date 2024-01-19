@@ -21,7 +21,6 @@ function Confirm(props: ConfirmProps) {
   const handleDeleteClick = async () => {
     setIsLoading(true);
     await handleDelete();
-    setIsLoading(false);
     handleClose();
   };
 
@@ -66,6 +65,7 @@ export default function SignedIn(props: Props) {
     openModal({
       title: 'Delete Your Virtual Finland Identity',
       content: <Confirm handleDelete={handleDelete} handleClose={closeModal} />,
+      closeOnEsc: false,
     });
 
   return (

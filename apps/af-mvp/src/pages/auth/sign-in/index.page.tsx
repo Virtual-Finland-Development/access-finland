@@ -60,10 +60,10 @@ export default function SingInPage({
 
   const handleCognitoLogout = async () => {
     setIsLoading(true);
+
     try {
       await signOut();
       setIsAuthenticated(false);
-      setIsLoading(false);
       toast({
         title: 'Logged out',
         content: 'Logged out from Virtual Finland.',
@@ -71,12 +71,12 @@ export default function SingInPage({
       });
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleCongnitoIdDelete = async () => {
-    setIsLoading(true);
     try {
       await deleteUser();
       setIsAuthenticated(false);
@@ -88,7 +88,6 @@ export default function SingInPage({
     } catch (error) {
       handleError(error);
     }
-    setIsLoading(false);
   };
 
   const handleAccessFinlandLogin = async () => {
