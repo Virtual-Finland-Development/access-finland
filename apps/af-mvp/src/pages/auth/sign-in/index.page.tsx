@@ -4,7 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import {
   authStore,
+  deleteUser,
   fetchAuthIdToken,
+  parseCognitoError,
   signOut,
 } from '@mvp/lib/frontend/aws-cognito';
 import VFLogo from '@shared/images/virtualfinland_logo_small.png';
@@ -41,26 +43,52 @@ export default function SingInPage({
 
   useEffect(() => {
     if (isLoading) {
-      authStore.setCsrfToken(csrfToken);
+      authStore.setCsrfToken(csrfToken); // Initialize cognito auth store before everything else
       checkAuthStatus();
     }
   }, [checkAuthStatus, isLoading, csrfToken]);
 
-  const handleCognitoLogout = async () => {
-    setIsLoading(true);
-    await signOut();
-    setIsAuthenticated(false);
-    setIsLoading(false);
+  const handleError = (error: Error) => {
+    console.error(error);
+    const cognitoError = parseCognitoError(error);
     toast({
-      title: 'Logged out',
-      content: 'Logged out from Virtual Finland.',
-      status: 'neutral',
+      title: cognitoError.type,
+      content: cognitoError.message || 'Something went wrong.',
+      status: 'error',
     });
   };
 
+  const handleCognitoLogout = async () => {
+    setIsLoading(true);
+    try {
+      await signOut();
+      setIsAuthenticated(false);
+      setIsLoading(false);
+      toast({
+        title: 'Logged out',
+        content: 'Logged out from Virtual Finland.',
+        status: 'neutral',
+      });
+    } catch (error) {
+      handleError(error);
+    }
+    setIsLoading(false);
+  };
+
   const handleCongnitoIdDelete = async () => {
-    console.log('Delete cognito id');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(true);
+    try {
+      await deleteUser();
+      setIsAuthenticated(false);
+      toast({
+        title: 'Identity deleted',
+        content: 'The Virtual Finland identity deleted.',
+        status: 'neutral',
+      });
+    } catch (error) {
+      handleError(error);
+    }
+    setIsLoading(false);
   };
 
   const handleAccessFinlandLogin = async () => {
@@ -85,12 +113,7 @@ export default function SingInPage({
       // Redirect to the actual app
       router.push('/auth');
     } catch (error) {
-      console.error(error);
-      toast({
-        title: 'Error',
-        content: error?.message || 'Something went wrong.',
-        status: 'error',
-      });
+      handleError(error);
       await signOut(); // Clear the cognito session as we failed to login to the app
       setIsLoading(false);
     }
