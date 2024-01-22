@@ -112,7 +112,6 @@ export function createCreateAuthChallengeLambda(cdnSetup: CdnSetup) {
       variables: {
         LOG_LEVEL: 'INFO',
         SES_FROM_ADDRESS: setup.ses.fromAddress,
-        SITE_URL: cdnSetup.url,
       },
     },
     tags,
