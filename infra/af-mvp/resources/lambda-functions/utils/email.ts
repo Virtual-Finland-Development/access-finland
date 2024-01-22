@@ -1,9 +1,13 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { EmailContent } from '@aws-sdk/client-sesv2';
+import { createHash } from 'crypto';
 
 function wrapHtmlEmailContentWithCoreStructure(
   title: string,
   htmlBodyContent: string
 ) {
+  const siteUrl = process.env.SITE_URL!;
+
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -24,7 +28,8 @@ function wrapHtmlEmailContentWithCoreStructure(
         <td>
       ${htmlBodyContent}
           <hr />
-          <p>This message cannot be replied to.</p>
+          <p style="font-size:12px;text-align:center">This message cannot be replied to.</p>
+          <p style="font-size:12px;text-align:center">Access Finland: ${siteUrl}</p>
         </td>
       </tr>
     </table>
@@ -50,25 +55,42 @@ function createEmailHtmlContent(secretLoginCode: string) {
   );
 }
 
+function createEmailTextContent(secretLoginCode: string) {
+  return `Confirm your login by entering the following code in the Virtual Finland service:\r\n${secretLoginCode}`;
+}
+
 export function createEmailContentForCodeConfirmation(
-  secretLoginCode: string
+  secretLoginCode: string,
+  recipient: string
 ): EmailContent {
+  const sender = process.env.SES_FROM_ADDRESS!;
+  const mimeBoundary = `vf_${createHash('md5')
+    .update(secretLoginCode)
+    .digest('hex')}`;
+
+  const emailContent = `From: "Virtual Finland" <${sender}>
+To: ${recipient}
+Subject: Virtual Finland confirmation code: ${secretLoginCode}
+Content-Type: multipart/alternative;
+  boundary="${mimeBoundary}"
+
+--${mimeBoundary}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+${createEmailTextContent(secretLoginCode)}
+
+--${mimeBoundary}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+${Buffer.from(createEmailHtmlContent(secretLoginCode)).toString('base64')}
+
+--${mimeBoundary}--`;
+
   return {
-    Simple: {
-      Subject: {
-        Charset: 'UTF-8',
-        Data: `Virtual Finland confirmation code: ${secretLoginCode}`,
-      },
-      Body: {
-        Html: {
-          Charset: 'UTF-8',
-          Data: createEmailHtmlContent(secretLoginCode),
-        },
-        Text: {
-          Charset: 'UTF-8',
-          Data: `Confirm your login by entering the following code in the Virtual Finland service: ${secretLoginCode}`,
-        },
-      },
+    Raw: {
+      Data: Buffer.from(emailContent),
     },
   };
 }

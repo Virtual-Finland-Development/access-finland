@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 // @see: https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/
 // @see: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth
 import {
@@ -25,7 +26,10 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
         emailAddress,
       ],
     },
-    Content: createEmailContentForCodeConfirmation(secretLoginCode),
+    Content: createEmailContentForCodeConfirmation(
+      secretLoginCode,
+      emailAddress
+    ),
     EmailTags: [
       // MessageTagList
       {

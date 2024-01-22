@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
 import setup, { nameResource } from '../utils/setup';
 import { CdnSetup } from '../utils/types';
 import createAuthChallenge from './lambda-functions/createAuthChallenge';
@@ -112,6 +113,7 @@ export function createCreateAuthChallengeLambda(cdnSetup: CdnSetup) {
       variables: {
         LOG_LEVEL: 'INFO',
         SES_FROM_ADDRESS: setup.ses.fromAddress,
+        SITE_URL: cdnSetup.url,
       },
     },
     tags,
