@@ -53,6 +53,14 @@ const Container = styled.div.attrs({
 
 const NoProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
 
+function UiUtilsProviders({ children }: { children: ReactNode }) {
+  return (
+    <ToastProvider>
+      <ModalProvider>{children}</ModalProvider>
+    </ToastProvider>
+  );
+}
+
 export default function App({ Component, pageProps }: ExtendedAppProps) {
   const ComponentContextProvider = Component.provider || NoProvider;
   const router = useRouter();
@@ -82,24 +90,22 @@ export default function App({ Component, pageProps }: ExtendedAppProps) {
 
             if (AUTH_ROUTES.includes(router.pathname)) {
               return (
-                <ToastProvider>
+                <UiUtilsProviders>
                   <Container>
                     <Component {...pageProps} />
                   </Container>
-                </ToastProvider>
+                </UiUtilsProviders>
               );
             }
 
             return (
-              <ToastProvider>
-                <ModalProvider>
-                  <MainLayout navigationItems={NAV_ITEMS} languages={LANGUAGES}>
-                    <ComponentContextProvider>
-                      <Component {...pageProps} />
-                    </ComponentContextProvider>
-                  </MainLayout>
-                </ModalProvider>
-              </ToastProvider>
+              <UiUtilsProviders>
+                <MainLayout navigationItems={NAV_ITEMS} languages={LANGUAGES}>
+                  <ComponentContextProvider>
+                    <Component {...pageProps} />
+                  </ComponentContextProvider>
+                </MainLayout>
+              </UiUtilsProviders>
             );
           }}
         </AuthConsumer>
