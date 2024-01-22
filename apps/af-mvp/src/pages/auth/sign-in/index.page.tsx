@@ -1,25 +1,22 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import {
   authStore,
+  deleteUser,
   fetchAuthIdToken,
+  parseCognitoError,
   signOut,
 } from '@mvp/lib/frontend/aws-cognito';
 import VFLogo from '@shared/images/virtualfinland_logo_small.png';
-import {
-  Button,
-  IconHome,
-  IconLogin,
-  IconLogout,
-  Text,
-} from 'suomifi-ui-components';
+import { IconHome, Text } from 'suomifi-ui-components';
 import { useToast } from '@shared/context/toast-context';
 import CustomImage from '@shared/components/ui/custom-image';
 import CustomLink from '@shared/components/ui/custom-link';
 import Loading from '@shared/components/ui/loading';
 import SignIn from './components/sign-in';
+import SignedIn from './components/signed-in';
 
 // Create csrf token for the login form (as a ssr prop)
 export const getServerSideProps: GetServerSideProps<{
@@ -36,34 +33,66 @@ export default function SingInPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthStatus = useCallback(async () => {
+  const checkAuthStatus = async () => {
     if (!isAuthenticated) {
       const isLoggedInCognito = (await fetchAuthIdToken()) !== null;
       setIsAuthenticated(isLoggedInCognito);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [isAuthenticated, setIsLoading, setIsAuthenticated]);
+  };
 
+  // Set CSRF token, check auth status
+  // Disable eslint rule for this as we want to run this effect only once when the component mounts
   useEffect(() => {
-    if (isLoading) {
-      authStore.setCsrfToken(csrfToken);
-      checkAuthStatus();
-    }
-  }, [checkAuthStatus, isLoading, csrfToken]);
+    authStore.setCsrfToken(csrfToken);
+    checkAuthStatus();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleCognitoLogout = async () => {
-    setIsLoading(true);
-    await signOut();
-    setIsAuthenticated(false);
-    setIsLoading(false);
+  const handleError = (error: Error) => {
+    console.error(error);
+    const cognitoError = parseCognitoError(error);
     toast({
-      title: 'Logged out',
-      content: 'Logged out from Virtual Finland.',
-      status: 'neutral',
+      title: cognitoError.type,
+      content: cognitoError.message || 'Something went wrong.',
+      status: 'error',
     });
   };
 
-  const handleAccessFinlandLoginButtonClick = async () => {
+  const handleCognitoLogout = async () => {
+    setIsLoading(true);
+
+    try {
+      await signOut();
+      setIsAuthenticated(false);
+      toast({
+        title: 'Logged out',
+        content: 'Logged out from Virtual Finland.',
+        status: 'neutral',
+      });
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCongnitoIdDelete = async () => {
+    try {
+      await deleteUser();
+      setIsAuthenticated(false);
+      toast({
+        title: 'Identity deleted',
+        content: 'The Virtual Finland identity deleted.',
+        status: 'neutral',
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleAccessFinlandLogin = async () => {
     setIsLoading(true);
 
     // Login to the actual application
@@ -85,12 +114,7 @@ export default function SingInPage({
       // Redirect to the actual app
       router.push('/auth');
     } catch (error) {
-      console.error(error);
-      toast({
-        title: 'Error',
-        content: error?.message || 'Something went wrong.',
-        status: 'error',
-      });
+      handleError(error);
       await signOut(); // Clear the cognito session as we failed to login to the app
       setIsLoading(false);
     }
@@ -116,23 +140,11 @@ export default function SingInPage({
             {!isAuthenticated ? (
               <SignIn />
             ) : (
-              <div className="flex flex-col gap-6 h-full justify-center">
-                Finish login to the Access Finland
-                <Button
-                  onClick={handleAccessFinlandLoginButtonClick}
-                  icon={<IconLogin />}
-                >
-                  Login to Access Finland
-                </Button>
-                Logout from your Virtual Finland login session
-                <Button
-                  variant="secondary"
-                  onClick={handleCognitoLogout}
-                  icon={<IconLogout />}
-                >
-                  Log out from Virtual Finland
-                </Button>
-              </div>
+              <SignedIn
+                handleLogin={handleAccessFinlandLogin}
+                handleLogout={handleCognitoLogout}
+                handleDelete={handleCongnitoIdDelete}
+              />
             )}
           </div>
         </div>

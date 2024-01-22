@@ -1,6 +1,7 @@
 import { Amplify } from 'aws-amplify';
 import {
   confirmSignIn as confirmSignInWithCognito,
+  deleteUser as deleteCognitoUser,
   fetchAuthSession as fetchAuthSessionFromCognito,
   signIn as signInWithCognito,
   signOut as signOutWithCognito,
@@ -150,6 +151,10 @@ export async function signOut() {
   await signOutWithCognito();
 }
 
+export async function deleteUser() {
+  await deleteCognitoUser();
+}
+
 export function parseCognitoError(error: any): CognitoError {
   const errorName = error.name || String(error).split(':')[0];
   const errorType = CognitoErrorTypes[errorName] || CognitoErrorTypes.Unknown;
@@ -195,7 +200,7 @@ export function parseCognitoError(error: any): CognitoError {
   }
 
   return {
-    message: 'Unknown error',
+    message: (error instanceof Error ? error.message : null) ?? 'Unknown error',
     type: errorType,
   };
 }
