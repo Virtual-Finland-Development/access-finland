@@ -1,6 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { generateCSRFToken } from '@mvp/lib/backend/secrets-and-tokens';
 import {
   authStore,
@@ -36,20 +36,22 @@ export default function SingInPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthStatus = useCallback(async () => {
+  const checkAuthStatus = async () => {
     if (!isAuthenticated) {
       const isLoggedInCognito = (await fetchAuthIdToken()) !== null;
       setIsAuthenticated(isLoggedInCognito);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [isAuthenticated, setIsLoading, setIsAuthenticated]);
+  };
 
+  // Set CSRF token, check auth status
+  // Disable eslint rule for this as we want to run this effect only once when the component mounts
   useEffect(() => {
-    if (isLoading) {
-      authStore.setCsrfToken(csrfToken);
-      checkAuthStatus();
-    }
-  }, [checkAuthStatus, isLoading, csrfToken]);
+    authStore.setCsrfToken(csrfToken);
+    checkAuthStatus();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCognitoLogout = async () => {
     setIsLoading(true);
