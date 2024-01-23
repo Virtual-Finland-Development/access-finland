@@ -136,19 +136,14 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
   );
 
   // Setup lambda invoking permissions
+  new aws.lambda.Permission(nameResource('invoke-defineAuthChallenge'), {
+    action: 'lambda:InvokeFunction',
+    principal: 'cognito-idp.amazonaws.com',
+    sourceArn: userPool.arn,
+    function: defineAuthChallengeLambda.arn,
+  });
   new aws.lambda.Permission(
-    nameResource('loginSystemsUserPoolInvokePermission-defineAuthChallenge'),
-    {
-      action: 'lambda:InvokeFunction',
-      principal: 'cognito-idp.amazonaws.com',
-      sourceArn: userPool.arn,
-      function: defineAuthChallengeLambda.arn,
-    }
-  );
-  new aws.lambda.Permission(
-    nameResource(
-      'loginSystemsUserPoolInvokePermission-verifyAuthChallengeResponse'
-    ),
+    nameResource('invoke-verifyAuthChallengeResponse'),
     {
       action: 'lambda:InvokeFunction',
       principal: 'cognito-idp.amazonaws.com',
@@ -156,33 +151,24 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
       function: verifyAuthChallengeResponseLambda.arn,
     }
   );
-  new aws.lambda.Permission(
-    nameResource('loginSystemsUserPoolInvokePermission-createAuthChallenge'),
-    {
-      action: 'lambda:InvokeFunction',
-      principal: 'cognito-idp.amazonaws.com',
-      sourceArn: userPool.arn,
-      function: createAuthChallengeLambda.arn,
-    }
-  );
-  new aws.lambda.Permission(
-    nameResource('loginSystemsUserPoolInvokePermission-preSignUp'),
-    {
-      action: 'lambda:InvokeFunction',
-      principal: 'cognito-idp.amazonaws.com',
-      sourceArn: userPool.arn,
-      function: preSignUpLambda.arn,
-    }
-  );
-  new aws.lambda.Permission(
-    nameResource('loginSystemsUserPoolInvokePermission-postAuthentication'),
-    {
-      action: 'lambda:InvokeFunction',
-      principal: 'cognito-idp.amazonaws.com',
-      sourceArn: userPool.arn,
-      function: postAuthenticationLambda.arn,
-    }
-  );
+  new aws.lambda.Permission(nameResource('invoke-createAuthChallenge'), {
+    action: 'lambda:InvokeFunction',
+    principal: 'cognito-idp.amazonaws.com',
+    sourceArn: userPool.arn,
+    function: createAuthChallengeLambda.arn,
+  });
+  new aws.lambda.Permission(nameResource('invoke-preSignUp'), {
+    action: 'lambda:InvokeFunction',
+    principal: 'cognito-idp.amazonaws.com',
+    sourceArn: userPool.arn,
+    function: preSignUpLambda.arn,
+  });
+  new aws.lambda.Permission(nameResource('invoke-postAuthentication'), {
+    action: 'lambda:InvokeFunction',
+    principal: 'cognito-idp.amazonaws.com',
+    sourceArn: userPool.arn,
+    function: postAuthenticationLambda.arn,
+  });
 
   // Pool client
   const userPoolClient = new aws.cognito.UserPoolClient(
