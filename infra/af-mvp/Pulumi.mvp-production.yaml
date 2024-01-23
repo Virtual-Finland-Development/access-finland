@@ -4,7 +4,8 @@ description: Access Finland app
 config:
   dataspace:gatewayUrl: https://gateway.datafinland.com
   dataspace:defaultDataSource: accessfinland
-  dataspace:defaultSchemaVersion: "1.0"
+  dataspace:defaultSchemaVersion: '1.0'
   domainSetup:domainName: accessfinland.com
   domainSetup:enabled: true
   waf:enabled: true
+  ses:fromAddress: 'no-reply@accessfinland.com'

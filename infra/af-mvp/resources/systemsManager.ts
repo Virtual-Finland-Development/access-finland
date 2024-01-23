@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import * as random from '@pulumi/random';
 import * as tls from '@pulumi/tls';
 import setup, { nameResource } from '../utils/setup';
 
@@ -29,6 +30,24 @@ export function generateBackendSecretKeyPair() {
       'BACKEND_SECRET_PRIVATE_KEY',
       privateKey,
       'Private key for backend'
+    )
+  );
+}
+
+export function generateBackendHashGenKey() {
+  const keyResource = new random.RandomString(
+    nameResource('backend-hashgen-key'),
+    {
+      length: 64,
+      special: false,
+    }
+  );
+
+  keyResource.result.apply(key =>
+    createStagedParameterStoreSecret(
+      'BACKEND_HASHGEN_KEY',
+      key,
+      'Hashgen key for backend'
     )
   );
 }

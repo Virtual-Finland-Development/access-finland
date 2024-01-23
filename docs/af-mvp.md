@@ -7,6 +7,7 @@ Access Finland MVP application, deployed to production. Only includes features d
 - Authentication
 
   - Sinuna authentication
+  - Virtual Finland authentication (see [README.af-mvp.vf-authentication](./README.af-mvp.vf-authentication.md))
 
 - Access Finland user profile
   - Person basic info (https://developer.testbed.fi/sources/available?search=Person%2FBasicInformation_v1.0)

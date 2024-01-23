@@ -36,6 +36,7 @@ interface Props<T extends FieldValues> extends FormInputControllerProps<T> {
   formatDefaultValue?: (value: any) => any;
   min?: number;
   step?: number;
+  fullWidth?: boolean;
 }
 
 function safeParseDateDefaultValue(value: string): string {
@@ -61,6 +62,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
     min = 1,
     step = 1,
     autoFocus,
+    fullWidth,
   } = props;
 
   const { width } = useDimensions();
@@ -107,6 +109,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
                   onChange(value);
                 }
               }}
+              {...(fullWidth && { className: '!w-full' })}
             />
           ) : (
             <TextInput
@@ -128,6 +131,7 @@ export default function FormInput<T extends FieldValues>(props: Props<T>) {
               readOnly={readOnly}
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={autoFocus}
+              {...(fullWidth && { className: '!w-full' })}
             />
           )}
         </>

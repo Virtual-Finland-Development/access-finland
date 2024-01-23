@@ -8,7 +8,7 @@ interface Props {
   variant?: 'normal' | 'small';
   /** Loading indicator will be 'absolute' positioned and centered relative to first 'relative' positioned container element. Add 'position: relative' to target container element when needed. */
   asOverlay?: boolean;
-  /** Background color for the loading overlay (with see-through opacity). Defaults to '#fff'. Use valid CSS color value like HEX or RGB */
+  /** Background color for the loading overlay. Defaults to '#FFFFFF60' (white with see-through opacity). Use valid CSS color value like HEX or RGB with desired opacity. */
   overlayBgColor?: string;
 }
 
@@ -19,14 +19,17 @@ export default function Loading(props: Props) {
     textAlign = undefined,
     variant = 'normal',
     asOverlay = false,
-    overlayBgColor = '#fff',
+    overlayBgColor = '#FFFFFF60',
   } = props;
 
   const renderLoadingSpinner = (spinner: ReactNode) => {
     if (asOverlay) {
       return (
         <div
-          className={`absolute inset-0 flex items-center justify-center bg-[${overlayBgColor}] bg-opacity-60 z-10`}
+          className={`absolute inset-0 flex items-center justify-center z-10`}
+          style={{
+            backgroundColor: overlayBgColor,
+          }}
         >
           {spinner}
         </div>

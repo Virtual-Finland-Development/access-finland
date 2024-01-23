@@ -9,12 +9,9 @@ const { tags, envOverride, infrastructureStackName, monitoringStackName } =
   setup;
 
 export function createFargateService(
+  image: awsx.ecr.Image,
   loadBalancerSetup: LoadBalancerSetup,
   cluster: aws.ecs.Cluster,
-  cdnSetup: {
-    cdn: aws.cloudfront.Distribution;
-    domainName: pulumi.Output<string>;
-  },
   wafSetup?: {
     userPool: aws.cognito.UserPool;
     userPoolClient: aws.cognito.UserPoolClient;
@@ -45,6 +42,7 @@ export function createFargateService(
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_SINUNA_CLIENT_SECRET`,
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PUBLIC_KEY`,
               pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_SECRET_PRIVATE_KEY`,
+              pulumi.interpolate`arn:aws:ssm:${aws.config.region}:${awsIdentity.accountId}:parameter/${envOverride}_BACKEND_HASHGEN_KEY`,
             ],
           },
         ],
@@ -60,9 +58,6 @@ export function createFargateService(
       policyArn: ssmPolicy.arn,
     }
   );
-
-  // ECR Container image
-  const image = createContainerImage(cdnSetup);
 
   // Configs
   const stackReference = new pulumi.StackReference(infrastructureStackName);
