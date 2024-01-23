@@ -24,9 +24,7 @@ export function isSinunaDisabled(date?: Date | undefined) {
     currentDate.getUTCFullYear(),
     currentDate.getUTCMonth(),
     currentDate.getUTCDate(),
-    currentDate.getUTCHours() + 2,
-    currentDate.getUTCMinutes(),
-    currentDate.getUTCSeconds()
+    currentDate.getUTCHours() + 2
   );
   return isSameDay(finnishDate, targetDate) || isAfter(finnishDate, targetDate);
 }
