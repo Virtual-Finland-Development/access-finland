@@ -26,19 +26,22 @@ export function createDefineAuthChallengeLambda() {
     }
   );
 
-  return new aws.lambda.CallbackFunction(nameResource('defineAuthChallenge'), {
-    callback: defineAuthChallenge,
-    role: execRole.arn,
-    runtime: 'nodejs18.x',
-    timeout: 5,
-    memorySize: 128,
-    environment: {
-      variables: {
-        LOG_LEVEL: 'INFO',
+  return new aws.lambda.CallbackFunction(
+    nameResource('defineAuthChallenge', 64),
+    {
+      callback: defineAuthChallenge,
+      role: execRole.arn,
+      runtime: 'nodejs18.x',
+      timeout: 5,
+      memorySize: 128,
+      environment: {
+        variables: {
+          LOG_LEVEL: 'INFO',
+        },
       },
-    },
-    tags,
-  });
+      tags,
+    }
+  );
 }
 
 export function createVerifyAuthChallengeResponseLambda() {
@@ -59,7 +62,7 @@ export function createVerifyAuthChallengeResponseLambda() {
   );
 
   return new aws.lambda.CallbackFunction(
-    nameResource('verifyAuthChallengeResponse'),
+    nameResource('verifyAuthChallengeResponse', 64),
     {
       callback: verifyAuthChallenge,
       role: execRole.arn,
@@ -102,20 +105,23 @@ export function createCreateAuthChallengeLambda(cdnSetup: CdnSetup) {
     }
   );
 
-  return new aws.lambda.CallbackFunction(nameResource('createAuthChallenge'), {
-    callback: createAuthChallenge,
-    role: execRole.arn,
-    runtime: 'nodejs18.x',
-    timeout: 5,
-    memorySize: 128,
-    environment: {
-      variables: {
-        LOG_LEVEL: 'INFO',
-        SES_FROM_ADDRESS: setup.ses.fromAddress,
+  return new aws.lambda.CallbackFunction(
+    nameResource('createAuthChallenge', 64),
+    {
+      callback: createAuthChallenge,
+      role: execRole.arn,
+      runtime: 'nodejs18.x',
+      timeout: 5,
+      memorySize: 128,
+      environment: {
+        variables: {
+          LOG_LEVEL: 'INFO',
+          SES_FROM_ADDRESS: setup.ses.fromAddress,
+        },
       },
-    },
-    tags,
-  });
+      tags,
+    }
+  );
 }
 
 export function createPreSignUpLambda() {
@@ -132,7 +138,7 @@ export function createPreSignUpLambda() {
     policyArn: aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
   });
 
-  return new aws.lambda.CallbackFunction(nameResource('preSignUp'), {
+  return new aws.lambda.CallbackFunction(nameResource('preSignUp', 64), {
     callback: preSignUp,
     role: execRole.arn,
     runtime: 'nodejs18.x',
@@ -164,17 +170,20 @@ export function createPostAuthenticationLambda() {
     }
   );
 
-  return new aws.lambda.CallbackFunction(nameResource('postAuthentication'), {
-    callback: postAuthentication,
-    role: execRole.arn,
-    runtime: 'nodejs18.x',
-    timeout: 5,
-    memorySize: 128,
-    environment: {
-      variables: {
-        LOG_LEVEL: 'INFO',
+  return new aws.lambda.CallbackFunction(
+    nameResource('postAuthentication', 64),
+    {
+      callback: postAuthentication,
+      role: execRole.arn,
+      runtime: 'nodejs18.x',
+      timeout: 5,
+      memorySize: 128,
+      environment: {
+        variables: {
+          LOG_LEVEL: 'INFO',
+        },
       },
-    },
-    tags,
-  });
+      tags,
+    }
+  );
 }
