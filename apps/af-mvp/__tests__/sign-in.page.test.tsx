@@ -52,7 +52,7 @@ describe('Sign-in page tests', () => {
     interceptSystemLoginRequest();
 
     await act(async () => {
-      renderWithProviders(<SignInPage />);
+      renderWithProviders(<SignInPage csrfToken="1234" />);
     });
   });
 
