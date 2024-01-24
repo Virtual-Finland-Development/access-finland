@@ -99,6 +99,8 @@ function createWafCognitoUserPoolDomain(
   let cognitoDomain = `${loginDomainIdent}.auth.${region}.amazoncognito.com`;
 
   let wafCustomDomainCertificateArn;
+
+  // Custom domain setup: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html
   if (domainSetup?.domainName && domainSetup?.zone) {
     loginDomainIdent = `${waf.customDomain.applicationSubDomain}.${waf.customDomain.cognitoSubDomain}.${domainSetup.domainName}`;
     cognitoDomain = loginDomainIdent;
@@ -108,6 +110,17 @@ function createWafCognitoUserPoolDomain(
       loginDomainIdent
     );
     wafCustomDomainCertificateArn = customCertificate.arn;
+
+    const cognitoDomainRoot = `${waf.customDomain.cognitoSubDomain}.${domainSetup.domainName}`;
+
+    // Root domain record for the user pool
+    new aws.route53.Record(nameResource('wafCognitoDomainRecord'), {
+      name: cognitoDomainRoot,
+      type: 'A',
+      zoneId: domainSetup.zone.id,
+      records: ['198.51.100.1'], // Dummy IP, not actually in use (cognito requires a value)
+      ttl: 300,
+    });
   }
 
   const userPoolDomain = new aws.cognito.UserPoolDomain(
@@ -119,19 +132,8 @@ function createWafCognitoUserPoolDomain(
     }
   );
 
-  // Custom domain: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html
   if (domainSetup?.domainName && domainSetup?.zone) {
-    const cognitoDomainRoot = `${waf.customDomain.cognitoSubDomain}.${domainSetup.domainName}`;
-
-    // A-record for the cognito
-    new aws.route53.Record(nameResource('wafCognitoDomainRecord'), {
-      name: cognitoDomainRoot,
-      type: 'A',
-      zoneId: domainSetup.zone.id,
-      records: ['198.51.100.1'],
-    });
-
-    // Alias record for the cognito
+    // Alias record for the cognito login UI
     new aws.route53.Record(nameResource('wafCognitoAliasRecord'), {
       name: loginDomainIdent,
       type: 'A',
