@@ -2,7 +2,8 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
 import setup, { nameResource } from '../utils/setup';
-import { CdnSetup } from '../utils/types';
+import { CdnSetup, DomainSetup } from '../utils/types';
+import { createDomainCertificateAndVerifyRecord } from './domainSetup';
 import {
   createCreateAuthChallengeLambda,
   createDefineAuthChallengeLambda,
@@ -14,9 +15,13 @@ import {
 const {
   tags,
   cdn: { waf },
+  awsSetup: { region },
 } = setup;
 
-export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
+export function createWafCognitoUserPool(
+  domainSetup: DomainSetup,
+  callbackUri: pulumi.Output<string>
+) {
   const userPool = new aws.cognito.UserPool(
     nameResource('wafUserPool'),
     {
@@ -37,14 +42,9 @@ export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
     { protect: true }
   ); // Delete only by overriding the resource protection manually
 
-  // Create cognito domain for hosted UI login
-  const loginDomainIdent = `${setup.projectName}-${setup.environment}`;
-  const cognitoDomain = new aws.cognito.UserPoolDomain(
-    nameResource('wafUserPoolDomain'),
-    {
-      domain: loginDomainIdent,
-      userPoolId: userPool.id,
-    }
+  const { userPoolDomain, cognitoDomain } = createWafCognitoUserPoolDomain(
+    userPool,
+    domainSetup
   );
 
   const userPoolClient = new aws.cognito.UserPoolClient(
@@ -69,7 +69,7 @@ export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
       clientId: userPoolClient.id,
       css: '.label-customizable {font-weight: 400;}',
       imageFile: imageFile.toString('base64'),
-      userPoolId: cognitoDomain.userPoolId,
+      userPoolId: userPoolDomain.userPoolId,
     }
   );
 
@@ -87,6 +87,68 @@ export function createWafCognitoUserPool(callbackUri: pulumi.Output<string>) {
     cognitoDomain,
     userPool,
     userPoolClient,
+  };
+}
+
+function createWafCognitoUserPoolDomain(
+  userPool: aws.cognito.UserPool,
+  domainSetup: DomainSetup
+) {
+  // Create cognito domain for hosted UI login
+  let loginDomainIdent = `${setup.projectName}-${setup.environment}`;
+  let cognitoDomain = `${loginDomainIdent}.auth.${region}.amazoncognito.com`;
+
+  let wafCustomDomainCertificateArn;
+  if (domainSetup?.domainName && domainSetup?.zone) {
+    loginDomainIdent = `${waf.customDomain.applicationSubDomain}.${waf.customDomain.cognitoSubDomain}.${domainSetup.domainName}`;
+    cognitoDomain = loginDomainIdent;
+
+    const customCertificate = createDomainCertificateAndVerifyRecord(
+      domainSetup.zone,
+      loginDomainIdent
+    );
+    wafCustomDomainCertificateArn = customCertificate.arn;
+  }
+
+  const userPoolDomain = new aws.cognito.UserPoolDomain(
+    nameResource('wafUserPoolDomain'),
+    {
+      domain: loginDomainIdent,
+      userPoolId: userPool.id,
+      certificateArn: wafCustomDomainCertificateArn,
+    }
+  );
+
+  // Custom domain: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html
+  if (domainSetup?.domainName && domainSetup?.zone) {
+    const cognitoDomainRoot = `${waf.customDomain.cognitoSubDomain}.${domainSetup.domainName}`;
+
+    // A-record for the cognito
+    new aws.route53.Record(nameResource('wafCognitoDomainRecord'), {
+      name: cognitoDomainRoot,
+      type: 'A',
+      zoneId: domainSetup.zone.id,
+      records: ['198.51.100.1'],
+    });
+
+    // Alias record for the cognito
+    new aws.route53.Record(nameResource('wafCognitoAliasRecord'), {
+      name: loginDomainIdent,
+      type: 'A',
+      zoneId: domainSetup.zone.id,
+      aliases: [
+        {
+          evaluateTargetHealth: true,
+          name: userPoolDomain.cloudfrontDistribution,
+          zoneId: userPoolDomain.cloudfrontDistributionZoneId,
+        },
+      ],
+    });
+  }
+
+  return {
+    userPoolDomain,
+    cognitoDomain,
   };
 }
 
@@ -129,6 +191,7 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
         requireNumbers: false,
         requireSymbols: false,
         requireUppercase: false,
+        temporaryPasswordValidityDays: 7,
       },
       tags,
     },
