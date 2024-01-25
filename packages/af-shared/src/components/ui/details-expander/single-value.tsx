@@ -1,3 +1,5 @@
+import { Text } from 'suomifi-ui-components';
+
 interface SingleValueProps {
   label: string;
   value: string;
@@ -7,9 +9,9 @@ export default function SingleValue({ label, value }: SingleValueProps) {
   return (
     <div>
       {label && (
-        <span className="font-light subpixel-antialiased">{label}: </span>
+        <Text className="!font-light !subpixel-antialiased">{label}: </Text>
       )}
-      <span>{value || '-'}</span>
+      <Text className="">{value || '-'}</Text>
     </div>
   );
 }
