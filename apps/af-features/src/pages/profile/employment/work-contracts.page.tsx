@@ -1,17 +1,29 @@
 import { Text } from 'suomifi-ui-components';
+import { ConsentDataSource } from '@shared/types';
+import { useDataSourceConsent } from '@shared/lib/hooks/consent';
 import { usePersonWorkContracts } from '@shared/lib/hooks/employment';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
+import ConsentSentry from '../components/consent-sentry';
 import PageSideNavLayout from '../components/profile-side-nav-layout';
 import WorkContractsDetails from '../components/work-contracts-details';
 
 export default function WorkContractsPage() {
-  /**
-   * TODO: implement consent check before fetching data
-   */
-  const { data: contract, isLoading } = usePersonWorkContracts();
+  // get consent situation for work contract
+  const {
+    data: consentSituation,
+    giveConsent,
+    error: consentError,
+    isLoading: consentLoading,
+  } = useDataSourceConsent(ConsentDataSource.WORK_CONTRACT);
+
+  // get worck contract, if consent is granted
+  const { data: contract, isLoading: wockContractLoading } =
+    usePersonWorkContracts(consentSituation);
+
+  const isLoading = consentLoading || wockContractLoading;
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -32,7 +44,14 @@ export default function WorkContractsPage() {
             {isLoading ? (
               <Loading />
             ) : (
-              <WorkContractsDetails contract={contract} />
+              <ConsentSentry
+                consentDataSource={ConsentDataSource.WORK_CONTRACT}
+                consentSituation={consentSituation}
+                giveConsent={giveConsent}
+                error={consentError}
+              >
+                <WorkContractsDetails contract={contract} />
+              </ConsentSentry>
             )}
           </div>
         </Page.Block>

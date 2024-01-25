@@ -1,4 +1,5 @@
 import WorkContractsPage from '@pages/profile/employment/work-contracts.page';
+import { ConsentDataSource, ConsentStatus } from '@shared/types';
 import { MOCK_AUTH_STATE } from '@shared/lib/testing/mocks/mock-values';
 import {
   act,
@@ -7,6 +8,7 @@ import {
   waitFor,
 } from '@shared/lib/testing/utils/testing-library-utils';
 import * as UtilsExports from '@shared/lib/utils/auth';
+import { interceptConsentCheck } from './utils';
 
 describe('Work contracts page', () => {
   beforeEach(async () => {
@@ -15,10 +17,26 @@ describe('Work contracts page', () => {
       .mockImplementation(async () => MOCK_AUTH_STATE);
   });
 
-  // TODO: implement consent check test
+  it('asks for consent for person income tax, if not given', async () => {
+    interceptConsentCheck(
+      ConsentStatus.VERIFY,
+      ConsentDataSource.WORK_CONTRACT
+    );
+
+    await act(async () => {
+      renderWithProviders(<WorkContractsPage />);
+    });
+
+    // expect that consent sentry is present
+    const consentSentryHeading = screen.queryByText(/consent required/i);
+    expect(consentSentryHeading).toBeInTheDocument();
+  });
 
   it('shows work contracts, if consent is given', async () => {
-    // TODO: mock consent check api call, consent accepted
+    interceptConsentCheck(
+      ConsentStatus.GRANTED,
+      ConsentDataSource.WORK_CONTRACT
+    );
 
     await act(async () => {
       renderWithProviders(<WorkContractsPage />);

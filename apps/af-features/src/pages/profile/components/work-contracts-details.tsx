@@ -9,8 +9,8 @@ const formatDate = (date: string) => format(parseISO(date), 'dd.MM.yyyy');
 
 function mapContractDetails(contract: WorkContract) {
   const {
-    employerInfo: { signatureDate, ...employerInfo },
-    employeeInfo: { signaruteDate, ...employeeInfo },
+    employerInfo: { signatureDate: employerSignatureDate, ...employerInfo },
+    employeeInfo: { signatureDate: employeeSignatureDate, ...employeeInfo },
     termsOfWork: { employmentStart, employmentEnd, locations, ...termsOfWork },
     compensation,
     benefits,
@@ -21,11 +21,11 @@ function mapContractDetails(contract: WorkContract) {
     ...contract,
     employerInfo: {
       ...employerInfo,
-      signatureDate: formatDate(signatureDate),
+      signatureDate: formatDate(employerSignatureDate),
     },
     employeeInfo: {
       ...employeeInfo,
-      signaruteDate: formatDate(signaruteDate),
+      signaruteDate: formatDate(employeeSignatureDate),
     },
     termsOfWork: {
       ...termsOfWork,

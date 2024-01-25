@@ -16,20 +16,20 @@ interface EmployeeInfo {
   postalCode?: string;
   city?: string;
   country?: string;
-  signaruteDate: string;
+  signatureDate: string;
 }
 
 interface TermsOfWork {
   employmentStart: string;
   employmentEnd?: string;
   groundsForFixedTerm?: string;
+  jobTitle: string;
   workConditions?: string;
   industry?: string;
   locations?: string[];
   workingHours: number;
   collectiveAgreement?: string;
   probation: string;
-  jobTitle: string;
 }
 
 interface Compensation {
@@ -39,16 +39,16 @@ interface Compensation {
   paymentTime?: string;
 }
 
-interface Benefit {
-  benefit?: string;
-  benefitType?: 'part of salary' | 'addition to salary';
-  taxableValue?: number;
-}
-
 interface Holidays {
   paidHoliday: boolean;
   numberOfHolidays?: number;
   determinationOfHoliday?: 'annual holiday act' | 'collective agreement';
+}
+
+interface Benefit {
+  benefit?: string;
+  benefitType?: 'part of salary' | 'addition to salary';
+  taxableValue?: number;
 }
 
 interface OtherTerm {

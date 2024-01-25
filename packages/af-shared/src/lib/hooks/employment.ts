@@ -16,11 +16,19 @@ const QUERY_OPTIONS = {
 /**
  * Get user work contracts
  */
-function usePersonWorkContracts(enabled: boolean = true) {
+function usePersonWorkContracts(
+  consentSituation: ConsentSituation | undefined
+) {
   const query = useQuery(
     CONTRACTS_QUERY_KEYS,
-    async () => await api.employment.getPersonWorkContracts(),
-    { ...QUERY_OPTIONS, enabled }
+    async () =>
+      await api.employment.getPersonWorkContracts(
+        consentSituation?.consentToken
+      ),
+    {
+      ...QUERY_OPTIONS,
+      enabled: consentSituation?.consentStatus === ConsentStatus.GRANTED,
+    }
   );
 
   useErrorToast({
@@ -36,6 +44,7 @@ function usePersonWorkContracts(enabled: boolean = true) {
   return {
     ...query,
     formattedError,
+    isLoading: query.isLoading && query.fetchStatus !== 'idle',
   };
 }
 

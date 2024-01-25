@@ -1,17 +1,12 @@
 import { IncomeTax, WorkContract } from '@/types';
-import { MOCK_WORK_CONTRACT } from '@/lib/testing/mocks/mock-values';
 import apiClient from '../api-client';
 import { TESTBED_API_BASE_URL } from '../endpoints';
-
-const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
 
 export async function getPersonWorkContracts(
   consentToken?: string
 ): Promise<WorkContract> {
-  // TODO: Wait for testbed-api implementation
-
-  /* const { data } = await apiClient.post(
-    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.1?source=`,
+  const { data } = await apiClient.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3?source=staffpoint_demo`,
     {},
     {
       headers: {
@@ -19,10 +14,7 @@ export async function getPersonWorkContracts(
       },
     }
   );
-  return data; */
-
-  await sleep();
-  return MOCK_WORK_CONTRACT;
+  return data;
 }
 
 export async function getPersonIncomeTax(

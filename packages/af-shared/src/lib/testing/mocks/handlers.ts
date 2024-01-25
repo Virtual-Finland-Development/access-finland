@@ -12,6 +12,7 @@ import {
   MOCK_PERSON_BASIC_INFO,
   MOCK_TOS_AGREEMENT,
   MOCK_USER_COMPANIES,
+  MOCK_WORK_CONTRACT,
   MOCK_WORK_PERMITS,
 } from './mock-values';
 
@@ -47,6 +48,11 @@ export const handlers = [
   rest.post(
     `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1`,
     (_, res, ctx) => res(ctx.json(MOCK_WORK_PERMITS))
+  ),
+  // wock contracts
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3`,
+    (_, res, ctx) => res(ctx.json(MOCK_WORK_CONTRACT))
   ),
   // income tax
   rest.post(

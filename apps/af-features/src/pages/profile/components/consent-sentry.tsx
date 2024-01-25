@@ -12,12 +12,12 @@ import {
   ConsentStatus,
 } from '@shared/types';
 import Alert from '@shared/components/ui/alert';
-import CustomHeading from '@shared/components/ui/custom-heading';
 import CustomLink from '@shared/components/ui/custom-link';
 
 const SERVICE = {
   [ConsentDataSource.WORK_PERMIT]: 'Finnish Immigration Service (Migri)',
   [ConsentDataSource.INCOME_TAX]: 'Finnish Tax Administration (Vero)',
+  [ConsentDataSource.WORK_CONTRACT]: 'StaffPoint',
 };
 
 interface Props {
@@ -77,7 +77,8 @@ export default function ConsentSentry(props: Props) {
         <InlineAlert status="neutral" labelText="Consent required">
           <div className="flex flex-col items-start gap-4">
             <Text className="!text-base">
-              We need your consent for {service}. You can give it below.
+              We need your consent for <strong>{service}</strong>. You can give
+              it below.
             </Text>
             <div className="flex flex-row items-center gap-3">
               <Button onClick={giveConsent}>Give consent</Button>

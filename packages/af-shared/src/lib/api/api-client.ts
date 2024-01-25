@@ -24,6 +24,7 @@ const PROTECTED_URLS = [
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
   `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1?source=virtual_finland:development`,
   `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=vero_demo`,
+  `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3?source=staffpoint_demo`,
   `${TESTBED_API_BASE_URL}/users-api/user`,
   `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
 ];

@@ -227,7 +227,7 @@ export const MOCK_WORK_CONTRACT: WorkContract = {
     streetAddress: 'Second Street 2',
     postalCode: '00200',
     city: 'Helsinki',
-    signaruteDate: '2022-01-01',
+    signatureDate: '2022-01-01',
   },
   termsOfWork: {
     employmentStart: '2022-01-01',
