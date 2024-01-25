@@ -6,7 +6,14 @@ async function getDefaultVpc() {
 }
 
 async function getDefaultSubnets(vpcId: string) {
-  const defaultSubnets = await aws.ec2.getSubnetIds({ vpcId: vpcId });
+  const defaultSubnets = await aws.ec2.getSubnets({
+    filters: [
+      {
+        name: 'vpc-id',
+        values: [vpcId],
+      },
+    ],
+  });
   return defaultSubnets.ids || [];
 }
 

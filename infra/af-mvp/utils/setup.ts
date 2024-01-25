@@ -132,6 +132,10 @@ const setup = {
       enabled: wafConfig.getBoolean('enabled'),
       username: wafConfig.get('username'),
       password: wafConfig.get('password'),
+      customDomain: {
+        cognitoSubDomain: 'auth',
+        applicationSubDomain: 'virtualfinland',
+      },
     },
   },
   awsSetup: {

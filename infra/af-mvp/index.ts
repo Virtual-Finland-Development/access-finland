@@ -22,7 +22,7 @@ export = async () => {
   // Application load balancer
   const loadBalancerSetup = createLoadBalancer(domainSetup);
   // Web application firewall
-  const wafSetup = await createWebAppFirewallProtection();
+  const wafSetup = await createWebAppFirewallProtection(domainSetup);
   // Cloudfront CDN
   const cdnSetup = createContentDeliveryNetwork(
     loadBalancerSetup,
