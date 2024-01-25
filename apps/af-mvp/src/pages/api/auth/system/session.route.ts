@@ -15,6 +15,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             path: '/api/auth/system/session',
             httpOnly: true,
             sameSite: 'strict',
+            maxAge: 60 * 60 * 24 * 365 * 1, // 1 year
           }),
         ])
         .json({});

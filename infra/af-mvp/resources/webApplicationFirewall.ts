@@ -2,6 +2,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import setup, { nameResource } from '../utils/setup';
+import { DomainSetup } from '../utils/types';
 import { createWafCognitoUserPool } from './cognito';
 
 const {
@@ -11,7 +12,7 @@ const {
   currentStackReference,
 } = setup;
 
-export async function createWebAppFirewallProtection() {
+export async function createWebAppFirewallProtection(domainSetup: DomainSetup) {
   if (!waf.enabled) {
     return;
   }
@@ -33,10 +34,12 @@ export async function createWebAppFirewallProtection() {
   }`;
 
   const callbackUri = pulumi.interpolate`${appUrl}/api/auth/cognito/callback`;
-  const { userPool, userPoolClient, cognitoDomain } =
-    createWafCognitoUserPool(callbackUri);
+  const { userPool, userPoolClient, cognitoDomain } = createWafCognitoUserPool(
+    domainSetup,
+    callbackUri
+  );
 
-  const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain.domain}.auth.${region}.amazoncognito.com/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
+  const cognitoLoginUri = pulumi.interpolate`https://${cognitoDomain}/login?response_type=token&client_id=${userPoolClient.id}&redirect_uri=${callbackUri}`;
 
   // Create a firewall
   const firewallRegion = new aws.Provider(nameResource('aws-waf-region'), {

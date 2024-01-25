@@ -57,7 +57,7 @@ export function nameResource(
   let resourceNameExtended = `${projectName}-${resourceName}-${environment}`;
 
   if (maxLength && !pulumiNameHashIncludedInMaxLength) {
-    maxLength -= 7; // 7 is the length of the hash added by pulumi to the resource name
+    maxLength = maxLength - 8; // 8 is the length of the hash + a dash added by pulumi to the resource name
   }
 
   if (maxLength && resourceNameExtended.length > maxLength) {
@@ -132,6 +132,10 @@ const setup = {
       enabled: wafConfig.getBoolean('enabled'),
       username: wafConfig.get('username'),
       password: wafConfig.get('password'),
+      customDomain: {
+        cognitoSubDomain: 'auth',
+        applicationSubDomain: 'virtualfinland',
+      },
     },
   },
   awsSetup: {
