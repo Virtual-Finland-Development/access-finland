@@ -1,8 +1,10 @@
+import staffPointLogo from '@shared/images/staffpoint.svg';
 import { format, parseISO } from 'date-fns';
 import { Text } from 'suomifi-ui-components';
 import { WorkContract } from '@shared/types';
 import { WORK_CONTRACT_LABELS } from '@shared/lib/constants';
 import CustomHeading from '@shared/components/ui/custom-heading';
+import CustomImage from '@shared/components/ui/custom-image';
 import DetailsExpander from '@shared/components/ui/details-expander/details-expander';
 
 const formatDate = (date: string) => format(parseISO(date), 'dd.MM.yyyy');
@@ -76,6 +78,8 @@ export default function WorkContractsDetails(props: Props) {
           hasValues
           showStatusIcons={false}
         />
+        <Text>Issued by StaffPoint</Text>
+        <CustomImage src={staffPointLogo} alt="StaffPoint" height={50} />
       </div>
     </>
   );
