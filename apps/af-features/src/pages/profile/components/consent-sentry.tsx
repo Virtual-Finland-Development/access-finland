@@ -17,7 +17,7 @@ import CustomLink from '@shared/components/ui/custom-link';
 const SERVICE = {
   [ConsentDataSource.WORK_PERMIT]: 'Finnish Immigration Service (Migri)',
   [ConsentDataSource.INCOME_TAX]: 'Finnish Tax Administration (Vero)',
-  [ConsentDataSource.WORK_CONTRACT]: 'StaffPoint',
+  [ConsentDataSource.WORK_CONTRACT]: 'StaffPoint Oy',
 };
 
 interface Props {

@@ -78,7 +78,7 @@ export default function WorkContractsDetails(props: Props) {
           hasValues
           showStatusIcons={false}
         />
-        <Text>Issued by StaffPoint</Text>
+        <Text>Issued by StaffPoint Oy</Text>
         <CustomImage src={staffPointLogo} alt="StaffPoint" height={50} />
       </div>
     </>
