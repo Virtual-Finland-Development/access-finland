@@ -76,20 +76,20 @@ export default function DetailsExpander<T>(props: DetailsExpanderProps<T>) {
                     isArray && value.every(i => typeof i === 'object');
                   const isString =
                     typeof value === 'string' || value instanceof String;
-                  const GridContainerClassName = isArray
+                  const gridContainerClassName = isArray
                     ? 'grid grid-cols-1 md:grid-cols-2 mt-2 gap-4'
                     : 'grid grid-cols-1 mt-2 gap-4';
 
                   return (
                     <div key={dataKey}>
                       {labels[dataKey] && (
-                        <CustomHeading variant="h3" className="!text-lg">
+                        <CustomHeading variant="h3" className="!text-xl">
                           {labels[dataKey]}
                         </CustomHeading>
                       )}
 
-                      <div className={GridContainerClassName}>
-                        {isArray && value.length < 1 && <span>-</span>}
+                      <div className={gridContainerClassName}>
+                        {isArray && value.length < 1 && <span>—</span>}
 
                         {isArrayOfObjects &&
                           value.map((_, index: number) => (

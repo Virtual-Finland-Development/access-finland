@@ -9,9 +9,11 @@ export default function SingleValue({ label, value }: SingleValueProps) {
   return (
     <div>
       {label && (
-        <Text className="!font-light !subpixel-antialiased">{label}: </Text>
+        <Text smallScreen variant="bold">
+          {label}:{' '}
+        </Text>
       )}
-      <Text className="">{value || '-'}</Text>
+      <Text smallScreen>{value || '—'}</Text>
     </div>
   );
 }

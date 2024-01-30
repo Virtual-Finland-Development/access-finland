@@ -56,33 +56,29 @@ export default function TaxDetails(props: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Text>
-        Tax payer type:{' '}
-        <span className="block font-semibold">
-          {capitalizeFirstLetter(taxPayerType)}
-        </span>
+        <span className="block font-semibold">Tax payer type</span>
+        <span>{capitalizeFirstLetter(taxPayerType)}</span>
       </Text>
       <Text>
-        Tax rate:{' '}
-        <span className="block font-semibold">
-          {formatPercentage(withholdingPercentage)}
-        </span>
+        <span className="block font-semibold">Tax rate</span>
+        <span>{formatPercentage(withholdingPercentage)}</span>
       </Text>
       <Text>
-        Additional withholding percentage:{' '}
         <span className="block font-semibold">
-          {formatPercentage(additionalPercentage)}
+          Additional withholding percentage
         </span>
+        <span>{formatPercentage(additionalPercentage)}</span>
       </Text>
       <Text>
-        Income ceiling for the entire year {getYear(new Date(validityDate))}:{' '}
-        <span className="block font-semibold">{formatEuro(incomeLimit)}</span>
+        <span className="block font-semibold">
+          Income ceiling for the entire year {getYear(new Date(validityDate))}
+        </span>
+        <span>{formatEuro(incomeLimit)}</span>
       </Text>
 
       <Text>
-        Validity start date:{' '}
-        <span className="block font-semibold">
-          {format(parseISO(validityDate), 'dd.MM.yyyy')}
-        </span>
+        <span className="block font-semibold">Validity start date</span>
+        <span>{format(parseISO(validityDate), 'dd.MM.yyyy')}</span>
       </Text>
       <Text>Issued by Vero</Text>
       <CustomImage src={veroLogo} alt="Vero" />

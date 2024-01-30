@@ -72,8 +72,8 @@ function PermitExpander(props: PermitExpanderProps) {
       <ExpanderContent className="!text-base !flex !flex-col !gap-4">
         <div className="flex flex-col gap-4">
           <Text>
-            Validity{' '}
-            <span className="block font-semibold">
+            <span className="block font-semibold">Validity</span>
+            <span>
               {permit.validityStart && permit.validityEnd ? (
                 <>
                   {format(parseISO(permit.validityStart!), 'dd.MM.yyyy')} -{' '}
@@ -85,13 +85,13 @@ function PermitExpander(props: PermitExpanderProps) {
             </span>
           </Text>
           <Text>
-            Employer{' '}
-            <span className="block font-semibold">{permit.employerName}</span>
+            <span className="block font-semibold">Employer</span>
+            <span>{permit.employerName}</span>
           </Text>
           <Text>
-            Industries
+            <span className="block font-semibold">Industries</span>
             {industries.map(i => (
-              <span className="block font-semibold" key={i.codeValue}>
+              <span className="block" key={i.codeValue}>
                 {i.codeValue} {i.label}
               </span>
             ))}
