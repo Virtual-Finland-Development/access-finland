@@ -23,8 +23,8 @@ jobs:
       matrix:
         node-version: [18.x]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: App install, test
@@ -81,7 +81,7 @@ jobs:
           NEXT_PUBLIC_CODESETS_BASE_URL: ${{ steps.codesets-url.outputs.resource-output }}
       - name: Archive the build artifacts
         if: ${{ inputs.wants_artifacts }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifact-${{ inputs.environment }}
           path: apps/af-features/out
