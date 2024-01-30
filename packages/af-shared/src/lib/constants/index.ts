@@ -1,7 +1,7 @@
 import { AppContextObj } from '@/types';
 
 export const baseAppContextObj: AppContextObj = {
-  appName: 'living-in-finland',
+  appName: 'access-finland',
   redirectUrl: '',
 };
 
@@ -163,4 +163,45 @@ export const WORKING_TIME_LABELS = {
   '06': 'Normal days',
   '07': 'Weekend hours',
   '08': 'Work in shifts',
+};
+
+export const WORK_CONTRACT_LABELS: Record<string, any> = {
+  benefits: 'Benefits',
+  compensation: 'Compensation',
+  employeeInfo: 'Employee',
+  employerInfo: 'Employer',
+  holidays: 'Holidays',
+  otherTerms: 'Other terms',
+  termsOfWork: 'Terms of work',
+  name: 'Name',
+  businessID: 'Business ID',
+  streetName: 'Street name',
+  postalCode: 'Postal code',
+  city: 'City',
+  signatureDate: 'Signature date',
+  streetAddress: 'Street address',
+  country: 'Country',
+  signaruteDate: 'Signature date',
+  employmentStart: 'Employment start',
+  employmentEnd: 'Employment end',
+  groundsForFixedTerm: 'Grounds for fixed term',
+  workConditions: 'Work conditions',
+  industry: 'Industry',
+  locations: 'Locations',
+  workingHours: 'Working hours',
+  collectiveAgreement: 'Collective agreement',
+  probation: 'Probation',
+  paymentGrounds: 'Payment grounds',
+  salary: 'Salary',
+  bonuses: 'Bonuses',
+  paymentTime: 'Payment time',
+  paidHoliday: 'Paid holiday',
+  numberOfHolidays: 'Number of holidays',
+  determinationOfHoliday: 'Determination of holiday',
+  benefit: 'Benefit',
+  benefitType: 'Benefit type',
+  taxableValue: 'Taxable value',
+  termination: 'Termination',
+  termDescription: 'Term description',
+  jobTitle: 'Job title',
 };

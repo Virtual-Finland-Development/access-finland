@@ -66,7 +66,7 @@ function DesktopMenuPopover({
               <IconMenu className="block h-6 w-6" aria-hidden="true" />
             )}
           </Popover.Button>
-          <Popover.Panel className="absolute right-0 z-10 mt-3 origin-top-right bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none flex flex-col px-4">
+          <Popover.Panel className="absolute right-0 mt-3 origin-top-right bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none flex flex-col px-4">
             {navigationItems.map(item => {
               const Icon = DeskTopNavIcons[item.href] || IconFileCabinet;
 

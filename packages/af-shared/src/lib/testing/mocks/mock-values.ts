@@ -1,3 +1,5 @@
+import { IncomeTax, PersonWorkPermit, WorkContract } from '@/types';
+
 // auth
 export const MOCK_AUTH_STATE = {
   isValid: true,
@@ -185,3 +187,97 @@ export const MOCK_ISO_COUNTRIES = [
     threeLetterISORegionName: 'AFG',
   },
 ];
+
+// work permits
+export const MOCK_WORK_PERMITS: { permits: PersonWorkPermit[] } = {
+  permits: [
+    {
+      employerName: 'Staffpoint Oy',
+      industries: ['79.1', '79.9'],
+      permitAccepted: true,
+      permitName: 'Seasonal work certificate',
+      permitType: 'A',
+      validityEnd: '2024-02-19T00:00:00',
+      validityStart: '2023-11-07T00:00:00',
+    },
+    {
+      employerName: 'Stuffpoint Oy',
+      industries: ['79.1', '79.9'],
+      permitAccepted: false,
+      permitName: 'Permanent work certificate',
+      permitType: 'B',
+      validityEnd: '2024-02-19T00:00:00',
+      validityStart: '2023-11-07T00:00:00',
+    },
+  ],
+};
+
+// employment / wock contracts
+export const MOCK_WORK_CONTRACT: WorkContract = {
+  employerInfo: {
+    name: 'ABC Inc.',
+    businessID: '1234567-8',
+    streetName: 'Main Street 1',
+    postalCode: '00100',
+    city: 'Helsinki',
+    signatureDate: '2022-01-01',
+  },
+  employeeInfo: {
+    name: 'John Doe',
+    streetAddress: 'Second Street 2',
+    postalCode: '00200',
+    city: 'Helsinki',
+    signatureDate: '2022-01-01',
+  },
+  termsOfWork: {
+    employmentStart: '2022-01-01',
+    groundsForFixedTerm: 'Temporary replacement',
+    workConditions: 'Remote work',
+    industry: '79.1',
+    locations: ['Helsinki', 'Tampere'],
+    workingHours: 37.5,
+    collectiveAgreement:
+      'The collective agreement for Employment industry (HELA)',
+    probation:
+      'The probationary period lasts 2 months from the employment start date',
+    jobTitle: 'Receptionist',
+  },
+  compensation: {
+    paymentGrounds: 'monthly',
+    salary: 5000,
+    bonuses: 'Performance-based',
+    paymentTime: 'End of month',
+  },
+  holidays: {
+    paidHoliday: true,
+    numberOfHolidays: 25,
+    determinationOfHoliday: 'annual holiday act',
+  },
+  benefits: [
+    {
+      benefit: 'Lunch benefit',
+      benefitType: 'part of salary',
+      taxableValue: 100,
+    },
+    {
+      benefit: 'Healthcare',
+      benefitType: 'addition to salary',
+      taxableValue: 50,
+    },
+  ],
+  termination: 'Notice period of 3 months',
+  otherTerms: [
+    {
+      termDescription: 'Confidentiality agreement',
+    },
+  ],
+};
+
+// employment / tax
+export const MOCK_INCOME_TAX: IncomeTax = {
+  taxPayerType: 'resident',
+  withholdingPercentage: 15.5,
+  additionalPercentage: 40.2,
+  incomeLimit: 30000,
+  validityDate: '2023-12-31',
+};

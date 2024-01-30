@@ -16,6 +16,10 @@ Access Finland demo application. Contains experimental/demo features not to be d
   - Establish a non-listed company (https://developer.testbed.fi/sources/available?search=draft%2FNSG%2FAgent%2FLegalEntity%2FNonListedCompany%2FEstablishment%2FWrite)
   - Beneficial owners of a non-listed company (https://developer.testbed.fi/sources/available?search=draft%2FNSG%2FAgent%2FLegalEntity%2FNonListedCompany%2FBeneficialOwners)
   - Signatory rights of a non-listed company (https://developer.testbed.fi/sources/available?search=draft%2FNSG%2FAgent%2FLegalEntity%2FNonListedCompany%2FSignatoryRights)
+- Seasonal employee case (kausityöntekijäkokeilu)
+  - Permits/WorkPermit, read only (https://developer.testbed.fi/sources/available?search=Permits%2FWorkPermit_v0.1)
+  - Employment/IncomeTax, read only (https://developer.testbed.fi/sources/available?search=Employment%2FIncomeTax_v0.2)
+  - Employment/WorkContract, read only (https://developer.testbed.fi/sources/available?search=Employment%2FWorkContract_v0.3)
 
 ## Tech
 

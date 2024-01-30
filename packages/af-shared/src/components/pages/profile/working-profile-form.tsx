@@ -51,11 +51,11 @@ const DEFAUT_VALUES = {
 };
 
 interface Props {
-  jobApplicationProfile: JobApplicantProfile | undefined;
+  jobApplicantProfile: JobApplicantProfile | undefined;
 }
 
 export default function WorkingProfileForm(props: Props) {
-  const { jobApplicationProfile } = props;
+  const { jobApplicantProfile } = props;
   const toast = useToast();
   const reactQueryClient = useQueryClient();
   const router = useRouter();
@@ -97,9 +97,7 @@ export default function WorkingProfileForm(props: Props) {
     watch,
     setValue,
   } = useForm<JobApplicantProfile>({
-    defaultValues: jobApplicationProfile
-      ? jobApplicationProfile
-      : DEFAUT_VALUES,
+    defaultValues: jobApplicantProfile ? jobApplicantProfile : DEFAUT_VALUES,
   });
 
   const {

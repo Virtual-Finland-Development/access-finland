@@ -1,33 +1,39 @@
+import { IconUserProfile, Text } from 'suomifi-ui-components';
+import {
+  usePersonBasicInfo,
+  useProfileTosAgreement,
+} from '@shared/lib/hooks/profile';
+import { useAuth } from '@shared/context/auth-context';
 import AuthSentry from '@shared/components/auth-sentry';
 import Page from '@shared/components/layout/page';
 import PersonalProfileForm from '@shared/components/pages/profile/personal-profile-form';
 import ProfileDataSentry from '@shared/components/pages/profile/profile-data-sentry';
 import CustomHeading from '@shared/components/ui/custom-heading';
 import Loading from '@shared/components/ui/loading';
-import { useAuth } from '@shared/context/auth-context';
-import {
-  usePersonBasicInfo,
-  useProfileTosAgreement,
-} from '@shared/lib/hooks/profile';
-import { IconUserProfile, Text } from 'suomifi-ui-components';
 
 export default function PersonalProfilePage() {
   const { isAuthenticated } = useAuth();
   const {
     data: agreement,
     isFetching: agreementFetching,
-    errorResponse: agreementErrorResponse,
+    formattedError: agreementError,
   } = useProfileTosAgreement(isAuthenticated);
 
-  const shouldFetchProfileData = !agreementFetching && agreement?.hasAcceptedLatest;
+  const shouldFetchProfileData = Boolean(
+    !agreementFetching && agreement?.hasAcceptedLatest
+  );
 
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
-    errorResponse: personBasicInfoErrorResponse,
+    formattedError: personBasicInfoError,
   } = usePersonBasicInfo(shouldFetchProfileData);
 
   const isLoading = agreementFetching || basicInformationLoading;
+
+  const profileErrors = [agreementError, personBasicInfoError].flatMap(
+    error => error || []
+  );
 
   return (
     <AuthSentry redirectPath="/profile">
@@ -52,13 +58,7 @@ export default function PersonalProfilePage() {
           {isLoading ? (
             <Loading />
           ) : (
-            <ProfileDataSentry
-              agreement={agreement}
-              errorResponses={[
-                agreementErrorResponse,
-                personBasicInfoErrorResponse,
-              ]}
-            >
+            <ProfileDataSentry agreement={agreement} errors={profileErrors}>
               <PersonalProfileForm
                 personBasicInformation={personBasicInformation}
               />

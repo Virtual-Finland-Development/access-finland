@@ -17,29 +17,34 @@ export default function ProfileAuthenticated() {
   const {
     data: agreement,
     isFetching: agreementFetching,
-    errorResponse: agreementErrorResponse,
+    formattedError: agreementError,
   } = useProfileTosAgreement(!isExport); // enable TOS functionality for MVP only
 
   // for MVP: data fetch enabled if user has accepted the agreement, for Featues OK
-  const shouldFetchProfileData =
-    isExport || (!agreementFetching && agreement?.hasAcceptedLatest);
+  const shouldFetchProfileData = Boolean(
+    isExport || (!agreementFetching && agreement?.hasAcceptedLatest)
+  );
 
   const {
     data: personBasicInformation,
     isLoading: basicInformationLoading,
-    errorResponse: personBasicInfoErrorResponse,
+    formattedError: personBasicInfoError,
   } = usePersonBasicInfo(shouldFetchProfileData);
 
   const {
-    data: jobApplicationProfile,
-    isLoading: jobApplicationProfileLoading,
-    errorResponse: jobApplicationProfileErrorResponse,
+    data: jobApplicantProfile,
+    isLoading: jobApplicantProfileLoading,
+    formattedError: jobApplicantProfileError,
   } = useJobApplicantProfile(shouldFetchProfileData);
 
   const isLoading =
-    agreementFetching ||
-    basicInformationLoading ||
-    jobApplicationProfileLoading;
+    agreementFetching || basicInformationLoading || jobApplicantProfileLoading;
+
+  const profileErrors = [
+    agreementError,
+    personBasicInfoError,
+    jobApplicantProfileError,
+  ].flatMap(error => error || []);
 
   return (
     <Page.Block className="bg-white">
@@ -58,17 +63,10 @@ export default function ProfileAuthenticated() {
         {isLoading ? (
           <Loading />
         ) : (
-          <ProfileDataSentry
-            agreement={agreement}
-            errorResponses={[
-              agreementErrorResponse,
-              personBasicInfoErrorResponse,
-              jobApplicationProfileErrorResponse,
-            ]}
-          >
+          <ProfileDataSentry agreement={agreement} errors={profileErrors}>
             <ProfileDetails
               personBasicInformation={personBasicInformation}
-              jobApplicationProfile={jobApplicationProfile}
+              jobApplicationProfile={jobApplicantProfile}
             />
           </ProfileDataSentry>
         )}

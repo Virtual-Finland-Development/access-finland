@@ -1,3 +1,5 @@
+import { Text } from 'suomifi-ui-components';
+
 interface SingleValueProps {
   label: string;
   value: string;
@@ -6,8 +8,12 @@ interface SingleValueProps {
 export default function SingleValue({ label, value }: SingleValueProps) {
   return (
     <div>
-      {label && <span>{label}: </span>}
-      <span>{value || '-'}</span>
+      {label && (
+        <Text smallScreen variant="bold">
+          {label}:{' '}
+        </Text>
+      )}
+      <Text smallScreen>{value || '—'}</Text>
     </div>
   );
 }

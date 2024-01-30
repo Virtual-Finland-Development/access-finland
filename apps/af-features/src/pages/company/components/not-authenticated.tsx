@@ -20,7 +20,7 @@ export default function CompanyNotAuthenticated() {
   return (
     <>
       <Page.Block className="bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-1 lg:-mx-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-1 lg:-mx-10">
           <div className="bg-suomifi-light text-white flex flex-col gap-8 items-center justify-center px-4 py-8">
             <div className="hidden md:block">
               <IconBuildings className="h-16 w-16 flex-shrink-0 bg-white rounded-full" />

@@ -3,6 +3,7 @@ import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
 import {
+  AUTH_GW_BASE_URL,
   CODESETS_BASE_URL,
   PRH_MOCK_BASE_URL,
   TESTBED_API_BASE_URL,
@@ -21,7 +22,11 @@ const PROTECTED_URLS = [
   `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
   `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
+  `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1?source=virtual_finland:development`,
+  `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=vero_demo`,
+  `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3?source=staffpoint_demo`,
   `${TESTBED_API_BASE_URL}/users-api/user`,
+  `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
 ];
 
 const NEXTJS_API_PROTECTED_URLS = [
@@ -51,7 +56,10 @@ apiClient.interceptors.request.use(async config => {
     if (PROTECTED_URLS.includes(config.url)) {
       const idToken = (await LoginState.getLoggedInState())?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
-      config.headers['x-consent-token'] = '';
+
+      if (!config.headers['x-consent-token']) {
+        config.headers['x-consent-token'] = '';
+      }
     } else if (isProtectedNextJsEndpoint(config.url)) {
       config.headers['x-csrf-token'] = LoginState.getCsrfToken();
     }

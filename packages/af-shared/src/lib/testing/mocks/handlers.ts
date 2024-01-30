@@ -6,11 +6,14 @@ import {
 } from '@/lib/api/endpoints';
 import {
   MOCK_AUTH_STATE,
+  MOCK_INCOME_TAX,
   MOCK_ISO_COUNTRIES,
   MOCK_JOB_APPLICANT_INFO,
   MOCK_PERSON_BASIC_INFO,
   MOCK_TOS_AGREEMENT,
   MOCK_USER_COMPANIES,
+  MOCK_WORK_CONTRACT,
+  MOCK_WORK_PERMITS,
 } from './mock-values';
 
 const userId = MOCK_AUTH_STATE.storedAuthState.profileData.userId;
@@ -40,6 +43,21 @@ export const handlers = [
   rest.post(
     'http://localhost/api/dataspace/Person/JobApplicantProfile',
     (_, res, ctx) => res(ctx.json(MOCK_JOB_APPLICANT_INFO))
+  ),
+  // work permits
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1`,
+    (_, res, ctx) => res(ctx.json(MOCK_WORK_PERMITS))
+  ),
+  // wock contracts
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3`,
+    (_, res, ctx) => res(ctx.json(MOCK_WORK_CONTRACT))
+  ),
+  // income tax
+  rest.post(
+    `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2`,
+    (_, res, ctx) => res(ctx.json(MOCK_INCOME_TAX))
   ),
   // codesets, add values as needed for tests
   rest.get(

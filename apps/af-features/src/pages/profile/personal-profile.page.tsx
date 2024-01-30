@@ -15,7 +15,7 @@ export default function PersonalProfilePage() {
   const {
     data: personBasicInformation,
     isLoading,
-    errorResponse,
+    formattedError,
   } = usePersonBasicInfo(isAuthenticated);
 
   return (
@@ -42,8 +42,8 @@ export default function PersonalProfilePage() {
             <Loading />
           ) : (
             <Fragment>
-              {errorResponse?.shouldPrintError ? (
-                <ProfileErrors errorMessages={[errorResponse.message]} />
+              {formattedError?.shouldPrintError ? (
+                <ProfileErrors errorMessages={[formattedError.message]} />
               ) : (
                 <PersonalProfileForm
                   personBasicInformation={personBasicInformation}

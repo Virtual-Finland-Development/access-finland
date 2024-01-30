@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import api from '../api';
 import useErrorToast from './use-error-toast';
+import { formatErrorResponse } from './utils';
 
 export const PROFILE_TOS_AGREEMENT_QUERY_KEYS = ['profile-tos-agreement'];
 export const BASIC_INFO_QUERY_KEYS = ['basic-information'];
@@ -11,38 +12,6 @@ const QUERY_OPTIONS = {
   refetchOnWindowFocus: false,
   retry: false,
 };
-
-interface FormattedErrorResponse {
-  statusCode: number;
-  message: string;
-  shouldPrintError: boolean;
-}
-
-function formatErrorResponse(
-  error: unknown,
-  messagePrefix: string
-): FormattedErrorResponse | undefined {
-  if (!error || !(error instanceof AxiosError)) {
-    return undefined;
-  }
-
-  const errorResponse = error?.response;
-
-  if (!errorResponse) {
-    return undefined;
-  }
-
-  const statusCode = errorResponse.status;
-  const message = `${messagePrefix}: ${
-    errorResponse.statusText || 'something went wrong'
-  }`;
-
-  return {
-    statusCode,
-    message,
-    shouldPrintError: statusCode !== 404,
-  };
-}
 
 /**
  * Get profile TOS agreement status.
@@ -62,14 +31,14 @@ function useProfileTosAgreement(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = formatErrorResponse(
+  const formattedError = formatErrorResponse(
     query.error,
     'Profile TOS Agreement'
   );
 
   return {
     ...query,
-    errorResponse,
+    formattedError,
   };
 }
 
@@ -91,15 +60,15 @@ function usePersonBasicInfo(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = formatErrorResponse(
+  const formattedError = formatErrorResponse(
     query.error,
     'Person basic information'
   );
 
   return {
     ...query,
+    formattedError,
     isLoading: query.isLoading && query.fetchStatus !== 'idle',
-    errorResponse,
   };
 }
 
@@ -121,17 +90,16 @@ function useJobApplicantProfile(enabled: boolean = true) {
         : undefined,
   });
 
-  const errorResponse = formatErrorResponse(
+  const formattedError = formatErrorResponse(
     query.error,
     'Job applicant profile'
   );
 
   return {
     ...query,
+    formattedError,
     isLoading: query.isLoading && query.fetchStatus !== 'idle',
-    errorResponse,
   };
 }
 
-export type { FormattedErrorResponse };
 export { useProfileTosAgreement, usePersonBasicInfo, useJobApplicantProfile };

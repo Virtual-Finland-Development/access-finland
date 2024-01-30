@@ -1,27 +1,32 @@
 import { ReactNode } from 'react';
-import useDimensions from '@shared/lib/hooks/use-dimensions';
+import { IconSupport } from 'suomifi-ui-components';
 import Page from '@shared/components/layout/page';
-import InfoNavigation from '../components/info-navigation';
 
-interface InfoPagesLayoutProps {
+const SIDE_NAV_ITEMS = [
+  { label: 'Terms of use', href: '/info/terms-of-use' },
+  {
+    label: 'Data protection statement',
+    href: '/info/data-protection-statement',
+  },
+];
+
+interface Props {
   title: string;
   children: ReactNode;
 }
 
-export default function InfoPagesLayout(props: InfoPagesLayoutProps) {
+export default function InfoPagesLayout(props: Props) {
   const { title, children } = props;
-  const { width } = useDimensions();
 
   return (
-    <Page title={title} showHeading={width > 1024}>
-      <div className="flex flex-col lg:flex-row">
-        <div className="lg:shrink-0 bg-white">
-          <InfoNavigation />
-        </div>
-        <Page.Block className="bg-white grow lg:border-l">
-          <div className="lg:-mx-10">{children}</div>
-        </Page.Block>
-      </div>
+    <Page
+      title={title}
+      showBackButton={false}
+      sideNavTitle="Info"
+      sideNavIcon={IconSupport}
+      sideNavItems={SIDE_NAV_ITEMS}
+    >
+      <Page.Block className="bg-white">{children}</Page.Block>
     </Page>
   );
 }

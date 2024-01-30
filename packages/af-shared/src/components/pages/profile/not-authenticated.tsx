@@ -1,16 +1,15 @@
 import { useRouter } from 'next/router';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
 import VFLogoInverted from '@shared/images/virtualfinland_logo_small_inverted.png';
 import { isAfter, isSameDay } from 'date-fns';
-import { Button, Checkbox, IconLogin, Text } from 'suomifi-ui-components';
+import { Button, IconLogin, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
 import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import Alert from '@/components/ui/alert';
 import CustomHeading from '@/components/ui/custom-heading';
 import CustomImage from '@/components/ui/custom-image';
-import CustomLink from '@/components/ui/custom-link';
 
 const isExport = isExportedApplication();
 
@@ -44,10 +43,9 @@ export default function ProfileNotAuthenticated() {
   // Resolve the auth method text
   const authMethod = isExport ? 'Testbed' : 'Sinuna';
   const infoTextPost = isExport
-    ? `Granting permission for this account will help you
-  to provide information only once and use it afterwords whenever
-  needed.`
-    : `Log in with Sinuna login service to create and manage Your personal
+    ? `Sign in with Testbed login service to create and manage Your personal
+    profile and job applicant profile.`
+    : `Sign in with Sinuna login service to create and manage Your personal
   profile and job applicant profile.`;
   // Resolve sinuna info text
   const sinunaInfoText = !sinunaDisabled
@@ -67,7 +65,7 @@ export default function ProfileNotAuthenticated() {
           Sign in to Your digital profile. Any data we will ask is not for us -
           it is for you. {infoTextPost}
         </Text>
-        {!isExport ? (
+        {!isExport && (
           <>
             <CustomImage
               src={SinunaLogo}
@@ -79,11 +77,6 @@ export default function ProfileNotAuthenticated() {
               <Text className="!text-base">{sinunaInfoText}</Text>
             </Alert>
           </>
-        ) : (
-          <Fragment>
-            <CustomLink href="/profile">How is my data used?</CustomLink>
-            <Checkbox variant="large">Grant permissions</Checkbox>
-          </Fragment>
         )}
       </div>
       <div className="flex flex-col items-start gap-4 mt-6">

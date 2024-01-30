@@ -27,6 +27,30 @@ body {
   padding: 0 !important;
 }
 
+.fi-service-navigation_expand-button {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+.fi-inline-alert--success {
+  background-color: #bee3be !important;
+  border-color: rgb(21 128 61) !important;
+}
+.fi-side-navigation-item_content-wrapper svg {
+  width: auto !important;
+}
+.fi-link--router {
+  border-radius: 4px !important;
+}
+.fi-side-navigation_list {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+.fi-inline-alert--custom {
+  background-color: #f7f7f8 !important;
+  border-width: 1px !important;
+  border-color: #e5e7eb !important;
+}
+
 .otp-input {
   border: 1px solid hsl(202, 7%, 80%);
   border-color: hsl(201, 7%, 58%);
@@ -41,14 +65,12 @@ body {
   -webkit-appearance: none;
   -moz-appearance: textfield;
 }
-
 .otp-input:focus {
   outline-color: hsl(196, 77%, 44%);
   outline-width: 2px;
   outline-offset: 2px;
   outline-style: solid;
 }
-
 .otp-input::-webkit-outer-spin-button,
 .otp-input::-webkit-inner-spin-button {
   -webkit-appearance: none;

@@ -14,6 +14,7 @@ import '../styles/globals.css';
 import 'suomifi-ui-components/dist/main.css';
 import 'react-phone-number-input/style.css';
 import 'react-toastify/dist/ReactToastify.css';
+import useClearQueryParams from '@shared/lib/hooks/use-clear-query-params';
 
 // axe-core a11y reporting
 reportAccessibility(React);
@@ -60,6 +61,12 @@ const NoProvider = ({ children }: { children: ReactNode }) => <>{children}</>;
 export default function App({ Component, pageProps }: ExtendedAppProps) {
   const ComponentContextProvider = Component.provider || NoProvider;
   const router = useRouter();
+
+  /**
+   * Automatic query params cleaning, checked on every page load
+   * Set 'clear' = 'true' query param to clear all query params
+   */
+  useClearQueryParams();
 
   return (
     <QueryClientProvider client={queryClient}>
