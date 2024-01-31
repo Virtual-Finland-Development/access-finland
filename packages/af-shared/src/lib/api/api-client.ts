@@ -52,10 +52,10 @@ let tokenExpirationAlertDisplayed = false;
 apiClient.interceptors.response.use(
   response => response,
   async error => {
-    // either no token, or it has expired
-    const hasExpired = !(await getValidAuthState()).isValid;
-
     if (isAxiosError(error)) {
+      // either no token, or it has expired
+      const hasExpired = !(await getValidAuthState()).isValid;
+
       if (
         (error.config?.idTokenRequired || error.config?.csrfTokenRequired) &&
         hasExpired
