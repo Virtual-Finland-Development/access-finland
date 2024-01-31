@@ -31,7 +31,7 @@ export async function getCompany(
   const { data } = await apiClient.post(
     `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment_v1.0`,
     { nationalIdentifier },
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { 'Content-Type': 'application/json' }, idTokenRequired: true }
   );
   return data;
 }
@@ -64,7 +64,8 @@ export async function saveCompany(
 ): Promise<NonListedCompany> {
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/establishment`,
-    payload
+    payload,
+    { idTokenRequired: true }
   );
   return data;
 }
@@ -75,7 +76,7 @@ export async function getBeneficialOwners(
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/beneficial-owners`,
     { nationalIdentifier },
-    { headers: { 'Content-Type': 'application/json' } }
+    { idTokenRequired: true, headers: { 'Content-Type': 'application/json' } }
   );
   return data;
 }
@@ -86,7 +87,8 @@ export async function saveBeneficialOwners(
 ): Promise<BenecifialOwners> {
   const { data } = await apiClient.post(
     `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write_v1.0`,
-    { nationalIdentifier, data: beneficialOwners }
+    { nationalIdentifier, data: beneficialOwners },
+    { idTokenRequired: true }
   );
   return data;
 }
@@ -97,7 +99,7 @@ export async function getSignatoryRights(
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,
     { nationalIdentifier },
-    { headers: { 'Content-Type': 'application/json' } }
+    { idTokenRequired: true, headers: { 'Content-Type': 'application/json' } }
   );
   return data;
 }
@@ -108,7 +110,8 @@ export async function saveSignatoryRights(
 ): Promise<SignatoryRights> {
   const { data } = await apiClient.post(
     `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write_v1.0`,
-    { nationalIdentifier, data: signatoryRights }
+    { nationalIdentifier, data: signatoryRights },
+    { idTokenRequired: true }
   );
   return data;
 }

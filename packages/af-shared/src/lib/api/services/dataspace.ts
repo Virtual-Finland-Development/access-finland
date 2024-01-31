@@ -8,6 +8,7 @@ export function utilizeDataProduct(
 ) {
   return apiClient.post(
     `/api/dataspace/${dataProduct}${dataSource ? `?source=${dataSource}` : ''}`,
-    inputData
+    inputData,
+    { csrfTokenRequired: true }
   );
 }

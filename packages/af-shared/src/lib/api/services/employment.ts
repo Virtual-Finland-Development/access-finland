@@ -9,6 +9,7 @@ export async function getPersonWorkContracts(
     `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3?source=staffpoint_demo`,
     {},
     {
+      idTokenRequired: true,
       headers: {
         'x-consent-token': consentToken,
       },
@@ -24,6 +25,7 @@ export async function getPersonIncomeTax(
     `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=vero_demo`,
     {},
     {
+      idTokenRequired: true,
       headers: {
         'x-consent-token': consentToken,
       },

@@ -20,6 +20,7 @@ export async function checkConsent(
         dataSources,
       }),
       {
+        idTokenRequired: true,
         headers: {
           'Content-Type': 'application/json',
         },

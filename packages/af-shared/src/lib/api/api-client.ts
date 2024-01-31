@@ -1,66 +1,33 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
-import {
-  AUTH_GW_BASE_URL,
-  CODESETS_BASE_URL,
-  PRH_MOCK_BASE_URL,
-  TESTBED_API_BASE_URL,
-} from './endpoints';
+import { CODESETS_BASE_URL } from './endpoints';
 import { LoginState } from './services/auth';
 
-const apiClient = axios.create({});
-
-const PROTECTED_URLS = [
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment_v1.0`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/Establishment/Write_v1.0`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/BeneficialOwners/Write_v1.0`,
-  `${PRH_MOCK_BASE_URL}/NSG/Agent/LegalEntity/NonListedCompany/SignatoryRights/Write_v1.0`,
-  `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/establishment`,
-  `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/beneficial-owners`,
-  `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,
-  `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
-  `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
-  `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1?source=virtual_finland:development`,
-  `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/IncomeTax_v0.2?source=vero_demo`,
-  `${TESTBED_API_BASE_URL}/testbed/data-product/Employment/WorkContract_v0.3?source=staffpoint_demo`,
-  `${TESTBED_API_BASE_URL}/users-api/user`,
-  `${AUTH_GW_BASE_URL}/consents/testbed/consent-check`,
-];
-
-const NEXTJS_API_PROTECTED_URLS = [
-  '/api/dataspace/Person/BasicInformation',
-  '/api/dataspace/Person/BasicInformation/Write',
-  '/api/dataspace/Person/JobApplicantProfile',
-  '/api/dataspace/Person/JobApplicantProfile/Write',
-  '/api/users-api',
-  '/api/jmf/recommendations',
-  '/api/users-api/terms-of-service',
-];
+// add custom configs (extended in axios.d.ts)
+const apiClient = axios.create({
+  idTokenRequired: false, // tells if 'Auhtorization' with bearer idtoken is required for the request headers
+  csrfTokenRequired: false, // tells if 'x-csrf-token' is required for the request headers (af-mvp only)
+});
 
 // Used to check if request url starts with any of the following list
 const NEXTJS_API_TRACEABLE_URIS = ['/api/', `${CODESETS_BASE_URL}/resources/`];
 
-function isProtectedNextJsEndpoint(url: string): boolean {
-  for (const nextJsEndpoint of NEXTJS_API_PROTECTED_URLS) {
-    if (url.includes(nextJsEndpoint)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 apiClient.interceptors.request.use(async config => {
   if (config.url !== undefined && config.headers !== undefined) {
-    if (PROTECTED_URLS.includes(config.url)) {
+    // id token required
+    if (config.idTokenRequired) {
       const idToken = (await LoginState.getLoggedInState())?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
 
-      if (!config.headers['x-consent-token']) {
+      /* if (!config.headers['x-consent-token']) {
         config.headers['x-consent-token'] = '';
-      }
-    } else if (isProtectedNextJsEndpoint(config.url)) {
+      } */
+    }
+
+    // csrf token required (af-mvp)
+    if (config.csrfTokenRequired) {
       config.headers['x-csrf-token'] = LoginState.getCsrfToken();
     }
 
@@ -84,14 +51,12 @@ let tokenExpirationAlertDisplayed = false;
 
 apiClient.interceptors.response.use(
   response => response,
-  async error => {
+  async (error: AxiosError) => {
     // either no token, or it has expired
     const hasExpired = !(await getValidAuthState()).isValid;
 
     if (
-      error.config?.url &&
-      (PROTECTED_URLS.includes(error.config.url) ||
-        isProtectedNextJsEndpoint(error.config.url)) &&
+      (error.config?.idTokenRequired || error.config?.csrfTokenRequired) &&
       hasExpired
     ) {
       if (!tokenExpirationAlertDisplayed) {

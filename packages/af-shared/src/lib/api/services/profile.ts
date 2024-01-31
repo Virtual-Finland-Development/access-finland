@@ -16,7 +16,9 @@ import { utilizeDataProduct } from './dataspace';
 const isExport = isExportedApplication();
 
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
-  const { data } = await apiClient.get('/api/users-api/terms-of-service');
+  const { data } = await apiClient.get('/api/users-api/terms-of-service', {
+    csrfTokenRequired: true,
+  });
   return data;
 }
 
@@ -25,7 +27,8 @@ export async function saveProfileTosAgreement(
 ): Promise<ProfileTosAgreement> {
   const { data } = await apiClient.post(
     '/api/users-api/terms-of-service',
-    payload
+    payload,
+    { csrfTokenRequired: true }
   );
   return data;
 }
@@ -33,7 +36,8 @@ export async function saveProfileTosAgreement(
 export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
   const method = isExport
     ? apiClient.get(
-        `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`
+        `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
+        { idTokenRequired: true }
       )
     : utilizeDataProduct('Person/BasicInformation');
 
@@ -47,7 +51,8 @@ export async function savePersonBasicInfo(
   const method = isExport
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
-        payload
+        payload,
+        { idTokenRequired: true }
       )
     : utilizeDataProduct('Person/BasicInformation/Write', payload);
 
@@ -58,7 +63,8 @@ export async function savePersonBasicInfo(
 export async function getJobApplicantProfile(): Promise<JobApplicantProfile> {
   const method = isExport
     ? apiClient.get(
-        `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`
+        `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
+        { idTokenRequired: true }
       )
     : utilizeDataProduct('Person/JobApplicantProfile');
 
@@ -72,7 +78,8 @@ export async function saveJobApplicantProfile(
   const method = isExport
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
-        payload
+        payload,
+        { idTokenRequired: true }
       )
     : utilizeDataProduct('Person/JobApplicantProfile/Write', payload);
 
@@ -85,6 +92,9 @@ export async function deleteProfile() {
     ? `${TESTBED_API_BASE_URL}/users-api/user`
     : `/api/users-api/user`;
 
-  const { data } = await apiClient.delete(url);
+  const { data } = await apiClient.delete(url, {
+    idTokenRequired: isExport,
+    csrfTokenRequired: !isExport,
+  });
   return data;
 }
