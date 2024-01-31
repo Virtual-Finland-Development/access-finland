@@ -53,21 +53,24 @@ let tokenExpirationAlertDisplayed = false;
 apiClient.interceptors.response.use(
   response => response,
   async error => {
-    // either no token, or it has expired
-    const hasExpired = !(await getValidAuthState()).isValid;
+    if (isAxiosError(error)) {
+      // either no token, or it has expired
+      const hasExpired = !(await getValidAuthState()).isValid;
 
-    if (
-      isAxiosError(error) &&
-      (error.config?.idTokenRequired || error.config?.csrfTokenRequired) &&
-      hasExpired
-    ) {
-      if (!tokenExpirationAlertDisplayed) {
-        tokenExpirationAlertDisplayed = true;
-        window.postMessage(REQUEST_NOT_AUTHORIZED);
+      if (
+        (error.config?.idTokenRequired || error.config?.csrfTokenRequired) &&
+        hasExpired
+      ) {
+        if (!tokenExpirationAlertDisplayed) {
+          tokenExpirationAlertDisplayed = true;
+          window.postMessage(REQUEST_NOT_AUTHORIZED);
+        }
+
+        // essentially, silence the error for token expiration cases for UI
+        return new Promise(() => {});
+      } else {
+        return Promise.reject(error);
       }
-
-      // essentially, silence the error for token expiration cases for UI
-      return new Promise(() => {});
     }
 
     return Promise.reject(error);
