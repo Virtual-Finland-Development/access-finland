@@ -1,4 +1,4 @@
-import axios, { AxiosError, isAxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
