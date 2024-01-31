@@ -1,4 +1,4 @@
-import axios, { AxiosError, isAxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
 import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
@@ -6,6 +6,7 @@ import { CODESETS_BASE_URL } from './endpoints';
 import { LoginState } from './services/auth';
 
 // add custom configs (extended in axios.d.ts)
+// override defaults where needed, when using apiClient
 const apiClient = axios.create({
   idTokenRequired: false, // tells if 'Auhtorization' with bearer idtoken is required for the request headers
   csrfTokenRequired: false, // tells if 'x-csrf-token' is required for the request headers (af-mvp only)
