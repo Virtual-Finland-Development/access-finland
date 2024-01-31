@@ -67,6 +67,8 @@ apiClient.interceptors.response.use(
 
         // essentially, silence the error for token expiration cases for UI
         return new Promise(() => {});
+      } else {
+        return Promise.reject(error);
       }
     }
 
