@@ -9,6 +9,7 @@ export async function getPersonWorkPermits(
     `${TESTBED_API_BASE_URL}/testbed/data-product/Permits/WorkPermit_v0.1?source=virtual_finland:development`,
     {},
     {
+      idTokenRequired: true,
       headers: {
         'x-consent-token': consentToken,
       },

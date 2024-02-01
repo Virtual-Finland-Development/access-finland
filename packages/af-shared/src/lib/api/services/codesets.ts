@@ -16,93 +16,66 @@ import type {
 import apiClient from '../api-client';
 import { CODESETS_BASE_URL } from '../endpoints';
 
-export async function getCountries(): Promise<Country[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/ISO3166CountriesURL?filters=testbed`
+async function getCodeSetsResponse<T>(resourcePath: string): Promise<T[]> {
+  const { data } = await apiClient.get<T[]>(
+    `${CODESETS_BASE_URL}/resources/${resourcePath}`,
+    {
+      isTraceable: true,
+    }
   );
   return data;
 }
 
-export async function getCurrencies(): Promise<Currency[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/ISO4217Currencies?filters=nsg`
+export async function getCountries() {
+  return await getCodeSetsResponse<Country>(
+    'ISO3166CountriesURL?filters=testbed'
   );
-  return data;
 }
 
-export async function getLanguages(): Promise<Language[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/ISO639Languages`
-  );
-  return data;
+export async function getCurrencies() {
+  return await getCodeSetsResponse<Currency>('ISO4217Currencies?filters=nsg');
 }
 
-export async function getEscoLanguages(): Promise<EscoLanguage[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/EscoLanguages`
-  );
-  return data;
+export async function getLanguages() {
+  return await getCodeSetsResponse<Language>('ISO639Languages');
 }
 
-export async function getLanguageSkillLevels(): Promise<LanguageSkillLevel[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/LanguageSkillLevels`
-  );
-  return data;
+export async function getEscoLanguages() {
+  return await getCodeSetsResponse<EscoLanguage>(`EscoLanguages`);
 }
 
-export async function getNaceCodes(): Promise<Nace[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/SuomiFiKoodistotNace`
-  );
-  return data;
+export async function getLanguageSkillLevels() {
+  return await getCodeSetsResponse<LanguageSkillLevel>('LanguageSkillLevels');
 }
 
-export async function getEducationFields(): Promise<EducationField[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/EducationFields`
-  );
-  return data;
+export async function getNaceCodes() {
+  return await getCodeSetsResponse<Nace>('SuomiFiKoodistotNace');
 }
 
-export async function getEducationLevels(): Promise<EducationLevel[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/LevelsOfEducation`
-  );
-  return data;
+export async function getEducationFields() {
+  return await getCodeSetsResponse<EducationField>('EducationFields');
 }
 
-export async function getWorkPermits(): Promise<WorkPermit[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/WorkPermits`
-  );
-  return data;
+export async function getEducationLevels() {
+  return await getCodeSetsResponse<EducationLevel>('LevelsOfEducation');
 }
 
-export async function getRegions(): Promise<Region[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/Regions`
-  );
-  return data;
+export async function getWorkPermits() {
+  return await getCodeSetsResponse<WorkPermit>('WorkPermits');
 }
 
-export async function getMunicipalities(): Promise<Municipality[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/Municipalities`
-  );
-  return data;
+export async function getRegions() {
+  return await getCodeSetsResponse<Region>('Regions');
 }
 
-export async function getOccupationsFlat(): Promise<Occupation[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/OccupationsFlatURL`
-  );
-  return data;
+export async function getMunicipalities() {
+  return await getCodeSetsResponse<Municipality>('Municipalities');
 }
 
-export async function getEscoSkills(): Promise<EscoSkill[]> {
-  const { data } = await apiClient.get(
-    `${CODESETS_BASE_URL}/resources/Skills?locales=en`
-  );
-  return data;
+export async function getOccupationsFlat() {
+  return await getCodeSetsResponse<Occupation>('OccupationsFlatURL');
+}
+
+export async function getEscoSkills() {
+  return await getCodeSetsResponse<EscoSkill>('Skills?locales=en');
 }
