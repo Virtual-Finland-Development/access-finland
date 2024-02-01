@@ -21,10 +21,6 @@ apiClient.interceptors.request.use(async config => {
     if (config.idTokenRequired) {
       const idToken = (await LoginState.getLoggedInState())?.idToken;
       config.headers.Authorization = idToken ? `Bearer ${idToken}` : '';
-
-      /* if (!config.headers['x-consent-token']) {
-        config.headers['x-consent-token'] = '';
-      } */
     }
 
     // csrf token required (af-mvp)
@@ -67,10 +63,9 @@ apiClient.interceptors.response.use(
         }
 
         // essentially, silence the error for token expiration cases for UI
-        return new Promise(() => {});
-      } else {
-        return Promise.reject(error);
+        return Promise.resolve();
       }
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);
