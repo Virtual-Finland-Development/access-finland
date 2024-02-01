@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'crypto';
 import * as jose from 'node-jose';
-import { getCachingStagedSecretParameter } from './services/aws/ParameterStore';
+import { getCachingStagedSecretParameter } from './secrets-store';
 
 export async function encryptUsingBackendSecret(obj: object): Promise<string> {
   const publicKey = await getCachingStagedSecretParameter(

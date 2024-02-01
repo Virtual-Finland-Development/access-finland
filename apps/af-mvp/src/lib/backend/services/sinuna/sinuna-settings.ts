@@ -1,4 +1,4 @@
-import { getStagedSecretParameter } from '../aws/ParameterStore';
+import { getStagedSecretParameter } from '../../secrets-store';
 
 const SinunaSettings = {
   scope: 'openid frontend persistent_id', // The auth scope for Sinuna
