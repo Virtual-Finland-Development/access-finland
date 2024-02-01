@@ -15,19 +15,19 @@ async function getOverrideableSecretParameter(name: string) {
   return getSecretParameter(name);
 }
 
-export async function getStagedSecretParameter(name: string) {
+export async function getStagedSecret(name: string) {
   const stage = getRuntimeStage();
   return getOverrideableSecretParameter(`${stage}_${name}`);
 }
 
-export async function getCachingSecretParameter(name: string) {
+export async function getCachingSecret(name: string) {
   if (inMemoryCache[name]) return inMemoryCache[name];
   const value = await getOverrideableSecretParameter(name);
   inMemoryCache[name] = value;
   return value;
 }
 
-export async function getCachingStagedSecretParameter(name: string) {
+export async function getCachingStagedSecret(name: string) {
   const stage = getRuntimeStage();
-  return getCachingSecretParameter(`${stage}_${name}`);
+  return getCachingSecret(`${stage}_${name}`);
 }
