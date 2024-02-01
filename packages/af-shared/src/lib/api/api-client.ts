@@ -1,8 +1,6 @@
 import axios, { isAxiosError } from 'axios';
 import { REQUEST_NOT_AUTHORIZED } from '../constants';
-import { isExportedApplication } from '../utils';
 import { getValidAuthState } from '../utils/auth';
-import { CODESETS_BASE_URL } from './endpoints';
 import { LoginState } from './services/auth';
 
 // add custom configs (extended in axios.d.ts)
@@ -10,10 +8,8 @@ import { LoginState } from './services/auth';
 const apiClient = axios.create({
   idTokenRequired: false, // tells if 'Auhtorization' with bearer idtoken is required for the request headers
   csrfTokenRequired: false, // tells if 'x-csrf-token' is required for the request headers (af-mvp only)
+  isTraceable: false, // tells if 'x-request-trace-id' is required for the request headers
 });
-
-// Used to check if request url starts with any of the following list
-const NEXTJS_API_TRACEABLE_URIS = ['/api/', `${CODESETS_BASE_URL}/resources/`];
 
 apiClient.interceptors.request.use(async config => {
   if (config.url !== undefined && config.headers !== undefined) {
@@ -28,12 +24,8 @@ apiClient.interceptors.request.use(async config => {
       config.headers['x-csrf-token'] = LoginState.getCsrfToken();
     }
 
-    // Add traceId where applicable: the url starts with one of the traceable uris and the application is not built in exported mode
-    if (
-      !isExportedApplication() &&
-      NEXTJS_API_TRACEABLE_URIS.filter(uri => config.url?.startsWith(uri))
-        .length
-    ) {
+    // Add traceId where applicable: 'isTraceable' found in config (af-mvp)
+    if (config.isTraceable) {
       const { v4: uuidv4 } = await import('uuid'); // Lazy load uuid, as it's not needed in the exported application
       config.headers['x-request-trace-id'] = uuidv4();
     }

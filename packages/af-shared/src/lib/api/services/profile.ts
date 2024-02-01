@@ -28,7 +28,7 @@ export async function saveProfileTosAgreement(
   const { data } = await apiClient.post(
     '/api/users-api/terms-of-service',
     payload,
-    { csrfTokenRequired: true }
+    { csrfTokenRequired: true, isTraceable: true }
   );
   return data;
 }
@@ -95,6 +95,7 @@ export async function deleteProfile() {
   const { data } = await apiClient.delete(url, {
     idTokenRequired: isExport,
     csrfTokenRequired: !isExport,
+    isTraceable: !isExport,
   });
   return data;
 }

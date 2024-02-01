@@ -9,6 +9,6 @@ export function utilizeDataProduct(
   return apiClient.post(
     `/api/dataspace/${dataProduct}${dataSource ? `?source=${dataSource}` : ''}`,
     inputData,
-    { csrfTokenRequired: true }
+    { csrfTokenRequired: true, isTraceable: true }
   );
 }

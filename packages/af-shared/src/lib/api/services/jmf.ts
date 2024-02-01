@@ -17,6 +17,7 @@ export async function getRecommendations(
 
   const { data } = await apiClient.post(url, payload, {
     csrfTokenRequired: !isExport,
+    isTraceable: !isExport,
   });
   return data;
 }
