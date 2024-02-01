@@ -16,7 +16,7 @@ import { utilizeDataProduct } from './dataspace';
  */
 const isExport = isExportedApplication();
 
-const dataSpaceHeaders: AxiosRequestConfig['headers'] = {
+const dataspaceHeaders: AxiosRequestConfig['headers'] = {
   'x-consent-token': '',
 };
 
@@ -42,7 +42,7 @@ export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
   const method = isExport
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
-        { idTokenRequired: true, headers: dataSpaceHeaders }
+        { idTokenRequired: true, headers: dataspaceHeaders }
       )
     : utilizeDataProduct('Person/BasicInformation');
 
@@ -57,7 +57,7 @@ export async function savePersonBasicInfo(
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
         payload,
-        { idTokenRequired: true, headers: dataSpaceHeaders }
+        { idTokenRequired: true, headers: dataspaceHeaders }
       )
     : utilizeDataProduct('Person/BasicInformation/Write', payload);
 
@@ -69,7 +69,7 @@ export async function getJobApplicantProfile(): Promise<JobApplicantProfile> {
   const method = isExport
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
-        { idTokenRequired: true, headers: dataSpaceHeaders }
+        { idTokenRequired: true, headers: dataspaceHeaders }
       )
     : utilizeDataProduct('Person/JobApplicantProfile');
 
@@ -84,7 +84,7 @@ export async function saveJobApplicantProfile(
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
         payload,
-        { idTokenRequired: true, headers: dataSpaceHeaders }
+        { idTokenRequired: true, headers: dataspaceHeaders }
       )
     : utilizeDataProduct('Person/JobApplicantProfile/Write', payload);
 

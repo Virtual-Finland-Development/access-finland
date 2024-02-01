@@ -10,7 +10,7 @@ import { getUserIdentifier } from '@/lib/utils/auth';
 import apiClient from '../api-client';
 import { PRH_MOCK_BASE_URL, TESTBED_API_BASE_URL } from '../endpoints';
 
-const dataSpaceHeaders: AxiosRequestConfig['headers'] = {
+const dataspaceHeaders: AxiosRequestConfig['headers'] = {
   'x-consent-token': '',
 };
 
@@ -70,7 +70,7 @@ export async function saveCompany(
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/establishment`,
     payload,
-    { idTokenRequired: true, headers: dataSpaceHeaders }
+    { idTokenRequired: true, headers: dataspaceHeaders }
   );
   return data;
 }
@@ -81,7 +81,7 @@ export async function getBeneficialOwners(
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/beneficial-owners`,
     { nationalIdentifier },
-    { idTokenRequired: true, headers: dataSpaceHeaders }
+    { idTokenRequired: true, headers: dataspaceHeaders }
   );
   return data;
 }
@@ -104,7 +104,7 @@ export async function getSignatoryRights(
   const { data } = await apiClient.post(
     `${TESTBED_API_BASE_URL}/testbed/productizer/non-listed-company/signatory-rights`,
     { nationalIdentifier },
-    { idTokenRequired: true, headers: dataSpaceHeaders }
+    { idTokenRequired: true, headers: dataspaceHeaders }
   );
   return data;
 }
