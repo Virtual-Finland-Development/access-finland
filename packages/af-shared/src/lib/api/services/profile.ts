@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import {
   JobApplicantProfile,
   PersonBasicInformation,
@@ -14,6 +15,10 @@ import { utilizeDataProduct } from './dataspace';
  * API routes defined for MVP app in apps/af-mvp/src/pages/api.
  */
 const isExport = isExportedApplication();
+
+const dataSpaceHeaders: AxiosRequestConfig['headers'] = {
+  'x-consent-token': '',
+};
 
 export async function getProfileTosAgreement(): Promise<ProfileTosAgreement> {
   const { data } = await apiClient.get('/api/users-api/terms-of-service', {
@@ -37,7 +42,7 @@ export async function getPersonBasicInfo(): Promise<PersonBasicInformation> {
   const method = isExport
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
-        { idTokenRequired: true }
+        { idTokenRequired: true, headers: dataSpaceHeaders }
       )
     : utilizeDataProduct('Person/BasicInformation');
 
@@ -52,7 +57,7 @@ export async function savePersonBasicInfo(
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/basic-information`,
         payload,
-        { idTokenRequired: true }
+        { idTokenRequired: true, headers: dataSpaceHeaders }
       )
     : utilizeDataProduct('Person/BasicInformation/Write', payload);
 
@@ -64,7 +69,7 @@ export async function getJobApplicantProfile(): Promise<JobApplicantProfile> {
   const method = isExport
     ? apiClient.get(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
-        { idTokenRequired: true }
+        { idTokenRequired: true, headers: dataSpaceHeaders }
       )
     : utilizeDataProduct('Person/JobApplicantProfile');
 
@@ -79,7 +84,7 @@ export async function saveJobApplicantProfile(
     ? apiClient.post(
         `${TESTBED_API_BASE_URL}/testbed/productizer/person/job-applicant-information`,
         payload,
-        { idTokenRequired: true }
+        { idTokenRequired: true, headers: dataSpaceHeaders }
       )
     : utilizeDataProduct('Person/JobApplicantProfile/Write', payload);
 
