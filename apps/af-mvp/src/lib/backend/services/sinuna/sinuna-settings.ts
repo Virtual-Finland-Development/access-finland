@@ -1,13 +1,11 @@
-import { getStagedSecretParameter } from '../aws/ParameterStore';
+import { getStagedSecret } from '../../secrets-store';
 
 const SinunaSettings = {
   scope: 'openid frontend persistent_id', // The auth scope for Sinuna
   getSinunaSecrets: async () => {
     return {
-      sinunaClientId: await getStagedSecretParameter('SINUNA_CLIENT_ID'),
-      sinunaClientSecret: await getStagedSecretParameter(
-        'SINUNA_CLIENT_SECRET'
-      ),
+      sinunaClientId: await getStagedSecret('SINUNA_CLIENT_ID'),
+      sinunaClientSecret: await getStagedSecret('SINUNA_CLIENT_SECRET'),
     };
   },
   requests: {
