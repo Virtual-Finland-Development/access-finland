@@ -191,6 +191,33 @@ export async function createWebAppFirewallProtection(domainSetup: DomainSetup) {
           },
         },
         {
+          name: 'HealthCheckPassThrough',
+          priority: 4,
+          action: {
+            allow: {},
+          },
+          statement: {
+            byteMatchStatement: {
+              searchString: '/api/health-check',
+              fieldToMatch: {
+                uriPath: {},
+              },
+              textTransformations: [
+                {
+                  priority: 0,
+                  type: 'NONE',
+                },
+              ],
+              positionalConstraint: 'EXACTLY',
+            },
+          },
+          visibilityConfig: {
+            cloudwatchMetricsEnabled: true,
+            sampledRequestsEnabled: true,
+            metricName: 'HealthCheckPassThrough',
+          },
+        },
+        {
           name: 'GrantAccess',
           priority: 0,
           action: {
