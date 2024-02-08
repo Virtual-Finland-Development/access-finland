@@ -44,7 +44,7 @@ jobs:
         run: npm ci
       - name: Deploy with Pulumi
         id: pulumi
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           work-dir: ./infra/af-mvp
           command: up
@@ -52,7 +52,7 @@ jobs:
           upsert: true # create stack if no exists
       - name: Initial deployment domain check
         if: ${{ fromJSON(toJSON(steps.pulumi.outputs)).initialDomainCheckRequired == 'true' }} # check if previous step output contains initialDomainCheckRequired = true
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           work-dir: ./infra/af-mvp
           command: up

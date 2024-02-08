@@ -48,7 +48,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install Pulumi CLI
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
       - name: Install dependencies
         working-directory: ./infra/af-features
         run: npm ci && npm run build
@@ -59,7 +59,7 @@ jobs:
         working-directory: ./infra/af-features
         run: pulumi config set artifactPath ../../out
       - name: Deploy with Pulumi
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           work-dir: ./infra/af-features
           command: up

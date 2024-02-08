@@ -40,7 +40,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           pulumi-access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: Install Pulumi CLI
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
       - name: Install dependencies
         working-directory: ./infra/amplify
         run: npm ci
@@ -59,7 +59,7 @@ jobs:
         working-directory: ./infra/amplify
         run: pulumi config set testbed:defaultDataSource accessfinland:${{ env.environment }}
       - name: Deploy with Pulumi
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           work-dir: ./infra/amplify
           command: up
