@@ -21,8 +21,8 @@ The sign-in flow is implemented with the following steps:
 9. The cognito verifies the OTP code and responds with a success message and a session token
 10. The frontend app sends a request to the backend app with the session token
 11. The backend app verifies the session token with the cognito, stores the session token to a secure cookie and responds with a success message
-10. The user can now use the login session as a login method to the Access Finland application.
+12. The user can now use the login session as a login method to the Access Finland application.
 
-The frontend app flow is implemented in the [../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx](../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx) file, and the backend app the routes are defined in the [../apps/af-mvp/src/pages/api/auth/system](../apps/af-mvp/src/pages/api/auth/system) folder.
+The frontend app flow is implemented in the [../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx](../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx) file, and the backend app routes are defined in the [../apps/af-mvp/src/pages/api/auth/system](../apps/af-mvp/src/pages/api/auth/system) folder.
 
 The flow follows the same security principles as described in the [./README.af-mvp.security.md](./README.af-mvp.security.md) documents "Data Protection" heading.
