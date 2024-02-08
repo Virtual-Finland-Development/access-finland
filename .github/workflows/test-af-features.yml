@@ -33,7 +33,7 @@ jobs:
           npm run test:features:ci
       - name: auth-gw url from Pulumi
         if: ${{ inputs.environment }}
-        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v2
         id: auth-gw-url
         with:
           organization: virtualfinland
@@ -43,7 +43,7 @@ jobs:
           access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: prh-mock url from Pulumi
         if: ${{ inputs.environment }}
-        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v2
         id: prh-mock-url
         with:
           organization: virtualfinland
@@ -53,7 +53,7 @@ jobs:
           access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: testbed-api url from Pulumi
         if: ${{ inputs.environment }}
-        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v2
         id: testbed-api-url
         with:
           organization: virtualfinland
@@ -63,7 +63,7 @@ jobs:
           access-token: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       - name: codesets url from Pulumi
         if: ${{ inputs.environment }}
-        uses: Virtual-Finland-Development/pulumi-outputs-action@v1
+        uses: Virtual-Finland-Development/pulumi-outputs-action@v2
         id: codesets-url
         with:
           organization: virtualfinland
