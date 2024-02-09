@@ -2,13 +2,15 @@
 
 The Access Finland MVP application is a web app that has authentication features and handles sensitive information. The following sections describe the security features of the application that make sure the authentication and other private data features are safe to use.
 
-Additionally the application is not published to public internet, but is only accessible with login credentials managed by AWS Cognito service. 
+Additionally the application is not published to public internet, but is only accessible with login credentials managed by AWS Cognito service.
 
 The app codebase, as a monorepo, supports multiple deployable apps with different security measures. The following sections describe the security features of the MVP app. The other apps are not described in this document.
 
 ## Application Security Features
 
-### Authentication
+### Authentication (Sinuna)
+
+`Note: Sinuna will cease its authentication services at the end of February 2024. This is taken into account and the application disables Sinuna authentication when the time comes.`
 
 The application uses [OpenID Connect](https://openid.net/connect/) for authentication and [Sinuna](https://sinuna.fi) as the identity provider. The used authentication flow is the [Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth) that provide a relatively short-lived access token from a successful login. The app uses the access token as a session, so that when the token expires so does the session.
 
@@ -25,9 +27,13 @@ The login flow is as follows:
 
 The backend login flow routes are defined in the [../apps/af-mvp/src/pages/api/auth](../apps/af-mvp/src/pages/api/auth) folder.
 
+### Authentication (Virtual Finland)
+
+The Virtual Finland solution for identity providing and authentication, [see more here.](./README.af-mvp.vf-authentication.md)
+
 ### Authorization
 
-After a succesful login flow the restricted backend app routes are accessible to the user. The backend app routes are protected by a [loggedInAuthMiddleware](../apps/af-mvp/src/lib/backend/middleware/auth.ts)-middleware that checks the session cookie validity. The access token validity is checked by the external services (Users API) that the backend app calls with the access token, and therefore there's no prevalidation for it in the mvp backend app. 
+After a succesful login flow the restricted backend app routes are accessible to the user. The backend app routes are protected by a [loggedInAuthMiddleware](../apps/af-mvp/src/lib/backend/middleware/auth.ts)-middleware that checks the session cookie validity. The access token validity is checked by the external services (Users API) that the backend app calls with the access token, and therefore there's no prevalidation for it in the mvp backend app.
 
 ### Data Protection
 
@@ -47,7 +53,7 @@ The backend app routes that are protected by the [loggedInAuthMiddleware](../app
 
 ### API Security
 
-The backend app routes are protected with strict content security policies and other security headers using the [next-safe](https://www.npmjs.com/package/next-safe) library to provide sensible defaults and simple customization. The next-safe configurations are defined in the [../apps/af-mvp/next.config.js](../apps/af-mvp/next.config.js) file. 
+The backend app routes are protected with strict content security policies and other security headers using the [next-safe](https://www.npmjs.com/package/next-safe) library to provide sensible defaults and simple customization. The next-safe configurations are defined in the [../apps/af-mvp/next.config.js](../apps/af-mvp/next.config.js) file.
 
 ## Public Access To The Application
 
@@ -55,14 +61,13 @@ The application is not published to public internet, but is only accessible with
 
 ### AWS WAF
 
-The application is deployed using cloudfront distribution that is protected by a WAF. The WAF is configured to only allow access if the request has a valid cognito session cookie. The invalid requests are redirected to the cognito login page. The WAF configuration is defined in the [../infra/af-mvp/resources/webApplicationFirewall.ts](../infra/af-mvp/resources/webApplicationFirewall.ts) file. 
+The application is deployed using cloudfront distribution that is protected by a WAF. The WAF is configured to only allow access if the request has a valid cognito session cookie. The invalid requests are redirected to the cognito login page. The WAF configuration is defined in the [../infra/af-mvp/resources/webApplicationFirewall.ts](../infra/af-mvp/resources/webApplicationFirewall.ts) file.
 
 A quick setting for enabling or disabling the WAF is defined in the stage specific pulumi configuration files eg: [../infra/af-mvp/Pulumi.mvp-staging.yaml](../infra/af-mvp/Pulumi.mvp-staging.yaml) in the `waf:enabled` field.
 
 ### AWS Cognito
 
 The application uses AWS Cognito service for granting access to the site. The cognito configuration is defined in the [../infra/af-mvp/resources/cognito.ts](../infra/af-mvp/resources/cognito.ts) file.
-
 
 #### Cognito User Pool
 
@@ -72,17 +77,17 @@ The user pool can be configured to deploy with a static user using the `waf:user
 
 The combination of AWS WAF, Cognito and the application codebase is implemented with the following responsibilities:
 
-- WAF: 
+- WAF:
   - Guards the access to the application
   - Redirects unauthorized requests to the cognito login page
-- Cognito: 
+- Cognito:
   - Provides the login page and the login flow
   - After a successful login redirects user to backend app with a grant token
-- Backend app: 
+- Backend app:
   - Handles the login flow
   - Stores the cognito session to a cookie
   - Redirects user to frontend app
-- Frontend app: 
+- Frontend app:
   - Verifies the cognito session with a request to the backend app
   - Reloads the page if the session is not valid causing the WAF to redirect to the cognito login page.
 
@@ -93,18 +98,16 @@ The login flow is as follows:
 3. The user logs in with cognito credentials
 4. The cognito redirects the user to the backend app with an access token
 5. The backend app then:
-    - verifies the token with cognito
-    - stores the token an encrypted backend cookie
-    - stores frontend app access key to a cookie that's visible to the WAF
-      - the frontend app access key is shared with the WAF and is generated by the pulumi deployment
-    - redirects the user to the frontend app
+   - verifies the token with cognito
+   - stores the token an encrypted backend cookie
+   - stores frontend app access key to a cookie that's visible to the WAF
+     - the frontend app access key is shared with the WAF and is generated by the pulumi deployment
+   - redirects the user to the frontend app
 6. The WAF allows the request to the frontend app because the frontend app access key is present
 7. The frontend app then:
-    - verifies the congito session with a request to the backend app
-    - the verification is re-checked on every page load
-    - on a verification failure:
-      - the backend app clears the session cookies
-      - the frontend app reloads the page
-      - the WAF blocks the request and redirects the user to the cognito login page
-
-
+   - verifies the congito session with a request to the backend app
+   - the verification is re-checked on every page load
+   - on a verification failure:
+     - the backend app clears the session cookies
+     - the frontend app reloads the page
+     - the WAF blocks the request and redirects the user to the cognito login page
