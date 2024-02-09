@@ -12,7 +12,8 @@
     "paths": {
       "@pages/*": ["pages/*"],
       "@shared/*": ["../../../packages/af-shared/src/*"],
-      "@/*": ["../../../packages/af-shared/src/*"] // af-shared used alias, needs to be resolved for build
+      "@/*": ["../../../packages/af-shared/src/*"], // af-shared used alias, needs to be resolved for build
+      "@mvp/*": ["../../../apps/af-mvp/src/*"]
     }
   }
 }
