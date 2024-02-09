@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { isSinunaDisabled } from '@mvp/lib/shared/sinuna-status';
 import SinunaLogo from '@shared/images/sinuna-logo.svg';
 import VFLogoInverted from '@shared/images/virtualfinland_logo_small_inverted.png';
-import { isAfter, isSameDay } from 'date-fns';
 import { Button, IconLogin, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
+import useDisplaySinunaError from '@/lib/hooks/use-display-sinuna-error';
 import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import Alert from '@/components/ui/alert';
@@ -13,24 +14,12 @@ import CustomImage from '@/components/ui/custom-image';
 
 const isExport = isExportedApplication();
 
-// Sinuna auth disabled on 28th of February, 2024
-// The date was mentioned here: https://www.tivi.fi/uutiset/gdpr-huoliin-ratkaisua-luvannut-kotimainen-kirjautumispalvelu-lakkautetaan/4a022e33-1e9a-4d2d-bad3-a41df6d67e5c
-export function isSinunaDisabled(date?: Date | undefined) {
-  const currentDate = date || new Date();
-  const targetDate = new Date(Date.UTC(2024, 1, 28, 2)); // 28th of February, 2024 in Finnish time (UTC+2)
-  // Convert current UTC date to Finnish time (UTC+2)
-  const finnishDate = new Date(
-    currentDate.getUTCFullYear(),
-    currentDate.getUTCMonth(),
-    currentDate.getUTCDate(),
-    currentDate.getUTCHours() + 2
-  );
-  return isSameDay(finnishDate, targetDate) || isAfter(finnishDate, targetDate);
-}
-
 export default function ProfileNotAuthenticated() {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Display sinuna error message, if api route returns an error (af-mvp only)
+  useDisplaySinunaError(!isExport);
 
   const loginHandler = () => {
     setLoading(true);
