@@ -2,7 +2,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import cookie from 'cookie';
-import { ParsedUrlQuery } from 'querystring';
 import { IconFailure, IconHome, Text } from 'suomifi-ui-components';
 import { LoginState } from '@shared/lib/api/services/auth';
 import { SESSION_STORAGE_REDIRECT_KEY } from '@shared/lib/constants';
