@@ -7,7 +7,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
-      "@mvp/*": ["../../../apps/af-mvp/src/*"]
+      "@mvp/*": ["../../../apps/af-mvp/src/*"] // we import sinuna specific util from mvp
     }
   }
 }

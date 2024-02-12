@@ -10,12 +10,10 @@ export default loggedOutAuthMiddleware(async function handler(
   res: NextApiResponse
 ) {
   if (isSinunaDisabled()) {
-    return res.redirect(
-      303,
-      `/profile?sinunaError=${encodeURIComponent(
-        'Sinuna login service has been disabled. You can use Virtual Finland login service to sign-in.'
-      )}`
-    );
+    const error = 'Sinuna error';
+    const desc =
+      'Sinuna login service has been disabled. You can use Virtual Finland login service to sign-in.';
+    return res.redirect(303, `/auth?error=${error}&error_description=${desc}`);
   }
 
   const sinunaState = await generateCSRFToken();

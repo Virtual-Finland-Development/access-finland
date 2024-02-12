@@ -5,7 +5,6 @@ import SinunaLogo from '@shared/images/sinuna-logo.svg';
 import VFLogoInverted from '@shared/images/virtualfinland_logo_small_inverted.png';
 import { Button, IconLogin, Text } from 'suomifi-ui-components';
 import api from '@/lib/api';
-import useDisplaySinunaError from '@/lib/hooks/use-display-sinuna-error';
 import { isExportedApplication } from '@/lib/utils';
 import Page from '@/components/layout/page';
 import Alert from '@/components/ui/alert';
@@ -17,9 +16,6 @@ const isExport = isExportedApplication();
 export default function ProfileNotAuthenticated() {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-
-  // Display sinuna error message, if api route returns an error (af-mvp only)
-  useDisplaySinunaError(!isExport);
 
   const loginHandler = () => {
     setLoading(true);
