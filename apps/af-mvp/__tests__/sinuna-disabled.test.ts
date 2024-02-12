@@ -1,4 +1,4 @@
-import { isSinunaDisabled } from '@shared/components/pages/profile/not-authenticated';
+import { isSinunaDisabled } from '@mvp/lib/shared/sinuna-status';
 
 describe('isSinunaDisabled', () => {
   it('returns true if the current date is after 28th of February, 2024', () => {
