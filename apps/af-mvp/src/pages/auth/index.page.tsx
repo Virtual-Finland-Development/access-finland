@@ -105,7 +105,7 @@ export default function AuthPage({
         <div className="px-4 md:px-0">
           <CustomHeading variant="h1">
             <span className="text-3xl lg:text-[40px]">
-              Access Finland - error
+              Access Finland - Error
             </span>
           </CustomHeading>
         </div>
