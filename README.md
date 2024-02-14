@@ -44,6 +44,14 @@ npm run dev:mvp
 
 ### Docker
 
+The following network must be created: `vfd-network`.
+
+Create the network with command:
+
+```bash
+docker network create vfd-network
+```
+
 Run both apps in docker
 
 ```bash
