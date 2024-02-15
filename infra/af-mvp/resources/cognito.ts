@@ -2,7 +2,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
 import setup, { nameResource } from '../utils/setup';
-import { CdnSetup, DomainSetup } from '../utils/types';
+import { DomainSetup } from '../utils/types';
 import { createDomainCertificateAndVerifyRecord } from './domainSetup';
 import {
   createCreateAuthChallengeLambda,
@@ -159,11 +159,11 @@ function createWafCognitoUserPoolDomain(
  *
  * @returns
  */
-export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
+export function createLoginSystemCognitoUserPool() {
   const defineAuthChallengeLambda = createDefineAuthChallengeLambda();
   const verifyAuthChallengeResponseLambda =
     createVerifyAuthChallengeResponseLambda();
-  const createAuthChallengeLambda = createCreateAuthChallengeLambda(cdnSetup);
+  const createAuthChallengeLambda = createCreateAuthChallengeLambda();
   const preSignUpLambda = createPreSignUpLambda();
   const postAuthenticationLambda = createPostAuthenticationLambda();
 

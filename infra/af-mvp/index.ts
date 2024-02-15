@@ -30,7 +30,7 @@ export = async () => {
     wafSetup?.webApplicationFirewall
   );
   // Login system
-  const loginSystem = createLoginSystemCognitoUserPool(cdnSetup);
+  const loginSystem = createLoginSystemCognitoUserPool();
   // Container image
   const image = createContainerImage(cdnSetup, loginSystem);
   // ECS Fargate service

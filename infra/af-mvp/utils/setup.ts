@@ -19,17 +19,36 @@ const awsSetup = new pulumi.Config('aws');
 const envOverride = ['mvp-dev'].includes(environment) ? 'dev' : environment;
 // <---
 
-const currentStackReference = new pulumi.StackReference(
-  `${organizationName}/${projectName}/${environment}`
-);
+let currentStackReference: pulumi.StackReference;
+function getCurrentStackReference() {
+  if (!currentStackReference) {
+    currentStackReference = new pulumi.StackReference(
+      `${organizationName}/${projectName}/${environment}`
+    );
+  }
+  return currentStackReference;
+}
 
 // external apis
-const codesetsEndpoint = new pulumi.StackReference(
-  `${organizationName}/codesets/${envOverride}`
-).getOutput('url');
-const usersApiEndpoint = new pulumi.StackReference(
-  `${organizationName}/users-api/${envOverride}`
-).getOutput('ApplicationUrl');
+let codesetsEndpoint: pulumi.Output<string>;
+function getCodesetsEndpoint() {
+  if (!codesetsEndpoint) {
+    codesetsEndpoint = new pulumi.StackReference(
+      `${organizationName}/codesets/${envOverride}`
+    ).getOutput('url') as pulumi.Output<string>;
+  }
+  return codesetsEndpoint;
+}
+
+let usersApiEndpoint: pulumi.Output<string>;
+function getUsersApiEndpoint() {
+  if (!usersApiEndpoint) {
+    usersApiEndpoint = new pulumi.StackReference(
+      `${organizationName}/users-api/${envOverride}`
+    ).getOutput('ApplicationUrl') as pulumi.Output<string>;
+  }
+  return usersApiEndpoint;
+}
 
 // Helper function to get a shorter project name
 function getShortResourceName(name: string): string {
@@ -79,7 +98,7 @@ export function nameResource(
 }
 
 export async function isInitialDeployment() {
-  return !Boolean(await currentStackReference.getOutputValue('cdnURL'));
+  return !Boolean(await getCurrentStackReference().getOutputValue('cdnURL'));
 }
 
 // Random value for custom header (for restricted CloudFront -> ALB access)
@@ -97,26 +116,29 @@ const loadBalancerDomainName = `loadbalancer.${domainName}`;
 const wafConfig = new pulumi.Config('waf');
 
 const awsRegion = awsSetup.get('region') || 'us-east-1';
-const awsCertsRegionProvider = new aws.Provider(nameResource('cert-region'), {
-  region: 'us-east-1',
-});
-const awsLocalCertsProvider = new aws.Provider(nameResource('cert-local'), {
-  region: awsRegion as aws.Region,
-});
+let awsCertsRegionProvider: aws.Provider;
+function getAwsCertsRegionProvider() {
+  if (!awsCertsRegionProvider) {
+    awsCertsRegionProvider = new aws.Provider(nameResource('cert'), {
+      region: awsRegion as aws.Region,
+    });
+  }
+  return awsCertsRegionProvider;
+}
 
 // Email setup
 const sesConfig = new pulumi.Config('ses');
 
 const setup = {
-  currentStackReference,
+  getCurrentStackReference,
   organizationName,
   environment,
   projectName,
   tags,
   envOverride,
   externalApis: {
-    codesetsEndpoint,
-    usersApiEndpoint,
+    getCodesetsEndpoint,
+    getUsersApiEndpoint,
   },
   customHeaderValue,
   cdn: {
@@ -125,8 +147,7 @@ const setup = {
       domainRootName,
       loadBalancerDomainName,
       enabled: domainConfig.getBoolean('enabled'),
-      awsCertsRegionProvider,
-      awsLocalCertsProvider,
+      getAwsCertsRegionProvider,
     },
     waf: {
       enabled: wafConfig.getBoolean('enabled'),

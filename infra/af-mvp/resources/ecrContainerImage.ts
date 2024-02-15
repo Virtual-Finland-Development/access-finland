@@ -12,7 +12,7 @@ import {
 const {
   tags,
   envOverride,
-  externalApis: { codesetsEndpoint, usersApiEndpoint },
+  externalApis: { getCodesetsEndpoint, getUsersApiEndpoint },
 } = setup;
 
 export function createContainerImage(
@@ -41,8 +41,8 @@ export function createContainerImage(
     dockerfile: '../../apps/af-mvp/Dockerfile', // dockerfile may be used to override the default Dockerfile name and/or location
     extraOptions: ['--platform', 'linux/amd64'],
     args: {
-      NEXT_PUBLIC_CODESETS_BASE_URL: codesetsEndpoint,
-      NEXT_PUBLIC_USERS_API_BASE_URL: usersApiEndpoint,
+      NEXT_PUBLIC_CODESETS_BASE_URL: getCodesetsEndpoint(),
+      NEXT_PUBLIC_USERS_API_BASE_URL: getUsersApiEndpoint(),
       NEXT_PUBLIC_STAGE: envOverride,
       DATASPACE_PRODUCT_GATEWAY_BASE_URL: dataspaceConfig.require('gatewayUrl'),
       DATASPACE_DEFAULT_DATA_SOURCE:
