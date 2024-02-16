@@ -1,5 +1,0 @@
-name: localstack
-runtime: nodejs
-description: Localstack for af-mvp
-config:
-  ses:fromAddress: 'no-reply@dev.accessfinland.dev'

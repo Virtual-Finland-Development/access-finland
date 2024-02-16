@@ -1,0 +1,6 @@
+name: localstack
+runtime: nodejs
+description: af-mvp stack for local development
+config:
+  aws:region: eu-north-1
+  ses:fromAddress: 'no-reply@staging.accessfinland.dev'

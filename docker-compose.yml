@@ -42,17 +42,7 @@ services:
       - traefik.http.routers.access-finland-features.entrypoints=web
       - traefik.http.routers.access-finland-features.service=access-finland-features-service
       - traefik.http.services.access-finland-features-service.loadbalancer.server.port=3000
-  localstack:
-    image: localstack/localstack
-    ports:
-      - "0.0.0.0:4566:4566"            # LocalStack Gateway
-      - "0.0.0.0:4510-4559:4510-4559"  # external services port range
-    environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./localstack-volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+
 networks:
   vfd-network:
     external: true
