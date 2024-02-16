@@ -26,3 +26,17 @@ The sign-in flow is implemented with the following steps:
 The frontend app flow is implemented in the [../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx](../apps/af-mvp/src/pages/auth/sign-in/index.page.tsx) file, and the backend app routes are defined in the [../apps/af-mvp/src/pages/api/auth/system](../apps/af-mvp/src/pages/api/auth/system) folder.
 
 The flow follows the same security principles as described in the [./README.af-mvp.security.md](./README.af-mvp.security.md) documents "Data Protection" heading.
+
+## Local development
+
+The local development requires the AWS Cognito service to be set up and running. The service could be set up locally using the pro/team-subscription to the localstack tooling or by using the live AWS environment. As the paid subscription is not available for the project the live environment is used for the development instead.
+
+To set up the local development environment the following steps are required:
+
+- setup the virtualfinland cognito user pool using the specially crafted pulumi deployment here: [../infra/af-mvp/for-local-dev/](../infra/af-mvp/for-local-dev/)
+- from the deployment outputs, copy the user pool ID, client ID and the endpoint URL to the local environment variables in the [../apps/af-mvp/.env.local](../apps/af-mvp/.env.local)-file:
+  ```bash
+  NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ID=eu-north-1_XXXXXXXXX
+  NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXX
+  NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT=https://cognito-idp.eu-north-1.amazonaws.com/eu-north-1_XXXXXXXXX
+  ```
