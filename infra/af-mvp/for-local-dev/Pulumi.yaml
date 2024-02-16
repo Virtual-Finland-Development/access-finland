@@ -1,4 +1,4 @@
-name: localstack
+name: vf-auth
 runtime: nodejs
 description: af-mvp stack for local development
 config:
