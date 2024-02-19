@@ -10,7 +10,7 @@ const {
   tags,
   customHeaderValue,
   cdn: {
-    domainConfig: { awsLocalCertsProvider },
+    domainConfig: { getAwsLocalCertsProvider },
   },
 } = setup;
 
@@ -102,7 +102,7 @@ export function createLoadBalancer(
       domainSetup.zone,
       domainSetup?.loadBalancerDomainName,
       appLoadBalancer.dnsName,
-      awsLocalCertsProvider
+      getAwsLocalCertsProvider()
     );
     listenerArgs = {
       port: 443,

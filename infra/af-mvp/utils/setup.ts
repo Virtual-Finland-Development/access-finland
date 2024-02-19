@@ -126,6 +126,16 @@ function getAwsCertsRegionProvider() {
   return awsCertsRegionProvider;
 }
 
+let awsLocalCertsProvider: aws.Provider;
+function getAwsLocalCertsProvider() {
+  if (!awsLocalCertsProvider) {
+    awsLocalCertsProvider = new aws.Provider(nameResource('local-cert'), {
+      region: awsRegion as aws.Region,
+    });
+  }
+  return awsLocalCertsProvider;
+}
+
 // Email setup
 const sesConfig = new pulumi.Config('ses');
 
@@ -148,6 +158,7 @@ const setup = {
       loadBalancerDomainName,
       enabled: domainConfig.getBoolean('enabled'),
       getAwsCertsRegionProvider,
+      getAwsLocalCertsProvider,
     },
     waf: {
       enabled: wafConfig.getBoolean('enabled'),
