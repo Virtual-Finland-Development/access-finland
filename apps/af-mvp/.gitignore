@@ -40,3 +40,6 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# local dotenv, idea is to keep the file in repository, but ignore local changes to it
+.env.local
