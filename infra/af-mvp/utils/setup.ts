@@ -119,8 +119,8 @@ const awsRegion = awsSetup.get('region') || 'us-east-1';
 let awsCertsRegionProvider: aws.Provider;
 function getAwsCertsRegionProvider() {
   if (!awsCertsRegionProvider) {
-    awsCertsRegionProvider = new aws.Provider(nameResource('cert'), {
-      region: awsRegion as aws.Region,
+    awsCertsRegionProvider = new aws.Provider(nameResource('cert-region'), {
+      region: 'us-east-1',
     });
   }
   return awsCertsRegionProvider;
@@ -129,9 +129,12 @@ function getAwsCertsRegionProvider() {
 let awsLocalCertsProvider: aws.Provider;
 function getAwsLocalCertsProvider() {
   if (!awsLocalCertsProvider) {
-    awsLocalCertsProvider = new aws.Provider(nameResource('local-cert'), {
-      region: awsRegion as aws.Region,
-    });
+    awsLocalCertsProvider = new aws.Provider(
+      nameResource('local-cert-region'),
+      {
+        region: awsRegion as aws.Region,
+      }
+    );
   }
   return awsLocalCertsProvider;
 }
