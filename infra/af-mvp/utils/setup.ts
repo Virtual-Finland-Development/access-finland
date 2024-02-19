@@ -120,7 +120,7 @@ let awsCertsRegionProvider: aws.Provider;
 function getAwsCertsRegionProvider() {
   if (!awsCertsRegionProvider) {
     awsCertsRegionProvider = new aws.Provider(nameResource('cert-region'), {
-      region: 'us-east-1',
+      region: 'us-east-1', // Certificates used by global resources (cdn etc) are only available in us-east-1
     });
   }
   return awsCertsRegionProvider;
