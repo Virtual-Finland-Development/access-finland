@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 // @see: https://aws.amazon.com/blogs/mobile/implementing-passwordless-email-authentication-with-amazon-cognito/
 // @see: https://github.com/aws-samples/amazon-cognito-passwordless-email-auth
 import {
@@ -45,7 +46,7 @@ async function sendEmail(emailAddress: string, secretLoginCode: string) {
  * @param event
  * @returns
  */
-const createAuthChallenge = async (event: CreateAuthChallengeTriggerEvent) => {
+async function createAuthChallenge(event: CreateAuthChallengeTriggerEvent) {
   let secretLoginCode: string;
   if (!event.request.session || !event.request.session.length) {
     // This is a new auth session
@@ -82,6 +83,6 @@ const createAuthChallenge = async (event: CreateAuthChallengeTriggerEvent) => {
   event.response.challengeMetadata = `CODE-${secretLoginCode}`;
 
   return event;
-};
+}
 
 export default createAuthChallenge;

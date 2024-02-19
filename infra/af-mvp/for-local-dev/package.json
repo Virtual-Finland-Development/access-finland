@@ -1,0 +1,16 @@
+{
+    "name": "vf-auth",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18"
+    },
+    "dependencies": {
+        "@aws-sdk/client-cognito-identity": "^3.515.0",
+        "@aws-sdk/client-cognito-identity-provider": "^3.515.0",
+        "@aws-sdk/client-sesv2": "^3.515.0",
+        "@pulumi/aws": "^6.0.0",
+        "@pulumi/awsx": "^2.0.2",
+        "@pulumi/pulumi": "^3.0.0",
+        "crypto-secure-random-digit": "^1.0.10"
+    }
+}

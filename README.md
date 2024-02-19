@@ -66,3 +66,7 @@ docker compose -f docker-compose.mvp-dev.yml up
 
 `af-featues` can be accessed at [http://localhost:3005](http://localhost:3005)  
 `af-mvp` can be accessed at [http://localhost:3006](http://localhost:3006)
+
+### Access Finland MVP local development specific instructions
+
+The local development uses a live AWS environment for the virtualfinland authentication service. Read more from [./docs/README.af-mvp.vf-authentication.md](./docs/README.af-mvp.vf-authentication.md) on how to set up the local development environment.

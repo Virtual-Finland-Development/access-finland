@@ -3,10 +3,12 @@
 
 import { VerifyAuthChallengeResponseTriggerEvent } from 'aws-lambda';
 
-export default async (event: VerifyAuthChallengeResponseTriggerEvent) => {
+async function handler(event: VerifyAuthChallengeResponseTriggerEvent) {
   const expectedAnswer =
     event.request.privateChallengeParameters!.secretLoginCode;
   event.response.answerCorrect =
     event.request.challengeAnswer === expectedAnswer;
   return event;
-};
+}
+
+export default handler;

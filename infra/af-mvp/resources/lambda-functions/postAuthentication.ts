@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { PostAuthenticationTriggerEvent } from 'aws-lambda';
 
-export default async (event: PostAuthenticationTriggerEvent) => {
+async function handler(event: PostAuthenticationTriggerEvent) {
   if (event.request.userAttributes.email_verified !== 'true') {
     const client = new CognitoIdentityProviderClient();
     const params = {
@@ -23,4 +23,5 @@ export default async (event: PostAuthenticationTriggerEvent) => {
     await client.send(new AdminUpdateUserAttributesCommand(params));
   }
   return event;
-};
+}
+export default handler;

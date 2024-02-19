@@ -5,7 +5,7 @@ import setup, { nameResource } from '../utils/setup';
 const {
   tags,
   cdn: { domainConfig },
-  currentStackReference,
+  getCurrentStackReference,
 } = setup;
 
 function parseDomainNameFromURL(url: string) {
@@ -28,7 +28,7 @@ export async function createDomainSetup() {
       { protect: true } // Keep the zone from being destroyed
     );
 
-    const cdnURL = await currentStackReference.getOutputValue('cdnURL');
+    const cdnURL = await getCurrentStackReference().getOutputValue('cdnURL');
     if (!cdnURL) {
       console.log(
         "Skipped creating domain configurations as there's a circular dependency to the CDN which is not yet created."
@@ -84,8 +84,11 @@ export function createDomainRecordAndCertificate(
   zone: aws.route53.Zone,
   domainName: string,
   destinationDomainName: pulumi.Output<string>,
-  certRegionProvider: aws.Provider = domainConfig.awsCertsRegionProvider
+  certRegionProvider?: aws.Provider
 ) {
+  if (!certRegionProvider) {
+    certRegionProvider = domainConfig.getAwsCertsRegionProvider();
+  }
   const domainNameResourceIdent = domainName.replace(/\./g, '-');
 
   const certificate = createDomainCertificateAndVerifyRecord(
@@ -115,8 +118,11 @@ export function createDomainRecordAndCertificate(
 export function createDomainCertificateAndVerifyRecord(
   zone: aws.route53.Zone,
   domainName: string,
-  certRegionProvider: aws.Provider = domainConfig.awsCertsRegionProvider
+  certRegionProvider?: aws.Provider
 ) {
+  if (!certRegionProvider) {
+    certRegionProvider = domainConfig.getAwsCertsRegionProvider();
+  }
   const domainNameResourceIdent = domainName.replace(/\./g, '-');
 
   const certificate = new aws.acm.Certificate(

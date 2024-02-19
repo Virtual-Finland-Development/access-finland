@@ -2,7 +2,7 @@ import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as fs from 'fs';
 import setup, { nameResource } from '../utils/setup';
-import { CdnSetup, DomainSetup } from '../utils/types';
+import { DomainSetup } from '../utils/types';
 import { createDomainCertificateAndVerifyRecord } from './domainSetup';
 import {
   createCreateAuthChallengeLambda,
@@ -159,16 +159,18 @@ function createWafCognitoUserPoolDomain(
  *
  * @returns
  */
-export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
+export function createLoginSystemCognitoUserPool(
+  prefix: string = 'loginSystems'
+) {
   const defineAuthChallengeLambda = createDefineAuthChallengeLambda();
   const verifyAuthChallengeResponseLambda =
     createVerifyAuthChallengeResponseLambda();
-  const createAuthChallengeLambda = createCreateAuthChallengeLambda(cdnSetup);
+  const createAuthChallengeLambda = createCreateAuthChallengeLambda();
   const preSignUpLambda = createPreSignUpLambda();
   const postAuthenticationLambda = createPostAuthenticationLambda();
 
   const userPool = new aws.cognito.UserPool(
-    nameResource('loginSystemsUserPool'),
+    nameResource(`${prefix}UserPool`),
     {
       lambdaConfig: {
         defineAuthChallenge: defineAuthChallengeLambda.arn,
@@ -201,14 +203,14 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
   );
 
   // Setup lambda invoking permissions
-  new aws.lambda.Permission(nameResource('invoke-defineAuthChallenge'), {
+  new aws.lambda.Permission(nameResource(`${prefix}-defineAuthChallenge`), {
     action: 'lambda:InvokeFunction',
     principal: 'cognito-idp.amazonaws.com',
     sourceArn: userPool.arn,
     function: defineAuthChallengeLambda.arn,
   });
   new aws.lambda.Permission(
-    nameResource('invoke-verifyAuthChallengeResponse'),
+    nameResource(`${prefix}-verifyAuthChallengeResponse`),
     {
       action: 'lambda:InvokeFunction',
       principal: 'cognito-idp.amazonaws.com',
@@ -216,19 +218,19 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
       function: verifyAuthChallengeResponseLambda.arn,
     }
   );
-  new aws.lambda.Permission(nameResource('invoke-createAuthChallenge'), {
+  new aws.lambda.Permission(nameResource(`${prefix}-createAuthChallenge`), {
     action: 'lambda:InvokeFunction',
     principal: 'cognito-idp.amazonaws.com',
     sourceArn: userPool.arn,
     function: createAuthChallengeLambda.arn,
   });
-  new aws.lambda.Permission(nameResource('invoke-preSignUp'), {
+  new aws.lambda.Permission(nameResource(`${prefix}-preSignUp`), {
     action: 'lambda:InvokeFunction',
     principal: 'cognito-idp.amazonaws.com',
     sourceArn: userPool.arn,
     function: preSignUpLambda.arn,
   });
-  new aws.lambda.Permission(nameResource('invoke-postAuthentication'), {
+  new aws.lambda.Permission(nameResource(`${prefix}-postAuthentication`), {
     action: 'lambda:InvokeFunction',
     principal: 'cognito-idp.amazonaws.com',
     sourceArn: userPool.arn,
@@ -237,7 +239,7 @@ export function createLoginSystemCognitoUserPool(cdnSetup: CdnSetup) {
 
   // Pool client
   const userPoolClient = new aws.cognito.UserPoolClient(
-    nameResource('loginSystemsUserPoolClient'),
+    nameResource(`${prefix}UserPoolClient`),
     {
       userPoolId: userPool.id,
       generateSecret: false,

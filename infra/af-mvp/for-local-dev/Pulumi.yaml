@@ -1,0 +1,9 @@
+name: vf-auth
+runtime: nodejs
+description: af-mvp stack for local development
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: aws-typescript
+  aws:region: eu-north-1
+  ses:fromAddress: 'no-reply@staging.accessfinland.dev'

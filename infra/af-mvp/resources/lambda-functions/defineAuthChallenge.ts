@@ -3,7 +3,7 @@
 
 import { DefineAuthChallengeTriggerEvent } from 'aws-lambda';
 
-export default async (event: DefineAuthChallengeTriggerEvent) => {
+async function handler(event: DefineAuthChallengeTriggerEvent) {
   if (
     event.request.session &&
     event.request.session.find(
@@ -39,4 +39,6 @@ export default async (event: DefineAuthChallengeTriggerEvent) => {
   }
 
   return event;
-};
+}
+
+export default handler;

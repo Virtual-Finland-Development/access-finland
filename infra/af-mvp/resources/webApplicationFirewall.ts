@@ -8,8 +8,7 @@ import { createWafCognitoUserPool } from './cognito';
 const {
   tags,
   cdn: { waf },
-  awsSetup: { region },
-  currentStackReference,
+  getCurrentStackReference,
 } = setup;
 
 export async function createWebAppFirewallProtection(domainSetup: DomainSetup) {
@@ -17,7 +16,7 @@ export async function createWebAppFirewallProtection(domainSetup: DomainSetup) {
     return;
   }
 
-  const appUrl = await currentStackReference.getOutputValue('url');
+  const appUrl = await getCurrentStackReference().getOutputValue('url');
   if (!appUrl) {
     console.log(
       "Skipped creating WAF as there's a circular dependency to the CDN which is not yet created."
