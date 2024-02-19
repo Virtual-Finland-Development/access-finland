@@ -40,3 +40,6 @@ To set up the local development environment the following steps are required:
   NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXX
   NEXT_PUBLIC_LOGIN_SYSTEM_COGNITO_USER_POOL_ENDPOINT=https://cognito-idp.eu-north-1.amazonaws.com/eu-north-1_XXXXXXXXX
   ```
+
+
+If the cognito pool is not configured, the login attempt will fail with following error message: `Auth UserPool not configured`.
